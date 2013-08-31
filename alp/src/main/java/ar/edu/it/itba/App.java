@@ -4,10 +4,13 @@ import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
 import sun.awt.VariableGridLayout;
+import ar.edu.it.itba.tracker.AdaptiveLinearPredictors;
+import ar.edu.it.itba.tracker.TrackResult;
 
 /**
  * Hello world!
@@ -17,6 +20,7 @@ public class App extends JFrame
 {
 	private ImagePanel imagePanel;
 	private FrameDecoder frameDecoder;
+	private AdaptiveLinearPredictors predictors;
 
 	public static void main( final String[] args )
     {
@@ -49,6 +53,7 @@ public class App extends JFrame
 		pack();
 		setVisible(true);
 
+		predictors = new AdaptiveLinearPredictors();
 		loadNextFrame();
 	}
 
@@ -57,7 +62,10 @@ public class App extends JFrame
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
 			public void run() {
-            	imagePanel.setImage(frameDecoder.nextFrame());
+            	BufferedImage frame = frameDecoder.nextFrame();
+            	TrackResult result = predictors.trackFrame(frame);
+            	result.drawOnImage(frame);
+				imagePanel.setImage(frame);
             }
         });
 	}
