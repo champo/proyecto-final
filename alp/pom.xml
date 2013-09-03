@@ -30,9 +30,9 @@
       <version>5.2</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.matrix-toolkits-java</groupId>
-      <artifactId>mtj</artifactId>
-      <version>0.9.14</version>
+      <groupId>com.googlecode.efficient-java-matrix-library</groupId>
+      <artifactId>ejml</artifactId>
+      <version>0.20</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

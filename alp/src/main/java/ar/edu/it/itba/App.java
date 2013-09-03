@@ -2,6 +2,7 @@ package ar.edu.it.itba;
 
 import java.awt.Button;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -10,7 +11,7 @@ import javax.swing.JFrame;
 
 import sun.awt.VariableGridLayout;
 import ar.edu.it.itba.tracker.AdaptiveLinearPredictors;
-import ar.edu.it.itba.tracker.TrackResult;
+import ar.edu.it.itba.tracker.ObjectFrame;
 
 /**
  * Hello world!
@@ -53,7 +54,9 @@ public class App extends JFrame
 		pack();
 		setVisible(true);
 
-		predictors = new AdaptiveLinearPredictors();
+		ObjectFrame initial = new ObjectFrame(new Point(129, 103), new Point(75, 399), new Point(590, 178), new Point(538, 477));
+
+		predictors = new AdaptiveLinearPredictors(initial);
 		loadNextFrame();
 	}
 
@@ -63,8 +66,10 @@ public class App extends JFrame
             @Override
 			public void run() {
             	BufferedImage frame = frameDecoder.nextFrame();
-            	TrackResult result = predictors.trackFrame(frame);
-            	result.drawOnImage(frame);
+            	ObjectFrame result = predictors.trackFrame(frame);
+            	if (result != null) {
+            		result.drawOnImage(frame);
+            	}
 				imagePanel.setImage(frame);
             }
         });
