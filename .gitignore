@@ -1,0 +1,6 @@
+*.pdf
+*.toc
+*.aux
+*.log
+.*.sw[a-z]
+.*~
