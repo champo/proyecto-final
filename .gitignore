@@ -2,5 +2,6 @@
 *.toc
 *.aux
 *.log
+*.backup
 .*.sw[a-z]
 .*~
