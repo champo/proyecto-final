@@ -70,6 +70,34 @@
 
 \section{Estado del Arte}
 
+En el campo del tracking y la segmentación de objetos en secuencias de imágenes y videos en tiempo real, se pueden diferenciar distintas familias de 
+algoritmos que atacan este tipo de problemas de diversas formas. Una de ellas está conformada por los algoritmos basados en lo que se conoce como \textit{local learning}.
+\cite{local-learning}
+Estos tipos de algoritmos se caracterizan por definir una función objetivo, y un método de aprendizaje para, a través de un entrenamiento basado en 
+muestras, intentar minimizar dicha función. Al este proceso de entrenamiento le sigue el proceso de tracking. Estos algoritmos suelen ser computacionalmente costosos, y 
+por lo tanto no les es fácil satisfacer la restricción del tracking en tiempo real.\\
+
+Otra familia de algoritmos se base en lo que se llama \textit{template tracking}. En esta familia se destacan los algoritmos basados en predictores lineales o 
+\textit{linear predictors} \cite{alp} \cite{original-linear-predictors}. 
+% TODO 
+\cite{CITATION NEEDED}. 
+Estos algoritmos utilizan templates de tamaño fijo que describir los objetos a trackear. El problema de este tipo de algoritmos radica en que es costoso aprender 
+totalmente un template, y que, en principio no resulta sencillo adaptarlos. Es decir, para actualizar un template (por ejemplo cuando el objeto cambia de tamaño, dirección, etc...)
+se debe computar o construir un template nuevo desde cero. En \cite{alp}, Holzer, Ilic y Navab, proponen un complejo algoritmo basado en el uso de linear predictors y varias capas
+de templates de distintos tamaños, lo que les permiten manejar oclusiones parciales y totales con resultados muy positivos. Además, proponen un atajo computacional para 
+modificar un template, calculando eficientemente inversas de matrices. Si bien los resultados obtenidos no son óptimos desde el punto de vista de la restricción del tiempo real, 
+se acercan bastante, sin haber realizado mayores optimizaciones, como ser paralelización de ciertas partes del algoritmo, programación GPU, etc...
+
+Por último se encuentran los algoritmos de basados en grafos, o \textit{graph based}. Entre ellos se destaca IFTrace \cite{IFTrace}, el cual se basa en la técnica conocida como 
+\textit{Image Foresting Transform} \cite{IFT} y en la técnica de tracking de features, KLT \cite{KLT}. Este algoritmo es muy versátil, ya que las únicas suposiciones que hace son que el objeto trackeado en la imagen consista de un
+solo set de pixeles conectados, que puede haber un cambio aguda del color u otras propiedades a lo largo de los bordes del objeto, y que estas propiedades pueden cambiar en el 
+tiempo. Este algoritmo se basa en una pequeña segmentación base realizada de forma interactiva por el usuario en el primer frame, pero luego lograr manejar satisfactoriamente
+oclusiones parciales y en la mayoría de los casos recuperarse de oclusiones totales. Para modelar la imagen y los objetos se utiliza un grafo, en el cual los pixeles son los nodos, y
+estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que los puntos estén separados por el borde del
+objeto trackeado. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color entre los pixeles. IFTrace combina el gradiente del color con el 
+gradiente de una función de classificación de pixeles difusos, algo así como la similaridad entre el pixel y el set de pixeles del objeto segmentado en el frame anterior.
+
+
 % * Real time tracking
 %   sarasarsara (LP, IFTrace, etc)
 %   * Tracking human poses
@@ -80,6 +108,20 @@
 
 \section*{Referencias}
 \begin{thebibliography}{99}
+    \bibitem{local-learning} X. Li, H. Lu, ``Object tracking based on local learning''. Int. Conf. Image Process. (ICIP) 2012
+    \bibitem{original-linear-predictors} F. Jurie and M. Dhome, “Hyperplane Approximation for Template Matching,” IEEE Trans. Pattern Analysis and Machine Intelligence, vol. 24, no. 7, pp. 996-100, July 2002.
+    \bibitem{alp} S. Holzer, S. Ilic, N. Navab, ``Multilayer Adaptive Linear Predictors for Real-Time Tracking''. 
+                  IEEE Trans. Pattern Analysis and Machine Intelligence, vol. 35, no. 1. Jan. 2013.
+    \bibitem{IFTrace} R. Minetto, A.X. Falcão, et al. ``IFTrace: Video segmentation of deformable objects using the Foresting Transform''. 
+                      Computer Vision and Image Understanding 116 (2012) 274–291.
+    \bibitem{IFT} A. Falcão, J. Stolfi, R. Lotufo, ``The image foresting transform: theory, algorithms, and applications'', IEEE Trans. Pattern Anal. Mach. Intel. (TPAMI) 26 (1) (2004) 19–29.
+    \bibitem{Falcao-seg-optimum-path} P. Miranda, A. Falcão, Links between image segmentation based on optimum-path forest and minimum cut in graph, J. Math. Imag. Vis. 35 (2009) 128–142.
+    \bibitem{KLT} C. Tomasi, T. Kanade, Detection and tracking of point features, Tech. Rep. CMU-CS-91-132, Carnegie Mellon University, 1991.
+
+ 
+
+
+
 \end{thebibliography}
 
 \end{document}
