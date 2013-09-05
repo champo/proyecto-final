@@ -77,7 +77,9 @@ Estos tipos de algoritmos se caracterizan por definir una función objetivo, y u
 muestras, intentar minimizar dicha función. Al este proceso de entrenamiento le sigue el proceso de tracking. Estos algoritmos suelen ser computacionalmente costosos, y 
 por lo tanto no les es fácil satisfacer la restricción del tracking en tiempo real.\\
 
-Otra familia de algoritmos se base en lo que se llama \textit{template tracking}. En esta familia se destacan los algoritmos basados en predictores lineales o 
+Otra familia de algoritmos se base en lo que se llama \textit{template tracking}. Esta familia también comparte la característica de requerir el aprendizaje o entrenamiento
+de ciertos parámetros, por lo que se ubican dentro del conjunto de algoritmos basados en aprendizaje o \textit{learning based}. En esta familia se destacan los algoritmos 
+basados en predictores lineales o 
 \textit{linear predictors} \cite{alp} \cite{original-linear-predictors}. 
 % TODO 
 \cite{CITATION NEEDED}. 
@@ -97,6 +99,11 @@ estos están conectados mediantes aristas si son adyacentes y tiene un peso o co
 objeto trackeado. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color entre los pixeles. IFTrace combina el gradiente del color con el 
 gradiente de una función de classificación de pixeles difusos, algo así como la similaridad entre el pixel y el set de pixeles del objeto segmentado en el frame anterior.
 
+En el marco del tracking aplicado a videos de futbol, existen algunos trabajos previos muy interesantes \cite{paper-suecia-soccer} \cite{papers-tanos}. En \cite{paper-suecia-soccer},
+Li y Flierl utilizan una conocida técnica para extraer puntos característicos o \textit{features}, SIFT. SIFT es la sigla para \textit{Scale Invariant Feature Transform}, y como se 
+desprende de su nombre, ofrece una transformación para extraer puntos característicos que son invariantes a cambios de escala y rotaciones. En su trabajo, Li y Flierl utilizan estos 
+puntos para obtener una correlación entre vistas y frames. Entonces, utilizan la información 3D de cada jugador para trackearlos en timepo real. Al compartir esta información 3D con
+todas las cámaras y explotando la diversidad de perspectiva del sistema multicámara, se pueden resolver los problemas causados por oclusiones, de manera muy eficiente.
 
 % * Real time tracking
 %   sarasarsara (LP, IFTrace, etc)
@@ -108,7 +115,7 @@ gradiente de una función de classificación de pixeles difusos, algo así como 
 
 \section*{Referencias}
 \begin{thebibliography}{99}
-    \bibitem{local-learning} X. Li, H. Lu, ``Object tracking based on local learning''. Int. Conf. Image Process. (ICIP) 2012
+    \bibitem{local-learning} X. Li, H. Lu, ``Object tracking based on local learning''. Int. Conf. Image Process. (ICIP) 2012.
     \bibitem{original-linear-predictors} F. Jurie and M. Dhome, “Hyperplane Approximation for Template Matching,” IEEE Trans. Pattern Analysis and Machine Intelligence, vol. 24, no. 7, pp. 996-100, July 2002.
     \bibitem{alp} S. Holzer, S. Ilic, N. Navab, ``Multilayer Adaptive Linear Predictors for Real-Time Tracking''. 
                   IEEE Trans. Pattern Analysis and Machine Intelligence, vol. 35, no. 1. Jan. 2013.
@@ -117,9 +124,9 @@ gradiente de una función de classificación de pixeles difusos, algo así como 
     \bibitem{IFT} A. Falcão, J. Stolfi, R. Lotufo, ``The image foresting transform: theory, algorithms, and applications'', IEEE Trans. Pattern Anal. Mach. Intel. (TPAMI) 26 (1) (2004) 19–29.
     \bibitem{Falcao-seg-optimum-path} P. Miranda, A. Falcão, Links between image segmentation based on optimum-path forest and minimum cut in graph, J. Math. Imag. Vis. 35 (2009) 128–142.
     \bibitem{KLT} C. Tomasi, T. Kanade, Detection and tracking of point features, Tech. Rep. CMU-CS-91-132, Carnegie Mellon University, 1991.
-
- 
-
+    \bibitem{paper-suecia-soccer} H. Li, M. Flierl, ``Sift-based multi-view cooperative tracking for soccer video''. IEEE Trans. (ICASSP) 2012.
+    \bibitem{papers-tanos} T. D'Orazio, M. Leo, P. Spagnolo, P.L. Mazzeo, N. Mosca, M. Nitti, A. Distante. ``An investigation into de feasibility of real-time soccer offside detection
+                            from a multiple camera system''. IEEE Trans. Circuits and Systems for Video Technology, vol. 19, no 12, Dec. 2009.
 
 
 \end{thebibliography}
