@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.factory.DecompositionFactory;
+import org.ejml.factory.SingularValueDecomposition;
 import org.ejml.ops.CommonOps;
 import org.ejml.simple.SimpleMatrix;
 
@@ -26,6 +28,8 @@ public class AdaptiveLinearPredictors {
 
 	private ObjectFrame previousFrame;
 
+	private final ObjectFrame initialFrame;
+
 	private double[] previousSamples;
 
 	private DenseMatrix64F predictor;
@@ -36,6 +40,7 @@ public class AdaptiveLinearPredictors {
 
 	public AdaptiveLinearPredictors(final ObjectFrame initialFrame) {
 		super();
+		this.initialFrame = initialFrame;
 		this.previousFrame = initialFrame;
 	}
 
@@ -87,75 +92,172 @@ public class AdaptiveLinearPredictors {
 			return previousFrame;
 		}
 
-		double[] template = templateFromObjectFrame(previousFrame);
-
-		TemplateMatrix homography = new TemplateMatrix(homography(template));
-
+		SimpleMatrix homography = homographyFromFrame(previousFrame);
 		DenseMatrix64F templateDelta = new DenseMatrix64F(8, 1);
 
 		for (int i = 0; i < 3; i++) {
 
-			// Estas estan MAAAAAAAAAAAAAAAAAAAAAL
-			// Idea, cablear los valores reales para testear con el primer frame
-			int dx = getMinX(homography.points) - previousFrame.getMinX();
-			int dy = getMinY(homography.points) - previousFrame.getMinY();
-
-			double[] samples = trainingSample(frame, subsets, dx, dy);
+			double[] samples = sample(frame, homography);
 			double[] sampleDelta = sub(samples, previousSamples);
 
 			DenseMatrix64F deltaMatrix = new DenseMatrix64F(sampleDelta.length, 1, true, sampleDelta);
 			CommonOps.mult(predictor, deltaMatrix, templateDelta);
-			homography = homography.multiplyBy(new TemplateMatrix(templateDelta.data));
+			homography = homography.mult(homography(templateDelta));
 		}
 
-		double[] resultingTemplate = templateFromHomography(homography.points);
+		previousFrame = updateFrameWithHomography(homography);
 		// TODO: Check error rate by checking against reference samples
 
-		double[] templateDiff = sub(resultingTemplate, template);
-
-		for (Point samplePoint : subsets) {
-			samplePoint.translate((int) templateDiff[0], (int) templateDiff[1]);
-		}
-		previousSamples = trainingSample(frame, subsets, 0, 0);
-
-		previousFrame = new ObjectFrame(
-			new Point((int) resultingTemplate[0], (int) resultingTemplate[1]),
-			new Point((int) resultingTemplate[2], (int) resultingTemplate[3]),
-			new Point((int) resultingTemplate[4], (int) resultingTemplate[5]),
-			new Point((int) resultingTemplate[6], (int) resultingTemplate[7])
-		);
+		previousSamples = sample(frame, homography);
 
 		return previousFrame;
 	}
 
-	private int getMinX(final double[] points) {
-		double min = Double.MAX_VALUE;
-		for (int i = 0; i < points.length; i += 2) {
-			if (min > points[i]) {
-				min = points[i];
-			}
+	private SimpleMatrix homographyFromFrame(final ObjectFrame frame) {
+		return homography(new DenseMatrix64F(8, 1, true, templateFromObjectFrame(frame)));
+	}
+
+	private ObjectFrame updateFrameWithHomography(final SimpleMatrix homography) {
+		return new ObjectFrame(
+				warpPoint(homography, initialFrame.getFirst()),
+				warpPoint(homography, initialFrame.getSecond()),
+				warpPoint(homography, initialFrame.getThird()),
+				warpPoint(homography, initialFrame.getFourth())
+				);
+	}
+
+	private SimpleMatrix homography(final DenseMatrix64F deltaMatrix) {
+
+		DenseMatrix64F a = new DenseMatrix64F(8, 9);
+
+		// First pair of points
+		a.set(0, 0, -initialFrame.getFirst().x);
+		a.set(0, 1, -initialFrame.getFirst().y);
+		a.set(0, 2, -1);
+
+		a.set(0, 6, initialFrame.getFirst().x * deltaMatrix.get(0));
+		a.set(0, 7, initialFrame.getFirst().y * deltaMatrix.get(0));
+		a.set(0, 8, deltaMatrix.get(0));
+
+		a.set(1, 3, -initialFrame.getFirst().x);
+		a.set(1, 4, -initialFrame.getFirst().y);
+		a.set(1, 5, -1);
+
+		a.set(1, 6, initialFrame.getFirst().x * deltaMatrix.get(1));
+		a.set(1, 7, initialFrame.getFirst().y * deltaMatrix.get(1));
+		a.set(1, 8, deltaMatrix.get(1));
+
+		// Second pair of points
+
+		a.set(2, 0, -initialFrame.getSecond().x);
+		a.set(2, 1, -initialFrame.getSecond().y);
+		a.set(2, 2, -1);
+
+		a.set(2, 6, initialFrame.getSecond().x * deltaMatrix.get(2));
+		a.set(2, 7, initialFrame.getSecond().y * deltaMatrix.get(2));
+		a.set(2, 8, deltaMatrix.get(2));
+
+		a.set(3, 3, -initialFrame.getSecond().x);
+		a.set(3, 4, -initialFrame.getSecond().y);
+		a.set(3, 5, -1);
+
+		a.set(3, 6, initialFrame.getSecond().x * deltaMatrix.get(3));
+		a.set(3, 7, initialFrame.getSecond().y * deltaMatrix.get(3));
+		a.set(3, 8, deltaMatrix.get(3));
+
+		// Third pair of points
+
+		a.set(4, 0, -initialFrame.getThird().x);
+		a.set(4, 1, -initialFrame.getThird().y);
+		a.set(4, 2, -1);
+
+		a.set(4, 6, initialFrame.getThird().x * deltaMatrix.get(4));
+		a.set(4, 7, initialFrame.getThird().y * deltaMatrix.get(4));
+		a.set(4, 8, deltaMatrix.get(4));
+
+		a.set(5, 3, -initialFrame.getThird().x);
+		a.set(5, 4, -initialFrame.getThird().y);
+		a.set(5, 5, -1);
+
+		a.set(5, 6, initialFrame.getThird().x * deltaMatrix.get(5));
+		a.set(5, 7, initialFrame.getThird().y * deltaMatrix.get(5));
+		a.set(5, 8, deltaMatrix.get(5));
+
+		// Fourth pair of points
+
+		a.set(6, 0, -initialFrame.getFourth().x);
+		a.set(6, 1, -initialFrame.getFourth().y);
+		a.set(6, 2, -1);
+
+		a.set(6, 6, initialFrame.getFourth().x * deltaMatrix.get(6));
+		a.set(6, 7, initialFrame.getFourth().y * deltaMatrix.get(6));
+		a.set(6, 8, deltaMatrix.get(6));
+
+		a.set(7, 3, -initialFrame.getFourth().x);
+		a.set(7, 4, -initialFrame.getFourth().y);
+		a.set(7, 5, -1);
+
+		a.set(7, 6, initialFrame.getFourth().x * deltaMatrix.get(7));
+		a.set(7, 7, initialFrame.getFourth().y * deltaMatrix.get(7));
+		a.set(7, 8, deltaMatrix.get(7));
+
+		SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(8, 9, false, true, false);
+		svd.decompose(a);
+		DenseMatrix64F v = svd.getV(null, false);
+		SimpleMatrix result = new SimpleMatrix(3, 3);
+
+		// Remember to normalize the laste element to 1
+		double ratio = 1.0 / v.get(8, v.numCols - 1);
+		for (int i = 0; i < 9; i++) {
+			result.set(i, ratio * v.get(i, v.numCols - 1));
 		}
 
-		return (int) min;
+		return result;
 	}
 
-	private int getMinY(final double[] points) {
-		double min = Double.MAX_VALUE;
-		for (int i = 1; i < points.length; i += 2) {
-			if (min > points[i]) {
-				min = points[i];
+	private double[] sample(final BufferedImage frame, final SimpleMatrix homography) {
+
+		double[] samples = new double[subsets.size()];
+		for (int i = 0; i < samples.length; i++) {
+			Point result = warpPoint(homography, subsets.get(i));
+
+			int x = result.x;
+			int y = result.y;
+			while (x < 0) {
+				x += PIXELS_PER_SAMPLE;
 			}
+			while (x >= frame.getWidth()) {
+				x -= PIXELS_PER_SAMPLE;
+			}
+
+			while (y < 0) {
+				y += PIXELS_PER_SAMPLE;
+			}
+			while (y >= frame.getHeight()){
+				y -= PIXELS_PER_SAMPLE;
+			}
+
+			Color color = new Color(frame.getRGB(x, y));
+			samples[i] = (color.getBlue() + color.getGreen() + color.getRed()) / 3;
 		}
 
-		return (int) min;
-	}
-	private double[] homography(final double[] template) {
-		// ???????
-		return template;
+		return samples;
 	}
 
-	private double[] templateFromHomography(final double[] homography) {
-		return homography;
+	private Point warpPoint(final SimpleMatrix homography, final Point point) {
+
+		DenseMatrix64F pointMatrix = new DenseMatrix64F(3, 1);
+		DenseMatrix64F warpedPoint = new DenseMatrix64F(3, 1);
+
+		pointMatrix.set(0, point.x);
+		pointMatrix.set(1, point.y);
+		pointMatrix.set(2, 1);
+
+		CommonOps.mult(homography.getMatrix(), pointMatrix, warpedPoint);
+		int x = (int) (warpedPoint.get(0) / warpedPoint.get(2));
+		int y = (int) (warpedPoint.get(1) / warpedPoint.get(2));
+
+		return new Point(x, y);
 	}
 
 	private void trainPredictors(final BufferedImage frame) {
@@ -268,7 +370,7 @@ public class AdaptiveLinearPredictors {
 			}
 
 			Color color = new Color(frame.getRGB(x, y));
-			samples[i] = color.getBlue() + color.getGreen() + color.getRed();
+			samples[i] = (color.getBlue() + color.getGreen() + color.getRed() ) / 3;
 		}
 
 		return samples;
