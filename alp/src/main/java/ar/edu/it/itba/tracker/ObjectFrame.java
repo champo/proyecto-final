@@ -137,4 +137,11 @@ public class ObjectFrame {
 
 	}
 
+	public int getCenterY() {
+		return (getMaxY() - getMinY()) / 2;
+	}
+
+	public int getCenterX() {
+		return (getMaxX() - getMinX()) / 2;
+	}
 }
