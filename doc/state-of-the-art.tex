@@ -105,6 +105,17 @@ desprende de su nombre, ofrece una transformación para extraer puntos caracter�
 puntos para obtener una correlación entre vistas y frames. Entonces, utilizan la información 3D de cada jugador para trackearlos en timepo real. Al compartir esta información 3D con
 todas las cámaras y explotando la diversidad de perspectiva del sistema multicámara, se pueden resolver los problemas causados por oclusiones, de manera muy eficiente.
 
+En \cite{papers-tanos}, D'Orazio et al. proponen un sistema de seguimiento de
+jugadores y pelota de manera no supervisada que logra detectar posiciones
+adelantadas en 35 de 45 casos observados durante un torneo de la liga italiana
+de fútbol, obteniendo también dos falsos positivos. El sistema consiste en seis
+cámaras conectadas. El algoritmo ejecutado por cada nodo procesador (uno por
+cada cámara) utiliza una técnica de reducción de fondo efectiva para el caso de
+un partido de fútbol, aprendizaje no supervizado para la detección de jugadores
+y distintos equipos (utilizando el algoritmo BSAS \cite{paper-bsas}), un
+sistema de seguimiento basado en trayectoria y \textit{bounding boxes} para el
+trackeo de los jugadores y resolución de oclusiones.
+
 % * Real time tracking
 %   sarasarsara (LP, IFTrace, etc)
 %   * Tracking human poses
