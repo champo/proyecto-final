@@ -93,9 +93,7 @@ public class AdaptiveLinearPredictors {
 		DenseMatrix64F templateDelta = new DenseMatrix64F(8, 1);
 
 		for (int i = 0; i < 3; i++) {
-
-			double[] samples = sample(frame, homography);
-			double[] sampleDelta = sub(samples, previousSamples);
+			double[] sampleDelta = sub(sample(frame, homography), previousSamples);
 
 			DenseMatrix64F deltaMatrix = new DenseMatrix64F(sampleDelta.length, 1, true, sampleDelta);
 			CommonOps.mult(predictor, deltaMatrix, templateDelta);
@@ -187,12 +185,13 @@ public class AdaptiveLinearPredictors {
 		double[][] templateDelta = new double[mutationCount][];
 
 		for (int i = 0; i < mutationCount; i++) {
-			int dx = random.nextInt(25) - 12;
-			int dy = random.nextInt(25) - 12;
+			SimpleMatrix mutatedHomography;
+			Point warpPoint;
 
-			SimpleMatrix mutatedHomography = new SimpleMatrix(homography);
-			mutatedHomography.set(0, 2, homography.get(0, 2) + dx);
-			mutatedHomography.set(1, 2, homography.get(1, 2) + dy);
+			do {
+				mutatedHomography = randomHomography();
+				warpPoint = warpPoint(mutatedHomography, new Point(100, 100));
+			} while (Math.abs(warpPoint.x - 100) > 15 || Math.abs(warpPoint.y - 100) > 15);
 
 			samplesDelta[i] = sub(sample(frame, mutatedHomography), referenceSamples);
 			templateDelta[i] = extractParams(mutatedHomography);
@@ -213,7 +212,7 @@ public class AdaptiveLinearPredictors {
 		predictor = y.mult(transposedH.mult(inverse)).getMatrix();
 		previousSamples = referenceSamples;
 
-		DenseMatrix64F calculatedDelta = new DenseMatrix64F(2, 1);
+		DenseMatrix64F calculatedDelta = new DenseMatrix64F(8, 1);
 		double acummulatedError = 0;
 		double maxError = Double.MIN_VALUE;
 		for (int i = 0; i < mutationCount; i++) {
@@ -222,7 +221,7 @@ public class AdaptiveLinearPredictors {
 			CommonOps.mult(predictor, deltaMatrix, calculatedDelta);
 
 			double err = 0;
-			for (int j = 0; j < 2; j++) {
+			for (int j = 0; j < 8; j++) {
 				err += Math.pow(calculatedDelta.data[j] - templateDelta[i][j], 2);
 			}
 
@@ -237,6 +236,27 @@ public class AdaptiveLinearPredictors {
 		System.out.println("max error: " + maxError);
 
 		System.out.println("happiness");
+	}
+
+	private SimpleMatrix randomHomography() {
+		int dx = random.nextInt(25) - 12;
+		int dy = random.nextInt(25) - 12;
+
+		double s = random.nextDouble() * 0.4 + 0.6;
+		double angle = random.nextDouble() * Math.PI / 6;
+
+		//TODO: Incorporate skweing
+		SimpleMatrix mutatedHomography = new SimpleMatrix(3, 3);
+		mutatedHomography.set(0, 0, s * Math.cos(angle));
+		mutatedHomography.set(0, 1, -s * Math.sin(angle));
+		mutatedHomography.set(0, 2, dx);
+		mutatedHomography.set(1, 0, s * Math.sin(angle));
+		mutatedHomography.set(1, 1, s * Math.cos(angle));
+		mutatedHomography.set(1, 2, dy);
+		mutatedHomography.set(2, 0, 0 /* p0 */);
+		mutatedHomography.set(2, 1, 0 /* p1 */);
+		mutatedHomography.set(2, 2, 1);
+		return mutatedHomography;
 	}
 
 	private double[] extractParams(final SimpleMatrix homography) {
