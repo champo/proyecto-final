@@ -171,6 +171,27 @@ El análisis del video se compone de las siguientes etapas:
   aprendidos y actualizados a lo largo del análisis.
 \end{itemize}
 
+Luego del análisis de características del video, el procesamiento y seguimiento de los jugadores es realizado utilizando
+una extensión del algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por \citeauthor*{Schmitt-1, Schmitt-2}
+Este algoritmo utiliza un modelo de cámara y movimiento probabilístico para estimar la posición de los jugadores
+y actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las características de un partido
+de fútbol para mejorar esta estimación: 
+\begin{itemize}
+  \item \textbf{Trackeo de personas}: No se dá el caso de que un jugador desaparezca de la cancha de un \textit{frame}
+  a otro. Aparecen gradualmente desde el borde del campo de visión.
+  \item \textbf{Oclusiones entre jugadores}: No se descarta la información sobre la estimación de un jugador cuando 
+  éste pasa a estar ocluído por otro jugador.
+  \item \textbf{Jugadores sobre un plano}: Se asume que la cancha es un plano tridimencional y que los jugadores
+  están posicionados sobre este plano. Esto además permite relacionar el tamaño de los \textit{blobs} con la cercanía
+  del jugador a la cámara.
+\end{itemize}
+
+Por último, este análisis genera información de alto nivel semántico en forma de \textit{movimientos}
+y \textit{episodios}. Para modelar los movimientos de la pelota, se asumió que la pelota se mueve linealmente por partes.
+Un episodio es definido como la secuencia de \textit{movimientos} de la pelota desde que un jugador toma control
+de ella hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este modelo son pases, tiros al arco,
+o cambios bruscos de dirección (llamado \textit{dribbling} por los autores).
+
 \section{KILL ME}
 
 En el campo del tracking y la segmentación de objetos en secuencias de imágenes y videos en tiempo real, se pueden diferenciar distintas familias de 
