@@ -22,7 +22,6 @@
 \usepackage{titling}
 
 \addbibresource{references}
-
 \titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
 \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
@@ -95,7 +94,7 @@ Para mejorar la efectividad de los algoritmos, se calculan varios predictores y 
 Cada capa se construye para buscar cambios de posicion cada vez mas pequeños.
 Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
 
-\citeauthor{alp} introducen varias tecnicas para hacer mas robusto el algoritmo.
+\citeauthor*{alp} introducen varias tecnicas para hacer mas robusto el algoritmo.
 Primero calculan la relacion $A$ de forma tal que puede ser facilmente actualizada para soportar cambios en el objeto.
 Esto permite detectar oclusiones parciales y cambiar el predictor para que no busque las partes ocultas del objeto.
 Una vez que las partes ocultas del objeto entran en el campo visual de vuelta, se vuelve a agregar las partes del predictor que se quitaron previamente.
