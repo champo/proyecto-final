@@ -129,11 +129,52 @@ Luego, para soportar cambios de iluminacion en la imagen siempre ajustan las mue
 \section{Multiples camaras}
 
 % SIFT Base blablablabla
+\subsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
+
+\citeauthor*{beetz-05, beetz-06} analizaron, desde el punto de vista de la inteligencia artificial,
+el problema de detectar el comportamiento de los jugadores dentro de la cancha. Para eso, propusieron
+un sistema con dos módulos, uno que extrae características e información de videos provenientes de
+un numero indeterminado de cámaras, y un módulo de análisis y seguimiento del comportamiento de cada
+objeto (un sector de la imágen candidato a ser la pelota o una persona en el campo de juego, 
+llamado \textit{blob} por los autores).
+
+Respecto al módulo visual, encontraron una gran dificultad en detectar la posición de jugadores más alejados
+de la cámara, dado que el material con el que trabajaron en general eran cámaras situadas a no más de
+18 metros de altura. Esto hacía que la resolución en el lateral opuesto de la cancha sea de 1,5 metros por píxel,
+insuficiente para hacer un análisis real de la información obtenida.
+
+Su trabajo utiliza fuertemente la detección de líneas en la cancha, tanto las líneas blancas que demarcan sectores
+importantes del campo de juego, como de distintos tonos de verde en franjas que es frecuentemente el caso del césped de
+estadios de Europa. Esta característica no se vé en las canchas de fútbol en la mayoría de los países de América Latina.
+
+Para mantener información acerca del movimiento sobre el eje de la cámara (denominado \textit{panning}), se utilizó
+un algoritmo de aprendizaje para detectar características en los carteles publicitarios usualmente presentes en los
+laterales de la cancha. Esto ayuda a la robustez del algoritmo, pero en ciertos casos no es suficiente, como sucede
+cuando el camarógrafo mueve la cámara rápidamente para no perder de vista la pelota en el caso de un pase largo.
+El máximo tiempo que reportan para el seguimiento correcto de la orientación y posición de la cámara es de 2,5 minutos.
+
+El análisis del video se compone de las siguientes etapas:
+
+\begin{itemize}
+  \item \textbf{Segmentación por color}: Se diferencia el verde de la cancha, los jugadores, la publicidad de fondo,
+  y las líneas blancas de la cancha mediante el color de los mismos. Debido a diferencias de
+  iluminación, se actualizan los parámetros para la detección de valores que corresponden al pasto verde de acuerdo
+  a un algoritmo de aprendizaje que es sensible al ángulo estimado de la cámara y al tiempo.
+  \item \textbf{Estimación de la posición de la cámara}: Se tiene un modelo de los bordes rectos que debieran detectarse
+  en la cámara, y sus posiciones en tres dimensiones. A partir de esto, se obtienen datos acerca de la perspectiva.
+  Para fortalecer la detección, se
+  corrigen las posiciones utilizando un algoritmo de aprendizaje que toma como entrada las publicidades que se ven en 
+  el extremo opuesto de la cancha.
+  \item \textbf{Detección de \textit{blobs}}: Otros objetos que no sean verdes o blancos (pasto o líneas de la cancha)
+  son candidatos a ser jugadores o el árbitro. Estos son segmentados y analizados en busca de ciertas características:
+  se espera que en general sean más altos que anchos, con segmentos definidos: pelo, camisa, piernas, que son
+  aprendidos y actualizados a lo largo del análisis.
+\end{itemize}
 
 \section{KILL ME}
 
 En el campo del tracking y la segmentación de objetos en secuencias de imágenes y videos en tiempo real, se pueden diferenciar distintas familias de 
-algoritmos que atacan este tipo de problemas de diversas formas. Una de ellas está conformada por los algoritmos basados en lo que se conoce como \textit{local learning}.
+algoritmos que atacan este problema de diversas formas. Una de ellas está conformada por los algoritmos basados en lo que se conoce como \textit{local learning}.
 \cite{local-learning}
 Estos tipos de algoritmos se caracterizan por definir una función objetivo, y un método de aprendizaje para, a través de un entrenamiento basado en 
 muestras, intentar minimizar dicha función. Al este proceso de entrenamiento le sigue el proceso de tracking. Estos algoritmos suelen ser computacionalmente costosos, y 
@@ -159,32 +200,29 @@ tiempo. Este algoritmo se basa en una pequeña segmentación base realizada de f
 oclusiones parciales y en la mayoría de los casos recuperarse de oclusiones totales. Para modelar la imagen y los objetos se utiliza un grafo, en el cual los pixeles son los nodos, y
 estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que los puntos estén separados por el borde del
 objeto trackeado. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color entre los pixeles. IFTrace combina el gradiente del color con el 
-gradiente de una función de classificación de pixeles difusos, algo así como la similaridad entre el pixel y el set de pixeles del objeto segmentado en el frame anterior.
+gradiente de una función de classificación de pixeles difusos, algo así como la similaridad entre el pixel y el set de pixeles del objeto segmentado en el frame anterior. \\
 
-En el marco del tracking aplicado a videos de futbol, existen algunos trabajos previos muy interesantes \cite{paper-suecia-soccer} \cite{papers-tanos}. En \cite{paper-suecia-soccer},
-Li y Flierl utilizan una conocida técnica para extraer puntos característicos o \textit{features}, SIFT. SIFT es la sigla para \textit{Scale Invariant Feature Transform}, y como se 
-desprende de su nombre, ofrece una transformación para extraer puntos característicos que son invariantes a cambios de escala y rotaciones. En su trabajo, Li y Flierl utilizan estos 
-puntos para obtener una correlación entre vistas y frames. Entonces, utilizan la información 3D de cada jugador para trackearlos en timepo real. Al compartir esta información 3D con
-todas las cámaras y explotando la diversidad de perspectiva del sistema multicámara, se pueden resolver los problemas causados por oclusiones, de manera muy eficiente.
+En el marco del tracking aplicado a videos de futbol, hay trabajos
+con resultados concretos, como en \cite{paper-suecia-soccer} \cite{papers-tanos}.
+Li y Flierl \cite{paper-suecia-soccer} utilizan una conocida técnica para extraer
+puntos característicos o \textit{features}, SIFT. SIFT es la sigla para \textit{Scale Invariant Feature Transform}, y como se 
+desprende de su nombre, ofrece una transformación para extraer puntos característicos
+que son invariantes a cambios de escala y rotaciones. En su trabajo, Li y Flierl utilizan estos 
+puntos para obtener una correlación entre vistas y frames. Entonces, utilizan la
+información 3D de cada jugador para trackearlos en timepo real. Al compartir esta información 3D con
+todas las cámaras y explotando la diversidad de perspectiva del sistema multicámara,
+se pueden resolver los problemas causados por oclusiones, de manera muy eficiente.\\
 
 En \cite{papers-tanos}, D'Orazio et al. proponen un sistema de seguimiento de
 jugadores y pelota de manera no supervisada que logra detectar posiciones
 adelantadas en 35 de 45 casos observados durante un torneo de la liga italiana
-de fútbol, obteniendo también dos falsos positivos. El sistema consiste en seis
+de fútbol, obteniendo también dos falsos positivos, en tiempo real. El sistema consiste en seis
 cámaras conectadas. El algoritmo ejecutado por cada nodo procesador (uno por
 cada cámara) utiliza una técnica de reducción de fondo efectiva para el caso de
 un partido de fútbol, aprendizaje no supervizado para la detección de jugadores
 y distintos equipos (utilizando el algoritmo BSAS \cite{paper-bsas}), un
 sistema de seguimiento basado en trayectoria y \textit{bounding boxes} para el
 trackeo de los jugadores y resolución de oclusiones.
-
-% * Real time tracking
-%   sarasarsara (LP, IFTrace, etc)
-%   * Tracking human poses
-% * Football-specific papers
-%   * Players papers
-%   * Ball papers
-% * Paper de lo' tano'
 
 \section*{Referencias}
 \printbibliography
