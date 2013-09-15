@@ -1,4 +1,4 @@
-\documentclass[twocolumn,a4paper,10pt]{article}
+\documentclass[a4paper,10pt]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage{t1enc}
@@ -18,12 +18,14 @@
 \usepackage{fancyhdr}
 \usepackage{times}
 \usepackage{titlesec}
-\usepackage[numbers]{natbib}
+\usepackage[backend=bibtex]{biblatex}
 \usepackage{titling}
+
+\addbibresource{references}
 
 \titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
 \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
-\renewcommand{\bibsection}{}
+
 
 % TITLE Configuration
 \setlength{\droptitle}{-30pt}
@@ -59,14 +61,15 @@
 \maketitle
 \thispagestyle{fancy}
 
-% We don't want this right now, right?
-%\begin{customabstract}
-%\textbf{
-%}
-%\end{customabstract}
-%
-%\begin{keywords}
-%\end{keywords}
+\begin{customabstract}
+\textbf{
+}
+\end{customabstract}
+
+\begin{keywords}
+\end{keywords}
+
+\newpage
 
 \part*{Estado del Arte}
 
@@ -79,6 +82,25 @@ Estas son \textit{Linear Predictors}, \textit{Local learning} y \textit{Graph ba
 Pasamos a describir las tecnicas usadas por estos.
 
 \subsection{Linear predictors}
+
+\textit{Linear Predictor} se refiere a crear una relacion lineal \[ Ax = b \] donde $A$ es un predictor, $x$ un valor medido y $b$ otro segundo valor relacionado a $x$ de alguna manera.
+En \cite{alp, original-linear-predictors} los autores utilizan predictores que relacionan muestras tomadas de la imagen con el cambio de posicion del objeto.
+Para obtener la relacion $A$ se utiliza un paso inicial de entrenamiento.
+Se parte de una posicion conocida y se hacen multiples mutaciones obteniendo $N$ cambios de posiciones $b_i$ y sus correspondientes muestras $x_i$.
+Luego se define $X = (x_1, \dots, x_N)$ y $B = (b_1, \dots, b_N)$ y se resuelve $AX = B$.
+
+Una vez calculada $A$, en cada cuadro se toman muestras de la imagen usando la ultima posicion conocida del objeto.
+Usando estas muestras se calcula el cambio de posicion del objeto mediante $Ax$.
+Para mejorar la efectividad de los algoritmos, se calculan varios predictores y se disponen en capas.
+Cada capa se construye para buscar cambios de posicion cada vez mas pequeños.
+Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
+
+\citeauthor{alp} introducen varias tecnicas para hacer mas robusto el algoritmo.
+Primero calculan la relacion $A$ de forma tal que puede ser facilmente actualizada para soportar cambios en el objeto.
+Esto permite detectar oclusiones parciales y cambiar el predictor para que no busque las partes ocultas del objeto.
+Una vez que las partes ocultas del objeto entran en el campo visual de vuelta, se vuelve a agregar las partes del predictor que se quitaron previamente.
+Esta tecnica ademas permite reentrenar la relacion $A$ con poco costo computacional.
+Luego, para soportar cambios de iluminacion en la imagen siempre ajustan las muestras tomadas a una distribucion normal.
 
 
 % original linear predictors
@@ -157,7 +179,6 @@ trackeo de los jugadores y resolución de oclusiones.
 % * Paper de lo' tano'
 
 \section*{Referencias}
-\bibliographystyle{plain}
-\bibliography{references}
+\printbibliography
 
 \end{document}
