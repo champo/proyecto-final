@@ -18,11 +18,14 @@
 \usepackage{fancyhdr}
 \usepackage{times}
 \usepackage{titlesec}
+\usepackage{csquotes}
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{titling}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \addbibresource{references}
+\DeclareFieldFormat[inbook]{citetitle}{#1}
+
 \titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
 \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
@@ -330,6 +333,84 @@ y \textit{episodios}. Para modelar los movimientos de la pelota, se asumió que 
 Un episodio es definido como la secuencia de \textit{movimientos} de la pelota desde que un jugador toma control
 de ella hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este modelo son pases, tiros al arco,
 o cambios bruscos de dirección (llamado \textit{dribbling} por los autores).
+
+\section{Video televizado}
+
+\subsection{\citetitle{Liu20061146}}
+
+En \cite{Liu20061146} se plantea una tecnica para obtener las posiciones de los jugadores y la pelota utilizando la transmision televizada de un partido de futbol.
+El algoritmo se puede dividir en los siguientes grandes rasgos:
+\begin{itemize}
+\item Estimacion de la relacion entre puntos en la imagen y coordenadas en la cancha
+\item Estimacion de la posicion de la camara en las coordenadas del mundo
+\item Deteccion y tracking de la pelota
+\item Deteccion de la cancha
+\item Deteccion de los jugadores
+\end{itemize}
+
+Para estimar la relacion entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
+Siendo $M = (x, y, 1)$ un punto en el plano de la cancha en coordenadas homogeneas y $m = (u, v, 1)$ la posicion del punto en la imagen, se puede convertir $ m = H M $.
+
+Como la perspectiva de la camara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
+Si en la imagen actual se encuentran 4 puntos conocidos (Esquinas de la cancha o de las areas), la homografia puede ser calculada directamente.
+De no ser asi, se estima considerando que la homografia del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
+Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posicion entre el cuadro $t-1$ y $t$.
+Luego $ H_t = H_{t-1} P_{t-1,t}$.
+
+Para obtener la posicion de la camara se descompone la homografia en 2 matrices:
+\begin{equation}
+H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix}
+K = \begin{pmatrix} 
+    \alpha & \gamma & u_0 \\
+    0 & \beta & v_0 \\
+    0 & 0 & 1
+    \end{pmatrix}
+\end{equation}
+
+Donde $\alpha$, $\beta$ representan la amplitud focal de la camara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
+Se asume que la amplitud focal se mantiene constante, $\gamma = 0$ y el punto principal es el centro de la imagen.
+$r_1$, $r_2$ son parte de una rotacion $R = (r_1, r_2, r_1 \times r_2)$, y $t$ son las coordenadas del origen de la cancha en coordenadas de la imagen.
+Conocidas $H$ y $K$ se puede calcular la posicion de la camara como $R^{-1} t$.
+Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ de la siguiente manera:
+
+\begin{equation}
+\begin{bmatrix}
+    p_{1 1} p_{2 1} & p_{1 2} p_{2 2} \\
+    p_{1 1} p_{3 1} & p_{1 2} p_{3 2} \\
+    p_{1 1} p_{3 1} & p_{2 2} p_{3 2} 
+\end{bmatrix} 
+\begin{bmatrix}
+    \alpha^2 \\
+    \beta^2
+\end{bmatrix}
+ =
+\begin{bmatrix}
+    - p_{1 3} p_{2 3} \\
+    - p_{1 3} p_{3 3} \\
+    - p_{2 3} p_{3 3} \\
+\end{bmatrix}
+\end{equation}
+
+\subsubsection*{Seguimiento de la pelota}
+
+El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
+La primer etapa es de deteccion utilizando un algoritmo basado en \textit{Viterbi}.
+La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter}.
+
+Para deteccion se crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
+Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota. 
+Esta operacion se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
+Los nodos de este grafo representan candidatos, con un peso segun que tan parecidos son a una pelota ideal.
+Y los vertices se colocan si estan a una cierta proximidad y pesados segun que tan cerca y parecidos sean los nodos.
+Sobre este grafo se hace una busqueda de camino optimo, y de este la posicion de la pelota en el ultimo cuadro.
+
+Una vez detectada la pelota, se utiliza tracking hasta que no se confia en el resultado del algoritmo de tracking.
+En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriormente.
+
+\subsubsection*{Deteccion de la cancha}
+
+\subsubsection*{Deteccion de jugadores}
+
 
 \section{KILL ME}
 
