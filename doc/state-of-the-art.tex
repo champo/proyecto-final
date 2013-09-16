@@ -245,17 +245,17 @@ reentrenar todas las funciones de distancia.
     \label{eq:learning-model-update}
     t_{label} = \left\{ 
                 \begin{array}{l l}
-                    1, & D_{S^{+}}}(t) \leq Tht_{D}\\
-                    0, & D_{S^{+}}}(t) >  Tht_{D}
+                    1, & D_{S^{+}}(t) \leq Tht_{D}\\
+                    0, & D_{S^{+}}(t) >  Tht_{D}
                 \end{array} \right.
 \end{equation}
 
 \begin{equation}
-    D_{S^{+}}}(t) = \dfrac{1}{N_{S^{+}}} \sum_{i \in S^{+}} D_{i}(t)
+    D_{S^{+}}(t) = \dfrac{1}{N_{S^{+}}} \sum_{i \in S^{+}} D_{i}(t)
 \end{equation}
 
 En la ecuación \ref{eq:learning-model-update}, $N_{S^{+}}$ es el 
-número de muestras positivas de entrenamiento y $D_{S^{+}}}(t)$
+número de muestras positivas de entrenamiento y $D_{S^{+}}(t)$
 es el promedio de distancia del candidato $t$ a las muestras
 de entrenamiento positivas.
 
@@ -391,6 +391,8 @@ Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ 
 \end{bmatrix}
 \end{equation}
 
+Se usa el metodo \textit{KLT} \cite{KLT} para encontrar los puntos de referencia a seguir para el calculo de $P$.
+
 \subsubsection*{Seguimiento de la pelota}
 
 El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
@@ -409,7 +411,15 @@ En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriorm
 
 \subsubsection*{Deteccion de la cancha}
 
+Para detectar la cancha y aislar el resto de los objetos, se computa un histograma de colores de la imagen.
+Los autores consideran que el color de la cancha representa el mayor pico en el histograma.
+Por lo tanto, buscan este pico en el histograma y toman todos los colores adyacentes en el histograma que esten dentro de un rango de ocurrencia relativo al pico principal.
+
 \subsubsection*{Deteccion de jugadores}
+
+Una vez que se determino el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
+Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pelota, adaptada a la morfologia de los jugadores.
+Como se conoce la posicion en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posicion real de los jugadores en ese cuadro facilmente.
 
 
 \section{KILL ME}
