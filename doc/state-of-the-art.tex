@@ -262,6 +262,31 @@ de entrenamiento positivas.
 \subsection{Graph based}
 % IFTrace
 
+El algoritmo conocido como \textit{IFTrace} tiene como objetivo demarcar un objeto en una secuencia de video. Este algoritmo hace mínimas
+suposiciones sobre el objeto a seguir: básicamente que consista de algunas regiones conexas, que tenga un borde bien definido y que sus propiedades
+intrínsecas pueden variar con el tiempo.\\
+Los objetos a seguir son incialmente marcados de forma interactiva por el usuario en el primer cuadro, y luego se seleccionan automáticamente
+varios marcadores en el interior y los alrededores del objeto. Estos marcadores se localizan en el siguiente cuadro utilizando en forma
+conjunta el algoritmo de
+seguimiento de características KLT \cite{KLT} y extrapolación de movimiento. Los bordes del objeto son entonces identificados a partir de estos marcadores por la IFT, 
+\textit{Image Foresting Transform}\cite{IFT}. Otra característica vital del algoritmo es el operador de detección de borde que se adapta gradualmente a cambios en el 
+color y la textura del objeto. \\
+
+Al igual que otros métodos de segmentación de objetos basados en grafos, IFT trata a la imagen como un grafo, en el cual los pixeles son los nodos, y
+estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que 
+los puntos estén separados por el borde del objeto trackeado. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color 
+entre los pixeles. IFTrace combina el gradiente del color con el gradiente de una función de clasificación de pixeles difusos, algo así como la similaridad entre el pixel 
+y el set de pixeles del objeto segmentado en el frame anterior. \\
+
+La IFT encuentra caminos de costo mínimo desde los marcadores, tanto internos como externos, a cada pixel de la imagen. Entonces, los pixeles son particionados en un conjunto
+disjunto de árboles de camino óptimo, con cada árbol con uno de los marcadores como raíz. La proyección del objeto es entonces tomada como la union de los árboles cuyas raices 
+son marcadores internos.\\
+
+
+FIGURA con ALGORITHM 1
+IFTrace toma como input un video, modelado como un array 3D de pixeles, siendo las dimensiones el alto y ancho de la imagen, y número de cuadro de la secuencia de video, y una 
+máscara binaria, correspondiente al objeto marcado en el primer cuadro, y devuelve un array de máscaras binarias, con las proyecciones del objeto para cada cuadro del video.
+
 \section{6 camaras}
 
 % Tanos
