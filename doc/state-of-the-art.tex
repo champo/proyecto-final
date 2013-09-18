@@ -268,6 +268,43 @@ de entrenamiento positivas.
 
 \section{8 camaras}
 
+\citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a sistemas que 
+analizan la información y a través de una capa de red envían la información a un supervisor,
+encargado del mantenimiento de la posición de los jugadores. El sistema supervisor no tiene 
+acceso a los datos crudos de la imágen obtenida.
+
+Cada cámara realiza un preprocesamiento de la imágen para estimar la posición de la cámara y
+detectar áreas de interés (candidatos a ser los jugadores en pantalla). Para la eliminación
+del fondo, se utilizan dos máscaras, una geométrica, que se aproxima a la geometría de la
+cancha y una que extrae información acerca de los píxeles y genera un histograma para
+detectar el color verde del pasto de la cancha. Para la primera máscara, se pasa la imágen de
+RGB a HSI y se analiza el histograma de \textit{hue} para los mayores valores de intensidad.
+Luego, los píxeles que serán considerados son aquellos que no pertenezcan a un rango de \textit{hue}
+entre un mínimo y un máximo, correspondientes a los valores que hagan que el máximo valor
+del histograma caiga al 10\% de su valor original.  Luego, la máscara que elimina valores
+de acuerdo a su color queda definida por:
+
+\[
+  M_c = ({(u, v) | H(u, v) \in [H_l, H_h]} \oplus B ) \ominus B
+\]
+
+Donde $B$ es un elemento estructurador cuadrado y $\oplus$ y $\ominus$ son los operadores
+morfológicos de erosión y dilatación, aplicados para separar a los jugadores y eliminar las
+líneas de campo blancas. La máscara geométrica comprende los siguientes puntos:
+
+\[
+  M_g = { (u, v) | E(u, v)  \in P }
+\]
+
+Donde P es el rango de coordenadas en el mundo real correspondiente a la cancha y $E(u, v)$ es 
+la correspondencia del punto $(u, v)$ en el mundo real, de acuerdo a una corrección utilizando
+ángulos de Euler. Por último la máscara que determina aquellos pixeles que corresponden al
+pasto de la cancha son los que pertenecen a la intersección de ambas máscaras:
+
+\[
+  M = M_c \cup M_g
+\]
+
 \section{Multiples camaras}
 
 % SIFT Base blablablabla
