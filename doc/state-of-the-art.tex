@@ -282,10 +282,263 @@ La IFT encuentra caminos de costo mínimo desde los marcadores, tanto internos c
 disjunto de árboles de camino óptimo, con cada árbol con uno de los marcadores como raíz. La proyección del objeto es entonces tomada como la union de los árboles cuyas raices 
 son marcadores internos.\\
 
+ \begin{figure}[H]
+%         \includegraphics[width=\linewidth]{images/lena#1.png}
+        \caption{FIGURA con ALGORITHM 1}
+        \label{fig:IFTrace-algorithm1}
+\end{figure}
 
-FIGURA con ALGORITHM 1
+
+La figura \ref{fig:IFTrace-algorithm1} muestra el algoritmo de IFTrace desde el más alto nivel.
 IFTrace toma como input un video, modelado como un array 3D de pixeles, siendo las dimensiones el alto y ancho de la imagen, y número de cuadro de la secuencia de video, y una 
 máscara binaria, correspondiente al objeto marcado en el primer cuadro, y devuelve un array de máscaras binarias, con las proyecciones del objeto para cada cuadro del video.
+Para cada cuadro de la secuencia, el algoritmo elije dos conjuntos de puntos o pixeles: los que pertenecen a la máscara del objeto, y los que pertencen a sus alrededores. Luego se 
+procede 
+a localizarlos en el siguiente cuadro (\textit{trackMarkers}). Si el conjunto de pixeles que representan al objeto no resulta vacío para este nuevo cuadro, entonces el seguimiento
+fue exitoso, y se procede a utilizar IFT para, a partir de los dos conjuntos de pixeles, el clasificador de color del cuadro anterior y el cuadro actual, obtener la máscara del 
+objeto para el cuadro actual (\textit{IFTSegment}). Como paso final, se obtiene el clasificador de color del cuadro actual a partir de la máscara del objeto y el cuadro actual.
+Por otro lado, si el seguimiento del objeto falla para el nuevo cuadro, es decir si el conjunto de pixeles resultantes luego de aplicar \textit{trackMarkers} resulta vacío, 
+entonces se mantiene el mismo clasificador de color del cuadro anterior y se procede
+a intentar recuperar el objeto en el cuadro actual (\textit{recoverObj}). Si la recuperación
+es exitosa, se obtiene un máscara del objeto y un clasificador de color para el cuadro actual,
+sino, todos los conjuntos se dejan vacíos y el clasificador se mantiene inalterado.\
+
+Recuperación del objeto\\
+ \begin{figure}[H]
+%         \includegraphics[width=\linewidth]{images/lena#1.png}
+        \caption{FIGURA con ALGORITHM 2}
+        \label{fig:IFTrace-algorithm2}
+\end{figure}
+
+Si en algún paso del algoritmo IFTrace, se falla en el seguimiento del objeto, se 
+procede a utilizar a la heurística \textit{recoverObj}, que intenta localizar una
+región conexa cuya forma y colores sea similar a la del objeto en alguno de los 
+cuadros anteriores.\\
+
+La heurística se aplica utilizando un cuadro de referencia, e iterando hacia atrás
+hasta encontrar un cuadro en el que se pueda recuperar el objeto, evitando 
+utilizar cuadros previos en los que no se pudo recuperar el objeto anteriormente.
+Una vez ubicado el cuadro de referencia en el cual el tracking fue exitoso, 
+se construye una ``máscara candidata'' $M$ que indica las posibles ubicaciones
+del objeto en el cuadro actual $t$ (\textit{CandidateMask}). En este paso se 
+utiliza el clasificador de color del cuadro de referencia $k$. La máscara 
+etiqueta los pixeles del cuadro como ``posiblemente objeto''(1) o 
+``probablemente fondo''(0). Esta máscara $M$ estará compuesta de cero
+o más regiones conexas. Si el objeto está visible en el cuadro actual, 
+su proyección debería coincidir con alguna de estas regiones. Entonces 
+se procede a analizar cada una de estas regiones, para las cuales se obtienen
+los dos conjuntos de marcadores, utilizando la misma técnica que en el
+en algoritmo 1 en la figura \ref{fig:IFTrace-algorithm1}. Luego se utiliza 
+nuevamente el algoritmo IFT para conseguir una proyección $K$ de esa región que 
+se está analizando, para luego compararla con la máscara del objeto en el cuadro
+$k$ utilizado como referencia. En caso de ser similar, se construye el clasificador
+de color $C'$ y se retorna junto a la proyección $K'$ como máscara representativa 
+del objeto para el actual cuadro. \\
+Cabe destacar que, por simplicidad, para la comparación de formas se utilizan
+las Invariantes de Momento de Maitra \cite{MaitraMomentInvariants}, y las formas se consideran similares
+si la distancia Euclideana entre sus vectores de invariantes es menor a 2. 
+Sin embargo se podría utilizar otros descriptores de formas.\\
+Si ninguna de las regiones resulta similar a la máscara del objeto, 
+\textit{recoverObj} intenta el mismo procedimiento utilizando como cuadro de 
+referencia el cuadro anterior. Luego de un número especificado de intentos, o
+de agotar todos los cuadros, la heurística termina. En este caso, se retorna
+una máscara vacía y un clasificador nulo, señalando que el objeto se perdió en
+el cuadro actual. \textit{IFTrace} intentará entonces recuperar en el siguiente 
+cuadro.
+
+Selección de marcadores
+El procedimiento \textit{selectMarkers} es el encargado de elegir dos conjuntos 
+de marcadores, los que están dentro de la máscara del objeto, y los que están a
+su alrededor.\\
+
+Los marcadores internos se eligen aplicando una erosión morfológica 
+(\textit{morphological erosion}) a la máscara del objeto, con radio $\delta_{o}$, y 
+luego seleccionando los pixeles de la región resultante que tengan mayor probabilidad
+de ser trackeados por el algoritmo KLT. Específicamente, se construye la matriz:
+
+ \begin{figure}[H]
+%         \includegraphics[width=\linewidth]{images/lena#1.png}
+        \caption{FIGURA Matriz H(p)}
+        \label{fig:IFTrace-matrix-H}
+\end{figure}
+
+donde $L[p]$ es la luminancia del pixel $p$, y las sumatorias incluyen a todos los
+pixeles $q$ en una ventana de $9x9$ centrada en $p$.\\
+Se define el grado de ``igualdad'' $\lambda[p]$ como el valor mínimo de $H[p]$. 
+Solo los pixeles con $\lambda > 1$ son escogidos para utilizarlos en la 
+propagación KLT. Esto coincide con los autores Tomasi y Karade \cite{Tomasi91detectionand}
+quienes afirman que los pixeles con mayor $\lambda$ tienen más posibilidades
+de ser localizados por el algoritmo KLT.\\
+Los marcadores externos son escogidos aplicando una dilatación morfológica, con 
+cierto radio $\delta_{x}$, y tomando los pixeles a lo largo del borde del resultado.
+
+Seguimiento de Marcadores, \textit{Marker Tracking}
+El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores 
+internos en el cuadro actual, que se corresponden con los puntos internos del objeto
+en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT. descrito por Tomasi y 
+Karade \cite{Tomasi91detectionand}.\\
+El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada 
+$q_{0}$ en el próximo cuadro $I^{t}$, y busca un punto $q$ tal que los vecinos
+de $q$ en $I^{t}$ sean similares a los de $p$ en $I^{t-1}$. Este algoritmo tiene
+varios parámetros de configuración que alteran su comportamiento: $\ell$, la cantidad
+escalas consideradas; $\kappa$, el factor de reducción entre las sucesivas escalas; y 
+$\omega$, el ancho de la ventana usada para comparar vecinos en cada escala. 
+La implementación de IFTrace está configurada para usar $\ell=2$,$\kappa=4$ y 
+$\omega=9$, como en la implementación de KLT de Birchfield \cite{Birchfield-KLT-implementation}.\\
+
+Los marcadores exteriores no son trackeados con KLT, ya que no tiene sentido debido
+a que la mayoría se perdería por oclusión con el objeto o trackearía el fondo, en 
+vez del objeto. En cambio, lo que se hace es trasladarlos de acuerdo a los 
+desplazamientos medios de los marcadores internos más cercanos. Esto tiende
+a mantener estos marcadores fuera del objeto, pero cerca de su borde, aún cuando
+hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento de extremidades).\\
+
+
+Segmentación de objetos a través de la IFT\\
+La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los pixeles y cuyas
+aristas relacionand pixeles adyacentes. IFT toma como parámetros un conjunto de 
+pixeles marcadores $S$, una función de costo de arista $w$, y una función de 
+conectividad $f$ que asigna un costo de camino $f(\pi)$ a todo camino $\pi$ in $G$,
+dependiendo del costo de sus aristas.\\
+Para pixel $p$, IFT encuentra un camino directo óptimo (de costo mínimo), que lo 
+conecta con su raíz $R(p)$ en el conjunto $S$ de pixeles marcadores. Si la función 
+$f$ cumple ciertas propiedades básicas, estos caminos forman un bosque de caminos 
+óptimos, \textit{optimum-path forest}. Cada árbol en este bosque de caminos óptimos
+tiene como raíz a algun marcador $r$, y agrupa a todos los pixeles de la imagen que 
+están mejor conectados a $r$ que a cualquier otro marcador. IFT también le asigna a 
+cada pixel $p$ un costo $V(p) = \pi(p)$, y un marcador raíz $R(p)$, el marcador 
+que se encuentra en la raíz del árbol al cual pertenece.\\
+
+IFT\\
+IFT es una herramienta extramadamente general, de la cual se pueden obtener diferentes
+operadores de imágenes, variando sus parámetros de entrada. IFTrace depende de la IFT
+para segmentar los objetos a trackear. Usa la función de conectividad $f_{max}$, que
+asigna a un camino $\pi$ el máximo costo $w(a)$ para todas las aritas $a$ en $\pi$.
+Los pixeles marcadores utilizados son tanto los marcadores interiores, obtenidos
+por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.\\
+La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad 
+\textit{minimax}: maximiza el costo mínimo de todas las aristas en la frontera de la 
+segmentación. Esto significa que la segmentación IFT/$f_{max}$ es esencialmente
+la misma que la segmentación \textit{watershed} \cite{watershed-segmentation}. Esto 
+hace que sea particularmente apropiada para casos en los que el objeto esté 
+mejor caracterizado por su conectividad que por su forma o tamaño. Es por esto que 
+se elige una función de costo de arista $w(p,q)$ que se base en la probabilidad de 
+que $p$ y $q$ estén en diferentes lados del borde del objeto.\\
+
+Algoritmo IFT\\
+Para algunas funciones de conectividad, como $f_{max}$, el bosque de caminos
+óptimos se puede computar eficientemente mediante una variante del famoso 
+algoritmo de Dijkstra \cite{watershed-segmentation}. Por cuestiones de
+eficiencia, el algoritmo retorna un mapa de raices $R$, que almacena, para 
+cada nodo $p$, su raíz $R(p)$.\\
+
+ \begin{figure}[H]
+%         \includegraphics[width=\linewidth]{images/lena#1.png}
+        \caption{FIGURA ALGORITMO IFT}
+        \label{fig:IFTrace-IFT-algorithm}
+\end{figure}
+
+Inicialmente se inicializan los mapas para caminos triviales. Se agregan 
+los nodos que representan marcadores a la cola $Q$. El ciclo \textit{while}
+principal computa un camino óptimo desde las raíces a cada nodo $p$. En 
+cada iteración, un camino de valor $V(p)$ mínimo se encuentra cuando
+removemos el último pixel $p$ de la cola. Luego se evalua si el camino que
+alcanza el pixel adyacente $q$ a través de $p$ es más barato que el actual 
+camino que termina en $q$ y se actualizan $Q$, $V(q)$, $R(q)$ y $P(q)$ 
+acordemente.\\
+Este algoritmo se puede modificar para recomputar el bosque de camino óptimo 
+de forma incremental, a medida que se van agregan o quitando marcadores, 
+generalmente en tiempo sub-lineal.\\
+
+Comparación con otros algoritmos de Graph-Cut\\
+
+Boykov and Funka-Lea [5,12] han propuesto otra alternativa para la segmentación
+de imágenes basada en grafos, conocida como \textit{Graph-Cut}, que explota 
+la conexión que existe entre cortes de capacidad mínimos y flujos de volumen
+máximo. En este enfoque, el grafo de pixeles se modela como una red de flujo,
+donde el objeto es la fuente (\textit{source}) y el fondo el sumidero
+(\textit{sink}). Se puede provar que el máximo flujo total de todas las fuentes
+hacia todos los sumideros es igual a mínima capacidad total de todo corte 
+(conjunto de aristas) que separa fuentes de sumideros. Este flujo máximo y su 
+corte mínimo asociado se puede encontrar con el clásico algoritmo 
+Ford Fulkerson \cite{Cormen:2009:IAT:1614191}.\\
+En comparación con la IFT, \textit{Graph-Cut} tiene 2 grandes desventajas: es 
+considerablemente más caro computacionalmente (IFT es $O(n)$ mientras que
+el mejor algoritmo \textit{Graph-Cut} es $O(n^{2.5})$), y además tiende a 
+minimizar el número de aristas en el corte, en vez de sus capacidades. Esto 
+último quiere decir que muestra una preferencia a segmentar basada en la 
+longitud del borde, en vez de la importancia de la conexión entre el objeto y 
+el fondo.(REF 11)\\
+Se puede introducir una corrección al algoritmo de \textit{Graph-Cut} para 
+remediar este segunda problema, pero lo único que se obtiene es el mismos 
+resultado de la IFT, con un costo computacional mucho mayor. (REF 11)
+
+Costo de arista de IFT\\
+
+Como ya se explicó anteriormente, IFT opera con una función de costo de arista
+$w$, la cual resulta crítica para la segmentación. Idealmente, el costo 
+para aristas que cruzan el borde del objeto debería ser alto, y bajo para todo
+el resto. En otras palabras, la función de costo debería ser un detector
+de bordes del objeto.\\
+Un ejemplo podría ser la distancia Euclideana entre los colores RGB de los pixeles 
+en ambos extremos de una arista. Desafortunadamente, este detector resulta demasiado 
+simplista para casos prácticos, en los que un objeto puede tener diferentes colores y 
+texturas. Por lo tanto, se requieren detectores de bordes más sofisticados.\\
+
+En la implementación de \textit{IFTrace}, se utiliza un detector de bordes basado en
+una combinación lineal
+
+\begin{equation}
+   \label{eq:IFTrace-edge-detector}
+   w(p,q) = \gamma w_{f}(p,q) + (1 - \gamma)w_{0}(p,q) = \gamma |\nabla I| + (1 - \gamma)|\nabla M|
+\end{equation}
+
+donde $\gamma$ es un parámetro seteable por el usuario, $\nabla I$ es el gradiente
+del color de la imagen y $M$ es un mapa de clasificación de color.\\
+
+El primer componente $w_{f})(p,q)$ es la distancia Euclideana entre los colores de 
+los extremos de la arista, como se menciona anteriormente pero con una particularidad:
+se mide en el espacio de colores $L$ $a$ $b$, en vez del tradicional RGB. La 
+justificación para esto es que las distancias entre colores se aprecian más de 
+esta forma.\\
+
+El segundo componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
+de colores $M$, una imagen en escala de grises donde cada pixel $M[p]$ es
+la probabilidad de que un pixel con color $I[p]$ pertenezca a la proyección
+del objeto. Los colores que ocurran solo dentro del objeto deberían estar
+asociados al valor 1, los que solo ocurran en el fondo deberían estar 
+asociados al 0, y los que puedan ocurrir en ambos, deberían mapearse a 
+valores intermedios. El propósito de incluir este término es restarle 
+importancia a los bordes entre colores que son internos del objeto, o 
+totalmente ajenos al objeto, y enfatizar los bordes que efectivamente 
+delimitan el objeto del fondo de la imagen.\\
+
+El mapa de clasificación de colores $M$ se obtiene de la imagen $I$ por medio de un
+clasificador de color difuso $C$, una función no lineal $C : \mathbb{V} \to [0,1]$.
+En \textit{IFTrace}, la función $C$ se implementa como una variante del clasificador
+del vecino más cercano, \textit{nearest neighbor} (NN). Para evaluar $C(v)$ para 
+cierto color $v$, se debe buscar 2 colores representantes $u_{0} \in \mathbb{U_{0}}$ 
+y $u_{x} \in \mathbb{U_{x}}$ que son los más cercanos a $v$, dentro de los colores de
+de los conjuntos de marcadores internos, $\mathbb{U_{0}}$, y externos, $\mathbb{U_{x}}$.
+La probabilidad de que un pixel de color $v$ sea parte del objeto es entonces estimada
+por la fórmula
+
+\begin{equation}
+   \label{eq:IFTrace-color-classifier}
+   C(v) = \frac{|v - u_{0}|}{|v - u_{0}| + |v - u_{x}|}
+\end{equation}
+
+En teoría, se podría usar todos los pixeles para construir los conjuntos 
+$\mathbb{U_{0}}$ y $\mathbb{U_{x}}$. Pero en la práctica, se deben usar muestras 
+de menor tamaño por razones eficiencia, de otra forma, el costo de encontrar los
+representantes $u_{0},u_{x}$ aumenta demasiado. De hecho, la construcción del mapa
+$M$ resulta ser el paso más caro computacionalmente de \textit{IFTrace}, más
+aún que el seguimiento de marcadores y que la segmentación de la IFT.\\
+Es por esto que el procedimiento para construir el clasificador, 
+\textit{buildClassifier}, comienza seleccionando dos conjuntos de pixeles 
+$R_{0},R_{x}$, respectivamente los que están dentro y fuera de la actual máscara
+del objeto. Pero si alguno de estos conjuntos tiene mñas de 200 elementos,
+entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
 \section{6 camaras}
 
