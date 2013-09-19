@@ -302,8 +302,34 @@ la correspondencia del punto $(u, v)$ en el mundo real, de acuerdo a una correcc
 pasto de la cancha son los que pertenecen a la intersección de ambas máscaras:
 
 \[
-  M = M_c \cup M_g
+  M = M_c \cap M_g
 \]
+
+Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son representadas por
+la posición en el plano de la imágen $\mathbf{x}_l$ y su error en la medición $\mathbf{z}_l$ en
+un filtro de Kalman:
+
+\[
+\mathbf{x}_l = [r_c \; c_c \;  \mathbf{\dot r}_c  \; \mathbf{\dot c}_c \;  \Delta r_1  \; \Delta c_1 \;  \Delta r_2 \;  \Delta c_2]^T
+\]
+
+\[
+\mathbf{z}_l = [r_c \;  c_c  \; r_1  \; c_1  \; r_2  \; c_2]^T
+\]
+
+Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la \textit{bounding box} y $r_c$ y $c_c$ son los
+centroides de la \textit{bounding box}. Estos valores son actualizados cuadro por cuadro,
+asumiendo que la variación en alto y ancho es baja. Se utilizan ángulos de Euler para
+traducir estos valores a la posición esperada dentro del plano de la cancha. La varianza es estimada
+utilizando el jacobiano de la matriz de Euler. Por último, se analiza la categoría de los
+jugadores de acuerdo al histograma de colores, clasificando de acuerdo a los cinco posibles uniformes
+(uno para cada equipo, uno para cada arquero, y los árbitros).
+
+El módulo supervisor recibe de cada computadora los datos preprocesados y ninguna información
+acerca de las imágenes. Se unifican los valores obtenidos de todos los módulos y se los asocia
+utilizando una matriz que es actualizada de acuerdo a la distancia de Mahalanobis. Si esta
+distancia queda por debajo de un determinado umbral, se empieza a considerar que las mediciones
+de dos cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo jugador.
 
 \section{Multiples camaras}
 
