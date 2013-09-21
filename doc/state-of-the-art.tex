@@ -677,9 +677,9 @@ o cambios bruscos de dirección (llamado \textit{dribbling} por los autores).
 
 \section{Video televizado}
 
-\subsection{\citetitle{Liu20061146}}
+\subsection{\citetitle{LIU20061146}}
 
-En \cite{Liu20061146} se plantea una tecnica para obtener las posiciones de los jugadores y la pelota utilizando la transmision televizada de un partido de futbol.
+En \cite{LIU20061146} se plantea una tecnica para obtener las posiciones de los jugadores y la pelota utilizando la transmision televizada de un partido de futbol.
 El algoritmo se puede dividir en los siguientes grandes rasgos:
 \begin{itemize}
 \item Estimacion de la relacion entre puntos en la imagen y coordenadas en la cancha
@@ -763,58 +763,6 @@ Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pel
 Como se conoce la posicion en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posicion real de los jugadores en ese cuadro facilmente.
 
 
-\section{KILL ME}
-
-En el campo del tracking y la segmentación de objetos en secuencias de imágenes y videos en tiempo real, se pueden diferenciar distintas familias de 
-algoritmos que atacan este problema de diversas formas. Una de ellas está conformada por los algoritmos basados en lo que se conoce como \textit{local learning}.
-\cite{local-learning}
-Estos tipos de algoritmos se caracterizan por definir una función objetivo, y un método de aprendizaje para, a través de un entrenamiento basado en 
-muestras, intentar minimizar dicha función. Al este proceso de entrenamiento le sigue el proceso de tracking. Estos algoritmos suelen ser computacionalmente costosos, y 
-por lo tanto no les es fácil satisfacer la restricción del tracking en tiempo real.\\
-
-Otra familia de algoritmos se base en lo que se llama \textit{template tracking}. Esta familia también comparte la característica de requerir el aprendizaje o entrenamiento
-de ciertos parámetros, por lo que se ubican dentro del conjunto de algoritmos basados en aprendizaje o \textit{learning based}. En esta familia se destacan los algoritmos 
-basados en predictores lineales o 
-\textit{linear predictors} \cite{alp} \cite{original-linear-predictors}. 
-% TODO 
-\cite{CITATION NEEDED}. 
-Estos algoritmos utilizan templates de tamaño fijo que describir los objetos a trackear. El problema de este tipo de algoritmos radica en que es costoso aprender 
-totalmente un template, y que, en principio no resulta sencillo adaptarlos. Es decir, para actualizar un template (por ejemplo cuando el objeto cambia de tamaño, dirección, etc...)
-se debe computar o construir un template nuevo desde cero. En \cite{alp}, Holzer, Ilic y Navab, proponen un complejo algoritmo basado en el uso de linear predictors y varias capas
-de templates de distintos tamaños, lo que les permiten manejar oclusiones parciales y totales con resultados muy positivos. Además, proponen un atajo computacional para 
-modificar un template, calculando eficientemente inversas de matrices. Si bien los resultados obtenidos no son óptimos desde el punto de vista de la restricción del tiempo real, 
-se acercan bastante, sin haber realizado mayores optimizaciones, como ser paralelización de ciertas partes del algoritmo, programación GPU, etc...
-
-Por último se encuentran los algoritmos de basados en grafos, o \textit{graph based}. Entre ellos se destaca IFTrace \cite{IFTrace}, el cual se basa en la técnica conocida como 
-\textit{Image Foresting Transform} \cite{IFT} y en la técnica de tracking de features, KLT \cite{KLT}. Este algoritmo es muy versátil, ya que las únicas suposiciones que hace son que el objeto trackeado en la imagen consista de un
-solo set de pixeles conectados, que puede haber un cambio aguda del color u otras propiedades a lo largo de los bordes del objeto, y que estas propiedades pueden cambiar en el 
-tiempo. Este algoritmo se basa en una pequeña segmentación base realizada de forma interactiva por el usuario en el primer frame, pero luego lograr manejar satisfactoriamente
-oclusiones parciales y en la mayoría de los casos recuperarse de oclusiones totales. Para modelar la imagen y los objetos se utiliza un grafo, en el cual los pixeles son los nodos, y
-estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que los puntos estén separados por el borde del
-objeto trackeado. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color entre los pixeles. IFTrace combina el gradiente del color con el 
-gradiente de una función de classificación de pixeles difusos, algo así como la similaridad entre el pixel y el set de pixeles del objeto segmentado en el frame anterior. \\
-
-En el marco del tracking aplicado a videos de futbol, hay trabajos
-con resultados concretos, como en \cite{paper-suecia-soccer} \cite{papers-tanos}.
-Li y Flierl \cite{paper-suecia-soccer} utilizan una conocida técnica para extraer
-puntos característicos o \textit{features}, SIFT. SIFT es la sigla para \textit{Scale Invariant Feature Transform}, y como se 
-desprende de su nombre, ofrece una transformación para extraer puntos característicos
-que son invariantes a cambios de escala y rotaciones. En su trabajo, Li y Flierl utilizan estos 
-puntos para obtener una correlación entre vistas y frames. Entonces, utilizan la
-información 3D de cada jugador para trackearlos en timepo real. Al compartir esta información 3D con
-todas las cámaras y explotando la diversidad de perspectiva del sistema multicámara,
-se pueden resolver los problemas causados por oclusiones, de manera muy eficiente.\\
-
-En \cite{papers-tanos}, D'Orazio et al. proponen un sistema de seguimiento de
-jugadores y pelota de manera no supervisada que logra detectar posiciones
-adelantadas en 35 de 45 casos observados durante un torneo de la liga italiana
-de fútbol, obteniendo también dos falsos positivos, en tiempo real. El sistema consiste en seis
-cámaras conectadas. El algoritmo ejecutado por cada nodo procesador (uno por
-cada cámara) utiliza una técnica de reducción de fondo efectiva para el caso de
-un partido de fútbol, aprendizaje no supervizado para la detección de jugadores
-y distintos equipos (utilizando el algoritmo BSAS \cite{paper-bsas}), un
-sistema de seguimiento basado en trayectoria y \textit{bounding boxes} para el
-trackeo de los jugadores y resolución de oclusiones.
 
 \section*{Referencias}
 \printbibliography
