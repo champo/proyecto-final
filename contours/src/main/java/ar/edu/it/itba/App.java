@@ -1,9 +1,7 @@
 package ar.edu.it.itba;
 
 import java.awt.Button;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -64,6 +62,9 @@ public class App extends JFrame
 			@Override
 			public void mouseClicked(final MouseEvent arg0) {
 				contour = Contour.aroundPoint(arg0.getPoint());
+				BufferedImage image = imagePanel.getImage();
+				ImageOperations.drawContourOnBuffer(image, contour);
+				imagePanel.setImage(image);
 				imagePanel.removeMouseListener(mouseListener);
 				addNextFrameButton();
 			}
@@ -106,8 +107,8 @@ public class App extends JFrame
             	BufferedImage frame = frameDecoder.nextFrame();
             	if (contour != null) {
 	            	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
-	            	ImageOperations.drawContourOnBuffer(coloredFrame, contour);
 	            	contour = ActiveContour.adapt(coloredFrame, contour, 6);
+	            	ImageOperations.drawContourOnBuffer(coloredFrame, contour);
 	            	imagePanel.setImage(coloredFrame);
             	} else {
 	            	imagePanel.setImage(frame);

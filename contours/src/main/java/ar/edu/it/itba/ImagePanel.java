@@ -18,6 +18,10 @@ public class ImagePanel extends JPanel {
         }
     }
 
+    public BufferedImage getImage() {
+    	return image;
+    }
+
     public void setImage(final BufferedImage image) {
 		this.image = image;
 		repaint();
