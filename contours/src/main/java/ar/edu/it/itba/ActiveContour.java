@@ -4,13 +4,20 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ar.edu.it.itba.PointMapping.Provider;
 
 public class ActiveContour {
 
 	private static final int MASK_RADIUS = 3;
+	protected static final int MAX_ITERATIONS = 400*400;
 	private static double SIGMA = 0.5;
 	private static double[][] mask;
 	static {
@@ -113,7 +120,7 @@ public class ActiveContour {
 				lout.remove(i);
 				lin.add(p);
 				theta.set(p, -1);
-				for (Point n : neighbors(p, frame)) {
+				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == 3) {
 						lout.add(n);
 						theta.set(n, 1);
@@ -126,7 +133,7 @@ public class ActiveContour {
 		for (int i = 0; i < lin.size(); i++) {
 			Point l = lin.get(i);
 			int neighbors = 0;
-			for (Point n : neighbors(l, frame)) {
+			for (Point n : neighbors(l, frame.getWidth(), frame.getHeight())) {
 				if (theta.getValue(n) < 0) {
 					neighbors++;
 				}
@@ -144,7 +151,7 @@ public class ActiveContour {
 				lin.remove(i);
 				lout.add(p);
 				theta.set(p, 1);
-				for (Point n : neighbors(p, frame)) {
+				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == -3) {
 						lin.add(n);
 						theta.set(n, -1);
@@ -157,7 +164,7 @@ public class ActiveContour {
 		for (int i = 0; i < lout.size(); i++) {
 			Point l = lout.get(i);
 			int neighbors = 0;
-			for (Point n : neighbors(l, frame)) {
+			for (Point n : neighbors(l, frame.getWidth(), frame.getHeight())) {
 				if (theta.getValue(n) > 0) {
 					neighbors++;
 				}
@@ -174,13 +181,13 @@ public class ActiveContour {
 		return result;
 	}
 
-	private static Iterable<Point> neighbors(final Point p, final BufferedImage frame) {
+	private static Iterable<Point> neighbors(final Point p, int width, int height) {
 		List<Point> l = new ArrayList<Point>(4);
 
-		if (p.x < frame.getWidth() - 1) {
+		if (p.x < width - 1) {
 			l.add(new Point(p.x + 1, p.y));
 		}
-		if (p.y < frame.getHeight() - 1) {
+		if (p.y < height - 1) {
 			l.add(new Point(p.x, p.y + 1));
 		}
 		if (p.x > 0) {
@@ -195,20 +202,55 @@ public class ActiveContour {
 	private static Provider getThetaProvider(final Contour r) {
 
 		return new Provider() {
+			
+			Set<Point> internalPoints;
+			
+			synchronized private void BFS() {
+				internalPoints = new HashSet<Point>();
+				for (Point p : r.getLout()) {
+					internalPoints.add(p);
+				}
+				final Deque<Point> queue = new LinkedList<Point>();
+				for (Point p : r.getLin()) {
+					internalPoints.add(p);
+					queue.push(p);
+				}
+				int iterations = 0;
+				while (!queue.isEmpty() && iterations < MAX_ITERATIONS) {
+					iterations++;
+					final Point p = queue.pop();
+					for (Point n : neighbors(p, Integer.MAX_VALUE, Integer.MIN_VALUE)) {
+						if (!internalPoints.contains(n)) {
+							internalPoints.add(n);
+							queue.push(n);
+						}
+					}
+				}
+				if (iterations == MAX_ITERATIONS) {
+					throw new RuntimeException("The contour is not conected");
+				}
+			}
 
 			@Override
 			public double valueForPoint(final Point p) {
+				if (internalPoints == null) {
+					BFS();
+				}
 				if (r.inLout(p.x, p.y)) {
 					return 1;
 				} else if (r.inLin(p.x, p.y)) {
 					return -1;
-				} else if (!r.contains(p.x, p.y) && !r.inLout(p.x, p.y)) {
+				} else if (!internal(p.x, p.y) && !r.inLout(p.x, p.y)) {
 					return 3;
-				} else if (r.contains(p.x, p.y) && !r.inLin(p.x, p.y)) {
+				} else if (internal(p.x, p.y) && !r.inLin(p.x, p.y)) {
 					return -3;
 				}
 
 				return 0;
+			}
+
+			private boolean internal(int x, int y) {
+				return internalPoints.contains(new Point(x, y));
 			}
 		};
 	}
