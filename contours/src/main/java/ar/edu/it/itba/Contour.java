@@ -6,24 +6,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Contour implements Iterable<Point>{
 
-	private List<Point> points;
-	private List<Point> lin;
-	
+	private final List<Point> points;
+	private final List<Point> lin;
+
 	private int cachedMinX = Integer.MIN_VALUE;
 	private int cachedMaxX = Integer.MAX_VALUE;
 	private int cachedMinY = Integer.MIN_VALUE;
 	private int cachedMaxY = Integer.MAX_VALUE;
-	private Map<Integer, List<Point>> cachedLines = new HashMap<Integer, List<Point>>();
+	private final Map<Integer, List<Point>> cachedLines = new HashMap<Integer, List<Point>>();
 
-	public Contour(Rectangle rect) {
+	public Contour(final Rectangle rect) {
 		points = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
 		lin = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
 		for (int i = 0; i < rect.width; i++) {
@@ -52,7 +50,7 @@ public class Contour implements Iterable<Point>{
 		}
 	}
 
-	public Contour(List<Point> lout, List<Point> lin) {
+	public Contour(final List<Point> lout, final List<Point> lin) {
 		points = lout;
 		this.lin = lin;
 	}
@@ -60,7 +58,7 @@ public class Contour implements Iterable<Point>{
 	public static Contour aroundPoint(Point point) {
 		return new Contour(new Rectangle(point.x - 10, point.y - 10, 20, 20));
 	}
-	
+
 	public int minX() {
 
 		if (cachedMinX != Integer.MIN_VALUE) {
@@ -73,7 +71,7 @@ public class Contour implements Iterable<Point>{
 		cachedMinX = min;
 		return min;
 	}
-	
+
 	public int maxX() {
 
 		if (cachedMaxX != Integer.MAX_VALUE) {
@@ -86,7 +84,7 @@ public class Contour implements Iterable<Point>{
 		cachedMaxX = max;
 		return max;
 	}
-	
+
 	public int minY() {
 
 		if (cachedMinY != Integer.MIN_VALUE) {
@@ -99,7 +97,7 @@ public class Contour implements Iterable<Point>{
 		cachedMinY = min;
 		return min;
 	}
-	
+
 	public int maxY() {
 
 		if (cachedMaxY != Integer.MAX_VALUE) {
@@ -120,11 +118,11 @@ public class Contour implements Iterable<Point>{
 	public int countRows() {
 		return maxY() - minY();
 	}
-	
-	private static int max(int a, int b) {
+
+	private static int max(final int a, final int b) {
 		return a > b ? a : b;
 	}
-	private static int min(int a, int b) {
+	private static int min(final int a, final int b) {
 		return a < b ? a : b;
 	}
 
@@ -133,7 +131,7 @@ public class Contour implements Iterable<Point>{
 		return points.iterator();
 	}
 
-	public boolean contains(int i, int j) {
+	public boolean contains(final int i, final int j) {
 		List<Point> pointsInRow = getPointsAtCol(i);
 		for (int k = 1; k < pointsInRow.size(); k += 2) {
 			if (pointsInRow.get(k-1).y <= j && j <= pointsInRow.get(k).y) {
@@ -143,7 +141,7 @@ public class Contour implements Iterable<Point>{
 		return false;
 	}
 
-	public List<Point> getPointsAtCol(int x) {
+	public List<Point> getPointsAtCol(final int x) {
 		if (cachedLines.containsKey(x)) {
 			return cachedLines.get(x);
 		}
@@ -155,14 +153,14 @@ public class Contour implements Iterable<Point>{
 		}
 		Collections.sort(pointsInRow, new Comparator<Point>() {
 			@Override
-			public int compare(Point o1, Point o2) {
+			public int compare(final Point o1, final Point o2) {
 				return o1.y - o2.y;
 			}
 		});
 		cachedLines.put(x, pointsInRow);
 		return pointsInRow;
 	}
-	
+
 	public List<Point> getLin() {
 		return lin;
 	}
@@ -170,11 +168,11 @@ public class Contour implements Iterable<Point>{
 		return points;
 	}
 
-	public boolean inLout(int x, int y) {
+	public boolean inLout(final int x, final int y) {
 		return points.contains(new Point(x, y));
 	}
 
-	public boolean inLin(int x, int y) {
+	public boolean inLin(final int x, final int y) {
 		return lin.contains(new Point(x, y));
 	}
 }

@@ -4,55 +4,116 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import ar.edu.it.itba.PointMapping.Provider;
 
 public class ActiveContour {
 
-	public static Contour adapt(final BufferedImage frame, final Contour c, final int gaussRadius) {
+	private static final int MASK_RADIUS = 3;
+	private static double SIGMA = 0.5;
+	private static double[][] mask;
+	static {
+		int sideLength = 2  * MASK_RADIUS + 1;
+		mask = new double[sideLength][sideLength];
+		double sigmaSquared = Math.pow(SIGMA, 2);
+
+		for (int i = -MASK_RADIUS; i < MASK_RADIUS + 1; i++) {
+			for (int j = -MASK_RADIUS; j < MASK_RADIUS + 1; j++) {
+				mask[i + MASK_RADIUS][j + MASK_RADIUS] = Math.pow(Math.E, - (double)(i * i + j * j) / (2 * sigmaSquared)) / (2.0 * Math.PI * sigmaSquared);
+			}
+		}
+	}
+
+	private static Color omegaZero;
+	private static Color omega;
+
+	public static Contour adapt(final BufferedImage frame, final Contour c) {
 		Contour r = c;
 		int nMax = max(c.countRows(), c.countCols());
 
+		// Draw a rectangle of 30 pixels more width and more height around the contour to get the characteristic average color
 		int x1 = r.minX() - 15;
 		int x2 = r.maxX() + 15;
 		int y1 = r.minY() - 15;
 		int y2 = r.maxY() + 15;
-		Color omegaZero = getAverageColor(frame, r, x1, x2, y1, y2);
-		Color omega = getAverageColor(frame, r);
+
+		x1 = Math.max(x1, 0);
+		y1 = Math.max(y1, 0);
+		x2 = Math.min(x2, frame.getWidth() - 1);
+		y2 = Math.min(y2, frame.getHeight() - 1);
+
+		if (omegaZero == null) {
+			omegaZero = getAverageColor(frame, r, x1, x2, y1, y2);
+		}
+		if (omega == null) {
+			omega = getAverageColor(frame, r);
+		}
+		PointMapping theta = new PointMapping(getThetaProvider(r));
 
 		for (int i = 0; i < nMax; i++) {
-			// Draw a rectangle of 30 pixels more width and more height around the contour to get the characteristic average color
-			x1 = r.minX() - 15;
-			x2 = r.maxX() + 15;
-			y1 = r.minY() - 15;
-			y2 = r.maxY() + 15;
-
-			PointMapping F_d = getF(frame, omegaZero, omega, x1, x2, y1, y2);
-
-			r = firstRound(frame, r, x1, x2, y1, y2, omegaZero, omega, F_d);
+			PointMapping F_d = getF(frame, omegaZero, omega);
+			r = applyForce(r, F_d, theta, frame);
 			if (endCondition(F_d, frame, r)) {
 				break;
 			}
 		}
-		r = secondRound(r, gaussRadius);
+
+
+		int rounds = 2 * MASK_RADIUS + 1;
+		for (int i = 0; i < rounds; i++) {
+
+			PointMapping F_s = new PointMapping(new Provider() {
+
+				@Override
+				public double valueForPoint(final Point p) {
+					return 0;
+				}
+			});
+			calculateGauss(r.getLin(), theta, F_s);
+			calculateGauss(r.getLout(), theta, F_s);
+
+			r = applyForce(r, F_s, theta, frame);
+		}
+
 		return r;
 	}
 
-	private static Contour firstRound(final BufferedImage frame, final Contour r, final int x1, final int x2, final int y1, final int y2,
-			final Color omegaZero, final Color omega, final PointMapping f_d) {
+	private static void calculateGauss(final List<Point> points, final PointMapping theta,
+			final PointMapping f_s) {
 
-		PointMapping theta = getTheta(f_d, r, frame, omegaZero, omega, x1, x2, y1, y2);
+		for (Point point : points) {
 
-		List<Point> lout = r.getLout();
-		List<Point> lin = r.getLin();
+			double accum = 0;
+
+			for (int mask_x = 0; mask_x < mask[0].length; mask_x++) {
+				for (int mask_y = 0; mask_y < mask.length; mask_y++) {
+
+					int delta_x = point.x + mask_x - MASK_RADIUS;
+					int delta_y = point.y + mask_y - MASK_RADIUS;
+
+					accum += mask[mask_y][mask_x] * theta.getValue(delta_x, delta_y);
+				}
+			}
+
+			f_s.set(point, -Math.signum(accum));
+
+		}
+
+	}
+
+
+
+	private static Contour applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
+		List<Point> lout = new ArrayList<Point>(r.getLout());
+		List<Point> lin = new ArrayList<Point>(r.getLin());
 		for (int i = 0; i < lout.size(); i++) {
 			Point p = lout.get(i);
-			if (f_d.getValue(p) > 0) {
+			if (force.getValue(p) > 0) {
 				lout.remove(i);
 				lin.add(p);
-				theta.set(p, 1);
-				for (Point n : neighbors(p)) {
+				theta.set(p, -1);
+				for (Point n : neighbors(p, frame)) {
 					if (theta.getValue(n) == 3) {
 						lout.add(n);
 						theta.set(n, 1);
@@ -61,27 +122,29 @@ public class ActiveContour {
 				i--;
 			}
 		}
+
 		for (int i = 0; i < lin.size(); i++) {
 			Point l = lin.get(i);
 			int neighbors = 0;
-			for (Point n : neighbors(l)) {
-				if (lout.contains(n)) {
+			for (Point n : neighbors(l, frame)) {
+				if (theta.getValue(n) < 0) {
 					neighbors++;
 				}
 			}
-			if (neighbors == 0) {
+			if (neighbors == 4) {
 				lin.remove(i);
 				theta.set(l, -3);
 				i--;
 			}
 		}
+
 		for (int i = 0; i < lin.size(); i++) {
 			Point p = lin.get(i);
-			if (f_d.getValue(p) < 0) {
+			if (force.getValue(p) < 0) {
 				lin.remove(i);
 				lout.add(p);
-				theta.set(p, -1);
-				for (Point n : neighbors(p)) {
+				theta.set(p, 1);
+				for (Point n : neighbors(p, frame)) {
 					if (theta.getValue(n) == -3) {
 						lin.add(n);
 						theta.set(n, -1);
@@ -90,68 +153,79 @@ public class ActiveContour {
 				i--;
 			}
 		}
+
 		for (int i = 0; i < lout.size(); i++) {
 			Point l = lout.get(i);
 			int neighbors = 0;
-			for (Point n : neighbors(l)) {
-				if (lin.contains(n)) {
+			for (Point n : neighbors(l, frame)) {
+				if (theta.getValue(n) > 0) {
 					neighbors++;
 				}
 			}
-			if (neighbors < 0) {
+			if (neighbors == 4) {
 				lout.remove(i);
 				theta.set(l, 3);
 				i--;
 			}
 		}
-		return new Contour(lout, lin);
+
+		Contour result = new Contour(lout, lin);
+		theta.setProvider(getThetaProvider(result));
+		return result;
 	}
 
-	private static Iterable<Point> neighbors(final Point p) {
+	private static Iterable<Point> neighbors(final Point p, final BufferedImage frame) {
 		List<Point> l = new ArrayList<Point>(4);
-		l.add(new Point(p.x + 1, p.y));
-		l.add(new Point(p.x, p.y + 1));
-		l.add(new Point(p.x - 1, p.y));
-		l.add(new Point(p.x, p.y - 1));
+
+		if (p.x < frame.getWidth() - 1) {
+			l.add(new Point(p.x + 1, p.y));
+		}
+		if (p.y < frame.getHeight() - 1) {
+			l.add(new Point(p.x, p.y + 1));
+		}
+		if (p.x > 0) {
+			l.add(new Point(p.x - 1, p.y));
+		}
+		if (p.y > 0) {
+			l.add(new Point(p.x, p.y - 1));
+		}
 		return l;
 	}
 
-	private static PointMapping getTheta(final PointMapping f_d, final Contour r,
-			final BufferedImage frame, final Color omegaZero, final Color omega, final int x1, final int x2,
-			final int y1, final int y2) {
+	private static Provider getThetaProvider(final Contour r) {
 
-		Map<Point, Double> map = new HashMap<Point, Double>();
-		for (int x = x1; x <= x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				if (f_d.getValue(x, y) > 0 && !r.inLout(x, y)) {
-					map.put(new Point(x, y), 3.);
-				} else if (r.inLout(x, y)) {
-					map.put(new Point(x, y), 1.);
-				} else if (r.inLin(x, y)) {
-					map.put(new Point(x, y), -1.);
-				} else if (f_d.getValue(x, y) < 0 && !r.inLin(x, y)) {
-					map.put(new Point(x, y), -3.);
-				} else {
-					map.put(new Point(x, y), 0.);
+		return new Provider() {
+
+			@Override
+			public double valueForPoint(final Point p) {
+				if (r.inLout(p.x, p.y)) {
+					return 1;
+				} else if (r.inLin(p.x, p.y)) {
+					return -1;
+				} else if (!r.contains(p.x, p.y) && !r.inLout(p.x, p.y)) {
+					return 3;
+				} else if (r.contains(p.x, p.y) && !r.inLin(p.x, p.y)) {
+					return -3;
 				}
+
+				return 0;
 			}
-		}
-		return new PointMapping(map);
+		};
 	}
 
 	static PointMapping getF(final BufferedImage frame, final Color omegaZero,
-			final Color omega, final int x1, final int x2, final int y1, final int y2) {
-		Map<Point, Double> map = new HashMap<Point, Double>();
-		for (int x = x1; x <= x2; x++) {
-			for (int y = y1; y <= y2; y++) {
-				map.put(new Point(x, y), prob(new Color(frame.getRGB(x, y)), omegaZero, omega));
+			final Color omega) {
+		return new PointMapping(new Provider() {
+
+			@Override
+			public double valueForPoint(final Point p) {
+				return prob(new Color(frame.getRGB(p.x, p.y)), omegaZero, omega);
 			}
-		}
-		return new PointMapping(map);
+		});
 	}
 
 	private static Double prob(final Color color, final Color omegaZero, final Color omega) {
-		return Math.log(diffColor(color, omega) / diffColor(color, omegaZero));
+		return Math.log((1 - diffColor(color, omega)) / (1 - diffColor(color, omegaZero)));
 	}
 
 	private static double diffColor(final Color color, final Color referenceColor) {
@@ -183,17 +257,13 @@ public class ActiveContour {
 		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
 	}
 
-	static Color getAverageColor(final BufferedImage frame, final Contour r, int x1, int x2,
-			int y1, int y2) {
+	static Color getAverageColor(final BufferedImage frame, final Contour r, final int x1, final int x2,
+			final int y1, final int y2) {
 		double avgRed = 0;
 		double avgGreen = 0;
 		double avgBlue = 0;
 		int pixels = 0;
 
-		x1 = Math.max(x1, 0);
-		y1 = Math.max(y1, 0);
-		x2 = Math.min(x2, frame.getWidth() - 1);
-		y2 = Math.min(y2, frame.getHeight() - 1);
 		for (int i = x1; i <= x2; i++) {
 			for (int j = y1; j <= y2; j++) {
 				if (!r.contains(i, j)) {
@@ -222,10 +292,6 @@ public class ActiveContour {
 			}
 		}
 		return true;
-	}
-
-	private static Contour secondRound(final Contour c, final int gaussRadius) {
-		return c;
 	}
 
 	private static int max(final int a, final int b) {

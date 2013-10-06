@@ -107,7 +107,7 @@ public class App extends JFrame
             	BufferedImage frame = frameDecoder.nextFrame();
             	if (contour != null) {
 	            	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
-	            	contour = ActiveContour.adapt(coloredFrame, contour, 6);
+	            	contour = ActiveContour.adapt(coloredFrame, contour);
 	            	ImageOperations.drawContourOnBuffer(coloredFrame, contour);
 	            	imagePanel.setImage(coloredFrame);
             	} else {

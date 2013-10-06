@@ -1,29 +1,45 @@
 package ar.edu.it.itba;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 
 public class PointMapping {
 
-	private Map<Point, Double> map;
+	private final Map<Point, Double> map;
 
-	public PointMapping(Map<Point, Double> map) {
-		this.map = map;
+	private Provider provider;
+
+	public static interface Provider {
+
+		public double valueForPoint(Point p);
+
 	}
-	
-	public double getValue(Point p) {
+
+	public PointMapping(final Provider provider) {
+		this.map = new HashMap<Point, Double>();
+		this.provider = provider;
+	}
+
+	public void setProvider(final Provider provider) {
+		this.provider = provider;
+	}
+
+	public double getValue(final Point p) {
 		Double b = map.get(p);
 		if (b == null) {
-			return 0;
+			double value = provider.valueForPoint(p);
+			map.put(p, value);
+			return value;
 		}
 		return b;
 	}
-	public double getValue(int x, int y) {
-		return map.get(new Point(x, y));
+	public double getValue(final int x, final int y) {
+		return getValue(new Point(x, y));
 	}
 
-	public void set(Point p, double i) {
+	public void set(final Point p, final double i) {
 		map.put(p, i);
 	}
 }
