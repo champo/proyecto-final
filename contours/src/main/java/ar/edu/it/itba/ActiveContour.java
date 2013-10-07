@@ -32,21 +32,25 @@ public class ActiveContour {
 
 	private final Contour[] contours;
 
-	private final Color omegaZero;
 	private final Color[] omega;
+	private final Color[] omegaZero;
 
 	private final PointMapping theta;
 
 	public ActiveContour(final BufferedImage frame, final Contour... c) {
 		contours = c;
-		omega = new Color[c.length];
+		// Calculating theta makes contours defien their internal points
+		// it *must* happen before anything else
+		theta = getTheta(c);
 
-		omegaZero = getAverageBackgroundColor(frame, c);
+		omega = new Color[c.length];
+		omegaZero = new Color[c.length];
+
 		for (int i = 0; i < c.length; i++) {
+			omegaZero[i] = getAverageBackgroundColor(frame, contours[i]);
 			omega[i] = getAverageColor(frame, contours[i]);
 		}
 
-		theta = getTheta(c);
 	}
 
 	public Contour[] adapt(final BufferedImage frame) {
@@ -63,10 +67,11 @@ public class ActiveContour {
 					continue;
 				}
 
-				PointMapping F_d = getF(frame, omegaZero, omega[j]);
-				applyForce(contours[j], F_d, theta, frame);
+				final Contour c = contours[j];
+				final PointMapping F_d = getF(frame, omegaZero[j], omega[j]);
+				applyForce(c, F_d, theta, frame);
 
-				if (endCondition(F_d, frame, contours[j])) {
+				if (endCondition(F_d, frame, c)) {
 					done[j] = true;
 					completed++;
 				}
@@ -310,24 +315,19 @@ public class ActiveContour {
 		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
 	}
 
-	static Color getAverageBackgroundColor(final BufferedImage frame, final Contour[] contours) {
+	private Color getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
 		double avgRed = 0;
 		double avgGreen = 0;
 		double avgBlue = 0;
 		int pixels = 0;
 
-		for (int i = 0; i < frame.getWidth(); i++) {
-			for (int j = 0; j < frame.getHeight(); j++) {
+		int maxX = Math.min(frame.getWidth(), r.maxX() + 15);
+		int maxY = Math.min(frame.getHeight(), r.maxY() + 15);
 
-				boolean safe = true;
-				for (Contour c : contours) {
-					if (c.contains(i, j)) {
-						safe = false;
-						break;
-					}
-				}
+		for (int i = Math.max(0, r.minX() - 15); i < maxX; i++) {
+			for (int j = Math.max(0, r.minY() - 15); j < maxY; j++) {
 
-				if (safe) {
+				if (!r.contains(i, j)) {
 					Color c = new Color(frame.getRGB(i, j));
 					avgRed += c.getRed();
 					avgGreen += c.getGreen();

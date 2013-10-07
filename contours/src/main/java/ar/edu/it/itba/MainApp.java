@@ -44,6 +44,7 @@ public class MainApp extends javax.swing.JFrame {
     private ImagePanel soccerFieldPanel;
     private FrameDecoder frameDecoder;
 
+    private BufferedImage firstFrame;
     private ActiveContour ac;
 
     private final List<Contour> contour = new ArrayList<Contour>();
@@ -249,8 +250,8 @@ public class MainApp extends javax.swing.JFrame {
         frameDecoder = new FrameDecoder("src/main/resources/Slower10sec.mpeg");
         imagePanel = new ImagePanel();
         imageContainerPanel.setLayout(new GridLayout(1, 1));
-        BufferedImage firstFrame = frameDecoder.nextFrame();
-        imageContainerPanel.setPreferredSize(new Dimension(firstFrame.getWidth(), firstFrame.getHeight()));
+        BufferedImage frame = frameDecoder.nextFrame();
+        imageContainerPanel.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
         imageContainerPanel.add(imagePanel);
 
         mouseListener = new MouseListener() {
@@ -295,8 +296,7 @@ public class MainApp extends javax.swing.JFrame {
                 videoControlPanel.remove(startTrackingButton);
                 startTrackingButton = null;
 
-                BufferedImage image = imagePanel.getImage();
-                ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
+                ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
                 addNextFrameButton();
 
             }
@@ -398,7 +398,17 @@ public class MainApp extends javax.swing.JFrame {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                BufferedImage frame = frameDecoder.nextFrame();
+                final BufferedImage frame = frameDecoder.nextFrame();
+                if (firstFrame == null) {
+                	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
+
+                	for (int i = 0; i < frame.getWidth(); i++) {
+                		for (int j = 0; j < frame.getHeight(); j++) {
+                			firstFrame.setRGB(i, j, frame.getRGB(i, j));
+                		}
+                	}
+
+                }
                 if (ac != null) {
                 	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
                 	ac.adapt(coloredFrame);
