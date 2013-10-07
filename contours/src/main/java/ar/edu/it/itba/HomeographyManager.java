@@ -17,10 +17,10 @@ import javax.swing.ListModel;
  * @author eordano
  */
 class HomeographyManager {
-    
-    private List<Pair> points = new ArrayList<>();
+
+    private final List<Pair> points = new ArrayList<Pair>();
     private ListModel listModel;
-    
+
     public HomeographyManager() {
         listModel = new AbstractListModel() {
 
