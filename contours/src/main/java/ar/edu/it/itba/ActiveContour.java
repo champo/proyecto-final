@@ -14,9 +14,9 @@ import ar.edu.it.itba.PointMapping.Provider;
 
 public class ActiveContour {
 
-	private static final int MASK_RADIUS = 3;
+	private static final int MASK_RADIUS = 4;
 	protected static final int MAX_ITERATIONS = 400*400;
-	private static double SIGMA = 0.5;
+	private static double SIGMA = 1;
 	private static double[][] mask;
 	static {
 		int sideLength = 2  * MASK_RADIUS + 1;
@@ -30,36 +30,49 @@ public class ActiveContour {
 		}
 	}
 
-	private static Color omegaZero;
-	private static Color omega;
+	private final Contour[] contours;
 
-	public static Contour adapt(final BufferedImage frame, final Contour c) {
-		Contour r = c;
-		int nMax = max(c.countRows(), c.countCols());
+	private final Color omegaZero;
+	private final Color[] omega;
 
-		// Draw a rectangle of 30 pixels more width and more height around the contour to get the characteristic average color
-		int x1 = r.minX() - 15;
-		int x2 = r.maxX() + 15;
-		int y1 = r.minY() - 15;
-		int y2 = r.maxY() + 15;
+	private final PointMapping theta;
 
-		x1 = Math.max(x1, 0);
-		y1 = Math.max(y1, 0);
-		x2 = Math.min(x2, frame.getWidth() - 1);
-		y2 = Math.min(y2, frame.getHeight() - 1);
+	public ActiveContour(final BufferedImage frame, final Contour... c) {
+		contours = c;
+		omega = new Color[c.length];
 
-		if (omegaZero == null) {
-			omegaZero = getAverageColor(frame, r, x1, x2, y1, y2);
+		omegaZero = getAverageBackgroundColor(frame, c);
+		for (int i = 0; i < c.length; i++) {
+			omega[i] = getAverageColor(frame, contours[i]);
 		}
-		if (omega == null) {
-			omega = getAverageColor(frame, r);
-		}
-		PointMapping theta = getTheta(r);
+
+		theta = getTheta(c);
+	}
+
+	public Contour[] adapt(final BufferedImage frame) {
+		int nMax = max(frame.getHeight(), frame.getWidth());
+
+		boolean[] done = new boolean[contours.length];
+		int completed = 0;
 
 		for (int i = 0; i < nMax; i++) {
-			PointMapping F_d = getF(frame, omegaZero, omega);
-			r = applyForce(r, F_d, theta, frame);
-			if (endCondition(F_d, frame, r)) {
+
+			for (int j = 0; j < contours.length; j++) {
+
+				if (done[j]) {
+					continue;
+				}
+
+				PointMapping F_d = getF(frame, omegaZero, omega[j]);
+				applyForce(contours[j], F_d, theta, frame);
+
+				if (endCondition(F_d, frame, contours[j])) {
+					done[j] = true;
+					completed++;
+				}
+			}
+
+			if (completed == contours.length) {
 				break;
 			}
 		}
@@ -68,20 +81,22 @@ public class ActiveContour {
 		int rounds = 2 * MASK_RADIUS + 1;
 		for (int i = 0; i < rounds; i++) {
 
-			PointMapping F_s = new PointMapping(new Provider() {
+			for (Contour c : contours) {
+				PointMapping F_s = new PointMapping(new Provider() {
 
-				@Override
-				public double valueForPoint(final Point p) {
-					return 0;
-				}
-			});
-			calculateGauss(r.getLin(), theta, F_s);
-			calculateGauss(r.getLout(), theta, F_s);
+					@Override
+					public double valueForPoint(final Point p) {
+						return 0;
+					}
+				});
+				calculateGauss(c.getLin(), theta, F_s);
+				calculateGauss(c.getLout(), theta, F_s);
 
-			r = applyForce(r, F_s, theta, frame);
+				applyForce(c, F_s, theta, frame);
+			}
 		}
 
-		return r;
+		return contours;
 	}
 
 	private static void calculateGauss(final List<Point> points, final PointMapping theta,
@@ -109,9 +124,9 @@ public class ActiveContour {
 
 
 
-	private static Contour applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
-		List<Point> lout = new ArrayList<Point>(r.getLout());
-		List<Point> lin = new ArrayList<Point>(r.getLin());
+	private static void applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
+		List<Point> lout = r.getLout();
+		List<Point> lin = r.getLin();
 		for (int i = 0; i < lout.size(); i++) {
 			Point p = lout.get(i);
 			if (force.getValue(p) > 0 && !isBorder(frame, p)) {
@@ -175,9 +190,6 @@ public class ActiveContour {
 			}
 		}
 
-		Contour result = new Contour(lout, lin);
-		//theta.setProvider(getThetaProvider(result));
-		return result;
 	}
 
 	private static boolean isBorder(final BufferedImage frame, final Point p) {
@@ -202,7 +214,7 @@ public class ActiveContour {
 		return l;
 	}
 
-	private static PointMapping getTheta(final Contour r) {
+	private static PointMapping getTheta(final Contour... contours) {
 
 		PointMapping theta = new PointMapping(new Provider() {
 
@@ -212,6 +224,15 @@ public class ActiveContour {
 			}
 
 		});
+
+		for (Contour contour : contours) {
+			markInternalPoints(theta, contour);
+		}
+
+		return theta;
+	}
+
+	private static void markInternalPoints(final PointMapping theta, final Contour r) {
 
 		Set<Point> internalPoints = new HashSet<Point>();
 		for (Point p : r.getLout()) {
@@ -240,8 +261,6 @@ public class ActiveContour {
 		if (iterations == MAX_ITERATIONS) {
 			throw new RuntimeException("The contour is not conected");
 		}
-
-		return theta;
 	}
 
 	static PointMapping getF(final BufferedImage frame, final Color omegaZero,
@@ -260,6 +279,9 @@ public class ActiveContour {
 	}
 
 	private static double diffColor(final Color color, final Color referenceColor) {
+
+
+
 		double red = Math.abs(color.getRed() - referenceColor.getRed());
 		double green = Math.abs(color.getGreen() - referenceColor.getGreen());
 		double blue = Math.abs(color.getBlue() - referenceColor.getBlue());
@@ -288,16 +310,24 @@ public class ActiveContour {
 		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
 	}
 
-	static Color getAverageColor(final BufferedImage frame, final Contour r, final int x1, final int x2,
-			final int y1, final int y2) {
+	static Color getAverageBackgroundColor(final BufferedImage frame, final Contour[] contours) {
 		double avgRed = 0;
 		double avgGreen = 0;
 		double avgBlue = 0;
 		int pixels = 0;
 
-		for (int i = x1; i <= x2; i++) {
-			for (int j = y1; j <= y2; j++) {
-				if (!r.contains(i, j)) {
+		for (int i = 0; i < frame.getWidth(); i++) {
+			for (int j = 0; j < frame.getHeight(); j++) {
+
+				boolean safe = true;
+				for (Contour c : contours) {
+					if (c.contains(i, j)) {
+						safe = false;
+						break;
+					}
+				}
+
+				if (safe) {
 					Color c = new Color(frame.getRGB(i, j));
 					avgRed += c.getRed();
 					avgGreen += c.getGreen();

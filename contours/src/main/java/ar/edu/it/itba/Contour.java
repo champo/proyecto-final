@@ -55,8 +55,8 @@ public class Contour implements Iterable<Point>{
 		this.lin = lin;
 	}
 
-	public static Contour aroundPoint(Point point) {
-		return new Contour(new Rectangle(point.x - 10, point.y - 10, 20, 20));
+	public static Contour aroundPoint(final Point point) {
+		return new Contour(new Rectangle(point.x - 5, point.y - 5, 10, 10));
 	}
 
 	public int minX() {

@@ -6,7 +6,6 @@ package ar.edu.it.itba;
 
 import java.awt.Button;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -16,10 +15,12 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.imageio.ImageIO;
-import javax.swing.AbstractListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -38,17 +39,21 @@ public class MainApp extends javax.swing.JFrame {
     public MainApp() {
         initComponents();
     }
-    
+
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
     private FrameDecoder frameDecoder;
 
-    private Contour contour;
+    private ActiveContour ac;
+
+    private final List<Contour> contour = new ArrayList<Contour>();
+
     private MouseListener mouseListener;
     private HomeographyManager homeography;
 
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
+    private Button startTrackingButton;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -269,12 +274,10 @@ public class MainApp extends javax.swing.JFrame {
             @Override
             public void mouseClicked(final MouseEvent arg0) {
                 if (selectingFirst) {
-                    contour = Contour.aroundPoint(arg0.getPoint());
+                    contour.add(Contour.aroundPoint(arg0.getPoint()));
                     BufferedImage image = imagePanel.getImage();
-                    ImageOperations.drawContourOnBuffer(image, contour);
+                    ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                     imagePanel.setImage(image);
-                    addNextFrameButton();
-                    selectingFirst = false;
                 } else if (selectingPoint) {
                     setCurrentSelectedImagePoint(arg0.getPoint());
                 }
@@ -282,7 +285,25 @@ public class MainApp extends javax.swing.JFrame {
 
         };
         imagePanel.addMouseListener(mouseListener);
-        
+        startTrackingButton = new Button("Start tracking");
+        startTrackingButton.setSize(new Dimension(100, 10));
+        startTrackingButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+                selectingFirst = false;
+                videoControlPanel.remove(startTrackingButton);
+                startTrackingButton = null;
+
+                BufferedImage image = imagePanel.getImage();
+                ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
+                addNextFrameButton();
+
+            }
+        });
+        videoControlPanel.setLayout(new GridLayout(1, 1));
+        videoControlPanel.add(startTrackingButton);
+
         soccerFieldPanel = new ImagePanel();
         BufferedImage soccerField = ImageIO.read(new File("src/main/resources/soccer_field.jpg"));
         soccerFieldPanel.setImage(soccerField);
@@ -378,11 +399,13 @@ public class MainApp extends javax.swing.JFrame {
             @Override
             public void run() {
                 BufferedImage frame = frameDecoder.nextFrame();
-                if (contour != null) {
-                    BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
-                    contour = ActiveContour.adapt(coloredFrame, contour);
-                    ImageOperations.drawContourOnBuffer(coloredFrame, contour);
-                    imagePanel.setImage(coloredFrame);
+                if (ac != null) {
+                	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
+                	ac.adapt(coloredFrame);
+                	for (Contour c : contour) {
+                		ImageOperations.drawContourOnBuffer(coloredFrame, c);
+                	}
+                	imagePanel.setImage(coloredFrame);
                 } else {
                     imagePanel.setImage(frame);
                 }
