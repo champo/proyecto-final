@@ -3,23 +3,16 @@ package ar.edu.it.itba;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class Contour implements Iterable<Point>{
 
 	private final List<Point> points;
 	private final List<Point> lin;
 
-	private int cachedMinX = Integer.MIN_VALUE;
-	private int cachedMaxX = Integer.MAX_VALUE;
-	private int cachedMinY = Integer.MIN_VALUE;
-	private int cachedMaxY = Integer.MAX_VALUE;
-	private final Map<Integer, List<Point>> cachedLines = new HashMap<Integer, List<Point>>();
+	private Set<Point> internalPoints;
 
 	public Contour(final Rectangle rect) {
 		points = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
@@ -61,62 +54,38 @@ public class Contour implements Iterable<Point>{
 
 	public int minX() {
 
-		if (cachedMinX != Integer.MIN_VALUE) {
-			return cachedMinX;
-		}
 		int min = Integer.MAX_VALUE;
 		for (Point p : points) {
 			min = min(min, p.x);
 		}
-		cachedMinX = min;
 		return min;
 	}
 
 	public int maxX() {
 
-		if (cachedMaxX != Integer.MAX_VALUE) {
-			return cachedMaxX;
-		}
 		int max = Integer.MIN_VALUE;
 		for (Point p : points) {
 			max = max(max, p.x);
 		}
-		cachedMaxX = max;
 		return max;
 	}
 
 	public int minY() {
 
-		if (cachedMinY != Integer.MIN_VALUE) {
-			return cachedMinY;
-		}
 		int min = Integer.MAX_VALUE;
 		for (Point p : points) {
 			min = min(min, p.y);
 		}
-		cachedMinY = min;
 		return min;
 	}
 
 	public int maxY() {
 
-		if (cachedMaxY != Integer.MAX_VALUE) {
-			return cachedMaxY;
-		}
 		int max = Integer.MIN_VALUE;
 		for (Point p : points) {
 			max = max(max, p.y);
 		}
-		cachedMaxY = max;
 		return max;
-	}
-
-	public int countCols() {
-		return maxX() - minX();
-	}
-
-	public int countRows() {
-		return maxY() - minY();
 	}
 
 	private static int max(final int a, final int b) {
@@ -128,51 +97,30 @@ public class Contour implements Iterable<Point>{
 
 	@Override
 	public Iterator<Point> iterator() {
-		return points.iterator();
+		return internalPoints.iterator();
 	}
 
 	public boolean contains(final int i, final int j) {
-		List<Point> pointsInRow = getPointsAtCol(i);
-		for (int k = 1; k < pointsInRow.size(); k += 2) {
-			if (pointsInRow.get(k-1).y <= j && j <= pointsInRow.get(k).y) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public List<Point> getPointsAtCol(final int x) {
-		if (cachedLines.containsKey(x)) {
-			return cachedLines.get(x);
-		}
-		List<Point> pointsInRow = new ArrayList<Point>(10);
-		for (Point p : points) {
-			if (p.x == x) {
-				pointsInRow.add(p);
-			}
-		}
-		Collections.sort(pointsInRow, new Comparator<Point>() {
-			@Override
-			public int compare(final Point o1, final Point o2) {
-				return o1.y - o2.y;
-			}
-		});
-		cachedLines.put(x, pointsInRow);
-		return pointsInRow;
+		return internalPoints.contains(new Point(i, j));
 	}
 
 	public List<Point> getLin() {
 		return lin;
 	}
+
 	public List<Point> getLout() {
 		return points;
 	}
 
-	public boolean inLout(final int x, final int y) {
-		return points.contains(new Point(x, y));
+	public void setInternalPoints(final Set<Point> internalPoints) {
+		this.internalPoints = internalPoints;
 	}
 
-	public boolean inLin(final int x, final int y) {
-		return lin.contains(new Point(x, y));
+	public void addPoint(final Point p) {
+		internalPoints.add(p);
+	}
+
+	public void removePoint(final Point p) {
+		internalPoints.remove(p);
 	}
 }

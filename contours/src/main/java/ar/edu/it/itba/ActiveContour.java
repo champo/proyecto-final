@@ -14,9 +14,9 @@ import ar.edu.it.itba.PointMapping.Provider;
 
 public class ActiveContour {
 
-	private static final int MASK_RADIUS = 4;
+	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
-	private static double SIGMA = 1;
+	private static double SIGMA = 0.6;
 	private static double[][] mask;
 	static {
 		int sideLength = 2  * MASK_RADIUS + 1;
@@ -47,8 +47,8 @@ public class ActiveContour {
 		omegaZero = new Color[c.length];
 
 		for (int i = 0; i < c.length; i++) {
-			omegaZero[i] = getAverageBackgroundColor(frame, contours[i]);
 			omega[i] = getAverageColor(frame, contours[i]);
+			omegaZero[i] = getAverageBackgroundColor(frame, contours[i]);
 		}
 
 	}
@@ -127,8 +127,6 @@ public class ActiveContour {
 
 	}
 
-
-
 	private static void applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
 		List<Point> lout = r.getLout();
 		List<Point> lin = r.getLin();
@@ -137,6 +135,7 @@ public class ActiveContour {
 			if (force.getValue(p) > 0 && !isBorder(frame, p)) {
 				lout.remove(i);
 				lin.add(p);
+				r.addPoint(p);
 				theta.set(p, -1);
 				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == 3) {
@@ -168,11 +167,13 @@ public class ActiveContour {
 			Point p = lin.get(i);
 			if (force.getValue(p) < 0) {
 				lin.remove(i);
+				r.removePoint(p);
 				lout.add(p);
 				theta.set(p, 1);
 				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == -3) {
 						lin.add(n);
+						r.addPoint(n);
 						theta.set(n, -1);
 					}
 				}
@@ -240,8 +241,10 @@ public class ActiveContour {
 	private static void markInternalPoints(final PointMapping theta, final Contour r) {
 
 		Set<Point> internalPoints = new HashSet<Point>();
+		Set<Point> externalPoints = new HashSet<Point>();
+
 		for (Point p : r.getLout()) {
-			internalPoints.add(p);
+			externalPoints.add(p);
 			theta.set(p, 1);
 		}
 		final Deque<Point> queue = new LinkedList<Point>();
@@ -255,13 +258,15 @@ public class ActiveContour {
 			iterations++;
 			final Point p = queue.pop();
 			for (Point n : neighbors(p, Integer.MAX_VALUE, Integer.MAX_VALUE)) {
-				if (!internalPoints.contains(n)) {
+				if (!internalPoints.contains(n) && !externalPoints.contains(n)) {
 					internalPoints.add(n);
 					queue.push(n);
 					theta.set(n, -3);
 				}
 			}
 		}
+
+		r.setInternalPoints(internalPoints);
 
 		if (iterations == MAX_ITERATIONS) {
 			throw new RuntimeException("The contour is not conected");
@@ -284,9 +289,6 @@ public class ActiveContour {
 	}
 
 	private static double diffColor(final Color color, final Color referenceColor) {
-
-
-
 		double red = Math.abs(color.getRed() - referenceColor.getRed());
 		double green = Math.abs(color.getGreen() - referenceColor.getGreen());
 		double blue = Math.abs(color.getBlue() - referenceColor.getBlue());
@@ -294,23 +296,16 @@ public class ActiveContour {
 	}
 
 	static Color getAverageColor(final BufferedImage frame, final Contour r) {
-		int x1 = r.minX();
-		int x2 = r.maxX();
 		double avgRed = 0;
 		double avgGreen = 0;
 		double avgBlue = 0;
 		int pixels = 0;
-		for (int x = x1; x <= x2; x++) {
-			List<Point> points = r.getPointsAtCol(x);
-			for (int i = 1; i < points.size(); i+=2) {
-				for (int y = points.get(i-1).y; y < points.get(i).y; y++) {
-					Color c = new Color(frame.getRGB(x, y));
-					avgRed += c.getRed();
-					avgGreen += c.getGreen();
-					avgBlue += c.getBlue();
-					pixels++;
-				}
-			}
+		for (Point p : r) {
+			Color c = new Color(frame.getRGB(p.x, p.y));
+			avgRed += c.getRed();
+			avgGreen += c.getGreen();
+			avgBlue += c.getBlue();
+			pixels++;
 		}
 		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
 	}
