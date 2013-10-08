@@ -5,6 +5,7 @@
 package ar.edu.it.itba;
 
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -23,6 +24,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import org.ejml.simple.SimpleMatrix;
 
 /**
  *
@@ -55,6 +58,7 @@ public class MainApp extends javax.swing.JFrame {
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
     private Button startTrackingButton;
+	protected SimpleMatrix homeographyMatrix;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -274,13 +278,13 @@ public class MainApp extends javax.swing.JFrame {
 
             @Override
             public void mouseClicked(final MouseEvent arg0) {
-                if (selectingFirst) {
+            	if (selectingPoint) {
+                    setCurrentSelectedImagePoint(arg0.getPoint());
+                } else if (selectingFirst) {
                     contour.add(Contour.aroundPoint(arg0.getPoint()));
                     BufferedImage image = imagePanel.getImage();
                     ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                     imagePanel.setImage(image);
-                } else if (selectingPoint) {
-                    setCurrentSelectedImagePoint(arg0.getPoint());
                 }
             }
 
@@ -297,6 +301,7 @@ public class MainApp extends javax.swing.JFrame {
                 startTrackingButton = null;
 
                 ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
+                homeographyMatrix = homeography.calculateHomography();
                 addNextFrameButton();
 
             }
@@ -340,10 +345,8 @@ public class MainApp extends javax.swing.JFrame {
         newPointButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!selectingFirst) {
-                    selectingPoint = true;
-                }
+            public void actionPerformed(final ActionEvent e) {
+                selectingPoint = true;
             }
         });
         deletePointButton.addActionListener(new ActionListener() {
@@ -409,11 +412,24 @@ public class MainApp extends javax.swing.JFrame {
                 	}
 
                 }
+
                 if (ac != null) {
                 	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
                 	ac.adapt(coloredFrame);
                 	for (Contour c : contour) {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
+
+                		SimpleMatrix pos = new SimpleMatrix(3, 1);
+                		pos.set(0, c.minX());
+                		pos.set(1, c.maxY());
+                		pos.set(2, 1);
+
+                		SimpleMatrix mapped = homeographyMatrix.mult(pos);
+                		mapped = mapped.divide(mapped.get(2));
+
+                		BufferedImage image = soccerFieldPanel.getImage();
+                		image.setRGB((int) mapped.get(0), (int) mapped.get(1), Color.black.getRGB());
+                		soccerFieldPanel.setImage(image);
                 	}
                 	imagePanel.setImage(coloredFrame);
                 } else {
