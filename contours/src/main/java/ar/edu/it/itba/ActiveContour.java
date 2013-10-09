@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,6 +16,14 @@ import ar.edu.it.itba.PointMapping.Provider;
 
 public class ActiveContour {
 
+	// Define the radiud to find the colors for the objects to track
+	public final static int RADIUS_X = 20;
+	public final static int RADIUS_Y = 30;
+	public final static int ALPHA = 2;
+	public final static int BETA = 3;
+	public final static int BUCKETS = 32;
+	public final static double PONDER[] = new double[]{ 1, 0.25, 0.25 };
+	
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
 	private static double SIGMA = 0.6;
@@ -32,8 +42,8 @@ public class ActiveContour {
 
 	private final Contour[] contours;
 
-	private final Color[] omega;
-	private final Color[] omegaZero;
+	private final Color[][] omega;
+	private final Color[][] omegaZero;
 
 	private final PointMapping theta;
 
@@ -43,14 +53,39 @@ public class ActiveContour {
 		// it *must* happen before anything else
 		theta = getTheta(c);
 
-		omega = new Color[c.length];
-		omegaZero = new Color[c.length];
+		omega = new Color[c.length][];
+		omegaZero = new Color[c.length][];
 
 		for (int i = 0; i < c.length; i++) {
-			omega[i] = getAverageColor(frame, contours[i]);
-			omegaZero[i] = getAverageBackgroundColor(frame, contours[i]);
+			omega[i] = getCharacteristics(frame, contours[i]);
+			omegaZero[i] = getBackgroundCharacteristics(frame, contours[i]);
 		}
 
+	}
+
+	private Color[] getCharacteristics(BufferedImage frame, Contour contour) {
+		List<Color> colors = new ArrayList<Color>();
+		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
+		colors.add(getAverageColor(frame, contour));
+		return arrayResult(colors);
+	}
+
+
+	private Color[] arrayResult(List<Color> colors) {
+		Color[] result = new Color[colors.size()];
+		int i = 0;
+		for (Color color : colors) {
+			result[i++] = color;
+		}
+		return result;
+	}
+
+	private Color[] getBackgroundCharacteristics(BufferedImage frame,
+			Contour contour) {
+		List<Color> colors = new ArrayList<Color>();
+		colors.add(getAverageBackgroundColor(frame, contour));
+		colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
+		return arrayResult(colors);
 	}
 
 	public Contour[] adapt(final BufferedImage frame) {
@@ -273,8 +308,8 @@ public class ActiveContour {
 		}
 	}
 
-	static PointMapping getF(final BufferedImage frame, final Color omegaZero,
-			final Color omega) {
+	static PointMapping getF(final BufferedImage frame, final Color omegaZero[],
+			final Color[] omega) {
 		return new PointMapping(new Provider() {
 
 			@Override
@@ -284,55 +319,206 @@ public class ActiveContour {
 		});
 	}
 
-	private static Double prob(final Color color, final Color omegaZero, final Color omega) {
+	private static Double prob(final Color color, final Color omegaZero[], final Color omega[]) {
 		return Math.log((1 - diffColor(color, omega)) / (1 - diffColor(color, omegaZero)));
 	}
 
-	private static double diffColor(final Color color, final Color referenceColor) {
-		double red = Math.abs(color.getRed() - referenceColor.getRed());
-		double green = Math.abs(color.getGreen() - referenceColor.getGreen());
-		double blue = Math.abs(color.getBlue() - referenceColor.getBlue());
-		return red * green * blue / Math.pow(256, 3);
-	}
-
-	static Color getAverageColor(final BufferedImage frame, final Contour r) {
-		double avgRed = 0;
-		double avgGreen = 0;
-		double avgBlue = 0;
-		int pixels = 0;
-		for (Point p : r) {
-			Color c = new Color(frame.getRGB(p.x, p.y));
-			avgRed += c.getRed();
-			avgGreen += c.getGreen();
-			avgBlue += c.getBlue();
-			pixels++;
+	private static double diffColor(final Color color, final Color ... referenceColors) {
+		double red = 0;
+		double green = 0;
+		double blue = 0;
+		int i = 0;
+		for (Color referenceColor : referenceColors) {
+			red += Math.abs(color.getRed() - referenceColor.getRed()) * PONDER[i];
+			green += Math.abs(color.getGreen() - referenceColor.getGreen()) * PONDER[i];
+			blue += Math.abs(color.getBlue() - referenceColor.getBlue()) * PONDER[i];
+			i++;
 		}
-		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
+		return red * green * blue / (Math.pow(256, 3));
 	}
 
-	private Color getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
-		double avgRed = 0;
-		double avgGreen = 0;
-		double avgBlue = 0;
-		int pixels = 0;
+	private Color getAverageBackgroundColor(BufferedImage frame, Contour r) {
+		int med_x = 0;
+		int med_y = 0;
+		for (Point p : r.getLout()) {
+			med_x += p.x;
+			med_y += p.y;
+		}
+		med_x /= r.getLout().size();
+		med_y /= r.getLout().size();
+		double red = 0;
+		double green = 0;
+		double blue = 0;
+		double sum = 0;
+		for (int x = med_x - RADIUS_X; x <= med_x + RADIUS_X; x++) {
+			for (int y = med_y - RADIUS_Y; y <= med_y + RADIUS_Y; y++) {
+				Point p = new Point(x, y);
+				if (!r.contains(x, y)) {
+					Color c = new Color(frame.getRGB(p.x, p.y));
+					double distFactor = Math.abs(med_x - x)/RADIUS_X + Math.abs(med_y - y)*RADIUS_Y;
+					red += c.getRed() * distFactor;
+					green += c.getGreen() * distFactor;
+					blue += c.getBlue() * distFactor;
+					sum += distFactor;
+				}
+			}
+		}
+		return new Color((int) (red / sum),
+				(int) (green / sum),
+				(int) (blue / sum));
+	}
 
+	static private Color getAverageColor(BufferedImage frame, Contour r) {
+		double red = 0;
+		double green = 0;
+		double blue = 0;
+		int points = 0;
+		for (Point p : r.getLout()) {
+			Color c = new Color(frame.getRGB(p.x, p.y));
+			red += c.getRed();
+			green += c.getGreen();
+			blue += c.getBlue();
+			points++;
+		}
+		double avgRed = red / points;
+		double avgGreen = green / points;
+		double avgBlue = blue / points;
+		return new Color((int) avgRed, (int) avgGreen, (int) avgBlue);
+	}
+
+	static Color[] mostFrequentColors(final BufferedImage frame, final Contour r) {
+		double red[] = new double[BUCKETS];
+		double green[] = new double[BUCKETS];
+		double blue[] = new double[BUCKETS];
+		Set<Point> visited = new HashSet<Point>();
+
+		for (Point p : r.getLout()) {
+			visited.add(p);
+		}
+		final Deque<Point> queue = new LinkedList<Point>();
+		for (Point p : r.getLin()) {
+			visited.add(p);
+			queue.push(p);
+		}
+		int iterations = 0;
+		while (!queue.isEmpty() && iterations < MAX_ITERATIONS) {
+			iterations++;
+			final Point p = queue.pop();
+			Color c = new Color(frame.getRGB(p.x, p.y));
+			red[c.getRed() / BUCKETS] += 1;
+			green[c.getGreen() / BUCKETS] += 1;
+			blue[c.getBlue() / BUCKETS] += 1;
+			for (Point n : neighbors(p, Integer.MAX_VALUE, Integer.MAX_VALUE)) {
+				if (!visited.contains(n)) {
+					visited.add(n);
+					queue.push(n);
+				}
+			}
+		}
+		return extractThreeMostCommon(red, green, blue);
+	}
+
+	private static Color[] extractThreeMostCommon(double[] red, double[] green,
+			double[] blue) {
+		int avgRed = 0;
+		int avgGreen = 0;
+		int avgBlue = 0;
+		for (int i = 0; i < BUCKETS; i++) {
+			avgRed = red[avgRed] > red[i] ? avgRed : i;
+			avgGreen = green[avgGreen] > green[i] ? avgGreen : i;
+			avgBlue = blue[avgBlue] > blue[i] ? avgBlue : i; 
+		}
+		Color results[] = new Color[3];
+		results[0] = new Color((int) ((avgRed + 0.5) * BUCKETS),
+				(int) ((avgGreen + 0.5) * BUCKETS),
+				(int) ((avgBlue + 0.5) * BUCKETS));
+		double FRACTION_OF_MOST_COMMON = 0.5;
+		for (int i = 0; i < BUCKETS; i++) {
+			if (red[i] >= FRACTION_OF_MOST_COMMON * red[avgRed]) {
+				red[i] = 0;
+			}
+			if (green[i] >= FRACTION_OF_MOST_COMMON * green[avgGreen]) {
+				green[i] = 0;
+			}
+			if (blue[i] >= FRACTION_OF_MOST_COMMON * blue[avgBlue]) {
+				blue[i] = 0;
+			}
+		}
+		avgRed = 0;
+		avgGreen = 0;
+		avgBlue = 0;
+		boolean changed = false;
+		for (int i = 0; i < BUCKETS; i++) {
+			if (red[avgRed] < red[i]) {
+				changed = true;
+				avgRed = i;
+			}
+			if (green[avgGreen] < green[i]) {
+				changed = true;
+				avgGreen = i;
+			}
+			if (blue[avgBlue] < blue[i]) {
+				changed = true;
+				avgBlue = i;
+			}
+		}
+		if (true || !changed) {
+			return new Color[] { results[0] };
+		}
+		results[1] = new Color((int) ((avgRed + 0.5) * BUCKETS),
+				(int) ((avgGreen + 0.5) * BUCKETS),
+				(int) ((avgBlue + 0.5) * BUCKETS));
+		red[avgRed] = 0;
+		green[avgGreen] = 0;
+		blue[avgBlue] = 0;
+		avgRed = 0;
+		avgGreen = 0;
+		avgBlue = 0;
+		changed = false;
+		for (int i = 0; i < BUCKETS; i++) {
+			if (red[avgRed] < red[i]) {
+				changed = true;
+				avgRed = i;
+			}
+			if (green[avgGreen] < green[i]) {
+				changed = true;
+				avgGreen = i;
+			}
+			if (blue[avgBlue] < blue[i]) {
+				changed = true;
+				avgBlue = i;
+			}
+		}
+		if (!changed) {
+			return new Color[] { results[0], results[1] };
+		}
+		results[2] = new Color((int) ((avgRed + 0.5) * BUCKETS),
+				(int) ((avgGreen + 0.5) * BUCKETS),
+				(int) ((avgBlue + 0.5) * BUCKETS));
+		
+		
+		return results;
+	}
+
+	private Color[] getMostFrequentBackgroundColors(final BufferedImage frame, final Contour r) {
 		int maxX = Math.min(frame.getWidth(), r.maxX() + 15);
 		int maxY = Math.min(frame.getHeight(), r.maxY() + 15);
 
+		double red[] = new double[BUCKETS];
+		double green[] = new double[BUCKETS];
+		double blue[] = new double[BUCKETS];
 		for (int i = Math.max(0, r.minX() - 15); i < maxX; i++) {
 			for (int j = Math.max(0, r.minY() - 15); j < maxY; j++) {
 
 				if (!r.contains(i, j)) {
 					Color c = new Color(frame.getRGB(i, j));
-					avgRed += c.getRed();
-					avgGreen += c.getGreen();
-					avgBlue += c.getBlue();
-					pixels++;
+					red[c.getRed() / BUCKETS] += 1;
+					green[c.getGreen() / BUCKETS] += 1;
+					blue[c.getBlue() / BUCKETS] += 1;
 				}
 			}
 		}
-
-		return new Color((int) (avgRed/pixels), (int) (avgGreen/pixels), (int)(avgBlue/pixels));
+		return extractThreeMostCommon(red, green, blue);
 	}
 
 	static boolean endCondition(final PointMapping F_d, final BufferedImage coloredFrame, final Contour r) {
