@@ -11,10 +11,12 @@ public class Contour implements Iterable<Point>{
 
 	private final List<Point> points;
 	private final List<Point> lin;
+        public final int color;
 
 	private Set<Point> internalPoints;
 
-	public Contour(final Rectangle rect) {
+	public Contour(int color, final Rectangle rect) {
+                this.color = color;
 		points = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
 		lin = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
 		for (int i = 0; i < rect.width; i++) {
@@ -43,13 +45,14 @@ public class Contour implements Iterable<Point>{
 		}
 	}
 
-	public Contour(final List<Point> lout, final List<Point> lin) {
+	public Contour(final int color, final List<Point> lout, final List<Point> lin) {
+        	this.color = color;
 		points = lout;
 		this.lin = lin;
 	}
 
-	public static Contour aroundPoint(final Point point) {
-		return new Contour(new Rectangle(point.x - 5, point.y - 5, 10, 10));
+	public static Contour aroundPoint(final int color, final Point point) {
+		return new Contour(color, new Rectangle(point.x - 5, point.y - 5, 10, 10));
 	}
 
 	public int minX() {

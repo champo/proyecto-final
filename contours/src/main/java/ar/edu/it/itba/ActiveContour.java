@@ -44,6 +44,7 @@ public class ActiveContour {
 
 	private final Color[][] omega;
 	private final Color[][] omegaZero;
+        private final int[][] phi;
 
 	private final PointMapping theta;
 
@@ -51,6 +52,7 @@ public class ActiveContour {
 		contours = c;
 		// Calculating theta makes contours defien their internal points
 		// it *must* happen before anything else
+                phi = new int[frame.getWidth()][frame.getHeight()];
 		theta = getTheta(c);
 
 		omega = new Color[c.length][];
@@ -139,7 +141,7 @@ public class ActiveContour {
 		return contours;
 	}
 
-	private static void calculateGauss(final List<Point> points, final PointMapping theta,
+	private void calculateGauss(final List<Point> points, final PointMapping theta,
 			final PointMapping f_s) {
 
 		for (Point point : points) {
@@ -162,7 +164,7 @@ public class ActiveContour {
 
 	}
 
-	private static void applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
+	private void applyForce(final Contour r, final PointMapping force, final PointMapping theta, final BufferedImage frame) {
 		List<Point> lout = r.getLout();
 		List<Point> lin = r.getLin();
 		for (int i = 0; i < lout.size(); i++) {
@@ -173,8 +175,9 @@ public class ActiveContour {
 				r.addPoint(p);
 				theta.set(p, -1);
 				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
-					if (theta.getValue(n) == 3) {
+					if (theta.getValue(n) == 3 && phi[n.x][n.y] == 0) {
 						lout.add(n);
+                                                phi[p.x][p.y] = r.color;
 						theta.set(n, 1);
 					}
 				}
@@ -226,6 +229,7 @@ public class ActiveContour {
 			}
 			if (neighbors == 4) {
 				lout.remove(i);
+                                phi[l.x][l.y] = 0;
 				theta.set(l, 3);
 				i--;
 			}
@@ -255,7 +259,7 @@ public class ActiveContour {
 		return l;
 	}
 
-	private static PointMapping getTheta(final Contour... contours) {
+	private PointMapping getTheta(final Contour... contours) {
 
 		PointMapping theta = new PointMapping(new Provider() {
 
@@ -273,19 +277,21 @@ public class ActiveContour {
 		return theta;
 	}
 
-	private static void markInternalPoints(final PointMapping theta, final Contour r) {
+	private void markInternalPoints(final PointMapping theta, final Contour r) {
 
 		Set<Point> internalPoints = new HashSet<Point>();
 		Set<Point> externalPoints = new HashSet<Point>();
 
 		for (Point p : r.getLout()) {
 			externalPoints.add(p);
+                        phi[p.x][p.y] = r.color;
 			theta.set(p, 1);
 		}
 		final Deque<Point> queue = new LinkedList<Point>();
 		for (Point p : r.getLin()) {
 			internalPoints.add(p);
 			theta.set(p, -1);
+                        phi[p.x][p.y] = r.color;
 			queue.push(p);
 		}
 		int iterations = 0;
@@ -297,6 +303,7 @@ public class ActiveContour {
 					internalPoints.add(n);
 					queue.push(n);
 					theta.set(n, -3);
+					phi[p.x][p.y] = r.color;
 				}
 			}
 		}
@@ -523,6 +530,7 @@ public class ActiveContour {
 
 	static boolean endCondition(final PointMapping F_d, final BufferedImage coloredFrame, final Contour r) {
 
+            // WARNING! FALTA CONSIDERAR PHI ACA
 		for (Point p : r.getLout()) {
 			if (F_d.getValue(p) > 0) {
 				return false;
@@ -539,4 +547,9 @@ public class ActiveContour {
 	private static int max(final int a, final int b) {
 		return a > b ? a : b;
 	}
+
+    public int[][] getMapping() {
+        return phi;
+    }
+
 }
