@@ -49,7 +49,7 @@ class HomeographyManager {
         points.add(new Pair(imagePoint, mappedPoint));
     }
 
-    public SimpleMatrix calculateHomography() {
+    public Homography calculateHomography() {
     	DenseMatrix64F a = new DenseMatrix64F(points.size() * 2, 9);
 
     	for (int i = 0; i < points.size(); i++) {
@@ -82,7 +82,7 @@ class HomeographyManager {
 			result.set(i, ratio * v.get(i, v.numCols - 1));
 		}
 
-		return result;
+		return new Homography(result);
     }
 
     ListModel getListModel() {

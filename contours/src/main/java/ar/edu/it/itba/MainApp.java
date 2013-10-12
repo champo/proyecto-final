@@ -25,8 +25,6 @@ import javax.imageio.ImageIO;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.ejml.simple.SimpleMatrix;
-
 /**
  *
  * @author eordano
@@ -63,13 +61,13 @@ public class MainApp extends javax.swing.JFrame {
     private final List<Contour> contour = new ArrayList<Contour>();
 
     private MouseListener mouseListener;
-    private HomeographyManager homeography;
+    private HomeographyManager homeographyManager;
     private int selected = 1;
 
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
     private Button startTrackingButton;
-	protected SimpleMatrix homeographyMatrix;
+	protected Homography homeography;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -256,9 +254,9 @@ public class MainApp extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void appendHomeographyPair(Point imagePoint, Point mappedPoint) {
-        homeography.setMapping(imagePoint, mappedPoint);
+
+    private void appendHomeographyPair(final Point imagePoint, final Point mappedPoint) {
+        homeographyManager.setMapping(imagePoint, mappedPoint);
     }
     private void checkPair() {
         if (this.currentMappedPoint != null && this.currentImagePoint != null) {
@@ -279,7 +277,7 @@ public class MainApp extends javax.swing.JFrame {
     }
 
     private MainApp run() throws IOException {
-        homeography = new HomeographyManager();
+        homeographyManager = new HomeographyManager();
 
         frameDecoder = new FrameDecoder("src/main/resources/Slower10sec.mpeg");
         imagePanel = new ImagePanel();
@@ -333,7 +331,7 @@ public class MainApp extends javax.swing.JFrame {
                 startTrackingButton = null;
 
                 ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
-                homeographyMatrix = homeography.calculateHomography();
+                homeography = homeographyManager.calculateHomography();
                 addNextFrameButton();
 
             }
@@ -384,8 +382,8 @@ public class MainApp extends javax.swing.JFrame {
         deletePointButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                homeography.removeItem(pointsList.getSelectedIndex());
+            public void actionPerformed(final ActionEvent e) {
+                homeographyManager.removeItem(pointsList.getSelectedIndex());
                 pointsList.updateUI();
                 deletePointButton.setEnabled(false);
             }
@@ -393,7 +391,7 @@ public class MainApp extends javax.swing.JFrame {
         pointsList.addListSelectionListener(new ListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(final ListSelectionEvent e) {
                 deletePointButton.setEnabled(true);
             }
         });
@@ -405,12 +403,12 @@ public class MainApp extends javax.swing.JFrame {
         frameDecoder.nextFrame();
         frameDecoder.nextFrame();
         frameDecoder.nextFrame();
-        pointsList.setModel(homeography.getListModel());
+        pointsList.setModel(homeographyManager.getListModel());
 
         loadNextFrame();
         return this;
     }
-    
+
     private void addNextFrameButton() {
         Button button = new Button("Next frame");
         button.setSize(new Dimension(100, 10));
@@ -459,16 +457,10 @@ public class MainApp extends javax.swing.JFrame {
                 	for (Contour c : contour) {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
 
-                		SimpleMatrix pos = new SimpleMatrix(3, 1);
-                		pos.set(0, c.minX());
-                		pos.set(1, c.maxY());
-                		pos.set(2, 1);
-
-                		SimpleMatrix mapped = homeographyMatrix.mult(pos);
-                		mapped = mapped.divide(mapped.get(2));
+                		Point mapped = homeography.apply(c.minX(), c.maxX());
 
                 		BufferedImage image = soccerFieldPanel.getImage();
-                		image.setRGB((int) mapped.get(0), (int) mapped.get(1), Color.black.getRGB());
+                		image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
                 		soccerFieldPanel.setImage(image);
                 	}
                 	imagePanel.setImage(coloredFrame);
