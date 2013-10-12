@@ -457,11 +457,14 @@ public class MainApp extends javax.swing.JFrame {
                 	for (Contour c : contour) {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
 
-                		Point mapped = homeography.apply(c.minX(), c.maxX());
+                		if (homeography != null) {
+                			Point mapped = homeography.apply(c.minX(), c.maxX());
 
-                		BufferedImage image = soccerFieldPanel.getImage();
-                		image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
-                		soccerFieldPanel.setImage(image);
+                			BufferedImage image = soccerFieldPanel.getImage();
+                			image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
+
+                			soccerFieldPanel.setImage(image);
+                		}
                 	}
                 	imagePanel.setImage(coloredFrame);
                 } else {

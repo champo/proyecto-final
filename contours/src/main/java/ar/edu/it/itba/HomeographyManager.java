@@ -50,6 +50,10 @@ class HomeographyManager {
     }
 
     public Homography calculateHomography() {
+    	if (points.size() < 4) {
+    		return null;
+    	}
+
     	DenseMatrix64F a = new DenseMatrix64F(points.size() * 2, 9);
 
     	for (int i = 0; i < points.size(); i++) {
