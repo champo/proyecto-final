@@ -6,6 +6,7 @@ package ar.edu.it.itba;
 
 import java.awt.Button;
 import java.awt.Color;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -85,9 +86,10 @@ public class MainApp extends javax.swing.JFrame {
         pointsList = new javax.swing.JList();
         newPointButton = new javax.swing.JButton();
         deletePointButton = new javax.swing.JButton();
-        soccerFieldContainer = new javax.swing.JPanel();
         calculateButton = new javax.swing.JButton();
         mapButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        soccerFieldContainer = new javax.swing.JPanel();
         videoControlPanel = new javax.swing.JPanel();
         phiImagePanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -119,17 +121,6 @@ public class MainApp extends javax.swing.JFrame {
             }
         });
 
-        org.jdesktop.layout.GroupLayout soccerFieldContainerLayout = new org.jdesktop.layout.GroupLayout(soccerFieldContainer);
-        soccerFieldContainer.setLayout(soccerFieldContainerLayout);
-        soccerFieldContainerLayout.setHorizontalGroup(
-            soccerFieldContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
-        );
-        soccerFieldContainerLayout.setVerticalGroup(
-            soccerFieldContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
-        );
-
         calculateButton.setText("Calculate");
         calculateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,23 +129,37 @@ public class MainApp extends javax.swing.JFrame {
         });
 
         mapButton.setText("Map point");
-        mapButton.setEnabled(false);
         mapButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mapButtonActionPerformed(evt);
             }
         });
 
+        jScrollPane3.setMaximumSize(new java.awt.Dimension(403, 551));
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(403, 551));
+
+        org.jdesktop.layout.GroupLayout soccerFieldContainerLayout = new org.jdesktop.layout.GroupLayout(soccerFieldContainer);
+        soccerFieldContainer.setLayout(soccerFieldContainerLayout);
+        soccerFieldContainerLayout.setHorizontalGroup(
+            soccerFieldContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 403, Short.MAX_VALUE)
+        );
+        soccerFieldContainerLayout.setVerticalGroup(
+            soccerFieldContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 642, Short.MAX_VALUE)
+        );
+
+        jScrollPane3.setViewportView(soccerFieldContainer);
+
         org.jdesktop.layout.GroupLayout homeographyMappingPanelLayout = new org.jdesktop.layout.GroupLayout(homeographyMappingPanel);
         homeographyMappingPanel.setLayout(homeographyMappingPanelLayout);
         homeographyMappingPanelLayout.setHorizontalGroup(
             homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, homeographyMappingPanelLayout.createSequentialGroup()
+            .add(homeographyMappingPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(soccerFieldContainer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, homeographyMappingPanelLayout.createSequentialGroup()
+                .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1)
+                    .add(homeographyMappingPanelLayout.createSequentialGroup()
                         .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
                             .add(org.jdesktop.layout.GroupLayout.LEADING, homeographyMappingPanelLayout.createSequentialGroup()
@@ -165,7 +170,8 @@ public class MainApp extends javax.swing.JFrame {
                                 .add(calculateButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(mapButton)))
-                        .add(0, 21, Short.MAX_VALUE)))
+                        .add(0, 0, Short.MAX_VALUE))
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
                 .addContainerGap())
         );
         homeographyMappingPanelLayout.setVerticalGroup(
@@ -182,7 +188,7 @@ public class MainApp extends javax.swing.JFrame {
                     .add(calculateButton)
                     .add(mapButton))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(soccerFieldContainer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -392,10 +398,11 @@ public class MainApp extends javax.swing.JFrame {
         videoControlPanel.add(startTrackingButton);
 
         soccerFieldPanel = new ImagePanel();
-        BufferedImage soccerField = ImageIO.read(new File("src/main/resources/soccer_field.jpg"));
+        soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
+        
+        BufferedImage soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
-        soccerFieldContainer.setLayout(new GridLayout(1, 1));
-        //soccerFieldContainer.setPreferredSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
+        soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
         soccerFieldPanel.addMouseListener(new MouseListener() {
 
             @Override
@@ -422,7 +429,6 @@ public class MainApp extends javax.swing.JFrame {
             }
 
         });
-        soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
         
         newPointButton.addActionListener(new ActionListener() {
 
@@ -466,6 +472,15 @@ public class MainApp extends javax.swing.JFrame {
         frameDecoder.nextFrame();
         frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
+        
+        
+        Dimension oldSoccerSize = soccerFieldContainer.getPreferredSize();
+        oldSoccerSize.height = soccerField.getHeight();
+        soccerFieldPanel.setPreferredSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
+        soccerFieldContainer.setPreferredSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
+        jScrollPane3.setPreferredSize(oldSoccerSize);
+        jScrollPane3.setMaximumSize(oldSoccerSize);
+        
 
         loadNextFrame();
         return this;
@@ -548,6 +563,7 @@ public class MainApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton mapButton;
     private javax.swing.JButton newPointButton;
     private javax.swing.JPanel phiImagePanel;
