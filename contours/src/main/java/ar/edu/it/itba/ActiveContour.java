@@ -44,7 +44,7 @@ public class ActiveContour {
 
 	private final Color[][] omega;
 	private final Color[][] omegaZero;
-        private final int[][] phi;
+	private final int[][] phi;
 
 	private final PointMapping theta;
 
@@ -52,7 +52,7 @@ public class ActiveContour {
 		contours = c;
 		// Calculating theta makes contours defien their internal points
 		// it *must* happen before anything else
-                phi = new int[frame.getWidth()][frame.getHeight()];
+		phi = new int[frame.getWidth()][frame.getHeight()];
 		theta = getTheta(c);
 
 		omega = new Color[c.length][];
@@ -65,7 +65,7 @@ public class ActiveContour {
 
 	}
 
-	private Color[] getCharacteristics(BufferedImage frame, Contour contour) {
+	private Color[] getCharacteristics(final BufferedImage frame, final Contour contour) {
 		List<Color> colors = new ArrayList<Color>();
 		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		colors.add(getAverageColor(frame, contour));
@@ -73,7 +73,7 @@ public class ActiveContour {
 	}
 
 
-	private Color[] arrayResult(List<Color> colors) {
+	private Color[] arrayResult(final List<Color> colors) {
 		Color[] result = new Color[colors.size()];
 		int i = 0;
 		for (Color color : colors) {
@@ -177,7 +177,7 @@ public class ActiveContour {
 				for (Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == 3 && phi[n.x][n.y] == 0) {
 						lout.add(n);
-                                                phi[p.x][p.y] = r.color;
+						phi[p.x][p.y] = r.color;
 						theta.set(n, 1);
 					}
 				}
@@ -229,7 +229,7 @@ public class ActiveContour {
 			}
 			if (neighbors == 4) {
 				lout.remove(i);
-                                phi[l.x][l.y] = 0;
+				phi[l.x][l.y] = 0;
 				theta.set(l, 3);
 				i--;
 			}
@@ -284,14 +284,14 @@ public class ActiveContour {
 
 		for (Point p : r.getLout()) {
 			externalPoints.add(p);
-                        phi[p.x][p.y] = r.color;
+            phi[p.x][p.y] = r.color;
 			theta.set(p, 1);
 		}
 		final Deque<Point> queue = new LinkedList<Point>();
 		for (Point p : r.getLin()) {
 			internalPoints.add(p);
 			theta.set(p, -1);
-                        phi[p.x][p.y] = r.color;
+            phi[p.x][p.y] = r.color;
 			queue.push(p);
 		}
 		int iterations = 0;
@@ -331,17 +331,21 @@ public class ActiveContour {
 	}
 
 	private static double diffColor(final Color color, final Color ... referenceColors) {
-		double red = 0;
-		double green = 0;
-		double blue = 0;
+		double result = 0;
+
 		int i = 0;
+
+
 		for (Color referenceColor : referenceColors) {
-			red += Math.abs(color.getRed() - referenceColor.getRed()) * PONDER[i];
-			green += Math.abs(color.getGreen() - referenceColor.getGreen()) * PONDER[i];
-			blue += Math.abs(color.getBlue() - referenceColor.getBlue()) * PONDER[i];
+
+			double diff = Math.abs(color.getRed() - referenceColor.getRed())
+					+ Math.abs(color.getGreen() - referenceColor.getGreen())
+					+ Math.abs(color.getBlue() - referenceColor.getBlue());
+			result += diff * PONDER[i];
 			i++;
+
 		}
-		return red * green * blue / (Math.pow(256, 3));
+		return result / Math.pow(256, 3);
 	}
 
 	private Color getAverageBackgroundColor(BufferedImage frame, Contour r) {
@@ -357,8 +361,12 @@ public class ActiveContour {
 		double green = 0;
 		double blue = 0;
 		double sum = 0;
-		for (int x = med_x - RADIUS_X; x <= med_x + RADIUS_X; x++) {
-			for (int y = med_y - RADIUS_Y; y <= med_y + RADIUS_Y; y++) {
+
+		int maxX = Math.min(frame.getWidth() -1, med_x + RADIUS_X);
+		int maxY = Math.min(frame.getHeight() - 1, med_y + RADIUS_Y);
+
+		for (int x = Math.max(0, med_x - RADIUS_X); x <= maxX; x++) {
+			for (int y = Math.max(0, med_y - RADIUS_Y); y <= maxY; y++) {
 				Point p = new Point(x, y);
 				if (!r.contains(x, y)) {
 					Color c = new Color(frame.getRGB(p.x, p.y));
@@ -530,7 +538,7 @@ public class ActiveContour {
 
 	static boolean endCondition(final PointMapping F_d, final BufferedImage coloredFrame, final Contour r) {
 
-            // WARNING! FALTA CONSIDERAR PHI ACA
+		// WARNING! FALTA CONSIDERAR PHI ACA
 		for (Point p : r.getLout()) {
 			if (F_d.getValue(p) > 0) {
 				return false;
