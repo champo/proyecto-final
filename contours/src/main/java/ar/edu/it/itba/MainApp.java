@@ -68,6 +68,7 @@ public class MainApp extends javax.swing.JFrame {
     private boolean selectingPoint = false;
     private Button startTrackingButton;
 	protected Homography homeography;
+	protected boolean mappingPoint;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -78,7 +79,6 @@ public class MainApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        imageContainerPanel = new javax.swing.JPanel();
         homeographyMappingPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -86,21 +86,14 @@ public class MainApp extends javax.swing.JFrame {
         newPointButton = new javax.swing.JButton();
         deletePointButton = new javax.swing.JButton();
         soccerFieldContainer = new javax.swing.JPanel();
+        calculateButton = new javax.swing.JButton();
+        mapButton = new javax.swing.JButton();
         videoControlPanel = new javax.swing.JPanel();
         phiImagePanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        imageContainerPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        org.jdesktop.layout.GroupLayout imageContainerPanelLayout = new org.jdesktop.layout.GroupLayout(imageContainerPanel);
-        imageContainerPanel.setLayout(imageContainerPanelLayout);
-        imageContainerPanelLayout.setHorizontalGroup(
-            imageContainerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
-        );
-        imageContainerPanelLayout.setVerticalGroup(
-            imageContainerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 498, Short.MAX_VALUE)
-        );
 
         jLabel1.setText("Puntos identificados en la cancha");
 
@@ -137,6 +130,21 @@ public class MainApp extends javax.swing.JFrame {
             .add(0, 0, Short.MAX_VALUE)
         );
 
+        calculateButton.setText("Calculate");
+        calculateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateButtonActionPerformed(evt);
+            }
+        });
+
+        mapButton.setText("Map point");
+        mapButton.setEnabled(false);
+        mapButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mapButtonActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout homeographyMappingPanelLayout = new org.jdesktop.layout.GroupLayout(homeographyMappingPanel);
         homeographyMappingPanel.setLayout(homeographyMappingPanelLayout);
         homeographyMappingPanelLayout.setHorizontalGroup(
@@ -147,13 +155,17 @@ public class MainApp extends javax.swing.JFrame {
                     .add(soccerFieldContainer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, homeographyMappingPanelLayout.createSequentialGroup()
-                        .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(homeographyMappingPanelLayout.createSequentialGroup()
+                        .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, homeographyMappingPanelLayout.createSequentialGroup()
                                 .add(newPointButton)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(deletePointButton))
-                            .add(jLabel1))
-                        .add(0, 340, Short.MAX_VALUE)))
+                                .add(deletePointButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(calculateButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(mapButton)))
+                        .add(0, 21, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         homeographyMappingPanelLayout.setVerticalGroup(
@@ -166,7 +178,9 @@ public class MainApp extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(newPointButton)
-                    .add(deletePointButton))
+                    .add(deletePointButton)
+                    .add(calculateButton)
+                    .add(mapButton))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(soccerFieldContainer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -194,16 +208,30 @@ public class MainApp extends javax.swing.JFrame {
             .add(0, 444, Short.MAX_VALUE)
         );
 
+        imageContainerPanel.setMaximumSize(new java.awt.Dimension(836, 498));
+
+        org.jdesktop.layout.GroupLayout imageContainerPanelLayout = new org.jdesktop.layout.GroupLayout(imageContainerPanel);
+        imageContainerPanel.setLayout(imageContainerPanelLayout);
+        imageContainerPanelLayout.setHorizontalGroup(
+            imageContainerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 980, Short.MAX_VALUE)
+        );
+        imageContainerPanelLayout.setVerticalGroup(
+            imageContainerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 513, Short.MAX_VALUE)
+        );
+
+        jScrollPane2.setViewportView(imageContainerPanel);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(phiImagePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(imageContainerPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(phiImagePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 984, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
@@ -220,8 +248,8 @@ public class MainApp extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(videoControlPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
-                        .add(imageContainerPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 21, Short.MAX_VALUE)
                         .add(phiImagePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -229,13 +257,22 @@ public class MainApp extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void deletePointButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePointButtonActionPerformed
+    private void deletePointButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePointButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_deletePointButtonActionPerformed
 
     private void newPointButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPointButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_newPointButtonActionPerformed
+
+    private void calculateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateButtonActionPerformed
+        homeography = homeographyManager.calculateHomography();
+        mapButton.setEnabled(homeography != null);
+    }//GEN-LAST:event_calculateButtonActionPerformed
+
+    private void mapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mapButtonActionPerformed
+        mappingPoint = true;
+    }//GEN-LAST:event_mapButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,7 +342,22 @@ public class MainApp extends javax.swing.JFrame {
 
             @Override
             public void mouseClicked(final MouseEvent arg0) {
-            	if (selectingPoint) {
+            	if (mappingPoint) {
+            		if (homeography != null) {
+            			Point mapped = homeography.apply(arg0.getPoint());
+            			BufferedImage image = soccerFieldPanel.getImage();
+
+            			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
+            				System.out.println("Skipping point out of bounds");
+            				return;
+            			}
+
+            			image.setRGB(mapped.x, mapped.y, Color.red.getRGB());
+
+            			soccerFieldPanel.setImage(image);
+            		}
+            		mappingPoint = false;
+            	} else if (selectingPoint) {
                     setCurrentSelectedImagePoint(arg0.getPoint());
                 } else if (selectingFirst) {
                     contour.add(Contour.aroundPoint(selected++, arg0.getPoint()));
@@ -399,8 +451,18 @@ public class MainApp extends javax.swing.JFrame {
         pack();
         setVisible(true);
 
+        Dimension oldSize = imageContainerPanel.getPreferredSize();
+        
         // Skip first three frames cause it jumps to much
-        frameDecoder.nextFrame();
+        BufferedImage firstImage = frameDecoder.nextFrame();
+        Dimension frameSize = new Dimension(firstImage.getWidth(), firstImage.getHeight());
+        imagePanel.setPreferredSize(frameSize);
+        imageContainerPanel.setPreferredSize(frameSize);
+        
+        jScrollPane2.setPreferredSize(oldSize);
+        jScrollPane2.setMaximumSize(oldSize);
+        imageContainerPanel.revalidate();
+        
         frameDecoder.nextFrame();
         frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
@@ -479,12 +541,14 @@ public class MainApp extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton calculateButton;
     private javax.swing.JButton deletePointButton;
     private javax.swing.JPanel homeographyMappingPanel;
     private javax.swing.JPanel imageContainerPanel;
-    private javax.swing.JPanel imageContainerPanel1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton mapButton;
     private javax.swing.JButton newPointButton;
     private javax.swing.JPanel phiImagePanel;
     private javax.swing.JList pointsList;
