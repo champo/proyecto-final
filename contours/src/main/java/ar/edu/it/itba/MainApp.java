@@ -458,9 +458,14 @@ public class MainApp extends javax.swing.JFrame {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
 
                 		if (homeography != null) {
-                			Point mapped = homeography.apply(c.minX(), c.maxX());
-
                 			BufferedImage image = soccerFieldPanel.getImage();
+
+                			Point mapped = homeography.apply(c.minX(), c.maxX());
+                			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
+                				System.out.println("Skipping point out of bounds");
+                				continue;
+                			}
+
                 			image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
 
                 			soccerFieldPanel.setImage(image);
