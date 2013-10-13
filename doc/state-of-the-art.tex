@@ -98,8 +98,8 @@ Primero 6 camaras en la seccion \ref{sec:6-camaras}, 8 camaras en la seccion \re
 \section{Algoritmos de seguimiento}
 \label{sec:tracking}
 
-Conocemos 3 familias de algoritmos de tracking en video utilizando una sola camara.
-Estas son \textit{Linear Predictors}, \textit{Local learning} y \textit{Graph based}.
+Conocemos 4 familias de algoritmos de seguimiento en video.
+Estas son \textit{Predictores Lineales}, \textit{Aprendizaje Lineal}, \textit{Corte de Grafos}, y \textit{Contornos Activos}.
 Pasamos a describir las tecnicas usadas por estos.
 
 \subsection{Linear predictors}
@@ -548,6 +548,10 @@ Es por esto que el procedimiento para construir el clasificador,
 $R_{0},R_{x}$, respectivamente los que están dentro y fuera de la actual máscara
 del objeto. Pero si alguno de estos conjuntos tiene mñas de 200 elementos,
 entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
+
+\subsection{Contornos Activo}
+
+% TODO: Write me
 
 \section{Analisis de deportes con 6 camaras}
 \label{sec:6-camaras}
