@@ -102,26 +102,53 @@ Conocemos 4 familias de algoritmos de seguimiento en video.
 Estas son \textit{Predictores Lineales}, \textit{Aprendizaje Lineal}, \textit{Corte de Grafos}, y \textit{Contornos Activos}.
 Pasamos a describir las tecnicas usadas por estos.
 
-\subsection{Linear predictors}
+\subsection{Predictores Lineales}
 
-\textit{Linear Predictor} se refiere a crear una relacion lineal \[ Ax = b \] donde $A$ es un predictor, $x$ un valor medido y $b$ otro segundo valor relacionado a $x$ de alguna manera.
-En \cite{alp, original-linear-predictors} los autores utilizan predictores que relacionan muestras tomadas de la imagen con el cambio de posicion del objeto.
+Un \textit{Predictor Lineal} es una funcion que toma los valores de una serie de variables aleatorias y predice el valor de una variable dependiente.
+La funcion tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots + \beta_n x_n$, donde $x_i$ es una variable aleatoria y $\beta_i$ una constante.
+Se dice que el predictor es lineal al obligarse a $\beta_i$ a existir en los numeros reales.
+
+En \cite{alp, original-linear-predictors} los autores utilizan predictores para hacer seguimiento de objetos en video.
+El objetivo es relacionar el cambio de valor de varios pixeles cuadro a cuadro con el movimiento del objeto entre dichos cuadros.
+Para soportar cualquier clase de movimiento, este se representa mediante una homografia (\cite{homography-estimation}), $H \in R^{3,3}$.
+
+Entonces los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$ donde cada fila representa una funcion de prediccion.
+De 2 cuadros consecutivos se obtiene el vector de cambios de valor de pixeles $X = (x_1, \dots, x_n)$ y se computa:
+\begin{eqnarray*}
+    AX = B \\
+    B = (h_{1,1}, h_{1,2}, h_{1,3}, h_{2,1}, h_{2,2}, h_{2,3}, h_{3,1}, h_{3,2}, h_{3,3})
+\end{eqnarray*}
+Donde $B$ contiene los valores de la homografia ($H$) de movimiento entre los cuadros.
+
+\subsubsection{Calculo de los predictores}
 Para obtener la relacion $A$ se utiliza un paso inicial de entrenamiento.
-Se parte de una posicion conocida y se hacen multiples mutaciones obteniendo $N$ cambios de posiciones $b_i$ y sus correspondientes muestras $x_i$.
-Luego se define $X = (x_1, \dots, x_N)$ y $B = (b_1, \dots, b_N)$ y se resuelve $AX = B$.
+Primero se determina la posicion del objeto en un cuadro de manera supervisada.
+Una vez conocida la posicion, se toman $n$ muestras de valores de pixeles en ese cuadro.
 
-Una vez calculada $A$, en cada cuadro se toman muestras de la imagen usando la ultima posicion conocida del objeto.
-Usando estas muestras se calcula el cambio de posicion del objeto mediante $Ax$.
+Luego se crean $m$ perturbaciones de la posicion del objeto, y se computa la homografia $H_i$ que representa esa perturbacion.
+Llamemos al vector que representa esa homografia $B_i$.
+Ademas, tomamos muestras de valores de pixeles ($X_i$) con sus posiciones alteradas por la homografia $H_i$.
+Se puede entonces plantear:
+\begin{equation}
+    A \left( X_1 \lvert \dots \lvert X_m \right) = \left( B_1 \lvert \dots \lvert B_m \right)
+\end{equation}
+Que es un sistema de ecuaciones lineales que puede ser resulto de manera sencilla.
+
+\subsubsection{Mejoras}
+
 Para mejorar la efectividad de los algoritmos, se calculan varios predictores y se disponen en capas.
 Cada capa se construye para buscar cambios de posicion cada vez mas pequeños.
 Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
 
-\citeauthor*{alp} introducen varias tecnicas para hacer mas robusto el algoritmo.
-Primero calculan la relacion $A$ de forma tal que puede ser facilmente actualizada para soportar cambios en el objeto.
-Esto permite detectar oclusiones parciales y cambiar el predictor para que no busque las partes ocultas del objeto.
-Una vez que las partes ocultas del objeto entran en el campo visual de vuelta, se vuelve a agregar las partes del predictor que se quitaron previamente.
-Esta tecnica ademas permite reentrenar la relacion $A$ con poco costo computacional.
-Luego, para soportar cambios de iluminacion en la imagen siempre ajustan las muestras tomadas a una distribucion normal.
+\citeauthor*{alp} (\cite{alp}) introducen manejo de oclusiones parciales de manera eficiente.
+Para esto se divide el objeto en pequeñas secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de la siguiente manera:
+\begin{eqnarray*}
+    Y &=& \left( B_1 \lvert \dots \lvert B_m \right) \\
+    H &=& \left( X_1 \lvert \dots \lvert X_m \right) \\
+    A &=& Y H^T(HH^T)^{-1}
+\end{eqnarray*}
+Esto permite mediante una formula compleja pero eficiente actualizar $A$ rapidamente para remover y agregar \textit{templates}.
+O sea, permite ignorar secciones ocultas del objeto hasta que estas vuelven ser visibles.
 
 \subsection{Local learning}
 % Local learning
