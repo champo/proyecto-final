@@ -91,9 +91,12 @@ Blabety bla
 
 \part*{Estado del Arte}
 
-% Describir la organizacion de esta seccion
+Comenzamos por describir algoritmos de seguimiento de objetos en videos en la seccion \ref{sec:tracking}.
+Luego analizamos tecnicas utilizadas para el analisis de deportes, clasificandolas segun el numero de camaras utilizadas.
+Primero 6 camaras en la seccion \ref{sec:6-camaras}, 8 camaras en la seccion \ref{sec:8-camaras}, multiples camaras en \ref{sec:var-camaras} y finalmente video televizado en \ref{sec:tv-video}.
 
 \section{Algoritmos de seguimiento}
+\label{sec:tracking}
 
 Conocemos 3 familias de algoritmos de tracking en video utilizando una sola camara.
 Estas son \textit{Linear Predictors}, \textit{Local learning} y \textit{Graph based}.
@@ -547,10 +550,12 @@ del objeto. Pero si alguno de estos conjuntos tiene mñas de 200 elementos,
 entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
 \section{Analisis de deportes con 6 camaras}
+\label{sec:6-camaras}
 
 % Tanos
 
 \section{Analisis de deportes con 8 camaras}
+\label{sec:8-camaras}
 
 \citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a sistemas que 
 analizan la información y a través de una capa de red envían la información a un supervisor,
@@ -616,6 +621,7 @@ distancia queda por debajo de un determinado umbral, se empieza a considerar que
 de dos cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo jugador.
 
 \section{Analisis de deportes con multiples camaras}
+\label{sec:var-camaras}
 
 % SIFT Base blablablabla
 \subsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
@@ -682,6 +688,7 @@ de ella hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en 
 o cambios bruscos de dirección (llamado \textit{dribbling} por los autores).
 
 \section{Analisis de deportes con video televizado}
+\label{sec:tv-video}
 
 \subsection{\citetitle{LIU20061146}}
 
