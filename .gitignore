@@ -2,6 +2,10 @@
 *.toc
 *.aux
 *.log
+*-blx.bib
+*.bcf
+*.run.xml
+
 *.backup
 .*.sw[a-z]
 .*~
