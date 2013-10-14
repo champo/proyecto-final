@@ -204,28 +204,36 @@ Para esto se divide el objeto en pequeñas secciones cuadradas, llamadas \textit
 Esto permite mediante una formula compleja pero eficiente actualizar $A$ rapidamente para remover y agregar \textit{templates}.
 O sea, permite ignorar secciones ocultas del objeto hasta que estas vuelven ser visibles.
 
-\subsection{Local learning}
+\subsection{Aprendizaje Local}
 % Local learning
 
-El aprendizaje local, o \textit{local learning}, puede resolver razonablemente el problema del seguimiento de objetos en secuencias de imágenes, lo
-que ha sido un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learnin} y usado principalmente en la clasificación 
-de imágenes, recuperación y reconocimiento de objetos. A diferencia del aprendizaje global, \textit{global learning}, que entrena un modelo global basado en 
+El aprendizaje local es otra técnica que permite resolver el problema del seguimiento de objetos en secuencias de imágenes,
+que ha sido también un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learning} y usado principalmente en la clasificación 
+de imágenes, recuperación y reconocimiento de objetos.
+
+A diferencia del aprendizaje global, que entrena un modelo global basado en 
 todos los datos de entrenamiento, local learning considera varios modelos locales, cada uno extraído de solamente un subconjunto de los datos de entrenamiento.
 Este tipo de enfoque enfatiza la idea de que un modelo local puede caracterizar mejor las propiedades intrínsecas y discriminativas de su correspondiente 
 subconjunto de datos, que un modelo global para el conjunto completo de datos. De esto se desprende que utilizar múltiples modelos locales puede ofrecer 
-mejores resultados cuando los datos están distribuidos de manera complicadao o poco clara.\\
+mejores resultados cuando los datos están distribuidos de manera complicada o poco clara.
+
 Si bien se puede pensar al seguimiento de objetos como una tarea de clasificación binaria 
 que apunta a separar el objeto del resto de la imagen o fondo, en realidad, el principal
-problema reside en relacionar las apariciones del objeto entre 2 cuadros, \textit{frames},
+problema reside en relacionar las apariciones del objeto entre 2 cuadros
 consecutivos. Es por esto que la métrica de distancia para determinar el grado de 
-relación entre los puntos característicos del objeto adquiere muchísima importancia.
+relación entre los puntos característicos \footnote{Los puntos característicos son puntos que se diferencian del resto por poseer o mostrar
+ciertas características específicas y representativas. En el caso del seguimiento de objetos, son los puntos que mejor representan las características
+del objeto, y que tienen mayor resistencia a variar con los diferentes cambios de escala, rotación, iluminación, etc...}
+del objeto adquiere muchísima importancia.
+
 Una simple medida de distancia como la distancia Euclideana puede llevar a algoritmos
-de tracking inestables a la hora de diferenciar el objeto del fondo de la imagen. Por
-lo tano, es necesario diseñar una medida de distancia eficiente y discriminativa. Esta 
-es la idea princial que proponen Li y Lu \cite{local-learning}.\\
+de seguimiento inestables a la hora de diferenciar el objeto del fondo de la imagen. Por
+lo tanto, se requiere una mejor y más compleja medida de distancia. Esta 
+es la idea princial que proponen Li y Lu \cite{local-learning}.
+
 La función de distancia que usan es una combinación lineal de distancias elementales, 
-como se presenta en \cite{malisiewicz-cvpr08}. Definen a la función de distancia de un 
-ejemplar (punto característico) $e$, $D_{e}$ como:
+como se presenta en \cite{malisiewicz-cvpr08}. Definen a la función de distancia entre dos 
+punto característicos, a los que llaman \textit{ejemplares}, $e$ y $z$ como:
 
 \begin{equation}
     \label{eq:distance-exemplar}
@@ -234,10 +242,14 @@ ejemplar (punto característico) $e$, $D_{e}$ como:
 
 donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de distancia 
 n-dimensional entre $e$ y $z$, cuya n-ésima componente es la distancia $L_{2}$ 
-entre la característica n-ésima de $e$ y $z$.\\
+entre la característica n-ésima de $e$ y $z$. Cabe destacar la función del vector de pesos, $w_{e}$, 
+que asigna una importancia relativa a la distancia de cada componente de $d_{ez}$.
+
 Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos 
 no nulos implican que los ejemplares correspondientes son similares a $e$. La 
-longitud de $B_{e}$ es igual al número de ejemplares con el mismo rótulo de $e$.
+longitud de $B_{e}$ es igual al número de ejemplares con el mismo rótulo de $e$
+\footnote{Se dice que un conjunto de ejemplares tiene un mismo rótulo si pertenecen a un mismo objeto. En el caso de seguimiento de objetos
+más sencillo, exitirían 2 objetos: el objeto a seguir, y el fondo}.
 Asumiendo que el aprendizaje de cada una de las funciones de distancia es 
 independiente del resto, se puede aprender $w_{e}$ y $B_{e}$, en un problema 
 de aprendizaje formulado de la siguiente manera:
@@ -253,26 +265,31 @@ de aprendizaje formulado de la siguiente manera:
    w \geq 0, B_{i} \in {0,1}, \sum_{i} B_{i} = M
 \end{equation}
 
+Nótese que se descarta el subíndice $e$ para tener una mayor claridad.
 El conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$ y $M$ 
 es el mínimo número de ejemplares similares a $e$ (predefinido). La función $L$ puede ser
-cualquier función de costo o pérdida, \textit{loss function}, positiva.
+cualquier función de costo o pérdida, estrictamente positiva.
 El vector de pesos $w$
 se requiere que sea positivo para asegurar que una mayor distancia elemental (entre 
 alguna de las características) no pueda nunca llevar a una menor distancia total, 
-lo que implicaría una mayor similaridad.\\
+lo que implicaría una mayor similaridad.
 
 Previo al seguimiento se deben especificar manualmente algunos parámetros iniciales, 
 como ser: punto central, ancho, altura y rotación del objeto. En el proceso de 
-entrenamiento, se aplica un Análisis de la Componente Principal (PCA, 
-\textit{Principal Component Analysis}) de forma incremental en los primeros $F$ cuadros.
-Los resultados se seleccionan como muestras de entrenamiento positivas, mientrás que
+entrenamiento, se aplica un Análisis de la Componente Principal 
+% TODO Poner referencia o footnote explica PCA, Principal Component Analisis
+de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
+$F = 5$\cite{local-learning}.
+
+Los mejores resultados se seleccionan como muestras de entrenamiento positivas, mientrás que
 los peores resultados, se toman como muestras negativas. Se obtienen las características 
 RGB y LBP, como se presentan en \cite{tracking-bag-of-features}, de todas las muestras, 
 tanto positivas como negativas. Para cada muestra de entrenamiento, se calculan las 
 distancias elementales RGB y LBP con respecto a todas las restantes muestras.
-Para obtener el vector de pesos óptimo, $w^{*}$, se estimar iterativamente $B$, 
+
+Para obtener el vector de pesos óptimo, $w^{*}$, se calcula iterativamente $B$, 
 en función de $w$, y $w$ en función de $B$, asegurando que el valor de $f_{1}$ nunca 
-crezca, para encontrar un mínimo local. Este proceso iterativo se modelar de la 
+crezca, para encontrar un mínimo local. Este proceso iterativo se puede modelar de la 
 siguiente forma:
 
 \begin{equation}
@@ -291,14 +308,20 @@ obtener fácilmente $w^{k}$, resolviendo la ecuación \ref{eq:local-learning-w-k
 El aprendizaje termina cuando $B^{k+1}=B^{k}$.\\
 
 En el proceso de seguimiento, para cada cuadro nuevo, se generan los
-candidatos de manera aleatoria, utilizando un filtro de partículas,
-\textit{particle filter}, alrededor del resultado del 
+candidatos a ejemplares \textit{En el área del aprendizaje automático, siempre se seleccionan candidatos
+para luego verificar si cumplen las condiciones requeridas. En este caso, se quiere ver si los candidatos son 
+buenos ejemplares, o puntos característicos.}
+ de manera aleatoria, utilizando un filtro de partículas 
+% TODO Poner referencia o explicar particle filter
+alrededor del resultado del 
 seguimiento en el cuadro anterior. Luego, se extraen las características
-RGB Y LBP como muestras de testeo. Después de calcular las distancias
+RGB y LBP como muestras de testeo. Después de calcular las distancias
 elementales entre las muestras de testeo y de entrenamiento, se 
 forma una matriz de distancia, $DM: N_{test} \times N_{train}$ a través
-de las funciones de distancia entrenadas. Finalmente, se utiliza la 
-matriz $DM$ para localizar al objeto como sigue:
+de las funciones de distancia entrenadas. Es decir, el elemento $(i,j)$ de la matriz $DM$, contiene la distancia
+entre la muestra de testeo $i$, y la muestra de entrenamiento $j$.
+
+Finalmente, se utiliza la matriz $DM$ para localizar al objeto como sigue:
 
 \begin{equation}
     T = \argmin_{t} c \sum_{i} D_{i}(t) + (1 - c) \sum_{j} D_{j}(t)
@@ -315,7 +338,7 @@ Donde $t$ es un posible candidato y $T$ es el objeto. $S^{+}$ es el
 conjunto de muestras de entrenamiento positivas. La idea consiste en 
 que las muestras cuyas distancias sean menor que el umbral $Thr_{D}$
 contribuyan más a localizar el objeto, entonces la constante $c$ 
-debería tener un valor acorde, $c > 0.5$ (0.7).\\
+debería tener un valor acorde, $c > 0.5$. Los autores Li y Lu utilizaron $c = 0.7$\cite{local-learning}.\\
 
 El algoritmo de seguimiento se complementa con una adición más, que 
 intenta atacar el problema de los cambios de poses y las oclusiones.
@@ -324,7 +347,7 @@ que efectivamente pueda manejar estas dificultades.
 Haciendo uso del umbral de distancia $Thr_{D}$ para prevenir
 malas actualizaciones, se intenta realizar correciones al modelo,
 en este caso, las funciones de distancia. Esto es, una distancia
-menor a $Thr_{D}$ indica se el candidato pertence a la misma clase,
+menor a $Thr_{D}$ indica que el candidato pertence a la misma clase,
 mientras que una distancia mayor indica lo contrario. Utilizando 
 la ecuación \ref{eq:learning-model-update}, se agregan candidatos,
 como muestras positivas de entrenamiento y, cada 5 cuadros, 
