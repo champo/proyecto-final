@@ -92,11 +92,27 @@ partir de su implementación.
 
 \part*{Introducción}
 
+Dentro del área de análisis de imágenes, se encuentra el problema de reconocer
+un objeto a partir de una secuencia de imágenes y hacer un seguimiento de su
+posición, detectar cambio de postura, de orientación, reconocerlo aunque esté
+parcialmente (o totalmente) ocluído, entre otros.
+
+Existe una gran tendencia en los deportes en las últimas décadas por pasar a
+ser controlados automáticamente. Un ejemplo de esto son las cámaras de alta
+velocidad en tenis, las repeticiones y análisis de los árbitros en fútbol
+americano. Para la industria del entretenimiento, esta tendencia toma la forma
+de datos estadísticos, como en el caso de fútbol puede ser poseción de la
+pelota, cantidad de pases exitosos, tiros al arco, fracción del tiempo que
+cada jugador trotó, corrió o caminó, entre otros.
+
+Para permitir estos análisis de manera automática y recuperar datos con alto
+nivel semántico, se debe plantear un sistema que automatice la recolección,
+tratamiento, y procesamiento de imágenes. En este trabajo se estudia el estado
+actual de las distintas tecnologías usadas para este fin.
+
 % TODO: No me gustó como quedó la parte de "que se conocen"
 En una primer sección se describirán los algoritmos de seguimiento
-de objetos que se conocen,
-% TODO: No se si 'divididos' es la palabra correcta
-divididos en cuatro familias estudiadas:
+de objetos categorizados en cuatro familias:
 \textit{Predictores Lineales},
 \textit{Aprendizaje Lineal},
 \textit{Corte de Grafos},
