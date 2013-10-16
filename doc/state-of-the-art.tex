@@ -75,49 +75,85 @@
 
 \begin{customabstract}
 \textbf{
-}
-\end{customabstract}
-
-\begin{keywords}
-\end{keywords}
+Las técnicas de seguimiento de objetos en videos tienen numerosas aplicaciones
+en las actividades cotidianas. En el ámbito deportivo pueden ser útiles para
+soportar (o hasta reemplazar) las decisiones de los jueces o árbitros del
+juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
+movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
+otras aplicaciones. Se describe a lo largo de este trabajo técnicas
+aplicables al problema de seguimiento de múltiples jugadores de fútbol
+mediantes el uso de una o varias cámaras de video. Se presentan brevemente sus
+bases matemáticas y se analizarán características de cada una junto con las
+limitaciones y la factibilidad de obtener todas las posiciones del juego a
+partir de su implementación.
+} \end{customabstract}
 
 \newpage
 
-\part*{Introduccion}
+\part*{Introducción}
 
-Blabety bla
+% TODO: No me gustó como quedó la parte de "que se conocen"
+En una primer sección se describirán los algoritmos de seguimiento
+de objetos que se conocen,
+% TODO: No se si 'divididos' es la palabra correcta
+divididos en cuatro familias estudiadas:
+\textit{Predictores Lineales},
+\textit{Aprendizaje Lineal},
+\textit{Corte de Grafos},
+y \textit{Contornos Activos}.
+
+% TODO: Armar referencia a la sección 2?
+En la sección dos se discutirán los avances que se han hecho y los sistemas
+implementados que resuelven el problema de seguimiento de jugadores y pelota en
+una cancha de fútbol. Se describirán también las técnicas con mayor nivel
+semántico que detectan movimientos de jugadores, pases de pelota, tiros al
+arco, entre otros. Se dividen los mismos categorizados por los sistemas de
+cámaras utilizadas (una sola cámara fija, video televizado, o múltiples cámaras
+fijas).
 
 \newpage
 
 \part*{Estado del Arte}
 
-Comenzamos por describir algoritmos de seguimiento de objetos en videos en la seccion \ref{sec:tracking}.
-Luego analizamos tecnicas utilizadas para el analisis de deportes, clasificandolas segun el numero de camaras utilizadas.
-Primero 6 camaras en la seccion \ref{sec:6-camaras}, 8 camaras en la seccion \ref{sec:8-camaras}, multiples camaras en \ref{sec:var-camaras} y finalmente video televizado en \ref{sec:tv-video}.
+Comenzamos por describir algoritmos de seguimiento de objetos en videos en la
+seccion \ref{sec:tracking}.  Luego analizamos técnicas utilizadas para el
+analisis de deportes, clasificándolas según el número de cámaras utilizadas.
+Primero 6 camaras en la seccion \ref{sec:6-camaras}, 8 camaras en la seccion
+\ref{sec:8-camaras}, multiples camaras en \ref{sec:var-camaras} y finalmente
+video televizado en \ref{sec:tv-video}.
 
 \section{Algoritmos de seguimiento}
 \label{sec:tracking}
 
 Conocemos 4 familias de algoritmos de seguimiento en video.
-Estas son \textit{Predictores Lineales}, \textit{Aprendizaje Lineal}, \textit{Corte de Grafos}, y \textit{Contornos Activos}.
 Pasamos a describir las tecnicas usadas por estos.
 
 \subsection{Predictores Lineales}
 
-Un \textit{Predictor Lineal} es una funcion que toma los valores de una serie de variables aleatorias y predice el valor de una variable dependiente.
-La funcion tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots + \beta_n x_n$, donde $x_i$ es una variable aleatoria y $\beta_i$ una constante.
-Se dice que el predictor es lineal al obligarse a $\beta_i$ a existir en los numeros reales.
+Un \textit{Predictor Lineal} es una funcion que toma los valores de una serie
+de variables aleatorias y predice el valor de una variable dependiente.  La
+funcion tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots +
+\beta_n x_n$, donde $x_i$ es una variable aleatoria y $\beta_i$ una constante.
+Se dice que el predictor es lineal al obligarse a $\beta_i$ a existir en los
+numeros reales.
 
-En \cite{alp, original-linear-predictors} los autores utilizan predictores para hacer seguimiento de objetos en video.
-El objetivo es relacionar el cambio de valor de varios pixeles cuadro a cuadro con el movimiento del objeto entre dichos cuadros.
-Para soportar cualquier clase de movimiento, este se representa mediante una homografia (\cite{homography-estimation}), $H \in R^{3,3}$.
+En \cite{alp, original-linear-predictors} los autores utilizan predictores para
+hacer seguimiento de objetos en video.  El objetivo es relacionar el cambio de
+valor de varios pixeles cuadro a cuadro con el movimiento del objeto entre
+dichos cuadros.  Para soportar cualquier clase de movimiento, este se
+representa mediante una homografia (\cite{homography-estimation}), $H \in
+R^{3,3}$.
 
-Entonces los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$ donde cada fila representa una funcion de prediccion.
-De 2 cuadros consecutivos se obtiene el vector de cambios de valor de pixeles $X = (x_1, \dots, x_n)$ y se computa:
+Entonces los predictores se representan mediante una matriz $A \in
+\mathbb{R}^{9xn}$ donde cada fila representa una funcion de prediccion.  De 2
+cuadros consecutivos se obtiene el vector de cambios de valor de pixeles $X =
+(x_1, \dots, x_n)$ y se computa:
+
 \begin{eqnarray*}
     AX = B \\
     B = (h_{1,1}, h_{1,2}, h_{1,3}, h_{2,1}, h_{2,2}, h_{2,3}, h_{3,1}, h_{3,2}, h_{3,3})
 \end{eqnarray*}
+
 Donde $B$ contiene los valores de la homografia ($H$) de movimiento entre los cuadros.
 
 \subsubsection{Calculo de los predictores}
