@@ -21,6 +21,26 @@
 \usepackage{csquotes}
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{titling}
+% \usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+
+%%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
+\algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
+% LEAVES BLANK LINE AT END \algblockdefx[FOREACH]{ForEach}{EndFor}{\textbf{for each }}{}
+\algdef{SxnE}[FOR]{For}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
+\algdef{SxnE}[WHILE]{While}{EndWhile}[1]{\algorithmicwhile\ #1\ \algorithmicdo}
+\algdef{SxnE}[IF]{If}{EndIf}[1]{\algorithmicif\ #1\ \algorithmicthen}
+\algdef{cxnE}{IF}{Else}{EndIf}
+
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\algnewcommand\algorithmicauxiliary{\textbf{Auxiliary:}}
+\algnewcommand\Auxiliary{\item[\algorithmicauxiliary]}
+%%%%% END ALGPSEUDOCODE STUFF %%%%%%
+
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \addbibresource{references}
@@ -397,12 +417,31 @@ los nodos del grafo subyacente, y los caminos entre ellos y el nodo raíz del á
  con cada árbol con uno de los marcadores como raíz. La proyección del objeto es entonces tomada como la union de los árboles cuyas raices 
 son marcadores internos.\\
 
-\subsubsection{Algoritmo IFTrace}
- \begin{figure}[H]
-%         \includegraphics[width=\linewidth]{images/lena#1.png}
-        \caption{FIGURA con ALGORITHM 1}
-        \label{fig:IFTrace-algorithm1}
-\end{figure}
+\subsubsection{Algoritmo RecoverObj}
+\begin{algorithm}
+    \caption{IFTrace}
+    \label{fig:IFTrace-algorithm1}
+    \begin{algorithmic}
+        \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Video I : D x {1..$n_{f}$} $\to V$
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}donde D = {1..$n_{x}$} x {1..$n_{y}$}
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}Mascara Binaria $O^{(1)}$ : D $\to$ {0,1}
+
+        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Mascaras Binarias $O^{(t)}$ : D $\to$ {0,1} para $t \in $ {2..$n_f$}
+        \State
+
+        \For{$t = 2,3, ..., n_f$}
+            \State $(R^{(t-1)}_{o}$,$R^{(t-1)}_{x}) \gets $  SelectMarkers($I^{(t-1)}$,$O^{(t-1)}$)
+            \State $(S^{(t)}_{o}$,$S^{(t)}_{x}) \gets$  TrackMarkers($R^{(t-1)}_{o}$,$R^{(t-1)}_{x}$,$I^{(t-1)}$,$I^{(t)}$)
+            \If{$S^{(t)}_{o}$ $\neq \emptyset$}
+                \State $O^{(t)} \gets$  IFTSegment($I^{(t)}, C^{(t-1)}, S^{(t)}_{o}, S^{(t)}_{x}$)
+                \State$C^{(t)} \gets$ BuildClassifier($I^{(t)}$,$O^{(t)}$)
+            \Else
+                \State $C^{(t)} \gets C^{(t-1)}$
+                \State $(O^{(t)}$,$C^{(t)}) \gets$  RecoverObj(I,t,O,C)
+            \EndIf\EndFor
+        \State \Return $O$
+    \end{algorithmic}
+\end{algorithm}
 
 
 La figura \ref{fig:IFTrace-algorithm1} muestra el algoritmo de IFTrace desde el más alto nivel.
@@ -429,11 +468,36 @@ es exitosa, se obtiene un máscara del objeto $O{(t)}$, y un clasificador de col
 sino, todos los conjuntos se dejan vacíos y el clasificador se mantiene inalterado.\
 
 \subsubsection{Algoritmo RecoverObj}
- \begin{figure}[H]
-%         \includegraphics[width=\linewidth]{images/lena#1.png}
-        \caption{FIGURA con ALGORITHM 2}
-        \label{fig:IFTrace-algorithm2}
-\end{figure}
+
+\begin{algorithm}
+    \caption{RecoverObj - Intento de recuperar un objeto perdido de vista}
+    \label{fig:IFTrace-algorithm2}
+    \begin{algorithmic}
+        \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Video $I$, indice de cuadro $t$, tope cuenta hacia atras $m_{f}$,
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}mascaras del objeto $O^{k}$ y  clasificadores de colores $C^{k}$ para 
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}los $k$ cuadros previos.
+
+        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Mascara del objeto recuperada $O^{t}$ (puede estar vacia) y su 
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm} correspondiente clasificador de color $C^{t}$
+        \State
+
+        \For{$k = t-1, t-2, ..., max{1, t-m_{f}}$}
+            \If{$O^{k}$ no esta vacio}
+                \State $M \gets $ CandidateMask($I^{(t)}, C^{(k)}$)
+                \State Sea $\kappa$ la lista de regiones conexas en $M$
+                \ForEach{region $K$ en $\kappa$}
+                    \State ($S_{o}$,$S_{x} \gets$ SelectMarkers($I^{(k)},K$)
+                    \State $K' \gets$ IFTSegment($I^{(t)}, C^{(k)}, S _{o}, S_{x}$)
+                    \If{$K'$ es suficientemente similar a $O^{k}$}
+                        \State $C' \gets$ BuildClassifier($I^{(1)}, O^{(1)}, D \ O^{(1)}$)
+                        \State \Return ($K', C'$)
+                    \EndIf
+                \EndFor
+            \EndIf
+        \EndFor
+        \State \Return ($\emptyset, \emptyset$)
+    \end{algorithmic}
+\end{algorithm}
 
 Si en algún paso del algoritmo IFTrace, se falla en el seguimiento del objeto, se 
 procede a utilizar a la heurística \textit{recoverObj}, que intenta localizar una
@@ -572,11 +636,38 @@ algoritmo de Dijkstra \cite{watershed-segmentation}. Por cuestiones de
 eficiencia, el algoritmo retorna un mapa de raices $R$, que almacena, para 
 cada nodo $p$, su raíz $R(p)$.\\
 
- \begin{figure}[H]
-%         \includegraphics[width=\linewidth]{images/lena#1.png}
-        \caption{FIGURA ALGORITMO IFT}
-        \label{fig:IFTrace-IFT-algorithm}
-\end{figure}
+\begin{algorithm}
+    \caption{Algoritmo IFT con $f_{max}$}
+    \label{fig:IFTrace-IFT-algorithm}
+    \begin{algorithmic}
+        \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Grafo $G_{1}$, conjunto de semillas $S = S_{o} U S_{x}$
+
+        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Bosque de camino optimo $P$, mapa de conectividad $V$ 
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm} y mapa de raiz $R$.
+
+        \Auxiliary\hspace{\algorithmicindent} Cola de prioridades Q, variable $tmp$
+
+        \State
+
+        \ForEach{$p \in G_{1}$}
+            \State $P(p) \gets$ nil, $R(p) \gets$ p, $V(p) \gets + \infty$
+            \If{ $p \in S$} insertar $p$ en $Q$ y setear $V(p) \gets 0$ \EndIf
+        \EndFor
+        \While{$Q \neq \emptyset$}
+            \State Remover $p$ de $Q$ tal que $V(p)$ sea minimo.
+            \ForEach{$q$ 4-vecino de $p$, tal que $V(q) > V(p)$}
+                \State Computar $tmp \gets max{V(p), w(p,q)}$
+                \If{$tmp < V(q)$}
+                    \If{$V(q) \neq + \infty$} remover $q$ de $Q$ \EndIf
+                    \State $P(q) \gets p$, $R(q) \gets R(p)$, $V(q) \gets tmp$
+                    \State Insertar $q$ en $Q$
+                \EndIf
+            \EndFor
+        \EndWhile 
+    \end{algorithmic}
+\end{algorithm}
+
+
 
 Antes de comenzar, se inicializan los mapas para caminos triviales. Se agregan 
 los nodos que representan marcadores a la cola $Q$. El ciclo \textit{while}
