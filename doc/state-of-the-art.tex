@@ -92,51 +92,44 @@ partir de su implementación.
 
 \part*{Introducción}
 
-Dentro del área de análisis de imágenes, se encuentra el problema de reconocer
-un objeto a partir de una secuencia de imágenes y hacer un seguimiento de su
-posición, detectar cambio de postura, de orientación, reconocerlo aunque esté
-parcialmente (o totalmente) ocluído, entre otros.
+Dentro del área de análisis de imágenes, uno de los problemas más relevantes y
+estudiados es el problema de reconocer un objeto a partir de una secuencia de
+imágenes para seguir su posición, detectar cambios de orientación o en su
+forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras 
+variaciones del problema. Tiene aplicaciones en muchos campos, como ser
+medicina, control automatizado de procesos industriales, reconocimiento facial
+y gestual, etcétera.
 
-Existe una gran tendencia en los deportes en las últimas décadas por pasar a
-ser controlados automáticamente. Un ejemplo de esto son las cámaras de alta
-velocidad en tenis, las repeticiones y análisis de los árbitros en fútbol
-americano. Para la industria del entretenimiento, esta tendencia toma la forma
-de datos estadísticos, como en el caso de fútbol puede ser poseción de la
-pelota, cantidad de pases exitosos, tiros al arco, fracción del tiempo que
-cada jugador trotó, corrió o caminó, entre otros.
+Existe una tendencia en los deportes en las últimas décadas por pasar a ser
+controlados automáticamente. Un ejemplo de esto son las cámaras de alta
+velocidad en tenis, y las repeticiones y análisis de los árbitros en fútbol
+americano. Para la industria del entretenimiento, la tendencia a utilizar
+mecanismos automatizados de análisis del juego toma la forma de datos
+estadísticos, como en el caso de fútbol puede ser poseción de la pelota,
+cantidad de pases exitosos, tiros al arco, fracción del tiempo que cada jugador
+trotó, corrió o caminó, entre otros.
 
 Para permitir estos análisis de manera automática y recuperar datos con alto
-nivel semántico, se debe plantear un sistema que automatice la recolección,
-tratamiento, y procesamiento de imágenes. En este trabajo se estudia el estado
+nivel semántico, se debe plantear un sistema que automatice la recolección
+y procesamiento de imágenes. En este trabajo se estudia el estado
 actual de las distintas tecnologías usadas para este fin.
 
-% TODO: No me gustó como quedó la parte de "que se conocen"
-En una primer sección se describirán los algoritmos de seguimiento
+En la sección \ref{sec:tracking} se describen los algoritmos de seguimiento
 de objetos categorizados en cuatro familias:
 \textit{Predictores Lineales},
 \textit{Aprendizaje Lineal},
 \textit{Corte de Grafos},
 y \textit{Contornos Activos}.
 
-% TODO: Armar referencia a la sección 2?
-En la sección dos se discutirán los avances que se han hecho y los sistemas
-implementados que resuelven el problema de seguimiento de jugadores y pelota en
-una cancha de fútbol. Se describirán también las técnicas con mayor nivel
-semántico que detectan movimientos de jugadores, pases de pelota, tiros al
-arco, entre otros. Se dividen los mismos categorizados por los sistemas de
-cámaras utilizadas (una sola cámara fija, video televizado, o múltiples cámaras
-fijas).
+En la sección \ref{sec:var-camaras} se discuten los avances que se han hecho
+y los sistemas implementados que resuelven el problema de seguimiento de
+jugadores y pelota en una cancha de fútbol. Se descrbben también las técnicas
+con mayor nivel semántico que detectan movimientos de jugadores, pases de
+pelota, tiros al arco, entre otros. Se dividen los mismos categorizados por los
+sistemas de cámaras utilizadas (una sola cámara fija, video televizado, o
+múltiples cámaras fijas).
 
 \newpage
-
-\part*{Estado del Arte}
-
-Comenzamos por describir algoritmos de seguimiento de objetos en videos en la
-seccion \ref{sec:tracking}.  Luego analizamos técnicas utilizadas para el
-analisis de deportes, clasificándolas según el número de cámaras utilizadas.
-Primero 6 camaras en la seccion \ref{sec:6-camaras}, 8 camaras en la seccion
-\ref{sec:8-camaras}, multiples camaras en \ref{sec:var-camaras} y finalmente
-video televizado en \ref{sec:tv-video}.
 
 \section{Algoritmos de seguimiento}
 \label{sec:tracking}
