@@ -5,9 +5,6 @@ public class Player : MonoBehaviour {
 
 	public float a;
 	public float b;
-	public float c;
-	public float d;
-	public float e;
 
 	private float t0;
 	private float tnow;
@@ -23,9 +20,9 @@ public class Player : MonoBehaviour {
 	void FixedUpdate () {
 		tnow = (Time.fixedTime - t0);
 		transform.position = new Vector3(
-			initX + c * Mathf.Sin(a * tnow),
+			initX + a * tnow,
 			transform.position.y,
-			initY + d * Mathf.Sin(b * tnow)
+			initY + b * tnow
 		);
 	}
 }
