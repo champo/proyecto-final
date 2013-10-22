@@ -334,8 +334,6 @@ public class ActiveContour {
 		double result = 0;
 
 		int i = 0;
-
-
 		for (Color referenceColor : referenceColors) {
 
 			double diff = Math.abs(color.getRed() - referenceColor.getRed())
@@ -343,7 +341,6 @@ public class ActiveContour {
 					+ Math.abs(color.getBlue() - referenceColor.getBlue());
 			result += diff * PONDER[i];
 			i++;
-
 		}
 		return result / Math.pow(256, 3);
 	}

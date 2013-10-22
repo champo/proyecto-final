@@ -329,7 +329,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new FrameDecoder("src/main/resources/Slower10sec.mpeg");
+        frameDecoder = new FrameDecoder("src/main/resources/WholeField.mov");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -550,7 +550,7 @@ public class MainApp extends javax.swing.JFrame {
                 		if (homeography != null) {
                 			BufferedImage image = soccerFieldPanel.getImage();
 
-                			Point mapped = homeography.apply(c.centroidX(), c.centroidY());
+                			Point mapped = homeography.apply(c.centroidX(), c.maxY());
                 			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
                 				System.out.println("Skipping point out of bounds");
                 				continue;
@@ -560,7 +560,7 @@ public class MainApp extends javax.swing.JFrame {
 							} catch (IOException e) {
 								throw new RuntimeException(e);
 							}
-                			image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
+                			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
 
                 			soccerFieldPanel.setImage(image);
                 		}
