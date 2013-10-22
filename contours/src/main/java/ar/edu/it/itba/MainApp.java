@@ -16,8 +16,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +60,8 @@ public class MainApp extends javax.swing.JFrame {
     private ImagePanel phiPanel;
     private FrameDecoder frameDecoder;
 
+    private File outFile;
+    private OutputStream outBuffer;
     private BufferedImage firstFrame;
     private ActiveContour ac;
 
@@ -64,6 +70,7 @@ public class MainApp extends javax.swing.JFrame {
     private MouseListener mouseListener;
     private HomeographyManager homeographyManager;
     private int selected = 1;
+    int framesElapsed = 0;
 
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
@@ -327,6 +334,10 @@ public class MainApp extends javax.swing.JFrame {
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
+        String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
+        outFile = new File(outFilename);
+        outFile.createNewFile();
+        outBuffer = new FileOutputStream(outFile);
 
         mouseListener = new MouseListener() {
 
@@ -509,6 +520,7 @@ public class MainApp extends javax.swing.JFrame {
             @Override
             public void run() {
                 final BufferedImage frame = frameDecoder.nextFrame();
+                framesElapsed++;
                 if (firstFrame == null) {
                 	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
 
@@ -531,18 +543,23 @@ public class MainApp extends javax.swing.JFrame {
                         phiPanel.repaint();
                 	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
                 	ac.adapt(coloredFrame);
+                	int index = 0;
                 	for (Contour c : contour) {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
 
                 		if (homeography != null) {
                 			BufferedImage image = soccerFieldPanel.getImage();
 
-                			Point mapped = homeography.apply(c.minX(), c.maxX());
+                			Point mapped = homeography.apply(c.centroidX(), c.centroidY());
                 			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
                 				System.out.println("Skipping point out of bounds");
                 				continue;
                 			}
-
+                			try {
+								outBuffer.write(String.format("%d, %d, %d, %d\n", framesElapsed, index++, mapped.x, mapped.y).getBytes());
+							} catch (IOException e) {
+								throw new RuntimeException(e);
+							}
                 			image.setRGB(mapped.x, mapped.y, Color.black.getRGB());
 
                 			soccerFieldPanel.setImage(image);
