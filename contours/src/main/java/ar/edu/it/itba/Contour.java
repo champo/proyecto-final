@@ -126,4 +126,20 @@ public class Contour implements Iterable<Point>{
 	public void removePoint(final Point p) {
 		internalPoints.remove(p);
 	}
+
+	public int centroidY() {
+		double cumm = 0;
+		for (Point p : internalPoints) {
+			cumm += p.y;
+		}
+		return (int) (cumm/internalPoints.size());
+	}
+
+	public int centroidX() {
+		double cumm = 0;
+		for (Point p : internalPoints) {
+			cumm += p.x;
+		}
+		return (int) (cumm/internalPoints.size());
+	}
 }
