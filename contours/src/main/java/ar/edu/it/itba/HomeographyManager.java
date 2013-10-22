@@ -26,11 +26,11 @@ class HomeographyManager {
     private ListModel listModel;
 
     public HomeographyManager() {
-    	points.add(new Pair(new Point(183, 108), new Point(46, 124)));
-    	points.add(new Pair(new Point(86, 160), new Point(45, 179)));
-    	points.add(new Pair(new Point(219, 228), new Point(77, 208)));
-    	points.add(new Pair(new Point(324, 93), new Point(77, 92)));
-    	points.add(new Pair(new Point(213, 75), new Point(31, 23)));
+    	points.add(new Pair(new Point(344,358), new Point(86,182)));
+    	points.add(new Pair(new Point(709,358), new Point(255,184)));
+    	points.add(new Pair(new Point(1074,358), new Point(427,183)));
+    	points.add(new Pair(new Point(1058,281), new Point(471,44)));
+    	points.add(new Pair(new Point(92,498), new Point(44,324)));
         listModel = new AbstractListModel() {
 
             @Override
