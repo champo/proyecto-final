@@ -28,4 +28,14 @@ public class Homography {
 		return new Point((int) mapped.get(0), (int) mapped.get(1));
 	}
 
+	public Point inverseApply(final int x, final int y) {
+		SimpleMatrix pos = new SimpleMatrix(3, 1);
+		pos.set(0, x);
+		pos.set(1, y);
+		pos.set(2, 1);
+
+		SimpleMatrix mapped = mat.invert().mult(pos);
+		mapped = mapped.divide(mapped.get(2));
+		return new Point((int) mapped.get(0), (int) mapped.get(1));
+	}
 }
