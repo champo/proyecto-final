@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +78,7 @@ public class MainApp extends javax.swing.JFrame {
     private Button startTrackingButton;
 	protected Homography homeography;
 	protected boolean mappingPoint;
+	private BufferedImage frame;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -414,6 +416,24 @@ public class MainApp extends javax.swing.JFrame {
         BufferedImage soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
+        soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
+			
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				if (homeography != null) {
+					Point inverseApply = homeography.inverseApply(arg0.getX(), arg0.getY());
+					if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth() &&
+						inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
+						getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+						imagePanel.setImage(getFrame());
+					}
+				}
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+			}
+		});
         soccerFieldPanel.addMouseListener(new MouseListener() {
 
             @Override
@@ -497,7 +517,11 @@ public class MainApp extends javax.swing.JFrame {
         return this;
     }
 
-    private void addNextFrameButton() {
+    protected BufferedImage getFrame() {
+    	return frame;
+	}
+
+	private void addNextFrameButton() {
         Button button = new Button("Next frame");
         button.setSize(new Dimension(100, 10));
         button.addActionListener(new ActionListener() {
@@ -519,7 +543,7 @@ public class MainApp extends javax.swing.JFrame {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                final BufferedImage frame = frameDecoder.nextFrame();
+                frame = frameDecoder.nextFrame();
                 framesElapsed++;
                 if (firstFrame == null) {
                 	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
