@@ -555,11 +555,14 @@ Los marcadores internos se eligen aplicando una erosión morfológica
 luego seleccionando los pixeles de la región resultante que tengan mayor probabilidad
 de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
 
- \begin{figure}[H]
-%         \includegraphics[width=\linewidth]{images/lena#1.png}
-        \caption{FIGURA Matriz H(p)}
-        \label{fig:IFTrace-matrix-H}
-\end{figure}
+\begin{equation}
+    H[p] = \left[\begin{array}{cc}
+                \sum_{q}(\frac{\partial L}{\partial x}[q])^2 & \sum_{q}(\frac{\partial L}{\partial x}[q])(\frac{\partial L}{\partial y}[q]) \\
+                & \\
+                \sum_{q}(\frac{\partial L}{\partial x}[q])(\frac{\partial L}{\partial y}[q]) & \sum_{q}(\frac{\partial L}{\partial y}[q])^2 \end{array}\right]
+    \label{IFTrace-matrix-H}
+\end{equation}
+
 
 donde $L[p]$ es la luminancia del pixel $p$, y las sumatorias incluyen a todos los
 pixeles $q$ en una ventana de $9x9$ centrada en $p$.\\
