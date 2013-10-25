@@ -281,7 +281,10 @@ de aprendizaje formulado de la siguiente manera:
 Nótese que se descarta el subíndice $e$ para tener una mayor claridad.
 El conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$ y $M$ 
 es el mínimo número de ejemplares similares a $e$ (predefinido). La función $L$ puede ser
-cualquier función de costo o pérdida, estrictamente positiva.
+cualquier función de costo o pérdida
+\footnote{Una función de pérdida o función de costo es simplemente una función que mapea un evento o los valores de una o más variables
+a un número real que representa algún ``costo'' asociado al evento.}
+, estrictamente positiva.
 El vector de pesos $w$
 se requiere que sea positivo para asegurar que una mayor distancia elemental (entre 
 alguna de las características) no pueda nunca llevar a una menor distancia total, 
@@ -290,7 +293,10 @@ lo que implicaría una mayor similaridad.
 Previo al seguimiento se deben especificar manualmente algunos parámetros iniciales, 
 como ser: punto central, ancho, altura y rotación del objeto. En el proceso de 
 entrenamiento, se aplica un Análisis de la Componente Principal 
-% TODO Poner referencia o footnote explica PCA, Principal Component Analisis
+\footnote{El Análisis de la Componente Principal, es una técnica utilizada para reducir la dimensionalidad de un conjunto de datos. 
+Sirve para hallar las causas de la variabilidad de los datos y ordenarlas por importancia.
+Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en 
+autovalores de la matriz de covarianza, normalmente tras centrar los datos en la media de cada atributo.}
 de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
 $F = 5$\cite{local-learning}.
 
@@ -325,7 +331,10 @@ candidatos a ejemplares \textit{En el área del aprendizaje automático, siempre
 para luego verificar si cumplen las condiciones requeridas. En este caso, se quiere ver si los candidatos son 
 buenos ejemplares, o puntos característicos.}
  de manera aleatoria, utilizando un filtro de partículas 
-% TODO Poner referencia o explicar particle filter
+\footnote{El filtro de partículas es un método empleado para estimar el estado de un sistema que cambia a lo largo del tiempo. Más 
+concretamente es un método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las partículas) y unos valores, o pesos, 
+asociados a cada una de esas muestras. Las partículas son estados posibles del proceso, que se pueden representar como puntos en el espacio 
+de estados de dicho proceso.}
 alrededor del resultado del 
 seguimiento en el cuadro anterior. Luego, se extraen las características
 RGB y LBP como muestras de testeo. Después de calcular las distancias
@@ -549,8 +558,9 @@ de marcadores $R_{0}^{(t)}$ y $R_{x}^{(t)}$, los que están dentro de la máscar
 su alrededor.
 
 Los marcadores internos se eligen aplicando una erosión morfológica 
-\footnote{ }
-% TODO Poner footnote de (\textit{morphological erosion})
+\footnote{La erosión morfológica es una de las dos operaciones fundamentales de la matemática morfológica. Consiste
+en reducir o ``erosionar'' los bordes de un determinado objeto, reduciendo su tamaño. }
+%TODO Mismo caso que morfological dilation, valdría la pena la refrencia a la wiki? O alguna imagen o ejemplo en un apendice?
  a la máscara del objeto, con radio $\delta_{o}$, y 
 luego seleccionando los pixeles de la región resultante que tengan mayor probabilidad
 de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
@@ -572,8 +582,10 @@ propagación KLT. Esto coincide con los autores Tomasi y Karade \cite{Tomasi91de
 quienes afirman que los pixeles con mayor $\lambda$ tienen más posibilidades
 de ser localizados por el algoritmo KLT.\\
 Los marcadores externos son escogidos aplicando una dilatación morfológica,
-\footnote{ }
-%TODO POner footnote con dilatacion morfolofica
+\footnote{La dilatación morfológica es otra de las operaciones  básicas de la matématica morfológica. Generalmente utiliza un elemento 
+estructurador para expandir alguna forma contenida en la imagen.}
+% TODO maybe poner refrencia a la wiki o la imagen del ejemplo en algun apendice?
+%  Por ejemplo, si se utiliza un disco para dilatar un cuadrado, se logra un cuadrado mayor con los bordes redondeados
  con cierto radio $\delta_{x}$, y tomando los pixeles a lo largo del borde del resultado.
 
 \subsubsection{Seguimiento de Marcadores}
