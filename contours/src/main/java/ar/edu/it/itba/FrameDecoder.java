@@ -1,5 +1,6 @@
 package ar.edu.it.itba;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -85,6 +86,36 @@ public class FrameDecoder {
 	public BufferedImage nextFrame() {
 		while (frameQueue.isEmpty() && reader.readPacket() == null);
 
-		return frameQueue.poll();
+		BufferedImage original = frameQueue.poll();
+		int imageWidth = original.getWidth();
+		int imageHeight = original.getHeight();
+		BufferedImage copy = new BufferedImage(imageWidth, imageHeight, original.getType());
+
+	    int halfWidth = imageWidth / 2;
+	    int halfHeight = imageHeight / 2;
+	    double strength = 2.5;
+
+	    double correctionRadius = Math.sqrt(Math.pow(imageWidth, 2) + Math.pow(imageHeight, 2)) / strength;
+
+	    for (int x = 0; x < imageWidth; x++) {
+	    	for (int y = 0; y < imageHeight; y++) {
+	    		int newX = x - halfWidth;
+	    		int newY = y - halfHeight;
+	    		
+	    		double distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
+	    		double r = distance / correctionRadius;
+	    		double theta;
+	    		if (r == 0) {
+	    			theta = 1;
+	    		} else {
+	    			theta = Math.atan(r) / r;
+	    		}
+
+		        int sourceX = (int) (halfWidth + theta * newX);
+		        int sourceY = (int) (halfHeight + theta * newY);
+	    		copy.setRGB(x, y, original.getRGB(sourceX, sourceY));
+	    	}
+	    }
+		return copy;
 	}
 }
