@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -23,10 +22,10 @@ public class ActiveContour {
 	public final static int BETA = 3;
 	public final static int BUCKETS = 32;
 	public final static double PONDER[] = new double[]{ 1, 0.25, 0.25 };
-	
+
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
-	private static double SIGMA = 0.6;
+	private static double SIGMA = 0.4;
 	private static double[][] mask;
 	static {
 		int sideLength = 2  * MASK_RADIUS + 1;
@@ -67,8 +66,8 @@ public class ActiveContour {
 
 	private Color[] getCharacteristics(final BufferedImage frame, final Contour contour) {
 		List<Color> colors = new ArrayList<Color>();
-		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		colors.add(getAverageColor(frame, contour));
+		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
@@ -82,8 +81,8 @@ public class ActiveContour {
 		return result;
 	}
 
-	private Color[] getBackgroundCharacteristics(BufferedImage frame,
-			Contour contour) {
+	private Color[] getBackgroundCharacteristics(final BufferedImage frame,
+			final Contour contour) {
 		List<Color> colors = new ArrayList<Color>();
 		colors.add(getAverageBackgroundColor(frame, contour));
 		colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
@@ -345,7 +344,7 @@ public class ActiveContour {
 		return result / Math.pow(256, 3);
 	}
 
-	private Color getAverageBackgroundColor(BufferedImage frame, Contour r) {
+	private Color getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
 		int med_x = 0;
 		int med_y = 0;
 		for (Point p : r.getLout()) {
@@ -380,7 +379,7 @@ public class ActiveContour {
 				(int) (blue / sum));
 	}
 
-	static private Color getAverageColor(BufferedImage frame, Contour r) {
+	static private Color getAverageColor(final BufferedImage frame, final Contour r) {
 		double red = 0;
 		double green = 0;
 		double blue = 0;
