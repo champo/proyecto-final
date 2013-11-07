@@ -57,7 +57,7 @@
 \def\endkeywords{\par}
 
 \def\keywords{\vspace{.5em}
-    {\textit{Palabras clave: } 
+    {\textit{Palabras clave: }
     }}
 \def\endkeywords{\par}
 
@@ -68,7 +68,7 @@
 \preauthor{\begin{center}
         \large \lineskip 0.5em%
 \begin{tabular}[t]{c}}
-\postauthor{\end{tabular}\normalsize 
+\postauthor{\end{tabular}\normalsize
     \\[1em] Estudiantes del Instituto Tecnológico de Buenos Aires
 \par\end{center}}
 \predate{\begin{center}\small}
@@ -102,22 +102,19 @@ en las actividades cotidianas. En el ámbito deportivo pueden ser útiles para
 soportar (o hasta reemplazar) las decisiones de los jueces o árbitros del
 juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
 movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
-otras aplicaciones. Se describe a lo largo de este trabajo técnicas
-aplicables al problema de seguimiento de múltiples jugadores de fútbol
-mediantes el uso de una o varias cámaras de video. Se presentan brevemente sus
-bases matemáticas y se analizarán características de cada una junto con las
-limitaciones y la factibilidad de obtener todas las posiciones del juego a
-partir de su implementación.
+otras aplicaciones. Se describe a lo largo de este trabajo técnicas aplicables
+al problema de seguimiento de múltiples jugadores de fútbol mediante el uso de
+una o varias cámaras de video. Se presentan las bases matemáticas para estos
+métodos y se analizarán características de cada una junto con las limitaciones
+y la factibilidad de conocer el estado del juego completo para cada momento.
 } \end{customabstract}
-
-\newpage
 
 \part*{Introducción}
 
 Dentro del área de análisis de imágenes, uno de los problemas más relevantes y
 estudiados es el problema de reconocer un objeto a partir de una secuencia de
 imágenes para seguir su posición, detectar cambios de orientación o en su
-forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras 
+forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras
 variaciones del problema. Tiene aplicaciones en muchos campos, como ser
 medicina, control automatizado de procesos industriales, reconocimiento facial
 y gestual, etcétera.
@@ -126,10 +123,10 @@ Existe una tendencia en los deportes en las últimas décadas por pasar a ser
 controlados automáticamente. Un ejemplo de esto son las cámaras de alta
 velocidad en tenis, y las repeticiones y análisis de los árbitros en fútbol
 americano. Para la industria del entretenimiento, la tendencia a utilizar
-mecanismos automatizados de análisis del juego toma la forma de datos
-estadísticos, como en el caso de fútbol puede ser poseción de la pelota,
-cantidad de pases exitosos, tiros al arco, fracción del tiempo que cada jugador
-trotó, corrió o caminó, entre otros.
+mecanismos automatizados de análisis del estado del juego provee datos
+estadísticos, como en el caso de fútbol puede ser poseción de pelota, cantidad
+de pases exitosos, tiros al arco, fracción del tiempo que cada jugador trotó,
+corrió o caminó, entre otros.
 
 Para permitir estos análisis de manera automática y recuperar datos con alto
 nivel semántico, se debe plantear un sistema que automatice la recolección
@@ -143,11 +140,11 @@ de objetos categorizados en cuatro familias:
 \textit{Corte de Grafos},
 y \textit{Contornos Activos}.
 
-En la sección \ref{sec:var-camaras} se discuten los avances que se han hecho
-y los sistemas implementados que resuelven el problema de seguimiento de
-jugadores y pelota en una cancha de fútbol. Se descrbben también las técnicas
-con mayor nivel semántico que detectan movimientos de jugadores, pases de
-pelota, tiros al arco, entre otros. Se dividen los mismos categorizados por los
+En la sección \ref{sec:var-camaras} se discuten los avances modernos en esta
+rama y los sistemas implementados que resuelven el problema de seguimiento de
+jugadores, pelota, y estado del juego. Se describen también las técnicas con
+mayor nivel semántico que detectan movimientos de jugadores, pases de pelota,
+tiros al arco, entre otros. Se dividen los mismos categorizados por los
 sistemas de cámaras utilizadas (una sola cámara fija, video televizado, o
 múltiples cámaras fijas).
 
@@ -156,8 +153,8 @@ múltiples cámaras fijas).
 \section{Algoritmos de seguimiento}
 \label{sec:tracking}
 
-Conocemos 4 familias de algoritmos de seguimiento en video.
-Pasamos a describir las tecnicas usadas por estos.
+A continuación se describen los algoritmos de cuatro familias dentro de la rama
+de análisis de imágenes para seguimiento de objetos.
 
 \subsection{Predictores Lineales}
 
@@ -223,19 +220,19 @@ O sea, permite ignorar secciones ocultas del objeto hasta que estas vuelven ser 
 % Local learning
 
 El aprendizaje local es otra técnica que permite resolver el problema del seguimiento de objetos en secuencias de imágenes,
-que ha sido también un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learning} y usado principalmente en la clasificación 
+que ha sido también un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learning} y usado principalmente en la clasificación
 de imágenes, recuperación y reconocimiento de objetos.
 
-A diferencia del aprendizaje global, que entrena un modelo global basado en 
+A diferencia del aprendizaje global, que entrena un modelo global basado en
 todos los datos de entrenamiento, local learning considera varios modelos locales, cada uno extraído de solamente un subconjunto de los datos de entrenamiento.
-Este tipo de enfoque enfatiza la idea de que un modelo local puede caracterizar mejor las propiedades intrínsecas y discriminativas de su correspondiente 
-subconjunto de datos, que un modelo global para el conjunto completo de datos. De esto se desprende que utilizar múltiples modelos locales puede ofrecer 
+Este tipo de enfoque enfatiza la idea de que un modelo local puede caracterizar mejor las propiedades intrínsecas y discriminativas de su correspondiente
+subconjunto de datos, que un modelo global para el conjunto completo de datos. De esto se desprende que utilizar múltiples modelos locales puede ofrecer
 mejores resultados cuando los datos están distribuidos de manera complicada o poco clara.
 
-Si bien se puede pensar al seguimiento de objetos como una tarea de clasificación binaria 
+Si bien se puede pensar al seguimiento de objetos como una tarea de clasificación binaria
 que apunta a separar el objeto del resto de la imagen o fondo, en realidad, el principal
 problema reside en relacionar las apariciones del objeto entre 2 cuadros
-consecutivos. Es por esto que la métrica de distancia para determinar el grado de 
+consecutivos. Es por esto que la métrica de distancia para determinar el grado de
 relación entre los puntos característicos \footnote{Los puntos característicos son puntos que se diferencian del resto por poseer o mostrar
 ciertas características específicas y representativas. En el caso del seguimiento de objetos, son los puntos que mejor representan las características
 del objeto, y que tienen mayor resistencia a variar con los diferentes cambios de escala, rotación, iluminación, etc...}
@@ -243,11 +240,11 @@ del objeto adquiere muchísima importancia.
 
 Una simple medida de distancia como la distancia Euclideana puede llevar a algoritmos
 de seguimiento inestables a la hora de diferenciar el objeto del fondo de la imagen. Por
-lo tanto, se requiere una mejor y más compleja medida de distancia. Esta 
+lo tanto, se requiere una mejor y más compleja medida de distancia. Esta
 es la idea princial que proponen Li y Lu \cite{local-learning}.
 
-La función de distancia que usan es una combinación lineal de distancias elementales, 
-como se presenta en \cite{malisiewicz-cvpr08}. Definen a la función de distancia entre dos 
+La función de distancia que usan es una combinación lineal de distancias elementales,
+como se presenta en \cite{malisiewicz-cvpr08}. Definen a la función de distancia entre dos
 punto característicos, a los que llaman \textit{ejemplares}, $e$ y $z$ como:
 
 \begin{equation}
@@ -255,18 +252,18 @@ punto característicos, a los que llaman \textit{ejemplares}, $e$ y $z$ como:
     D_{e}(z) = w_{e} \cdot d_{ez}
 \end{equation}
 
-donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de distancia 
-n-dimensional entre $e$ y $z$, cuya n-ésima componente es la distancia $L_{2}$ 
-entre la característica n-ésima de $e$ y $z$. Cabe destacar la función del vector de pesos, $w_{e}$, 
+donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de distancia
+n-dimensional entre $e$ y $z$, cuya n-ésima componente es la distancia $L_{2}$
+entre la característica n-ésima de $e$ y $z$. Cabe destacar la función del vector de pesos, $w_{e}$,
 que asigna una importancia relativa a la distancia de cada componente de $d_{ez}$.
 
-Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos 
-no nulos implican que los ejemplares correspondientes son similares a $e$. La 
+Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos
+no nulos implican que los ejemplares correspondientes son similares a $e$. La
 longitud de $B_{e}$ es igual al número de ejemplares con el mismo rótulo de $e$
 \footnote{Se dice que un conjunto de ejemplares tiene un mismo rótulo si pertenecen a un mismo objeto. En el caso de seguimiento de objetos
 más sencillo, exitirían 2 objetos: el objeto a seguir, y el fondo}.
-Asumiendo que el aprendizaje de cada una de las funciones de distancia es 
-independiente del resto, se puede aprender $w_{e}$ y $B_{e}$, en un problema 
+Asumiendo que el aprendizaje de cada una de las funciones de distancia es
+independiente del resto, se puede aprender $w_{e}$ y $B_{e}$, en un problema
 de aprendizaje formulado de la siguiente manera:
 
 \begin{equation}
@@ -281,36 +278,36 @@ de aprendizaje formulado de la siguiente manera:
 \end{equation}
 
 Nótese que se descarta el subíndice $e$ para tener una mayor claridad.
-El conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$ y $M$ 
+El conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$ y $M$
 es el mínimo número de ejemplares similares a $e$ (predefinido). La función $L$ puede ser
 cualquier función de costo o pérdida
 \footnote{Una función de pérdida o función de costo es simplemente una función que mapea un evento o los valores de una o más variables
 a un número real que representa algún ``costo'' asociado al evento.}
 , estrictamente positiva.
 El vector de pesos $w$
-se requiere que sea positivo para asegurar que una mayor distancia elemental (entre 
-alguna de las características) no pueda nunca llevar a una menor distancia total, 
+se requiere que sea positivo para asegurar que una mayor distancia elemental (entre
+alguna de las características) no pueda nunca llevar a una menor distancia total,
 lo que implicaría una mayor similaridad.
 
-Previo al seguimiento se deben especificar manualmente algunos parámetros iniciales, 
-como ser: punto central, ancho, altura y rotación del objeto. En el proceso de 
-entrenamiento, se aplica un Análisis de la Componente Principal 
-\footnote{El Análisis de la Componente Principal, es una técnica utilizada para reducir la dimensionalidad de un conjunto de datos. 
+Previo al seguimiento se deben especificar manualmente algunos parámetros iniciales,
+como ser: punto central, ancho, altura y rotación del objeto. En el proceso de
+entrenamiento, se aplica un Análisis de la Componente Principal
+\footnote{El Análisis de la Componente Principal, es una técnica utilizada para reducir la dimensionalidad de un conjunto de datos.
 Sirve para hallar las causas de la variabilidad de los datos y ordenarlas por importancia.
-Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en 
+Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en
 autovalores de la matriz de covarianza, normalmente tras centrar los datos en la media de cada atributo.}
 de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
 $F = 5$.\cite{local-learning}
 
 Los mejores resultados se seleccionan como muestras de entrenamiento positivas, mientras que
-los peores resultados, se toman como muestras negativas. Se obtienen las características 
-RGB y LBP, como se presentan en \cite{tracking-bag-of-features}, de todas las muestras, 
-tanto positivas como negativas. Para cada muestra de entrenamiento, se calculan las 
+los peores resultados, se toman como muestras negativas. Se obtienen las características
+RGB y LBP, como se presentan en \cite{tracking-bag-of-features}, de todas las muestras,
+tanto positivas como negativas. Para cada muestra de entrenamiento, se calculan las
 distancias elementales RGB y LBP con respecto a todas las restantes muestras.
 
-Para obtener el vector de pesos óptimo, $w^{*}$, se calcula iterativamente $B$, 
-en función de $w$, y $w$ en función de $B$, asegurando que el valor de $f_{1}$ nunca 
-crezca, para encontrar un mínimo local. Este proceso iterativo se puede modelar de la 
+Para obtener el vector de pesos óptimo, $w^{*}$, se calcula iterativamente $B$,
+en función de $w$, y $w$ en función de $B$, asegurando que el valor de $f_{1}$ nunca
+crezca, para encontrar un mínimo local. Este proceso iterativo se puede modelar de la
 siguiente forma:
 
 \begin{equation}
@@ -322,25 +319,25 @@ siguiente forma:
     w^{k+1} = \argmin_{w} \sum_{i:B_{i}^{k}=1} L(-w \cdot d_{i}) + \sum_{i\notin C}L(w \cdot d_{i})
 \end{equation}
 
-Dado un $w^{k}$, que inicialmente podría ser aleatorio, se minimiza la ecuación 
+Dado un $w^{k}$, que inicialmente podría ser aleatorio, se minimiza la ecuación
 \ref{eq:local-learning-B-k} fijando $B_{i} = 1$ para los $M$ valores más
 pequeños de $L(-w \cdot d_{i})$ y $0$ para el resto. Dado $B^{k}$, se puede
-obtener fácilmente $w^{k}$, resolviendo la ecuación \ref{eq:local-learning-w-k}. 
+obtener fácilmente $w^{k}$, resolviendo la ecuación \ref{eq:local-learning-w-k}.
 El aprendizaje termina cuando $B^{k+1}=B^{k}$.\\
 
 En el proceso de seguimiento, para cada cuadro nuevo, se generan los
 candidatos a ejemplares. En el área del aprendizaje automático, siempre se seleccionan candidatos
-para luego verificar si cumplen las condiciones requeridas. En este caso, se quiere ver si los candidatos son 
+para luego verificar si cumplen las condiciones requeridas. En este caso, se quiere ver si los candidatos son
 cumples con las condiciones necesarias para ser puntos característicos.
- de manera aleatoria, utilizando un filtro de partículas 
-\footnote{El filtro de partículas es un método empleado para estimar el estado de un sistema que cambia a lo largo del tiempo. Más 
-concretamente es un método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las partículas) y unos valores, o pesos, 
-asociados a cada una de esas muestras. Las partículas son estados posibles del proceso, que se pueden representar como puntos en el espacio 
+ de manera aleatoria, utilizando un filtro de partículas
+\footnote{El filtro de partículas es un método empleado para estimar el estado de un sistema que cambia a lo largo del tiempo. Más
+concretamente es un método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las partículas) y unos valores, o pesos,
+asociados a cada una de esas muestras. Las partículas son estados posibles del proceso, que se pueden representar como puntos en el espacio
 de estados de dicho proceso.}
-alrededor del resultado del 
+alrededor del resultado del
 seguimiento en el cuadro anterior. Luego, se extraen las características
 RGB y LBP como muestras de testeo. Después de calcular las distancias
-elementales entre las muestras de testeo y de entrenamiento, se 
+elementales entre las muestras de testeo y de entrenamiento, se
 forma una matriz de distancia, $D: N_{test} \times N_{train}$ a través
 de las funciones de distancia entrenadas. Es decir, el elemento $(i,j)$ de la matriz $D$, contiene la distancia
 entre la muestra de testeo $i$, y la muestra de entrenamiento $j$.
@@ -358,29 +355,29 @@ Finalmente, se utiliza la matriz $D$ para localizar al objeto como sigue:
     \forall j \in \{j : j \in S^{+}, D_{j}(t) > Thr_{D} \}
 \end{equation}
 
-Donde $t$ es un posible candidato y $T$ es el objeto. $S^{+}$ es el 
-conjunto de muestras de entrenamiento positivas. La idea consiste en 
+Donde $t$ es un posible candidato y $T$ es el objeto. $S^{+}$ es el
+conjunto de muestras de entrenamiento positivas. La idea consiste en
 que las muestras cuyas distancias sean menor que el umbral $Thr_{D}$
-contribuyan más a localizar el objeto, entonces la constante $c$ 
+contribuyan más a localizar el objeto, entonces la constante $c$
 debería tener un valor acorde, $c > 0.5$. Los autores Li y Lu utilizaron $c = 0.7$.\cite{local-learning}\\
 
-El algoritmo de seguimiento se complementa con una adición más, que 
+El algoritmo de seguimiento se complementa con una adición más, que
 intenta atacar el problema de los cambios de poses y las oclusiones.
-Para esto es necesario actualizar el modelo que se tiene para 
-que efectivamente pueda manejar estas dificultades. 
+Para esto es necesario actualizar el modelo que se tiene para
+que efectivamente pueda manejar estas dificultades.
 Haciendo uso del umbral de distancia $Thr_{D}$ para prevenir
 malas actualizaciones, se realizan correciones al modelo,
 en este caso, las funciones de distancia. Esto es, una distancia
 menor a $Thr_{D}$ indica que el candidato pertenece a la misma clase,
-mientras que una distancia mayor indica lo contrario. Utilizando 
+mientras que una distancia mayor indica lo contrario. Utilizando
 la ecuación \ref{eq:learning-model-update}, se agregan candidatos,
-como muestras positivas de entrenamiento y cada 5 cuadros, 
-se utiliza el conjunto actualizado de entrenamiento para 
+como muestras positivas de entrenamiento y cada 5 cuadros,
+se utiliza el conjunto actualizado de entrenamiento para
 reentrenar todas las funciones de distancia.
 
 \begin{equation}
     \label{eq:learning-model-update-1}
-    t_{label} = \left\{ 
+    t_{label} = \left\{
                 \begin{array}{l l}
                     1, & D_{S^{+}}(t) \leq Tht_{D}\\
                     0, & D_{S^{+}}(t) >  Tht_{D}
@@ -392,7 +389,7 @@ reentrenar todas las funciones de distancia.
     D_{S^{+}}(t) = \dfrac{1}{N_{S^{+}}} \sum_{i \in S^{+}} D_{i}(t)
 \end{equation}
 
-En la ecuación \ref{eq:learning-model-update-2}, $N_{S^{+}}$ es el 
+En la ecuación \ref{eq:learning-model-update-2}, $N_{S^{+}}$ es el
 número de muestras positivas de entrenamiento y $D_{S^{+}}(t)$
 es el promedio de distancia del candidato $t$ a las muestras
 de entrenamiento positivas.
@@ -404,7 +401,7 @@ El algoritmo conocido como \textit{IFTrace} \cite{IFTrace} tiene como objetivo d
 suposiciones sobre el objeto a seguir:
 
 \begin{itemize}
-    \item consiste de una o más regiones conexas, 
+    \item consiste de una o más regiones conexas,
     \item tiene un borde bien definido
     \item sus propiedades intrínsecas pueden variar con el tiempo.
 \end{itemize}
@@ -412,21 +409,21 @@ suposiciones sobre el objeto a seguir:
 Los objetos a seguir son inicialmente marcados de forma interactiva por el usuario en el primer cuadro, y luego se seleccionan automáticamente
 varios marcadores en el interior y los alrededores del objeto. Estos marcadores se localizan en el siguiente cuadro utilizando en forma
 conjunta el algoritmo de
-seguimiento de características KLT \cite{KLT} y extrapolación de movimiento. Los bordes del objeto son entonces identificados a partir de estos marcadores por la IFT, 
-\textit{Image Foresting Transform}\cite{IFT}. Otra característica vital del algoritmo es el operador de detección de borde que se adapta gradualmente a cambios en el 
+seguimiento de características KLT \cite{KLT} y extrapolación de movimiento. Los bordes del objeto son entonces identificados a partir de estos marcadores por la IFT,
+\textit{Image Foresting Transform}\cite{IFT}. Otra característica vital del algoritmo es el operador de detección de borde que se adapta gradualmente a cambios en el
 color y la textura del objeto. \\
 
 Al igual que otros métodos de segmentación de objetos basados en grafos, IFT trata a la imagen como un grafo, en el cual los píxeles son los nodos, y
-estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que 
-los puntos estén separados por el borde del objeto de interés. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color 
-entre los píxeles. El método combina el gradiente del color con el gradiente de una función de clasificación de píxeles difusos, algo así como la similaridad entre el píxel 
+estos están conectados mediantes aristas si son adyacentes y tiene un peso o costo. Este costo debe ser una medida de la probabilidad de que
+los puntos estén separados por el borde del objeto de interés. En problemas sencillos puede ser tan simple como el valor absoluto de la diferencia de color
+entre los píxeles. El método combina el gradiente del color con el gradiente de una función de clasificación de píxeles difusos, algo así como la similaridad entre el píxel
 y el conjunto de píxeles del objeto segmentado en el frame anterior. \\
 
-La IFT encuentra caminos de costo mínimo desde los marcadores, tanto internos como externos, a cada píxel de la imagen. Los píxeles son agrupados en particiones, que 
+La IFT encuentra caminos de costo mínimo desde los marcadores, tanto internos como externos, a cada píxel de la imagen. Los píxeles son agrupados en particiones, que
 resultan ser árboles de camino óptimo disjuntos,
 \footnote{Dado un grafo simple, no dirigido y conexo G, un árbol de camino óptimo, o árbol de camino más corto, es un árbol recubridor de $G$, tal que la distancia o
 costo del camino desde la raíz $v$ a cualquier otro vértice $u$ es la distancia de camino mínima de $v$ a $u$ en $G$.}
-donde cada árbol tiene a uno de los marcadores como raíz. La proyección del objeto es entonces tomada como la union de los árboles cuyas raices 
+donde cada árbol tiene a uno de los marcadores como raíz. La proyección del objeto es entonces tomada como la union de los árboles cuyas raices
 son marcadores internos.\\
 
 \subsubsection{El algoritmo IFTrace}
@@ -457,23 +454,23 @@ son marcadores internos.\\
 
 
 La figura \ref{alg:IFTrace-algorithm1-IFTrace} muestra el algoritmo de IFTrace desde el más alto nivel.
-IFTrace toma como input un video $I$, modelado como un array 3D de píxeles, siendo las dimensiones el alto y ancho de la imagen, y número de cuadro de la secuencia de video, y una 
-máscara binaria $O^{(1)}$, correspondiente al objeto marcado en el primer cuadro, y devuelve un array de máscaras binarias $O^{(t)}$, con las 
+IFTrace toma como input un video $I$, modelado como un array 3D de píxeles, siendo las dimensiones el alto y ancho de la imagen, y número de cuadro de la secuencia de video, y una
+máscara binaria $O^{(1)}$, correspondiente al objeto marcado en el primer cuadro, y devuelve un array de máscaras binarias $O^{(t)}$, con las
 proyecciones del objeto para cada cuadro del video.
 
-Para cada cuadro de la secuencia, el algoritmo elije dos conjuntos de puntos o píxeles: los que pertenecen a la máscara del objeto $R_{o}$, y los que pertenecen a 
-sus alrededores $R_{x}$. Luego se procede 
-a localizarlos en el siguiente cuadro a través del procedimiento \textit{trackMarkers}. 
+Para cada cuadro de la secuencia, el algoritmo elije dos conjuntos de puntos o píxeles: los que pertenecen a la máscara del objeto $R_{o}$, y los que pertenecen a
+sus alrededores $R_{x}$. Luego se procede
+a localizarlos en el siguiente cuadro a través del procedimiento \textit{trackMarkers}.
 
-Si el conjunto de píxeles que representan al objeto $S_{0}^{(t)}$ no resulta vacío para este 
+Si el conjunto de píxeles que representan al objeto $S_{0}^{(t)}$ no resulta vacío para este
 nuevo cuadro, entonces el seguimiento
-fue exitoso, y se procede a utilizar IFT para, a partir de los dos conjuntos de píxeles $S_{0}^{(t)}$ y $S_{x}^{(t)}$, el clasificador de color del cuadro anterior $C^{(t-1)}$ 
-y el cuadro actual $I{(t)}$, obtener la máscara del 
-objeto para el cuadro actual $O{(t)}$. Esto es lo que hace el procedimiento \textit{IFTSegment}. 
+fue exitoso, y se procede a utilizar IFT para, a partir de los dos conjuntos de píxeles $S_{0}^{(t)}$ y $S_{x}^{(t)}$, el clasificador de color del cuadro anterior $C^{(t-1)}$
+y el cuadro actual $I{(t)}$, obtener la máscara del
+objeto para el cuadro actual $O{(t)}$. Esto es lo que hace el procedimiento \textit{IFTSegment}.
 
 Como paso final, se obtiene el clasificador de color del cuadro actual $C{(t)}$, a partir de la máscara del objeto $O{(t)}$ y el cuadro actual $I{(t)}$.
 
-Por otro lado, si el seguimiento del objeto falla para el nuevo cuadro, es decir si el conjunto de píxeles resultantes luego de aplicar \textit{trackMarkers} $S_{0}^{(t)}$ 
+Por otro lado, si el seguimiento del objeto falla para el nuevo cuadro, es decir si el conjunto de píxeles resultantes luego de aplicar \textit{trackMarkers} $S_{0}^{(t)}$
 resulta vacío, entonces se mantiene el mismo clasificador de color del cuadro anterior $C{(t-1)}$, y se procede
 a intentar recuperar el objeto en el cuadro actual mediante \textit{recoverObj}. Si la recuperación
 es exitosa, se obtiene un máscara del objeto $O{(t)}$, y un clasificador de color para el cuadro actual $C{(t)}$,
@@ -486,10 +483,10 @@ sino, todos los conjuntos se dejan vacíos y el clasificador se mantiene inalter
     \label{alg:IFTrace-algorithm2-recoverObj}
     \begin{algorithmic}
         \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Video $I$, indice de cuadro $t$, tope cuenta hacia atras $m_{f}$,
-        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}mascaras del objeto $O^{k}$ y  clasificadores de colores $C^{k}$ para 
+        \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}mascaras del objeto $O^{k}$ y  clasificadores de colores $C^{k}$ para
         \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm}los $k$ cuadros previos.
 
-        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Mascara del objeto recuperada $O^{t}$ (puede estar vacia) y su 
+        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Mascara del objeto recuperada $O^{t}$ (puede estar vacia) y su
         \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm} correspondiente clasificador de color $C^{t}$
         \State
 
@@ -511,60 +508,60 @@ sino, todos los conjuntos se dejan vacíos y el clasificador se mantiene inalter
     \end{algorithmic}
 \end{algorithm}
 
-Si en algún paso del algoritmo IFTrace, el seguimiento del objeto falla, se 
+Si en algún paso del algoritmo IFTrace, el seguimiento del objeto falla, se
 procede a utilizar la heurística \textit{recoverObj} (Algoritmo \ref{alg:IFTrace-algorithm2-recoverObj}), que intenta localizar una
-región conexa cuya forma y colores sea similar a la del objeto en alguno de los 
+región conexa cuya forma y colores sea similar a la del objeto en alguno de los
 cuadros anteriores.\\
 
 La heurística se aplica utilizando un cuadro de referencia, e iterando hacia atrás
-hasta encontrar un cuadro en el que se pueda recuperar el objeto, evitando 
+hasta encontrar un cuadro en el que se pueda recuperar el objeto, evitando
 utilizar cuadros previos en los que no se pudo recuperar el objeto anteriormente.
 
-Una vez ubicado el cuadro de referencia en el cual el seguimiento fue exitoso, 
+Una vez ubicado el cuadro de referencia en el cual el seguimiento fue exitoso,
 se construye una ``máscara candidata'' $M$ que indica las posibles ubicaciones
-del objeto en el cuadro actual $t$. Esto es lo que hace el procedimiento \textit{CandidateMask}. 
-En este paso se 
-utiliza el clasificador de color del cuadro de referencia $k$, $C^{(k)}$. La máscara 
-etiqueta los píxeles del cuadro como ``posiblemente objeto''(1) o 
-``probablemente fondo''(0). 
+del objeto en el cuadro actual $t$. Esto es lo que hace el procedimiento \textit{CandidateMask}.
+En este paso se
+utiliza el clasificador de color del cuadro de referencia $k$, $C^{(k)}$. La máscara
+etiqueta los píxeles del cuadro como ``posiblemente objeto''(1) o
+``probablemente fondo''(0).
 
 Esta máscara $M$ estará compuesta de cero
-o más regiones conexas. Si el objeto está visible en el cuadro actual, 
-su proyección debería coincidir con alguna de estas regiones. Entonces 
+o más regiones conexas. Si el objeto está visible en el cuadro actual,
+su proyección debería coincidir con alguna de estas regiones. Entonces
 se procede a analizar cada una de estas regiones, para las cuales se obtienen
 los dos conjuntos de marcadores $S_{0}^{(t)}$ y $S_{x}^{(t)}$, utilizando la misma técnica que en el
 en algoritmo \ref{alg:IFTrace-algorithm1-IFTrace}.
 
- Luego se utiliza 
-nuevamente el algoritmo IFT para conseguir una proyección $K'$ de esa región $K$ que 
+ Luego se utiliza
+nuevamente el algoritmo IFT para conseguir una proyección $K'$ de esa región $K$ que
 se está analizando, para luego compararla con la máscara del objeto en el cuadro
 $k$ utilizado como referencia. En caso de ser similar, se construye el clasificador
-de color $C'$ y se retorna junto a la proyección $K'$ como máscara representativa 
-del objeto para el actual cuadro. 
+de color $C'$ y se retorna junto a la proyección $K'$ como máscara representativa
+del objeto para el actual cuadro.
 
 Cabe destacar que, por simplicidad, para la comparación de formas se utilizan
 las Invariantes de Momento de Maitra \cite{MaitraMomentInvariants}, y las formas se consideran similares
-si la distancia Euclideana entre sus vectores de invariantes es menor a 2. 
+si la distancia Euclideana entre sus vectores de invariantes es menor a 2.
 Sin embargo se podría utilizar otros descriptores de formas.
 
-Si ninguna de las regiones resulta similar a la máscara del objeto, 
-\textit{recoverObj} intenta el mismo procedimiento utilizando como cuadro de 
+Si ninguna de las regiones resulta similar a la máscara del objeto,
+\textit{recoverObj} intenta el mismo procedimiento utilizando como cuadro de
 referencia el cuadro anterior. Luego de un número especificado de intentos, o
 de agotar todos los cuadros, la heurística termina. En este caso, se retorna
 una máscara vacía y un clasificador nulo, señalando que el objeto se perdió en
-el cuadro actual. \textit{IFTrace} intentará entonces recuperar en el siguiente 
+el cuadro actual. \textit{IFTrace} intentará entonces recuperar en el siguiente
 cuadro.
 
 \subsubsection{Selección de Marcadores}
-El procedimiento \textit{selectMarkers} es el encargado de elegir dos conjuntos 
+El procedimiento \textit{selectMarkers} es el encargado de elegir dos conjuntos
 de marcadores $R_{0}^{(t)}$ y $R_{x}^{(t)}$, los que están dentro de la máscara del objeto, y los que están a
 su alrededor.
 
-Los marcadores internos se eligen aplicando una erosión morfológica 
+Los marcadores internos se eligen aplicando una erosión morfológica
 \footnote{La erosión morfológica es una de las dos operaciones fundamentales de la matemática morfológica. Consiste
 en reducir o ``erosionar'' los bordes de un determinado objeto, reduciendo su tamaño. }
 %TODO Mismo caso que morfological dilation, valdría la pena la refrencia a la wiki? O alguna imagen o ejemplo en un apendice?
- a la máscara del objeto, con radio $\delta_{o}$, y 
+ a la máscara del objeto, con radio $\delta_{o}$, y
 luego seleccionando los píxeles de la región resultante que tengan mayor probabilidad
 de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
 
@@ -579,13 +576,13 @@ de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
 
 donde $L[p]$ es la luminancia del píxel $p$, y las sumatorias incluyen a todos los
 píxeles $q$ en una ventana de $9x9$ centrada en $p$.\\
-Se define el grado de ``igualdad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$. 
-Solo los píxeles con $\lambda > 1$ son escogidos para utilizarlos en la 
+Se define el grado de ``igualdad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$.
+Solo los píxeles con $\lambda > 1$ son escogidos para utilizarlos en la
 propagación KLT. Esto coincide con los autores Tomasi y Karade \cite{Tomasi91detectionand}
 quienes afirman que los píxeles con mayor $\lambda$ tienen más posibilidades
 de ser localizados por el algoritmo KLT.\\
 Los marcadores externos son escogidos aplicando una dilatación morfológica,
-\footnote{La dilatación morfológica es otra de las operaciones  básicas de la matématica morfológica. Generalmente utiliza un elemento 
+\footnote{La dilatación morfológica es otra de las operaciones  básicas de la matématica morfológica. Generalmente utiliza un elemento
 estructurador para expandir alguna forma contenida en la imagen.}
 % TODO maybe poner refrencia a la wiki o la imagen del ejemplo en algun apendice?
 %  Por ejemplo, si se utiliza un disco para dilatar un cuadrado, se logra un cuadrado mayor con los bordes redondeados
@@ -593,23 +590,23 @@ estructurador para expandir alguna forma contenida en la imagen.}
 
 \subsubsection{Seguimiento de Marcadores}
 
-El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores 
+El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores
 internos en el cuadro actual, que se corresponden con los puntos internos del objeto
-en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT. descrito por Tomasi y 
+en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT. descrito por Tomasi y
 Karade \cite{Tomasi91detectionand}.
 
-El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada 
+El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada
 $q_{0}$ en el próximo cuadro $I^{t}$, y busca un punto $q$ tal que los vecinos
 de $q$ en $I^{t}$ sean similares a los de $p$ en $I^{t-1}$. Este algoritmo tiene
 varios parámetros de configuración que alteran su comportamiento: $\ell$, la cantidad
-escalas consideradas; $\kappa$, el factor de reducción entre las sucesivas escalas; y 
-$\omega$, el ancho de la ventana usada para comparar vecinos en cada escala. 
-La implementación de IFTrace está configurada para usar $\ell=2$,$\kappa=4$ y 
+escalas consideradas; $\kappa$, el factor de reducción entre las sucesivas escalas; y
+$\omega$, el ancho de la ventana usada para comparar vecinos en cada escala.
+La implementación de IFTrace está configurada para usar $\ell=2$,$\kappa=4$ y
 $\omega=9$, como en la implementación de KLT de Birchfield \cite{Birchfield-KLT-implementation}.
 
 Los marcadores exteriores no son seguidos con KLT, ya que no tiene sentido debido
-a que la mayoría se perdería por oclusión con el objeto o se seguiría el fondo, en 
-vez del objeto. En cambio, lo que se hace es trasladarlos de acuerdo a los 
+a que la mayoría se perdería por oclusión con el objeto o se seguiría el fondo, en
+vez del objeto. En cambio, lo que se hace es trasladarlos de acuerdo a los
 desplazamientos medios de los marcadores internos más cercanos. Esto tiende
 a mantener estos marcadores fuera del objeto, pero cerca de su borde, aún cuando
 hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento de extremidades).
@@ -617,17 +614,17 @@ hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento
 \subsubsection{Segmentación de objetos - IFT}
 
 La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los píxeles y cuyas
-aristas unen dos nodos si los píxeles que representan son adyacentes. IFT toma como parámetros un conjunto de 
-píxeles marcadores $S$, una función de costo de arista $w$, y una función de 
+aristas unen dos nodos si los píxeles que representan son adyacentes. IFT toma como parámetros un conjunto de
+píxeles marcadores $S$, una función de costo de arista $w$, y una función de
 conectividad $f$ que asigna un costo de camino $f(\pi)$ a todo camino $\pi$ in $G$,
 dependiendo del costo de sus aristas.\\
-Para cada píxel $p$, IFT encuentra un camino directo óptimo (de costo mínimo), que lo 
-conecta con su raíz $R(p)$ en el conjunto $S$ de píxeles marcadores. Estos caminos forman un bosque de caminos 
+Para cada píxel $p$, IFT encuentra un camino directo óptimo (de costo mínimo), que lo
+conecta con su raíz $R(p)$ en el conjunto $S$ de píxeles marcadores. Estos caminos forman un bosque de caminos
 óptimos. Cada árbol en este bosque de caminos óptimos
-tiene como raíz a algun marcador $r$, y agrupa a todos los píxeles de la imagen que 
+tiene como raíz a algun marcador $r$, y agrupa a todos los píxeles de la imagen que
 están mejor conectados a $r$ que a cualquier otro marcador, es decir que su distancia a $r$ es menor
-que su distancia a cualquier otro marcador. IFT también le asigna a 
-cada píxel $p$ un costo $V(p) = \pi(p)$, y un marcador raíz $R(p)$, el marcador 
+que su distancia a cualquier otro marcador. IFT también le asigna a
+cada píxel $p$ un costo $V(p) = \pi(p)$, y un marcador raíz $R(p)$, el marcador
 que se encuentra en la raíz del árbol al cual pertenece.
 
 IFTrace depende de la IFT
@@ -636,22 +633,22 @@ asigna a un camino $\pi$ el máximo costo para todas las aritas en $\pi$.
 Los píxeles marcadores utilizados son tanto los marcadores interiores, obtenidos
 por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.
 
-La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad 
+La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad
 \textit{minimax}. Sea la \textit{frontera} de una segmentación el conjunto de todas las aristas cuyos nodos
-pertenecen a distintos segmentos, dicha segmentación maximiza el costo mínimo de todas las aristas en la frontera de la 
+pertenecen a distintos segmentos, dicha segmentación maximiza el costo mínimo de todas las aristas en la frontera de la
 segmentación. Esto significa que la segmentación IFT/$f_{max}$ es esencialmente
-la misma que la famosa segmentación \textit{divisoria} \cite{watershed-segmentation}. Esto 
-hace que sea particularmente apropiada para casos en los que el objeto esté 
-mejor caracterizado por su conectividad que por su forma o tamaño. Es por esto que 
-se elige una función de costo de arista $w(p,q)$ que se base en la probabilidad de 
+la misma que la famosa segmentación \textit{divisoria} \cite{watershed-segmentation}. Esto
+hace que sea particularmente apropiada para casos en los que el objeto esté
+mejor caracterizado por su conectividad que por su forma o tamaño. Es por esto que
+se elige una función de costo de arista $w(p,q)$ que se base en la probabilidad de
 que $p$ y $q$ estén en diferentes lados del borde del objeto.
 
 \subsubsection{Algoritmo IFT}
 
 Para algunas funciones de conectividad, como $f_{max}$, el bosque de caminos
-óptimos se puede computar eficientemente mediante una variante del famoso 
+óptimos se puede computar eficientemente mediante una variante del famoso
 algoritmo de Dijkstra \cite{watershed-segmentation}. Por cuestiones de
-eficiencia, el algoritmo retorna un mapa de raices $R$, que almacena, para 
+eficiencia, el algoritmo retorna un mapa de raices $R$, que almacena, para
 cada nodo $p$, su raíz $R(p)$.\\
 
 \begin{algorithm}
@@ -660,7 +657,7 @@ cada nodo $p$, su raíz $R(p)$.\\
     \begin{algorithmic}
         \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Grafo $G_{1}$, conjunto de semillas $S = S_{o} U S_{x}$
 
-        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Bosque de camino optimo $P$, mapa de conectividad $V$ 
+        \Ensure \hspace{\algorithmicindent}\hspace{0.23cm} Bosque de camino optimo $P$, mapa de conectividad $V$
         \State\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{0.3cm} y mapa de raiz $R$.
 
         \Auxiliary\hspace{\algorithmicindent} Cola de prioridades Q, variable $tmp$
@@ -681,65 +678,65 @@ cada nodo $p$, su raíz $R(p)$.\\
                     \State Insertar $q$ en $Q$
                 \EndIf
             \EndFor
-        \EndWhile 
+        \EndWhile
     \end{algorithmic}
 \end{algorithm}
 
 
 
-Se agregan 
+Se agregan
 los nodos que representan marcadores a la cola $Q$. El ciclo \textit{while}
-principal computa un camino óptimo desde las raíces a cada nodo $p$. En 
+principal computa un camino óptimo desde las raíces a cada nodo $p$. En
 cada iteración, un camino de valor $V(p)$ mínimo se encuentra cuando
 removemos el último píxel $p$ de la cola. Luego se evalua si el camino que
-alcanza el píxel adyacente $q$ a través de $p$ es más barato que el actual 
-camino que termina en $q$ y se actualizan $Q$, $V(q)$, $R(q)$ y $P(q)$ 
+alcanza el píxel adyacente $q$ a través de $p$ es más barato que el actual
+camino que termina en $q$ y se actualizan $Q$, $V(q)$, $R(q)$ y $P(q)$
 acordemente.
 
-Este algoritmo se puede modificar para recomputar el bosque de camino óptimo 
-en forma incremental, a medida que se van agregando o quitando marcadores, 
+Este algoritmo se puede modificar para recomputar el bosque de camino óptimo
+en forma incremental, a medida que se van agregando o quitando marcadores,
 generalmente en tiempo sub-lineal.
 
 \subsubsection{Comparación con Corte de Grafos}
 % Comparación con otros algoritmos de Graph-Cut
 
 Boykov and Funka-Lea [5,12] han propuesto otra alternativa para la segmentación
-% de imágenes basada en grafos, conocida como \textit{Graph-Cut}, que explota 
-de imágenes basada en grafos, conocida como Corte de Grafos, que explota 
+% de imágenes basada en grafos, conocida como \textit{Graph-Cut}, que explota
+de imágenes basada en grafos, conocida como Corte de Grafos, que explota
 la conexión que existe entre cortes de capacidad mínima y flujos de volumen
 máximo. En este enfoque, el grafo de píxeles se modela como una red de flujo,
 donde el objeto es la fuente y el fondo el sumidero. Se puede probar que el máximo flujo total de todas las fuentes
-hacia todos los sumideros es igual a la mínima capacidad total de todo corte 
-(conjunto de aristas) que separa fuentes de sumideros. Este flujo máximo y su 
-corte mínimo asociado se puede encontrar con el clásico algoritmo 
+hacia todos los sumideros es igual a la mínima capacidad total de todo corte
+(conjunto de aristas) que separa fuentes de sumideros. Este flujo máximo y su
+corte mínimo asociado se puede encontrar con el clásico algoritmo
 Ford Fulkerson \cite{Cormen:2009:IAT:1614191}.
 
-% En comparación con la IFT, \textit{Graph-Cut} tiene 2 grandes desventajas: es 
-En comparación con la IFT, \textit{Corte de Grafos} tiene 2 grandes desventajas: 
+% En comparación con la IFT, \textit{Graph-Cut} tiene 2 grandes desventajas: es
+En comparación con la IFT, \textit{Corte de Grafos} tiene 2 grandes desventajas:
 tiene un mayor costo computacional (IFT es $O(n)$ mientras que
-% el mejor algoritmo \textit{Graph-Cut} es $O(n^{2.5})$), y además tiende a 
+% el mejor algoritmo \textit{Graph-Cut} es $O(n^{2.5})$), y además tiende a
 el mejor algoritmo \textit{Corte de Grafos} es $O(n^{2.5})$), y además tiende a
-minimizar el número de aristas en el corte, en vez de sus capacidades. Esto 
-último quiere decir que muestra una preferencia a segmentar basada en la 
-longitud del borde, en lugar de basarse en la importancia de la conexión 
+minimizar el número de aristas en el corte, en vez de sus capacidades. Esto
+último quiere decir que muestra una preferencia a segmentar basada en la
+longitud del borde, en lugar de basarse en la importancia de la conexión
 entre el objeto y el fondo.\cite{journals/jmiv/MirandaF09}
 
-% Se puede introducir una corrección al algoritmo de \textit{Graph-Cut} para 
-Se puede introducir una corrección al algoritmo de \textit{Corte de Grafos} para 
-remediar este segunda problema, pero lo único que se obtiene es el mismos 
+% Se puede introducir una corrección al algoritmo de \textit{Graph-Cut} para
+Se puede introducir una corrección al algoritmo de \textit{Corte de Grafos} para
+remediar este segunda problema, pero lo único que se obtiene es el mismos
 resultado de la IFT, con un costo computacional mucho mayor. \cite{journals/jmiv/MirandaF09}
 
 \subsubsection{Costo de arista de IFT}
 
 Como se explicó anteriormente, IFT opera con una función de costo de arista
-$w$, la cual resulta crítica para la segmentación. Idealmente, el costo 
+$w$, la cual resulta crítica para la segmentación. Idealmente, el costo
 para aristas que cruzan el borde del objeto debe ser alto, y bajo para todo
 el resto. En otras palabras, la función de costo debe ser un detector
 de bordes del objeto.
 
-Un ejemplo puede ser la distancia Euclideana entre los colores RGB de los píxeles 
-en ambos extremos de una arista. Desafortunadamente, este detector resulta demasiado 
-simplista para casos prácticos, en los que un objeto puede tener diferentes colores y 
+Un ejemplo puede ser la distancia Euclideana entre los colores RGB de los píxeles
+en ambos extremos de una arista. Desafortunadamente, este detector resulta demasiado
+simplista para casos prácticos, en los que un objeto puede tener diferentes colores y
 texturas. Por lo tanto, se requieren detectores de bordes más sofisticados.
 
 En la implementación de \textit{IFTrace}, se utiliza un detector de bordes basado en
@@ -753,34 +750,34 @@ una combinación lineal
 donde $\gamma$ es un parámetro definido por el usuario, $\nabla I$ es el gradiente
 del color de la imagen y $M$ es un mapa de clasificación de color.
 
-La primer componente $w_{f}(p,q)$ es la distancia Euclideana entre los colores de 
+La primer componente $w_{f}(p,q)$ es la distancia Euclideana entre los colores de
 los extremos de la arista, como se menciona anteriormente pero con una particularidad:
 se mide en el espacio de colores $Lab$ de $CIE$
 \footnote{
-Un espacio de colores \textit{Lab} es un espacio de colores de 3 dimensiones, $L$ para la luminosidad o claridad, $a$ para la posición entre rojo y verde y 
-$b$ para su posición entre amarillo y azul. Existen dos espacios muy similares \textit{Hunter Lab} y \textit{CIE Lab}, que se diferencian en la forma de 
+Un espacio de colores \textit{Lab} es un espacio de colores de 3 dimensiones, $L$ para la luminosidad o claridad, $a$ para la posición entre rojo y verde y
+$b$ para su posición entre amarillo y azul. Existen dos espacios muy similares \textit{Hunter Lab} y \textit{CIE Lab}, que se diferencian en la forma de
 calcular las coordenadas de color a partir de los datos: el primero utiliza raíces cuadradas y el segundo raíces cúbicas.}
-, en vez del tradicional RGB. La 
-justificación para esto es que las distancias entre colores se aprecian más de 
+, en vez del tradicional RGB. La
+justificación para esto es que las distancias entre colores se aprecian más de
 esta forma. %TODO VER TEMA DE CIELAB y references
 
 El segundo componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
 de colores $M$, una imagen en escala de grises donde cada píxel $M[p]$ es
 la probabilidad de que un píxel con color $v=I[p]$ pertenezca a la proyección
 del objeto. Los colores que ocurran solo dentro del objeto deberían estar
-asociados al valor 1, los que solo ocurran en el fondo deberían estar 
-asociados al 0, y los que puedan ocurrir en ambos, deberían mapearse a 
-valores intermedios. El propósito de incluir este término es restarle 
-importancia a los bordes entre colores que son internos del objeto, o 
-totalmente ajenos al objeto, y enfatizar los bordes que efectivamente 
+asociados al valor 1, los que solo ocurran en el fondo deberían estar
+asociados al 0, y los que puedan ocurrir en ambos, deberían mapearse a
+valores intermedios. El propósito de incluir este término es restarle
+importancia a los bordes entre colores que son internos del objeto, o
+totalmente ajenos al objeto, y enfatizar los bordes que efectivamente
 delimitan el objeto del fondo de la imagen.
 
 El mapa de clasificación de colores $M$ se obtiene de la imagen $I$ por medio de un
 clasificador de color difuso $C$, una función no lineal $C : \mathbb{V} \to [0,1]$.
 En \textit{IFTrace}, la función $C$ se implementa como una variante del clasificador
-del vecino más cercano, \textit{nearest neighbor} (NN). Esta determinada por dos conjuntos de 
-colores, que se asumen son representativos del objeto de interés y del fondo, respectivamente.Para evaluar $C(v)$ para 
-cierto color $v$, se debe buscar 2 colores representantes $u_{0} \in \mathbb{U}_{0}$ 
+del vecino más cercano, \textit{nearest neighbor} (NN). Esta determinada por dos conjuntos de
+colores, que se asumen son representativos del objeto de interés y del fondo, respectivamente.Para evaluar $C(v)$ para
+cierto color $v$, se debe buscar 2 colores representantes $u_{0} \in \mathbb{U}_{0}$
 y $u_{x} \in \mathbb{U}_{x}$ que son los más cercanos a $v$.
 La probabilidad de que un píxel de color $v$ sea parte del objeto es entonces estimada
 por la fórmula
@@ -790,15 +787,15 @@ por la fórmula
    C(v) = \frac{|v - u_{0}|}{|v - u_{0}| + |v - u_{x}|}
 \end{equation}
 
-En teoría, se podría usar todos los píxeles para construir los conjuntos 
-$\mathbb{U}_{0}$ y $\mathbb{U}_{x}$. Pero en la práctica, se deben usar muestras 
+En teoría, se podría usar todos los píxeles para construir los conjuntos
+$\mathbb{U}_{0}$ y $\mathbb{U}_{x}$. Pero en la práctica, se deben usar muestras
 de menor tamaño por razones eficiencia, de otra forma, el costo de encontrar los
 representantes $u_{0},u_{x}$ aumenta demasiado. De hecho, la construcción del mapa
 $M$ resulta ser el paso que tiene mayor costo computacional de \textit{IFTrace}, más
 aún que el seguimiento de marcadores y que la segmentación de la IFT.
 
-Es por esto que el procedimiento para construir el clasificador, 
-\textit{buildClassifier}, comienza seleccionando dos conjuntos de píxeles 
+Es por esto que el procedimiento para construir el clasificador,
+\textit{buildClassifier}, comienza seleccionando dos conjuntos de píxeles
 $R_{0},R_{x}$, respectivamente los que están dentro y fuera de la actual máscara
 del objeto. Pero si alguno de estos conjuntos tiene más de 200 elementos,
 entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
@@ -815,46 +812,52 @@ entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 \section{Analisis de deportes con 8 camaras}
 \label{sec:8-camaras}
 
-\citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a sistemas que 
-analizan la información y a través de una capa de red envían la información a un supervisor,
-encargado del mantenimiento de la posición de los jugadores. El sistema supervisor no tiene 
-acceso a los datos crudos de la imágen obtenida.
+\citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a
+sistemas que analizan la información y a través de una capa de red envían la
+información a un supervisor, encargado del mantenimiento de la posición de los
+jugadores. El sistema supervisor no tiene acceso a los datos crudos de la
+imágen obtenida.
 
-Cada cámara realiza un preprocesamiento de la imágen para estimar la posición de la cámara y
-detectar áreas de interés (candidatos a ser los jugadores en pantalla). Para la eliminación
-del fondo, se utilizan dos máscaras, una geométrica, que se aproxima a la geometría de la
-cancha y una que extrae información acerca de los píxeles y genera un histograma para
-detectar el color verde del pasto de la cancha. Para la primera máscara, se pasa la imágen de
-RGB a HSI y se analiza el histograma de \textit{hue} para los mayores valores de intensidad.
-Luego, los píxeles que serán considerados son aquellos que no pertenezcan a un rango de \textit{hue}
-entre un mínimo y un máximo, correspondientes a los valores que hagan que el máximo valor
-del histograma caiga al 10\% de su valor original.  Luego, la máscara que elimina valores
-de acuerdo a su color queda definida por:
+Cada cámara realiza un preprocesamiento de la imágen para estimar la posición
+de la cámara y detectar áreas de interés (candidatos a ser los jugadores en
+pantalla). Para la eliminación del fondo, se utilizan dos máscaras, una
+geométrica, que se aproxima a la geometría de la cancha y una que extrae
+información acerca de los píxeles y genera un histograma para detectar el color
+verde del pasto de la cancha. Para la primera máscara, se pasa la imágen de
+\textit{RGB} a \textit{HSI} y se analiza el histograma de \textit{hue} para los
+mayores valores de intensidad. Luego, los píxeles que serán considerados son
+aquellos que no pertenezcan a un rango de \textit{hue} entre un mínimo y un
+máximo, correspondientes a los valores que hagan que el máximo valor del
+histograma caiga al 10\% de su valor original.  Luego, la máscara que elimina
+valores de acuerdo a su color queda definida por:
 
 \[
   M_c = ({(u, v) | H(u, v) \in [H_l, H_h]} \oplus B ) \ominus B
 \]
 
-Donde $B$ es un elemento estructurador cuadrado y $\oplus$ y $\ominus$ son los operadores
-morfológicos de erosión y dilatación, aplicados para separar a los jugadores y eliminar las
-líneas de campo blancas. La máscara geométrica comprende los siguientes puntos:
+Donde $H(u, v)$ es el valor de \textit{hue} del píxel en la posición $(u, v)$,
+$B$ es un elemento estructurador cuadrado y $\oplus$ y $\ominus$ son los
+operadores morfológicos de erosión y dilatación, aplicados para separar a los
+jugadores y eliminar las líneas de campo blancas. La máscara geométrica
+comprende los siguientes puntos:
 
 \[
   M_g = { (u, v) | E(u, v)  \in P }
 \]
 
-Donde P es el rango de coordenadas en el mundo real correspondiente a la cancha y $E(u, v)$ es 
-la correspondencia del punto $(u, v)$ en el mundo real, de acuerdo a una corrección utilizando
-ángulos de Euler. Por último la máscara que determina aquellos píxeles que corresponden al
-pasto de la cancha son los que pertenecen a la intersección de ambas máscaras:
+Donde P es el rango de coordenadas en el mundo real correspondiente a la cancha
+y $E(u, v)$ es la correspondencia del punto $(u, v)$ en el mundo real, de
+acuerdo a una corrección utilizando ángulos de Euler. Por último la máscara que
+determina aquellos pixeles que corresponden al pasto de la cancha son los que
+pertenecen a la intersección de ambas máscaras:
 
 \[
   M = M_c \cap M_g
 \]
 
-Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son representadas por
-la posición en el plano de la imágen $\mathbf{x}_l$ y su error en la medición $\mathbf{z}_l$ en
-un filtro de Kalman:
+Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son
+representadas por la posición en el plano de la imágen $\mathbf{x}_l$ y su
+error en la medición $\mathbf{z}_l$ en un filtro de Kalman:
 
 \[
 \mathbf{x}_l = [r_c \; c_c \;  \mathbf{\dot r}_c  \; \mathbf{\dot c}_c \;  \Delta r_1  \; \Delta c_1 \;  \Delta r_2 \;  \Delta c_2]^T
@@ -864,19 +867,23 @@ un filtro de Kalman:
 \mathbf{z}_l = [r_c \;  c_c  \; r_1  \; c_1  \; r_2  \; c_2]^T
 \]
 
-Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la \textit{bounding box} y $r_c$ y $c_c$ son los
-centroides de la \textit{bounding box}. Estos valores son actualizados cuadro por cuadro,
-asumiendo que la variación en alto y ancho es baja. Se utilizan ángulos de Euler para
-traducir estos valores a la posición esperada dentro del plano de la cancha. La varianza es estimada
-utilizando el jacobiano de la matriz de Euler. Por último, se analiza la categoría de los
-jugadores de acuerdo al histograma de colores, clasificando de acuerdo a los cinco posibles uniformes
-(uno para cada equipo, uno para cada arquero, y los árbitros).
+Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la \textit{bounding box} y
+$r_c$ y $c_c$ son los centroides de la \textit{bounding box}. Estos valores son
+actualizados cuadro por cuadro, asumiendo que la variación en alto y ancho es
+baja. Se utilizan ángulos de Euler para traducir estos valores a la posición
+esperada dentro del plano de la cancha. La varianza es estimada utilizando el
+jacobiano de la matriz de Euler. Por último, se analiza la categoría de los
+jugadores de acuerdo al histograma de colores, clasificando de acuerdo a los
+cinco posibles uniformes (uno para cada equipo, uno para cada arquero, y los
+árbitros).
 
-El módulo supervisor recibe de cada computadora los datos preprocesados y ninguna información
-acerca de las imágenes. Se unifican los valores obtenidos de todos los módulos y se los asocia
-utilizando una matriz que es actualizada de acuerdo a la distancia de Mahalanobis. Si esta
-distancia queda por debajo de un determinado umbral, se empieza a considerar que las mediciones
-de dos cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo jugador.
+El módulo supervisor recibe de cada computadora los datos preprocesados y
+ninguna información acerca de las imágenes. Se unifican los valores obtenidos
+de todos los módulos y se los asocia utilizando una matriz que es actualizada
+de acuerdo a la distancia de Mahalanobis. Si esta distancia queda por debajo de
+un determinado umbral, se empieza a considerar que las mediciones de dos
+cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo
+jugador.
 
 \section{Analisis de deportes con multiples camaras}
 \label{sec:var-camaras}
@@ -884,66 +891,96 @@ de dos cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo 
 % SIFT Base blablablabla
 \subsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
 
-\citeauthor*{beetz-05, beetz-06} analizaron, desde el punto de vista de la inteligencia artificial,
-el problema de detectar el comportamiento de los jugadores dentro de la cancha. Para eso, propusieron
-un sistema con dos módulos, uno que extrae características e información de videos provenientes de
-un numero indeterminado de cámaras, y un módulo de análisis y seguimiento del comportamiento de cada
-objeto (un sector de la imágen candidato a ser la pelota o una persona en el campo de juego, 
-llamado \textit{blob} por los autores).
+\citeauthor*{beetz-05} analizaron, desde el punto de vista de la inteligencia
+artificial, el problema de detectar el comportamiento de los jugadores dentro
+de la cancha. Para eso, propusieron un sistema con dos módulos, uno que extrae
+características e información de videos provenientes de un número de cámaras, y
+un módulo de análisis y seguimiento del comportamiento de cada objeto (un
+sector candidato de la imágen a contener a la pelota o a una persona en el campo de
+juego, llamado \textit{blob} en el trabajo).
 
-Respecto al módulo visual, encontraron una gran dificultad en detectar la posición de jugadores más alejados
-de la cámara, dado que el material con el que trabajaron en general eran cámaras situadas a no más de
-18 metros de altura. Esto hacía que la resolución en el lateral opuesto de la cancha sea de 1,5 metros por píxel,
-insuficiente para hacer un análisis real de la información obtenida.
+Respecto al módulo que extrae características, encontraron una gran dificultad
+en detectar la posición de jugadores más alejados de la cámara, dado que el
+material con el que trabajaron en general eran cámaras situadas a no más de 18
+metros de altura. Esto hacía que la resolución en el lateral opuesto de la
+cancha sea de 1,5 metros por píxel, insuficiente para hacer un análisis real de
+la información obtenida.
 
-Su trabajo utiliza fuertemente la detección de líneas en la cancha, tanto las líneas blancas que demarcan sectores
-importantes del campo de juego, como de distintos tonos de verde en franjas que es frecuentemente el caso del césped de
-estadios de Europa. Esta característica no se vé en las canchas de fútbol en la mayoría de los países de América Latina.
+Como parte del trabajo se encuentra la detección de sectores y líneas en la
+cancha, las líneas blancas que demarcan sectores importantes del campo de
+juego, y los distintos tonos de verde en franjas que es frecuentemente el caso
+del césped de estadios de Europa. Esta característica no se vé en las canchas
+de fútbol en la mayoría de los países de América Latina.
 
-Para mantener información acerca del movimiento sobre el eje de la cámara (denominado \textit{panning}), se utilizó
-un algoritmo de aprendizaje para detectar características en los carteles publicitarios usualmente presentes en los
-laterales de la cancha. Esto ayuda a la robustez del algoritmo, pero en ciertos casos no es suficiente, como sucede
-cuando el camarógrafo mueve la cámara rápidamente para no perder de vista la pelota en el caso de un pase largo.
-El máximo tiempo que reportan para el seguimiento correcto de la orientación y posición de la cámara es de 2,5 minutos.
+Para mantener información acerca del movimiento sobre el eje de la cámara
+(denominado \textit{panning}), se utiliza un algoritmo de aprendizaje basado en
+\textit{KLT} para detectar características en los carteles publicitarios
+usualmente presentes en los laterales de la cancha. Esto ayuda a la robustez
+del algoritmo, pero en ciertos casos no es suficiente, como sucede cuando el
+camarógrafo mueve la cámara rápidamente para no perder de vista la pelota en el
+caso de un pase largo. El estudio reporta que no se pudo mantener el seguimiento
+correcto de la orientación y posición de la cámara por más de 2,5 minutos.
 
 El análisis del video se compone de las siguientes etapas:
 
 \begin{itemize}
-  \item \textbf{Segmentación por color}: Se diferencia el verde de la cancha, los jugadores, la publicidad de fondo,
-  y las líneas blancas de la cancha mediante el color de los mismos. Debido a diferencias de
-  iluminación, se actualizan los parámetros para la detección de valores que corresponden al pasto verde de acuerdo
-  a un algoritmo de aprendizaje que es sensible al ángulo estimado de la cámara y al tiempo.
-  \item \textbf{Estimación de la posición de la cámara}: Se tiene un modelo de los bordes rectos que debieran detectarse
-  en la cámara, y sus posiciones en tres dimensiones. A partir de esto, se obtienen datos acerca de la perspectiva.
-  Para fortalecer la detección, se
-  corrigen las posiciones utilizando un algoritmo de aprendizaje que toma como entrada las publicidades que se ven en 
-  el extremo opuesto de la cancha.
-  \item \textbf{Detección de \textit{blobs}}: Otros objetos que no sean verdes o blancos (pasto o líneas de la cancha)
-  son candidatos a ser jugadores o el árbitro. Estos son segmentados y analizados en busca de ciertas características:
-  se espera que en general sean más altos que anchos, con segmentos definidos: pelo, camisa, piernas, que son
-  aprendidos y actualizados a lo largo del análisis.
+
+  \item \textbf{Segmentación por color}: Se diferencia el verde de la cancha,
+    los jugadores, la publicidad de fondo, y las líneas blancas de la cancha
+    mediante el color de los mismos. Debido a diferencias de iluminación, se
+    actualizan los parámetros para la detección de valores que corresponden al
+    pasto verde de acuerdo a un algoritmo de aprendizaje que es sensible al
+    ángulo estimado de la cámara y al tiempo.
+
+  \item \textbf{Estimación de la posición de la cámara}: Se tiene un modelo de
+    los bordes rectos que debieran detectarse en la cámara, y sus posiciones en
+    tres dimensiones. A partir de esto, se obtienen datos acerca de la
+    perspectiva. Para fortalecer la detección, se corrigen las posiciones
+    utilizando un algoritmo de aprendizaje que toma como entrada las
+    publicidades que se ven en el extremo opuesto de la cancha.
+
+  \item \textbf{Detección de \textit{blobs}}: Otros objetos que no sean verdes
+    o blancos (pasto o líneas de la cancha) son candidatos a ser jugadores o el
+    árbitro. Estos son segmentados y analizados en busca de ciertas
+    particularidades: se espera que en general sean más altos que anchos, con
+    segmentos definidos: segmentos diferenciados por color correspondientes al
+    pelo, camisa, piernas, que son aprendidos y actualizados a lo largo del
+    análisis.
+
 \end{itemize}
 
-Luego del análisis de características del video, el procesamiento y seguimiento de los jugadores es realizado utilizando
-una extensión del algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por \citeauthor*{Schmitt-1, Schmitt-2}
-Este algoritmo utiliza un modelo de cámara y movimiento probabilístico para estimar la posición de los jugadores
-y actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las características de un partido
-de fútbol para mejorar esta estimación: 
+Luego del análisis de características del video, el procesamiento y seguimiento
+de los jugadores es realizado utilizando una extensión del algoritmo
+\textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por
+\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de
+cámara y movimiento probabilístico para estimar la posición de los jugadores y
+actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las
+características de un partido de fútbol para mejorar esta estimación:
+
 \begin{itemize}
-  \item \textbf{Trackeo de personas}: No se dá el caso de que un jugador desaparezca de la cancha de un \textit{frame}
-  a otro. Aparecen gradualmente desde el borde del campo de visión.
-  \item \textbf{Oclusiones entre jugadores}: No se descarta la información sobre la estimación de un jugador cuando 
-  éste pasa a estar ocluído por otro jugador.
-  \item \textbf{Jugadores sobre un plano}: Se asume que la cancha es un plano tridimencional y que los jugadores
-  están posicionados sobre este plano. Esto además permite relacionar el tamaño de los \textit{blobs} con la cercanía
-  del jugador a la cámara.
+  \item \textbf{Trackeo de personas}: No se dá el caso de que un jugador
+    desaparezca de la cancha de un \textit{frame} a otro. Aparecen gradualmente
+    desde el borde del campo de visión.
+
+  \item \textbf{Oclusiones entre jugadores}: No se descarta la información
+    sobre la estimación de un jugador cuando éste pasa a estar ocluído por otro
+    jugador.
+
+  \item \textbf{Jugadores sobre un plano}: Se asume que la cancha es un plano
+    tridimencional y que los jugadores están posicionados sobre este plano.
+    Esto además permite relacionar el tamaño de los \textit{blobs} con la
+    cercanía del jugador a la cámara.
+
 \end{itemize}
 
-Por último, este análisis genera información de alto nivel semántico en forma de \textit{movimientos}
-y \textit{episodios}. Para modelar los movimientos de la pelota, se asumió que la pelota se mueve linealmente por partes.
-Un episodio es definido como la secuencia de \textit{movimientos} de la pelota desde que un jugador toma control
-de ella hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este modelo son pases, tiros al arco,
-o cambios bruscos de dirección (llamado \textit{dribbling} por los autores).
+Por último, este análisis genera información de alto nivel semántico:
+\textit{movimientos} de la pelota y \textit{episodios}. Para modelar los
+movimientos de la pelota, se modeló la posición de la pelota como una función
+lineal por partes. Un episodio es definido como la secuencia de
+\textit{movimientos} de la pelota desde que un jugador toma control de ella
+hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este
+modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
+\textit{dribbling} por los autores).
 
 \section{Analisis de deportes con video televizado}
 \label{sec:tv-video}
@@ -972,7 +1009,7 @@ Luego $ H_t = H_{t-1} P_{t-1,t}$.
 Para obtener la posicion de la camara se descompone la homografia en 2 matrices:
 \begin{equation}
 H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix}
-K = \begin{pmatrix} 
+K = \begin{pmatrix}
     \alpha & \gamma & u_0 \\
     0 & \beta & v_0 \\
     0 & 0 & 1
@@ -989,8 +1026,8 @@ Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ 
 \begin{bmatrix}
     p_{1 1} p_{2 1} & p_{1 2} p_{2 2} \\
     p_{1 1} p_{3 1} & p_{1 2} p_{3 2} \\
-    p_{1 1} p_{3 1} & p_{2 2} p_{3 2} 
-\end{bmatrix} 
+    p_{1 1} p_{3 1} & p_{2 2} p_{3 2}
+\end{bmatrix}
 \begin{bmatrix}
     \alpha^2 \\
     \beta^2
@@ -1012,7 +1049,7 @@ La primer etapa es de deteccion utilizando un algoritmo basado en \textit{Viterb
 La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter}.
 
 Para deteccion se crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
-Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota. 
+Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota.
 Esta operacion se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
 Los nodos de este grafo representan candidatos, con un peso segun que tan parecidos son a una pelota ideal.
 Y los vertices se colocan si estan a una cierta proximidad y pesados segun que tan cerca y parecidos sean los nodos.
@@ -1029,9 +1066,9 @@ Por lo tanto, buscan este pico en el histograma y toman todos los colores adyace
 
 \subsubsection*{Deteccion de jugadores}
 
-Una vez que se determino el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
+Una vez que se determinó el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
 Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pelota, adaptada a la morfologia de los jugadores.
-Como se conoce la posicion en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posicion real de los jugadores en ese cuadro facilmente.
+Como se conoce la posicion en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posicion real de los jugadores en ese cuadro fácilmente.
 
 
 
