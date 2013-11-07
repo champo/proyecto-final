@@ -331,7 +331,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new FrameDecoder("src/main/resources/WholeField.mov");
+        frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -568,6 +568,21 @@ public class MainApp extends javax.swing.JFrame {
                 	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
                 	ac.adapt(coloredFrame);
                 	int index = 0;
+                	if (homeography != null) {
+                		BufferedImage cancha = soccerFieldPanel.getImage();
+                		for (int i = 0; i < cancha.getWidth(); i++) {
+                			for (int j = 0; j < cancha.getHeight(); j++) {
+                				if (cancha.getRGB(i, j) == Color.black.getRGB()) {
+            						Point inverseApply = homeography.inverseApply(i, j);
+            						if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth() &&
+            							inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
+            							getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+            							imagePanel.setImage(getFrame());
+            						}
+                				}
+                			}
+                		}
+                	}
                 	for (Contour c : contour) {
                 		ImageOperations.drawContourOnBuffer(coloredFrame, c);
 

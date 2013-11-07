@@ -7,6 +7,7 @@ package ar.edu.it.itba;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
@@ -26,11 +27,6 @@ class HomeographyManager {
     private ListModel listModel;
 
     public HomeographyManager() {
-    	points.add(new Pair(new Point(344,358), new Point(86,182)));
-    	points.add(new Pair(new Point(709,358), new Point(255,184)));
-    	points.add(new Pair(new Point(1074,358), new Point(427,183)));
-    	points.add(new Pair(new Point(1058,281), new Point(471,44)));
-    	points.add(new Pair(new Point(92,498), new Point(44,324)));
         listModel = new AbstractListModel() {
 
             @Override
@@ -85,8 +81,15 @@ class HomeographyManager {
 		for (int i = 0; i < 9; i++) {
 			result.set(i, ratio * v.get(i, v.numCols - 1));
 		}
+		Homography h = new Homography(result);
+		double errsum = 0;
+		for (Pair p : points) {
+			Point d = h.apply(p.image);
+			errsum += Math.pow(Math.abs(d.x - p.mapped.x), 2) + Math.pow(Math.abs(d.y - p.mapped.y), 2);
+		}
+		System.out.println("Error en homography: " + (errsum / points.size()));
 
-		return new Homography(result);
+		return h;
     }
 
     ListModel getListModel() {

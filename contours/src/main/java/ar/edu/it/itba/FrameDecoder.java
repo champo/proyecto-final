@@ -93,7 +93,7 @@ public class FrameDecoder {
 
 	    int halfWidth = imageWidth / 2;
 	    int halfHeight = imageHeight / 2;
-	    double strength = 2.5;
+	    double strength = 2.3;
 
 	    double correctionRadius = Math.sqrt(Math.pow(imageWidth, 2) + Math.pow(imageHeight, 2)) / strength;
 
