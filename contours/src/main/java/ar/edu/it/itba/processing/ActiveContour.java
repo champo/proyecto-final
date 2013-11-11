@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.PointMapping.Provider;
 
 public class ActiveContour {
@@ -24,7 +25,10 @@ public class ActiveContour {
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
-	private static double SIGMA = 0.5;
+
+	private static final double mu = 0.4;
+
+	private static double SIGMA = 0.7;
 	private static double[][] mask;
 	static {
 		final int sideLength = 2  * MASK_RADIUS + 1;
@@ -108,6 +112,14 @@ public class ActiveContour {
 				final PointMapping F_d = getF(frame, omegaZero[j], omega[j]);
 
 				if (!applyForce(c, F_d, theta, frame)) {
+
+					if (c.currentSize() < mu * c.averageSize()) {
+						System.out.println("A countor is missing OH NOES");
+						c.setState(State.MISSING);
+					} else {
+						c.setState(State.STABLE);
+					}
+
 					System.out.println("Cut");
 					done[j] = true;
 					completed++;
@@ -117,6 +129,18 @@ public class ActiveContour {
 			if (completed == contours.length) {
 				System.out.println("Breaking");
 				break;
+			}
+		}
+
+		for (int i = 0; i < contours.length; i++) {
+			if (!done[i]) {
+				final Contour c = contours[i];
+				if (c.currentSize() < mu * c.averageSize()) {
+					System.out.println("A countor is missing OH NOES");
+					c.setState(State.MISSING);
+				} else {
+					c.setState(State.STABLE);
+				}
 			}
 		}
 

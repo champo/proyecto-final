@@ -6,13 +6,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Contour implements Iterable<Point>{
+public class Contour implements Iterable<Point> {
+
+	enum State {
+		STABLE,
+		MISSING
+	}
 
 	private final Set<Point> points;
 	private final Set<Point> lin;
-        public final int color;
+	public final int color;
 
 	private Set<Point> internalPoints;
+
+	private long accumulatedSize = 0;
+	private int mutationCount = 0;
+
+	private State state = State.MISSING;
 
 	public Contour(final int color, final Rectangle rect) {
                 this.color = color;
@@ -134,5 +144,26 @@ public class Contour implements Iterable<Point>{
 			cumm += p.x;
 		}
 		return (int) (cumm/internalPoints.size());
+	}
+
+	public void setState(final State state) {
+		this.state = state;
+
+		if (state == State.STABLE) {
+			accumulatedSize += currentSize();
+			mutationCount++;
+		}
+	}
+
+	public long averageSize() {
+		if (mutationCount == 0) {
+			return currentSize();
+		}
+
+		return accumulatedSize / mutationCount;
+	}
+
+	public long currentSize() {
+		return lin.size();
 	}
 }
