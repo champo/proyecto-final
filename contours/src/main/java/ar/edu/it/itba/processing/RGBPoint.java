@@ -20,4 +20,9 @@ public class RGBPoint {
 		this.blue = blue;
 	}
 
+	public double diff(final RGBPoint reference) {
+		return Math.abs(red - reference.red)
+				+ Math.abs(green - reference.green)
+				+ Math.abs(blue - reference.blue);
+	}
 }

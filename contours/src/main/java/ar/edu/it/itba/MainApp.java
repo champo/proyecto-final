@@ -33,6 +33,7 @@ import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.video.FrameDecoder;
+import ar.edu.it.itba.video.FrameProvider;
 
 /**
  *
@@ -62,7 +63,7 @@ public class MainApp extends javax.swing.JFrame {
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
     private ImagePanel phiPanel;
-    private FrameDecoder frameDecoder;
+    private FrameProvider frameDecoder;
 
     private File outFile;
     private OutputStream outBuffer;
@@ -341,7 +342,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Independiente2b.mp4");
+        frameDecoder = new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/repo/material/happyoccluded.mpeg");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());

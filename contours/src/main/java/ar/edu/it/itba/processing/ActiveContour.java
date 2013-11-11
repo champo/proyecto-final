@@ -339,10 +339,7 @@ public class ActiveContour {
 
 		for (final RGBPoint referenceColor : referenceColors) {
 
-			final double diff = Math.abs(color.red - referenceColor.red)
-					+ Math.abs(color.green - referenceColor.green)
-					+ Math.abs(color.blue - referenceColor.blue);
-			result += diff * PONDER[i];
+			result += color.diff(referenceColor) * PONDER[i];
 			i++;
 
 		}
