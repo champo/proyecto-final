@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ar.edu.it.itba.processing.PointMapping.Provider;
 
 public class ActiveContour {
 
