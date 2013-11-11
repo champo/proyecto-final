@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import ar.edu.it.itba.processing.Contour;
+
 public class ImageOperations {
 
 	public static void drawContourOnBuffer(BufferedImage image, Contour c) {

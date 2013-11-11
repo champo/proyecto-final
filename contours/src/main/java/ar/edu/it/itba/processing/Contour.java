@@ -1,24 +1,23 @@
-package ar.edu.it.itba;
+package ar.edu.it.itba.processing;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class Contour implements Iterable<Point>{
 
-	private final List<Point> points;
-	private final List<Point> lin;
+	private final Set<Point> points;
+	private final Set<Point> lin;
         public final int color;
 
 	private Set<Point> internalPoints;
 
-	public Contour(int color, final Rectangle rect) {
+	public Contour(final int color, final Rectangle rect) {
                 this.color = color;
-		points = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
-		lin = new ArrayList<Point>(rect.width * 2 + rect.height * 2);
+		points = new HashSet<Point>();
+		lin = new HashSet<Point>();
 		for (int i = 0; i < rect.width; i++) {
 			points.add(new Point(rect.x + i, rect.y));
 		}
@@ -43,12 +42,6 @@ public class Contour implements Iterable<Point>{
 		for (int j = rect.height - 1; j > 1; j--) {
 			lin.add(new Point(rect.x + 1, rect.y + j));
 		}
-	}
-
-	public Contour(final int color, final List<Point> lout, final List<Point> lin) {
-        	this.color = color;
-		points = lout;
-		this.lin = lin;
 	}
 
 	public static Contour aroundPoint(final int color, final Point point) {
@@ -107,11 +100,11 @@ public class Contour implements Iterable<Point>{
 		return internalPoints.contains(new Point(i, j));
 	}
 
-	public List<Point> getLin() {
+	public Set<Point> getLin() {
 		return lin;
 	}
 
-	public List<Point> getLout() {
+	public Set<Point> getLout() {
 		return points;
 	}
 

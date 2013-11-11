@@ -1,4 +1,4 @@
-package ar.edu.it.itba;
+package ar.edu.it.itba.video;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
