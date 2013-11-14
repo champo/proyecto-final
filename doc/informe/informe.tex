@@ -131,7 +131,7 @@ Esta transformación $T$ se puede modelar como una transformación de coordenada
 
 en donde $H$ es una matriz de $3 \times 3$ que representa la proyección, rotación, escalamiento, sesgo y perspectiva.
 
-Se puede observar que para aplicar $H$ se extiende el vector de dos dimensiones $[x,y]^{T}$ a tres componentes. El valor de la 
+Se puede observar que para aplicar $H$ se extiende el vector de dos dimensiones $[x,y]^{T}$ a tres componentes. El valor de la
 tercera componente puede variar, y define una clase equivalencia tal que
 
 \begin{equation}
@@ -153,7 +153,7 @@ Este tipo de coordenadas se denominan homogéneas.
 La forma de $H$ determina el tipo de transformación geométrica representada. Por ejemplo,
 
 \begin{equation}
-    H = 
+    H =
     \begin{bmatrix}
         sa\cos(\theta) & -sb\sin(\theta) & t_{x}\\
         sa\sin(\theta) & sb\cos(\theta) & t_{y} \\
@@ -161,14 +161,14 @@ La forma de $H$ determina el tipo de transformación geométrica representada. P
     \end{bmatrix}
 \end{equation}
 
-Representa una rotación de ángulo $\theta$, una traslación dada por $t_{x}$ y $t_{y}$ (notesé el uso del ``1'' de coordenadas 
+Representa una rotación de ángulo $\theta$, una traslación dada por $t_{x}$ y $t_{y}$ (notesé el uso del ``1'' de coordenadas
 homogéneas), una escalamiento dado por el factor $s$, un sesgo introducido por $a$ y $b$ y un cambio de perspectiva
 dado por $p_{0}$ y $p{1}$.
 
-En total, son 8 las parámetros encodeados en la matriz $H$, y sus elementos son 
+En total, son 8 las parámetros encodeados en la matriz $H$, y sus elementos son
 
 \begin{equation}
-    H = 
+    H =
     \begin{bmatrix}
         H_{00} & H_{01} & H_{02}\\
         H_{10} & H_{11} & H_{12}\\
@@ -178,7 +178,7 @@ En total, son 8 las parámetros encodeados en la matriz $H$, y sus elementos son
 
 \subsection{Estimación de una homografía}
 
-Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basandose en correspondencias de puntos conocidas. 
+Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basandose en correspondencias de puntos conocidas.
 La transformación de una coordenada, $x$ en coordenadas homogéneas ($z=1$), a una coordenada objetivo $x'= Hx$ da como resultado
 
 \begin{eqnarray*}
@@ -194,10 +194,10 @@ Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en a la forma Eucl
     \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{10}x - H_{11}y - H_{12}\\
 \end{eqnarray*}
 
-Que también puede ser escrito como 
+Que también puede ser escrito como
 
 \begin{flalign}
-    Ah = 
+    Ah =
     \begin{bmatrix}
         -x & -y & -1 & 0 & 0 & 0 & \frac{x'x}{z'} & \frac{x'y}{z'} & \frac{x'}{z'}\\
         0 & 0 & 0 & -x & -y & -1 & \frac{y'x}{z'} & \frac{y'y}{z'} & \frac{y'}{z'}\\
@@ -224,7 +224,7 @@ Como consecuencia, se tiene el siguiente sistema de ecuaciones lineales para res
     Ah = 0 \hspace{1cm} h \neq 0
 \end{equation}
 
-Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} y la única solución es el espacio nulo de $A$. Para más correspondencias, 
+Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} y la única solución es el espacio nulo de $A$. Para más correspondencias,
 el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma norma
 %TODO maybe agregar alguna mini explicación de porque?
 
@@ -233,7 +233,7 @@ el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluc
 \end{equation}
 
 donde $\lambda_{min}$ es el menor autovalor de $A^{T}A$. Esto se desprende de las propiedades de la norma 2 de matrices y de la propiedad de
-las matrices cuadradas simétricas que dice que dado $B = A^{T}A$, $\lambda_{i}$ y $q_{i}$ sus autovalores y autovectores respectivamente, las matrices 
+las matrices cuadradas simétricas que dice que dado $B = A^{T}A$, $\lambda_{i}$ y $q_{i}$ sus autovalores y autovectores respectivamente, las matrices
 
 \begin{equation}
     Q = \begin{bmatrix}
@@ -257,10 +257,10 @@ cumplen $B = QDQ^{T}$.
     argmin_{\norm{h}=1} h^{T}QDQ^{T}h = argmin_{\norm{y}=1} y^{T}Dy = argmin_{\norm{y}=1} \lambda_{1}y^{2}_{1} + ... + \lambda_{n}y^{2}_{n}
 \end{equation}
 
-Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las componentes de $y$ se anulan excepto por $y_{i} = 1$. Como $y = Q^{T}h$, 
+Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las componentes de $y$ se anulan excepto por $y_{i} = 1$. Como $y = Q^{T}h$,
 $h=Qy = q_{min}$, el autovector de $B$ correspondiente al mínimo autovalor.
 
-El problema reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares 
+El problema reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares
 %TODO footnote o referencia
 \begin{equation}
     A = U\Sigma V^{T}
@@ -269,19 +269,38 @@ El problema reduce entonces a hallar este autovector. Para ello, se recurre a la
 donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A{T}A$, mientras que $\Sigma$ es una matriz
 diagonal con los autovalores de $$A{T}A$$ en su diagonal. Notesé que los autovalores de $A{T}A$ son iguales a los autovalores de $A$ al cuadrado.
 
-La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto 
+La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto
 se toma como solución la última columna de $V$, correspondiente al menor autovalor de $A^{T}A$.
 
 \subsection{Aplicación y utilización}
 
 La técnica de la homografía se utiliza para poder transformar la vista tridimensional de la secuencia de video (la imagen del estadio de futbol), en una vista de dos dimensiones
 (el campo de futbol visto desde arriba). Esto facilita el análisis y los cálculos de las velocidades y posiciones de los jugadores, lo cual permite sacar conclusiones y efectuar
-juicios complejos como en el caso de la regla del fuera de juego. Además, visualmente elimina ambigüedades que pueden suceder en el caso de la vista tridimensional por razones de 
+juicios complejos como en el caso de la regla del fuera de juego. Además, visualmente elimina ambigüedades que pueden suceder en el caso de la vista tridimensional por razones de
 perspectiva, lo cual facilita el entendimiento al ser humano.
 
 \subsection{Distorsión de la lente de la cámara}
-% TODO
-TODO
+
+El material utilizado fue obtenido con una lente con una baja distancia focal,
+lo que genera una distorsión de tipo \textit{barril}, donde líneas rectas
+se curvan hacia el exterior. El modelo de \textit{Brown} plantea una solución
+general para múltiples niveles de distorsión, tanto de tipo radial como
+tangencial.
+
+Para obtener los valores de la imagen sin distorción se utilizó la siguiente
+corrección:
+
+\[
+  x_u = (x_d - x_c) (1+K r^2) \\
+  y_u = (x_d - x_c) (1+K r^2)
+\]
+
+Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorción, $x_d$ y $y_d$ son
+puntos en la imágen original, $x_c$ y $y_c$ son los puntos centrales de la
+imágen (se puede asumir que el punto central de la cámara es el punto central
+de la imágen), $K$ es un coeficiente de distorsión radial, y $r =
+\sqrt{(x_d-x_c)^2) + (y_d-y_c)^2}$, la distancia del punto al centro de la
+imágen.
 
 \end{document}
 
