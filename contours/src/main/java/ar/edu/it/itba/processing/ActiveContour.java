@@ -3,9 +3,9 @@ package ar.edu.it.itba.processing;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +25,6 @@ public class ActiveContour {
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
-
-	private static final double mu = 0.4;
 
 	private static double SIGMA = 0.7;
 	private static double[][] mask;
@@ -70,7 +68,7 @@ public class ActiveContour {
 	private RGBPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
 		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
 		colors.add(getAverageColor(frame, contour));
-		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
+		//colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
@@ -88,7 +86,7 @@ public class ActiveContour {
 			final Contour contour) {
 		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
 		colors.add(getAverageBackgroundColor(frame, contour));
-		colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
+		//colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
@@ -112,43 +110,25 @@ public class ActiveContour {
 				final PointMapping F_d = getF(frame, omegaZero[j], omega[j]);
 
 				if (!applyForce(c, F_d, theta, frame)) {
-
-					if (c.currentSize() < mu * c.averageSize()) {
-						System.out.println("A countor is missing OH NOES");
-						c.setState(State.MISSING);
-					} else {
-						c.setState(State.STABLE);
-					}
-
-					System.out.println("Cut");
 					done[j] = true;
 					completed++;
 				}
 			}
 
 			if (completed == contours.length) {
-				System.out.println("Breaking");
 				break;
 			}
 		}
-
-		for (int i = 0; i < contours.length; i++) {
-			if (!done[i]) {
-				final Contour c = contours[i];
-				if (c.currentSize() < mu * c.averageSize()) {
-					System.out.println("A countor is missing OH NOES");
-					c.setState(State.MISSING);
-				} else {
-					c.setState(State.STABLE);
-				}
-			}
-		}
-
 
 		final int rounds = 2 * MASK_RADIUS + 1;
 		for (int i = 0; i < rounds; i++) {
 
 			for (final Contour c : contours) {
+
+				if (c.getState() == State.MISSING) {
+					continue;
+				}
+
 				final PointMapping F_s = new PointMapping(new Provider() {
 
 					@Override
@@ -162,10 +142,116 @@ public class ActiveContour {
 				applyForce(c, F_s, theta, frame);
 			}
 		}
+
+
+		for (int i = 0; i < contours.length; i++) {
+			Contour c = contours[i];
+			c.mutationFinished();
+
+			if (c.getState() == State.MISSING) {
+				markExpandedArea(frame, c);
+			}
+		}
+
+
 		final long diff = System.currentTimeMillis() - time;
 		System.out.println("Time difference: " + diff + " ms");
 
 		return diff;
+	}
+
+	private void markExpandedArea(final BufferedImage frame, final Contour c) {
+
+		int searchRadius = Math.max(15 + c.cyclesLost(), 30);
+		Point center = c.getLastCentroid();
+
+		clearContour(c);
+
+		System.out.println("Search radius = " + searchRadius);
+		System.out.println("Center = " + center);
+
+		int maxX = Math.min(frame.getWidth() - 1, center.x + searchRadius);
+		int maxY = Math.min(frame.getHeight() - 1, center.y + searchRadius);
+
+		Set<Point> points = new HashSet<Point>();
+
+		int count = 0;
+
+		for (int x = Math.max(0, center.x - searchRadius); x < maxX; x++) {
+			for (int y = Math.max(0, center.y - searchRadius); y < maxY; y++) {
+
+				if (phi[x][y] == 0) {
+					phi[x][y] = c.color;
+					count++;
+
+					Point p = new Point(x, y);
+					points.add(p);
+					theta.set(p, -3);
+				}
+
+			}
+		}
+		System.out.println("Got count = " + count);
+
+		Set<Point> lout = c.getLout();
+		Set<Point> lin = c.getLin();
+
+		for (Point p : points) {
+			List<Point> neighbors = neighbors(p, frame.getWidth(), frame.getHeight());
+			int connected = 0;
+			for (Point point : neighbors) {
+				if (phi[point.x][point.y] == c.color) {
+					connected++;
+				}
+			}
+
+			if (connected < neighbors.size()) {
+				lout.add(p);
+				theta.set(p, 1);
+			} else {
+				c.addPoint(p);
+			}
+		}
+
+		for (Point p : points) {
+			List<Point> neighbors = neighbors(p, frame.getWidth(), frame.getHeight());
+			int connected = 0;
+			for (Point point : neighbors) {
+				if (theta.getValue(point) == -3) {
+					connected++;
+				}
+			}
+
+			if (connected < neighbors.size()) {
+				lin.add(p);
+			}
+		}
+
+		for (Point point : lin) {
+			theta.set(point, -1);
+		}
+
+	}
+
+	private void clearContour(final Contour c) {
+
+		Iterator<Point> iterator = c.iterator();
+		while (iterator.hasNext()) {
+			Point p = iterator.next();
+
+			phi[p.x][p.y] = 0;
+			theta.set(p, 3);
+
+			iterator.remove();
+		}
+
+		for (Point p : c.getLout()) {
+			phi[p.x][p.y] = 0;
+			theta.set(p, 3);
+		}
+
+		c.getLout().clear();
+		c.getLin().clear();
 	}
 
 	private void calculateGauss(final Set<Point> points, final PointMapping theta,

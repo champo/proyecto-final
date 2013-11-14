@@ -13,6 +13,8 @@ public class Contour implements Iterable<Point> {
 		MISSING
 	}
 
+	private static final double mu = 0.7;
+
 	private final Set<Point> points;
 	private final Set<Point> lin;
 	public final int color;
@@ -22,7 +24,11 @@ public class Contour implements Iterable<Point> {
 	private long accumulatedSize = 0;
 	private int mutationCount = 0;
 
+	private Point lastCentroid;
+
 	private State state = State.MISSING;
+
+	private int cyclesLost;
 
 	public Contour(final int color, final Rectangle rect) {
                 this.color = color;
@@ -120,6 +126,8 @@ public class Contour implements Iterable<Point> {
 
 	public void setInternalPoints(final Set<Point> internalPoints) {
 		this.internalPoints = internalPoints;
+
+		lastCentroid = new Point(centroidX(), centroidY());
 	}
 
 	public void addPoint(final Point p) {
@@ -146,12 +154,36 @@ public class Contour implements Iterable<Point> {
 		return (int) (cumm/internalPoints.size());
 	}
 
-	public void setState(final State state) {
-		this.state = state;
+	public void mutationFinished() {
+
+		checkIfMissing();
 
 		if (state == State.STABLE) {
 			accumulatedSize += currentSize();
 			mutationCount++;
+
+			lastCentroid = new Point(centroidX(), centroidY());
+		} else {
+			cyclesLost++;
+		}
+	}
+
+	private void checkIfMissing() {
+
+		if (currentSize() < mu * averageSize()) {
+
+			if (state == State.STABLE) {
+				System.out.println("A countor is missing OH NOES");
+				state = State.MISSING;
+			}
+
+		} else {
+
+			if (state != State.STABLE) {
+				cyclesLost = 0;
+				System.out.println("Got it back!");
+				state = State.STABLE;
+			}
 		}
 	}
 
@@ -165,5 +197,17 @@ public class Contour implements Iterable<Point> {
 
 	public long currentSize() {
 		return lin.size();
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public Point getLastCentroid() {
+		return lastCentroid;
+	}
+
+	public int cyclesLost() {
+		return cyclesLost;
 	}
 }
