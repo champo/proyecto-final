@@ -281,8 +281,10 @@ public class ActiveContour {
 		final Set<Point> lout = r.getLout();
 		final Set<Point> lin = r.getLin();
 		boolean changed = false;
+
 		for (final Point p : new ArrayList<Point>(lout)) {
-			if (force.getValue(p) > 0 && !isBorder(frame, p)) {
+
+			if (force.getValue(p) > 0 && !isBorder(frame, p) && isTopologicallySafe(p, frame)) {
 				lout.remove(p);
 				lin.add(p);
 				r.addPoint(p);
@@ -348,6 +350,25 @@ public class ActiveContour {
 		return changed;
 	}
 
+	private boolean isTopologicallySafe(final Point p, final BufferedImage frame) {
+
+		int alpha = 0;
+		boolean[] seen = new boolean[contours.length];
+		for (Point n : neighbors8(p, frame.getWidth(), frame.getHeight())) {
+			int object = phi[n.x][n.y];
+			if (object != 0 && !seen[object - 1]) {
+				seen[object - 1] = true;
+				alpha++;
+			}
+		}
+
+		if (alpha <= 1) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private static boolean isBorder(final BufferedImage frame, final Point p) {
 		return p.x == 0 || p.y == 0 || p.x == frame.getWidth() - 1 || p.y == frame.getHeight() - 1;
 	}
@@ -367,6 +388,41 @@ public class ActiveContour {
 		if (p.y > 0) {
 			l.add(new Point(p.x, p.y - 1));
 		}
+		return l;
+	}
+
+	private static List<Point> neighbors8(final Point p, final int width, final int height) {
+		final List<Point> l = new ArrayList<Point>(4);
+
+		if (p.x < width - 1) {
+			l.add(new Point(p.x + 1, p.y));
+
+			if (p.x < height - 1) {
+				l.add(new Point(p.x + 1, p.y + 1));
+			}
+
+			if (p.y > 0) {
+				l.add(new Point(p.x + 1, p.y - 1));
+			}
+		}
+		if (p.y < height - 1) {
+			l.add(new Point(p.x, p.y + 1));
+		}
+		if (p.x > 0) {
+			l.add(new Point(p.x - 1, p.y));
+
+			if (p.x < height - 1) {
+				l.add(new Point(p.x - 1, p.y + 1));
+			}
+
+			if (p.y > 0) {
+				l.add(new Point(p.x - 1, p.y - 1));
+			}
+		}
+		if (p.y > 0) {
+			l.add(new Point(p.x, p.y - 1));
+		}
+
 		return l;
 	}
 
