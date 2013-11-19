@@ -292,7 +292,7 @@ public class ActiveContour {
 				for (final Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == 3 && phi[n.x][n.y] == 0) {
 						lout.add(n);
-						phi[p.x][p.y] = r.color;
+						phi[n.x][n.y] = r.color;
 						theta.set(n, 1);
 					}
 				}
@@ -465,12 +465,12 @@ public class ActiveContour {
 		while (!queue.isEmpty() && iterations < MAX_ITERATIONS) {
 			iterations++;
 			final Point p = queue.pop();
-			for (final Point n : neighbors(p, Integer.MAX_VALUE, Integer.MAX_VALUE)) {
+			for (final Point n : neighbors8(p, Integer.MAX_VALUE, Integer.MAX_VALUE)) {
 				if (!internalPoints.contains(n) && !externalPoints.contains(n)) {
 					internalPoints.add(n);
 					queue.push(n);
 					theta.set(n, -3);
-					phi[p.x][p.y] = r.color;
+					phi[n.x][n.y] = r.color;
 				}
 			}
 		}
