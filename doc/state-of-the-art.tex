@@ -106,15 +106,15 @@ juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
 movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
 otras aplicaciones. Se describe a lo largo de este trabajo técnicas aplicables
 al problema de seguimiento de múltiples jugadores de fútbol mediante el uso de
-una o varias cámaras de video. Se presentan las bases matemáticas para estos
-métodos y se analizarán características de cada una junto con las limitaciones
-y la factibilidad de conocer el estado del juego completo para cada momento.
+una o varias cámaras de video. Se presentan las bases teoricas para estos
+métodos y se analizan características y limitaciones de cada uno, asi como la
+factibilidad de conocer el estado del juego completo en cada momento.
 } \end{customabstract}
 
 \part*{Introducción}
 
 Dentro del área de análisis de imágenes, uno de los problemas más relevantes y
-estudiados es el problema de reconocer un objeto a partir de una secuencia de
+estudiados es el problema de reconocer un objeto en una secuencia de
 imágenes para seguir su posición, detectar cambios de orientación o en su
 forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras
 variaciones del problema. Tiene aplicaciones en muchos campos, como ser
@@ -142,9 +142,10 @@ de objetos categorizados en cuatro familias:
 \textit{Corte de Grafos},
 y \textit{Contornos Activos}.
 
-En la sección \ref{sec:var-camaras} se discuten los avances modernos en esta
-rama y los sistemas implementados que resuelven el problema de seguimiento de
-jugadores, pelota, y estado del juego. Se describen también las técnicas con
+En la secciónes \ref{sec:6-camaras}, \ref{sec:8-camaras}, \ref{sec:var-camaras} y \ref{sec:tv-video} 
+se discuten los avances modernos en esta rama. 
+Se presenta sistemas implementados que resuelven el problema de seguimiento de
+jugadores, pelota, y estado del juego. Y también se describe técnicas con
 mayor nivel semántico que detectan movimientos de jugadores, pases de pelota,
 tiros al arco, entre otros. Se dividen los mismos categorizados por los
 sistemas de cámaras utilizadas (una sola cámara fija, video televizado, o
