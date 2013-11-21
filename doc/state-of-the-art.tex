@@ -88,10 +88,6 @@
 \rhead{\small \thepage}
 \cfoot{\small Copyright \copyright 2013 ITBA}
 
-% Citations
-\LetLtxMacro{\oldcite}{\cite}
-\renewcommand{\cite}[1]{Ver \oldcite{#1}}
-
 % Metadata
 \title{}
 \date{20 de Septiembre de 2013}
@@ -167,63 +163,63 @@ de análisis de imágenes para seguimiento de objetos.
 
 \subsection{Predictores Lineales}
 
-Un \textit{Predictor Lineal} es una funcion que toma los valores de una serie
+Un \textit{Predictor Lineal} es una función que toma los valores de una serie
 de variables aleatorias y predice el valor de una variable dependiente.  La
-funcion tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots +
+función tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots +
 \beta_n x_n$, donde $x_i$ es una variable aleatoria y $\beta_i$ una constante.
-Se dice que el predictor es lineal al obligarse a $\beta_i$ a existir en los
-numeros reales.
+Se dice que el predictor es lineal al obligarse a $\beta_i \in \mathbb{R}$ 
+\footnote{Cualquier $x_i$ no lineal, puede expresarse como $x'_i = g(x_i)$ y tratarse como lineal}.
 
 En \cite{alp, original-linear-predictors} los autores utilizan predictores para
 hacer seguimiento de objetos en video.  El objetivo es relacionar el cambio de
 valor de varios píxeles cuadro a cuadro con el movimiento del objeto entre
 dichos cuadros.  Para soportar cualquier clase de movimiento, este se
 representa mediante una homografia (\cite{homography-estimation}), $H \in
-R^{3,3}$.
+R^{3\times3}$.
 
-Entonces los predictores se representan mediante una matriz $A \in
-\mathbb{R}^{9xn}$ donde cada fila representa una funcion de prediccion.  De 2
-cuadros consecutivos se obtiene el vector de cambios de valor de píxeles $X =
+Los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$
+donde cada fila representa una función de predicción.  De dos
+cuadros consecutivos se obtiene el vector de cambios en el valor de píxeles $X =
 (x_1, \dots, x_n)$ y se computa:
 
 \begin{eqnarray*}
-    AX = B \\
-    B = (h_{1,1}, h_{1,2}, h_{1,3}, h_{2,1}, h_{2,2}, h_{2,3}, h_{3,1}, h_{3,2}, h_{3,3})
+    AX &=& B \\
+    B &=& (h_{1,1}, h_{1,2}, h_{1,3}, h_{2,1}, h_{2,2}, h_{2,3}, h_{3,1}, h_{3,2}, h_{3,3})
 \end{eqnarray*}
 
-Donde $B$ contiene los valores de la homografia ($H$) de movimiento entre los cuadros.
+Donde $B$ contiene los valores de la homografia $H$ de movimiento entre los cuadros.
 
 \subsubsection{Calculo de los predictores}
 % TODO: Aclarar que es perturbar
 % TODO: Aclarar que el calculo de la homografia de la perturbacion es directa
-Para obtener la relacion $A$ se utiliza un paso inicial de entrenamiento.
-Primero se determina la posicion del objeto en un cuadro de manera supervisada.
-Una vez conocida la posicion, se toman $n$ muestras de valores de píxeles en ese cuadro.
+Para obtener la relación $A$ se utiliza un paso inicial de entrenamiento.
+Primero se determina la posición del objeto en un cuadro de manera supervisada.
+Una vez conocida la posición, se toman $n$ muestras aleatorias del valor de píxeles en ese cuadro.
 
-Luego se crean $m$ perturbaciones de la posicion del objeto, y se computa la homografia $H_i$ que representa esa perturbacion.
+Luego se crean $m$ perturbaciones de la posición del objeto, y se computa la homografia $H_i$ que representa esa perturbación.
 Llamemos al vector que representa esa homografia $B_i$.
 Ademas, tomamos muestras de valores de píxeles ($X_i$) con sus posiciones alteradas por la homografia $H_i$.
-Se puede entonces plantear:
+Se plantea:
 \begin{equation}
     A \left( X_1 \lvert \dots \lvert X_m \right) = \left( B_1 \lvert \dots \lvert B_m \right)
 \end{equation}
-Que es un sistema de ecuaciones lineales que puede ser resulto de manera sencilla.
+Que es un sistema de ecuaciones lineales que puede ser resuelto de manera sencilla.
 
 \subsubsection{Mejoras}
 
 Para mejorar la efectividad de los algoritmos, se calculan varios predictores y se disponen en capas.
-Cada capa se construye para buscar cambios de posicion cada vez mas pequeños.
+Cada capa se construye para buscar cambios de posición cada vez más pequeños.
 Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
 
-\citeauthor*{alp} (\cite{alp}) introducen manejo de oclusiones parciales de manera eficiente.
+\citeauthor*{alp} (\cite{alp}) introducen una forma para manejo de oclusiones parciales de manera eficiente.
 Para esto se divide el objeto en pequeñas secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de la siguiente manera:
 \begin{eqnarray*}
     Y &=& \left( B_1 \lvert \dots \lvert B_m \right) \\
     H &=& \left( X_1 \lvert \dots \lvert X_m \right) \\
     A &=& Y H^T(HH^T)^{-1}
 \end{eqnarray*}
-Esto permite mediante una formula compleja pero eficiente actualizar $A$ rapidamente para remover y agregar \textit{templates}.
-O sea, permite ignorar secciones ocultas del objeto hasta que estas vuelven ser visibles.
+Esto permite mediante una fórmula compleja pero eficiente actualizar $A$ rápidamente para remover y agregar \textit{templates}.
+O sea, permite ignorar secciones ocultas del objeto hasta que éstas vuelven a ser visibles.
 
 \subsection{Aprendizaje Local}
 % Local learning
@@ -245,7 +241,7 @@ consecutivos. Es por esto que la métrica de distancia para determinar el grado 
 relación entre los puntos característicos \footnote{Los puntos característicos son puntos que se diferencian del resto por poseer o mostrar
 ciertas características específicas y representativas. En el caso del seguimiento de objetos, son los puntos que mejor representan las características
 del objeto, y que tienen mayor resistencia a variar con los diferentes cambios de escala, rotación, iluminación, etc...}
-del objeto adquiere muchísima importancia.
+del objeto adquiere gran importancia.
 
 Una simple medida de distancia como la distancia Euclideana puede llevar a algoritmos
 de seguimiento inestables a la hora de diferenciar el objeto del fondo de la imagen. Por
@@ -264,7 +260,7 @@ punto característicos, a los que llaman \textit{ejemplares}, $e$ y $z$ como:
 donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de distancia
 n-dimensional entre $e$ y $z$, cuya n-ésima componente es la distancia $L_{2}$
 entre la característica n-ésima de $e$ y $z$. Cabe destacar la función del vector de pesos, $w_{e}$,
-que asigna una importancia relativa a la distancia de cada componente de $d_{ez}$.
+asigna una importancia relativa a la distancia de cada componente de $d_{ez}$.
 
 Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos
 no nulos implican que los ejemplares correspondientes son similares a $e$. La
@@ -306,7 +302,7 @@ Sirve para hallar las causas de la variabilidad de los datos y ordenarlas por im
 Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en
 autovalores de la matriz de covarianza, normalmente tras centrar los datos en la media de cada atributo.}
 de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
-$F = 5$.\cite{local-learning}
+$F = 5$ (\cite{local-learning}).
 
 Los mejores resultados se seleccionan como muestras de entrenamiento positivas, mientras que
 los peores resultados, se toman como muestras negativas. Se obtienen las características
@@ -1159,23 +1155,23 @@ modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
 En \cite{LIU20061146} se plantea una tecnica para obtener las posiciones de los jugadores y la pelota utilizando la transmision televizada de un partido de futbol.
 El algoritmo se puede dividir en los siguientes grandes rasgos:
 \begin{itemize}
-\item Estimacion de la relacion entre puntos en la imagen y coordenadas en la cancha
-\item Estimacion de la posicion de la camara en las coordenadas del mundo
-\item Deteccion y tracking de la pelota
-\item Deteccion de la cancha
-\item Deteccion de los jugadores
+\item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
+\item Estimación de la posición de la camara en las coordenadas del mundo
+\item Detección y tracking de la pelota
+\item Detección de la cancha
+\item Detección de los jugadores
 \end{itemize}
 
-Para estimar la relacion entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
-Siendo $M = (x, y, 1)$ un punto en el plano de la cancha en coordenadas homogeneas y $m = (u, v, 1)$ la posicion del punto en la imagen, se puede convertir $ m = H M $.
+Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
+Siendo $M = (x, y, 1)$ un punto en el plano de la cancha en coordenadas homogeneas y $m = (u, v, 1)$ la posición del punto en la imagen, se puede convertir $ m = H M $.
 
 Como la perspectiva de la camara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
 Si en la imagen actual se encuentran 4 puntos conocidos (Esquinas de la cancha o de las areas), la homografia puede ser calculada directamente.
 De no ser asi, se estima considerando que la homografia del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
-Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posicion entre el cuadro $t-1$ y $t$.
+Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
 Luego $ H_t = H_{t-1} P_{t-1,t}$.
 
-Para obtener la posicion de la camara se descompone la homografia en 2 matrices:
+Para obtener la posición de la camara se descompone la homografia en 2 matrices:
 \begin{equation}
 H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix}
 K = \begin{pmatrix}
@@ -1187,8 +1183,8 @@ K = \begin{pmatrix}
 
 Donde $\alpha$, $\beta$ representan la amplitud focal de la camara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
 Se asume que la amplitud focal se mantiene constante, $\gamma = 0$ y el punto principal es el centro de la imagen.
-$r_1$, $r_2$ son parte de una rotacion $R = (r_1, r_2, r_1 \times r_2)$, y $t$ son las coordenadas del origen de la cancha en coordenadas de la imagen.
-Conocidas $H$ y $K$ se puede calcular la posicion de la camara como $R^{-1} t$.
+$r_1$, $r_2$ son parte de una rotación $R = (r_1, r_2, r_1 \times r_2)$, y $t$ son las coordenadas del origen de la cancha en coordenadas de la imagen.
+Conocidas $H$ y $K$ se puede calcular la posición de la camara como $R^{-1} t$.
 Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ de la siguiente manera:
 
 \begin{equation}
@@ -1214,30 +1210,30 @@ Se usa el metodo \textit{KLT} \cite{KLT} para encontrar los puntos de referencia
 \subsubsection*{Seguimiento de la pelota}
 
 El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
-La primer etapa es de deteccion utilizando un algoritmo basado en \textit{Viterbi}.
+La primer etapa es de detección utilizando un algoritmo basado en \textit{Viterbi}.
 La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter}.
 
-Para deteccion se crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
+Para detección se crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
 Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota.
-Esta operacion se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
+Esta operación se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
 Los nodos de este grafo representan candidatos, con un peso segun que tan parecidos son a una pelota ideal.
 Y los vertices se colocan si estan a una cierta proximidad y pesados segun que tan cerca y parecidos sean los nodos.
-Sobre este grafo se hace una busqueda de camino optimo, y de este la posicion de la pelota en el ultimo cuadro.
+Sobre este grafo se hace una busqueda de camino optimo, y de este la posición de la pelota en el ultimo cuadro.
 
 Una vez detectada la pelota, se utiliza tracking hasta que no se confia en el resultado del algoritmo de tracking.
 En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriormente.
 
-\subsubsection*{Deteccion de la cancha}
+\subsubsection*{Detección de la cancha}
 
 Para detectar la cancha y aislar el resto de los objetos, se computa un histograma de colores de la imagen.
 Los autores consideran que el color de la cancha representa el mayor pico en el histograma.
 Por lo tanto, buscan este pico en el histograma y toman todos los colores adyacentes en el histograma que esten dentro de un rango de ocurrencia relativo al pico principal.
 
-\subsubsection*{Deteccion de jugadores}
+\subsubsection*{Detección de jugadores}
 
 Una vez que se determinó el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
 Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pelota, adaptada a la morfologia de los jugadores.
-Como se conoce la posicion en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posicion real de los jugadores en ese cuadro fácilmente.
+Como se conoce la posición en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posición real de los jugadores en ese cuadro fácilmente.
 
 \printbibliography
 
