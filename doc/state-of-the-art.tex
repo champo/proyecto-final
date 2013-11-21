@@ -25,6 +25,7 @@
 % \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{letltxmacro}
 
 
 %%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
@@ -86,6 +87,10 @@
 \lhead{\small No publicado}
 \rhead{\small \thepage}
 \cfoot{\small Copyright \copyright 2013 ITBA}
+
+% Citations
+\LetLtxMacro{\oldcite}{\cite}
+\renewcommand{\cite}[1]{Ver \oldcite{#1}}
 
 % Metadata
 \title{}
