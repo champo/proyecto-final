@@ -804,23 +804,31 @@ entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
 \subsection{Contornos Activo}
 
-La segmentación basada en contornos activos se basa principalmente, como su nombre lo indica, en el contorno de una determinada 
-regione o regiones de interés. Se define una región como distribución $p(\Theta(x))$, donde $x$ es un pixel y $\Theta = \{\theta_{1}, ..., \theta_{n}\}$ es el
-vector característico definido para cada pixel. El vector característico es un conjunto de características distintivas. Puede ser el color promedio en la muestra de
-pixeles de la región, los parámetros estimados de una región utilizando un modelo estadístico, etc.
- Teniendo esto en cuenta, un objeto, como por ejemplo el objeto de interés, queda caracterizado por un conjunto de parámetros $\Theta$.
+La segmentación basada en contornos activos se basa en características
+que presente el contorno de una región o regiones de interés. Se define una
+región como una distribución $p(\Theta(x))$, donde $x$ es un pixel y $\Theta =
+\{\theta_{1}, ..., \theta_{n}\}$ es el vector de características definido para
+cada pixel. El vector característico es un conjunto de características
+distintivas. Puede ser el color promedio en la muestra de pixeles de la región,
+los parámetros estimados de una región utilizando un modelo estadístico, etc.
+Teniendo esto en cuenta, un objeto, como por ejemplo el objeto de interés,
+queda caracterizado por un conjunto de parámetros $\Theta$.
 
-El borde de una región se representa por una curva paramétrica dada por:
+El contorno o borde de una región $s$ se representa por una curva paramétrica
+dada por:
 
 \begin{equation}
     C(s) = (x(s), y(s))
 \end{equation}
 
-donde $0 \leq s \leq S$, $C(0) = C(S)$.
+donde $0 \leq s \leq S$, y $C(0) = C(S)$. $C(0)$ es la región
+\textit{background}, que contiene los puntos que no pertenecen a ningún
+contorno del cual se está haciendo un seguimiento.
 
-Pero la curva evoluciona y cambia con el transcurso del tiempo. Sea $F(s)$ la fuerza que incide sobre el objeto y provoca el cambio en la curva, la ecuación
-de la curva se puede definir, en el transcurso del tiempo como
-
+Al analizar una suceción de imágenes (correspondientes a los cuadros de un
+video), esta curva es modificada como se describe a continuación. Sea $F(s)$ la
+fuerza que incide sobre el objeto y provoca el cambio en la curva, la ecuación
+de la curva se define en función del tiempo:
 
 \begin{equation}
     C(s,t) = (x(s), y(s), t)
@@ -833,16 +841,20 @@ donde $0 \leq s \leq S$, $C(0,t) = C(S,t)$, y $t$ es la variable del tiempo.
     C(s,0) &=& C_{0}(s)\\
 \end{eqnarray}
 
-donde $\overrightarrow{N}_{C(s,t)}$ es el vector normal de $C(s,t)$ y $ C_{0}(s)$ es la curva inicial.
+donde $\overrightarrow{N}_{C(s,t)}$ es el vector normal de $C(s,t)$ y $
+C_{0}(s)$ es la curva inicial, determinada por algún otro algoritmo o por un
+operador.
 
-Dentro de la fuerza $F(s)$, se distinguen dos fuerzas $F_{d}$ y $F_{s}$. $F_{d}$ es la velocidad de evolución y $F_{s}$ es una fuerza que suaviza la curva.
-$F_{d}$ se puede modelar como 
+Dentro de la fuerza $F(s)$, se distinguen dos fuerzas $F_{d}$ y $F_{s}$.
+$F_{d}$ es la velocidad de evolución y $F_{s}$ es una fuerza que suaviza la
+curva. $F_{d}$ se puede modelar como
 
 \begin{equation}
     F_{d}(x) = log(p(\Theta^{i}(x) | \Omega_{i}) / p(\Theta^{j}(x) | \Omega_{j}))
 \end{equation}
 
-donde $\Theta^{i}$ y $\Theta^{j}$ son los vectores característicos de las regiones $\Omega_{i}$ y $\Omega_{j}$ respectivamente.
+donde $\Theta^{i}$ y $\Theta^{j}$ son los vectores característicos de las
+regiones $\Omega_{i}$ y $\Omega_{j}$ respectivamente.
 
 Por otro lado, $F_{s}$ tiene la forma
 
@@ -853,25 +865,27 @@ Por otro lado, $F_{s}$ tiene la forma
 
 donde $\kappa$ es la curvatura.
 
-Existe otra formulación del problema de evolución de curvas, que consiste en representar la curva como el nivel cero de
-una superficie $\phi$.
-
-% TODO Poner referencia Conjuntos de Nivel (Osher y Sethian en 1988) y maybe un footnote
+Existe otra formulación del problema de evolución de curvas, que consiste en
+representar la curva como el nivel cero de una superficie $\phi$ \ref{Osher88}.
 
 \subsection{Implementación Numérica}
 
-En la implementación, el borde se representa usando dos conjuntos de píxeles correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$ respectivamente. 
-Entonces, la evolución se realiza intercambiando píxeles entre estos dos conjuntos.
+En la implementación, el borde se representa usando dos conjuntos de píxeles
+correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
+respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
+estos dos conjuntos.
 
-A continuación se detalla el enfoque para la segmentación de un solo objeto de interés pero se puede fácilmente extrapolar y 
-utilizar esta técnica para la segmentación de múltiples objetos.
+A continuación se detalla el enfoque para la segmentación de un solo objeto de
+interés pero se puede fácilmente extrapolar y utilizar esta técnica para la
+segmentación de múltiples objetos.
 
 %TODO maybe footnote aclarando como? Basta con marcar cada region con un identificador distinto
 
-El objeto de interés $\Omega_{1}$ y el fondo $\Omega_{0}$ cumplen $\Omega_{1}\cup\Omega_{0} = I_{k}$ donde $I_{k}$ es la imagen del cuadro $k$ de la secuencia de imágenes, y
-$\Omega_{1}\cap\Omega_{0} = \emptyset$. Cada una de las regiones está caracterizada por el vector característico $\Theta_{m}, m = \{0,1\}$
-
-La función $\phi$  se define como
+El objeto de interés $\Omega_{1}$ y el fondo $\Omega_{0}$ cumplen
+$\Omega_{1}\cup\Omega_{0} = I_{k}$ donde $I_{k}$ es la imagen del cuadro $k$ de
+la secuencia de imágenes, y $\Omega_{1}\cap\Omega_{0} = \emptyset$. Cada una de
+las regiones está caracterizada por el vector característico $\Theta_{m}, m =
+\{0,1\}$. La función $\phi$  se define como
 
 \begin{equation}
 \phi(x) =
@@ -882,61 +896,74 @@ La función $\phi$  se define como
         -1  & \mbox{if } x \in L_{in}\\
         -3 & \mbox{if } x \in \Omega_{1} \mbox{  and  } x \notin L_{in} \\
     \end{array}
-\right. 
+\right.
 \end{equation}
 
-Los conjuntos $L_{in}$ y $L_{out}$ se definen
+Los conjuntos $L_{in}$ y $L_{out}$ se definen como
 
 \begin{equation}
-    L_{in} = {x \mbox{ es un pixel }| \phi(x) < 0 \mbox{ and } \exists y \in N_{4}(x) \mbox{such that } \phi(y) > 0}
+    L_{in} = {x \mbox{ es un pixel }| \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{de modo que } \phi(y) > 0}
 \end{equation}
 
 \begin{equation}
-    L_{out} = {x \mbox{ es un pixel }| \phi(x) > 0 \mbox{ and } \exists y \in N_{4}(x) \mbox{such that } \phi(y) < 0}
+    L_{out} = {x \mbox{ es un pixel }| \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{de modo que } \phi(y) < 0}
 \end{equation}
 
-donde $N_{4}(x) = { y \mbox{ es un pixel } | |x-y| = 1}$, son los píxeles vecinos de un píxel $x$.
+donde $N_{4}(x) = { y \mbox{ es un pixel } | |x-y| = 1}$, son los píxeles
+vecinos de un píxel $x$.
 
-El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la especificación inicial de la curva en forma supervisada
-\footnote{Podría no ser supervisada. Existen variantes con determinaciones semi-supervisadas del objeto de interés, así como también detección automáticas
-basadas en ciertas características predefinidas.}
-se intercambian los píxeles de $L_{in}$ y $L_{out}$ en dos ciclos. En el primero, se aplica la fuerza $F_{d}(x)$, y en el segundo se aplica $F_{s}(x)$ para la regularización.
+El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
+especificación inicial de la curva en forma supervisada \footnote{Podría no ser
+supervisada. Existen variantes con determinaciones semi-supervisadas del objeto
+de interés, así como también detección automáticas basadas en ciertas
+características predefinidas.} se intercambian los píxeles de $L_{in}$ y
+$L_{out}$ en dos ciclos. En el primero, se aplica la fuerza $F_{d}(x)$, y en el
+segundo se aplica $F_{s}(x)$ para la regularización.
 
-En el primer ciclo, se ejecutan los siguientes pasos $N_{a}$ veces, donde $ 0 < N_{a} < max(filas, columnas)$.
+En el primer ciclo, se ejecutan los siguientes pasos $N_{a}$ veces, donde $ 0 <
+N_{a} < max(filas, columnas)$.
 
 \begin{enumerate}
-    \item Para cada $x \in L_{out}$, si $F_{d}(x) > 0$ entonces borrar $x$ de $L_{out}$ y agregarlo a $L_{in}$.
-    Luego, $\forall y \in N_{4}(x)$, con $\phi(y) = 3$, agregar $y$ to $L_{out}$ y hacer $\phi(y) = 1$.
 
-    \item Después del paso 1 algunos de los píxeles $x$ en $L_{in}$ pasan a ser píxeles internos y por lo tanto 
-    se sacan de $L_{in}$ y se hacer $\phi(x) = -3$.
+    \item Para cada $x \in L_{out}$, si $F_{d}(x) > 0$ entonces borrar $x$ de
+$L_{out}$ y agregarlo a $L_{in}$. Luego, $\forall y \in N_{4}(x)$, con $\phi(y)
+= 3$, agregar $y$ to $L_{out}$ y hacer $\phi(y) = 1$.
 
-    \item Para cada $x \in L_{in}$ , si $F_{d}(x) < 0$ entonces, borra $x$ de $L_{in}$ y agregarlo a $L_{out}$. Luego, 
-     $\forall y \in N_{4}(x)$, con $\phi(y) = -3$, agregar $y$ a $L_{in}$ y a hacer $\phi(y) = -1$.
+    \item Después del paso 1 algunos de los píxeles $x$ en $L_{in}$ pasan a ser
+píxeles internos y por lo tanto se sacan de $L_{in}$ y se hacer $\phi(x) = -3$.
+
+    \item Para cada $x \in L_{in}$ , si $F_{d}(x) < 0$ entonces, borra $x$ de
+$L_{in}$ y agregarlo a $L_{out}$. Luego, $\forall y \in N_{4}(x)$, con $\phi(y)
+= -3$, agregar $y$ a $L_{in}$ y a hacer $\phi(y) = -1$.
 
 
-    \item Después del paso 3 algunos de los píxeles $x$ en $L_{out}$ pasan a ser píxeles externos y por lo tanto 
-    se sacan de $L_{out}$ y se hacer $\phi(x) = 3$.
+    \item Después del paso 3 algunos de los píxeles $x$ en $L_{out}$ pasan a
+ser píxeles externos y por lo tanto se sacan de $L_{out}$ y se hacer $\phi(x) =
+3$.
+
 \end{enumerate}
 
-%TODO agregar pseudocode
+En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal
+forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. El
+resultado final es análogo a modificar la curva de acuerdo a la ecuación
+\ref{eq:active-contours-fs} al discretizar el procedimiento.
 
-En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$, 
-que imita el comportamiento de la evolución de la curva que muestra la ecuación \ref{eq:active-contours-fs}.
+En cada cuadro, el borde del contorno del objeto es actualizado de acuerdo al
+resultado obtenido por el algoritmo en el cuadro anterior. En el caso de la
+primera imagen, se puede dar de forma supervisada o semi-supervisada por el
+usuario, o bien puede ser obtenida de forma automática mediante algoritmos de
+aprendizaje complejos basados en características predefinidas.
 
-En cada cuadro, el borde del contorno del objeto se halla utilizando una curva inicial, el resultado de obtenido por el algoritmo en el cuadro anterior. En el 
-caso de la primera imagen, se puede dar de forma supervisada o semi-supervisada por el usuario, o también puede ser obtenida de forma automática, mediante 
-algoritmos de aprendizaje complejos basados en características predefinidas.
-
-El algoritmo termina cuando se alcanza la condición de corte, dada por las ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el final de 
-la secuencia de imágenes.
+El algoritmo termina cuando se alcanza la condición de corte, dada por las
+ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el
+final de la secuencia de imágenes.
 
 \begin{equation}
 \label{eq:active-contours-stoppingCondition}
     \begin{array}{ll}
         F_{d}(x) \leq 0 & \forall x \in L_{out}\\
         F_{d}(x) \leq 0 & \forall x \in L_{in}
-    \end{array} 
+    \end{array}
 \end{equation}
 
 \section{Analisis de deportes con 6 camaras}
