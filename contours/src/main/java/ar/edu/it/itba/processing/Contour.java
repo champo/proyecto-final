@@ -30,6 +30,8 @@ public class Contour implements Iterable<Point> {
 
 	private int cyclesLost;
 
+	private RGBPoint lastStdDev;
+
 	public Contour(final int color, final Rectangle rect) {
                 this.color = color;
 		points = new HashSet<Point>();
@@ -209,5 +211,14 @@ public class Contour implements Iterable<Point> {
 
 	public int cyclesLost() {
 		return cyclesLost;
+	}
+
+	public RGBPoint getLastStdDev() {
+		return lastStdDev;
+	}
+
+	public void setLastStdDev(final RGBPoint lastStdDev) {
+		System.out.println("Std Dev = " + lastStdDev.red + ", " + lastStdDev.blue + ", " + lastStdDev.green);
+		this.lastStdDev = lastStdDev;
 	}
 }
