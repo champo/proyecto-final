@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class Contour implements Iterable<Point> {
 
+	private static final int STARTING_BOX_RADIUS = 3;
+
 	enum State {
 		STABLE,
 		MISSING
@@ -61,7 +63,7 @@ public class Contour implements Iterable<Point> {
 	}
 
 	public static Contour aroundPoint(final int color, final Point point) {
-		return new Contour(color, new Rectangle(point.x - 5, point.y - 5, 10, 10));
+		return new Contour(color, new Rectangle(point.x - STARTING_BOX_RADIUS, point.y - STARTING_BOX_RADIUS, 2 * STARTING_BOX_RADIUS, 2 * STARTING_BOX_RADIUS));
 	}
 
 	public int minX() {
