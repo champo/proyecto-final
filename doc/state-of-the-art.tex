@@ -108,15 +108,15 @@ juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
 movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
 otras aplicaciones. Se describe a lo largo de este trabajo técnicas aplicables
 al problema de seguimiento de múltiples jugadores de fútbol mediante el uso de
-una o varias cámaras de video. Se presentan las bases teoricas para estos
+una o varias cámaras de video. Se presentan las bases teóricas para estos
 métodos y se analizan características y limitaciones de cada uno, asi como la
-factibilidad de conocer el estado del juego completo en cada momento.
+factibilidad de conocer el estado del juego completo en cada instante de tiempo.
 } \end{customabstract}
 
 \part*{Introducción}
 
 Dentro del área de análisis de imágenes, uno de los problemas más relevantes y
-estudiados es el problema de reconocer un objeto en una secuencia de
+estudiados es el problema de reconocer objectos en una secuencia de
 imágenes para seguir su posición, detectar cambios de orientación o en su
 forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras
 variaciones del problema. Tiene aplicaciones en muchos campos, como ser
@@ -144,8 +144,7 @@ de objetos categorizados en cuatro familias:
 \textit{Corte de Grafos},
 y \textit{Contornos Activos}.
 
-En la secciónes \ref{sec:6-camaras}, \ref{sec:8-camaras}, \ref{sec:var-camaras} y \ref{sec:tv-video} 
-se discuten los avances modernos en esta rama. 
+En la sección \ref{sec:futbol} se discuten los avances modernos en esta rama.
 Se presenta sistemas implementados que resuelven el problema de seguimiento de
 jugadores, pelota, y estado del juego. Y también se describe técnicas con
 mayor nivel semántico que detectan movimientos de jugadores, pases de pelota,
@@ -167,7 +166,7 @@ Un \textit{Predictor Lineal} es una función que toma los valores de una serie
 de variables aleatorias y predice el valor de una variable dependiente.  La
 función tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots +
 \beta_n x_n$, donde $x_i$ es una variable aleatoria y $\beta_i$ una constante.
-Se dice que el predictor es lineal al obligarse a $\beta_i \in \mathbb{R}$ 
+Se dice que el predictor es lineal debido a la condición $\beta_i \in \mathbb{R}$
 \footnote{Cualquier $x_i$ no lineal, puede expresarse como $x'_i = g(x_i)$ y tratarse como lineal}.
 
 En \cite{alp, original-linear-predictors} los autores utilizan predictores para
@@ -178,9 +177,9 @@ representa mediante una homografia (\cite{homography-estimation}), $H \in
 R^{3\times3}$.
 
 Los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$
-donde cada fila representa una función de predicción.  De dos
-cuadros consecutivos se obtiene el vector de cambios en el valor de píxeles $X =
-(x_1, \dots, x_n)$ y se computa:
+donde cada fila representa una función de predicción.  De dos cuadros
+consecutivos se obtiene el vector de cambios en el valor de píxeles $X = (x_1,
+\dots, x_n)$ y se computa:
 
 \begin{eqnarray*}
     AX &=& B \\
@@ -189,21 +188,24 @@ cuadros consecutivos se obtiene el vector de cambios en el valor de píxeles $X 
 
 Donde $B$ contiene los valores de la homografia $H$ de movimiento entre los cuadros.
 
-\subsubsection{Calculo de los predictores}
+\subsubsection{Cálculo de los predictores}
 % TODO: Aclarar que es perturbar
 % TODO: Aclarar que el calculo de la homografia de la perturbacion es directa
 Para obtener la relación $A$ se utiliza un paso inicial de entrenamiento.
 Primero se determina la posición del objeto en un cuadro de manera supervisada.
-Una vez conocida la posición, se toman $n$ muestras aleatorias del valor de píxeles en ese cuadro.
+Una vez conocida la posición, se toman $n$ muestras aleatorias del valor de
+píxeles en ese cuadro.
 
-Luego se crean $m$ perturbaciones de la posición del objeto, y se computa la homografia $H_i$ que representa esa perturbación.
-Llamemos al vector que representa esa homografia $B_i$.
-Ademas, tomamos muestras de valores de píxeles ($X_i$) con sus posiciones alteradas por la homografia $H_i$.
-Se plantea:
+Luego se crean $m$ perturbaciones de la posición del objeto, y se computa la
+homografia $H_i$ (para $i = 1, 2, \dots m$) que representa la perturbación.
+Llamemos al vector que representa cada homografia $B_i$. Ademas, tomamos
+muestras de valores de píxeles ($X_i$) con sus posiciones alteradas por la
+homografia $H_i$. Se plantea:
+
 \begin{equation}
     A \left( X_1 \lvert \dots \lvert X_m \right) = \left( B_1 \lvert \dots \lvert B_m \right)
 \end{equation}
-Que es un sistema de ecuaciones lineales que puede ser resuelto de manera sencilla.
+El cual es un sistema de ecuaciones lineales que puede ser resuelto de manera sencilla.
 
 \subsubsection{Mejoras}
 
@@ -211,15 +213,20 @@ Para mejorar la efectividad de los algoritmos, se calculan varios predictores y 
 Cada capa se construye para buscar cambios de posición cada vez más pequeños.
 Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
 
-\citeauthor*{alp} (\cite{alp}) introducen una forma para manejo de oclusiones parciales de manera eficiente.
-Para esto se divide el objeto en pequeñas secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de la siguiente manera:
+\citeauthor*{alp} (\cite{alp}) introducen una forma para manejo de oclusiones
+parciales de manera eficiente. Para esto se divide el objeto en pequeñas
+secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de
+la siguiente manera:
+
 \begin{eqnarray*}
     Y &=& \left( B_1 \lvert \dots \lvert B_m \right) \\
     H &=& \left( X_1 \lvert \dots \lvert X_m \right) \\
     A &=& Y H^T(HH^T)^{-1}
 \end{eqnarray*}
-Esto permite mediante una fórmula compleja pero eficiente actualizar $A$ rápidamente para remover y agregar \textit{templates}.
-O sea, permite ignorar secciones ocultas del objeto hasta que éstas vuelven a ser visibles.
+
+Esto permite mediante una fórmula compleja pero eficiente actualizar $A$
+rápidamente para remover y agregar \textit{templates}. O sea, permite ignorar
+secciones ocultas del objeto hasta que éstas vuelven a ser visibles.
 
 \subsection{Aprendizaje Local}
 % Local learning
@@ -228,39 +235,49 @@ El aprendizaje local es otra técnica que permite resolver el problema del segui
 que ha sido también un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learning} y usado principalmente en la clasificación
 de imágenes, recuperación y reconocimiento de objetos.
 
-A diferencia del aprendizaje global, que entrena un modelo global basado en
-todos los datos de entrenamiento, local learning considera varios modelos locales, cada uno extraído de solamente un subconjunto de los datos de entrenamiento.
-Este tipo de enfoque enfatiza la idea de que un modelo local puede caracterizar mejor las propiedades intrínsecas y discriminativas de su correspondiente
-subconjunto de datos, que un modelo global para el conjunto completo de datos. De esto se desprende que utilizar múltiples modelos locales puede ofrecer
-mejores resultados cuando los datos están distribuidos de manera complicada o poco clara.
+A diferencia del aprendizaje global, que entrena un modelo basado en
+todos los datos de entrenamiento, en \textit{local learning} se consideran
+varios modelos locales, cada uno extraído de solamente un subconjunto de los
+datos de entrenamiento. Este tipo de enfoque enfatiza la idea de que un modelo
+local puede caracterizar mejor las propiedades intrínsecas y discriminativas de
+su correspondiente subconjunto de datos, que un modelo global para el conjunto
+completo de datos. De esto se desprende que utilizar múltiples modelos locales
+puede ofrecer mejores resultados cuando los datos están distribuidos de manera
+complicada o poco clara.
 
 Si bien se puede pensar al seguimiento de objetos como una tarea de clasificación binaria
 que apunta a separar el objeto del resto de la imagen o fondo, en realidad, el principal
 problema reside en relacionar las apariciones del objeto entre 2 cuadros
-consecutivos. Es por esto que la métrica de distancia para determinar el grado de
-relación entre los puntos característicos \footnote{Los puntos característicos son puntos que se diferencian del resto por poseer o mostrar
-ciertas características específicas y representativas. En el caso del seguimiento de objetos, son los puntos que mejor representan las características
-del objeto, y que tienen mayor resistencia a variar con los diferentes cambios de escala, rotación, iluminación, etc...}
-del objeto adquiere gran importancia.
+consecutivos. Es por esto que la métrica de distancia para determinar el grado
+de relación entre los puntos característicos \footnote{Los puntos
+  característicos son puntos que se diferencian del resto por poseer o mostrar
+ciertas características específicas y representativas. En el caso del
+seguimiento de objetos, son los puntos que mejor representan las
+características del objeto, y que tienen mayor resistencia a variar con los
+diferentes cambios de escala, rotación, iluminación, etc...} del objeto
+adquiere gran importancia.
 
-Una simple medida de distancia como la distancia Euclideana puede llevar a algoritmos
-de seguimiento inestables a la hora de diferenciar el objeto del fondo de la imagen. Por
-lo tanto, se requiere una mejor y más compleja medida de distancia. Esta
-es la idea princial que proponen Li y Lu \cite{local-learning}.
+La elección de la medida de distancia es de suma importancia. A modeo de
+ejemplo la distancia Euclideana puede llevar a algoritmos de seguimiento
+inestables a la hora de diferenciar el objeto del fondo de la imagen. Por lo
+tanto, se requiere una mejor y más compleja medida de distancia. Esta es la
+idea princial que proponen Li y Lu \cite{local-learning}.
 
-La función de distancia que usan es una combinación lineal de distancias elementales,
-como se presenta en \cite{malisiewicz-cvpr08}. Definen a la función de distancia entre dos
-punto característicos, a los que llaman \textit{ejemplares}, $e$ y $z$ como:
+La función de distancia que usan es una combinación lineal de distancias
+elementales, como se presenta en \cite{malisiewicz-cvpr08}. Definen a la
+función de distancia entre dos punto característicos, a los que llaman
+\textit{ejemplares}, $e$ y $z$ como:
 
 \begin{equation}
     \label{eq:distance-exemplar}
     D_{e}(z) = w_{e} \cdot d_{ez}
 \end{equation}
 
-donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de distancia
-n-dimensional entre $e$ y $z$, cuya n-ésima componente es la distancia $L_{2}$
-entre la característica n-ésima de $e$ y $z$. Cabe destacar la función del vector de pesos, $w_{e}$,
-asigna una importancia relativa a la distancia de cada componente de $d_{ez}$.
+donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de
+distancia n-dimensional entre $e$ y $z$, cuya n-ésima componente es la
+distancia $L_{2}$ entre la característica n-ésima de $e$ y $z$. Cabe destacar
+que la función del vector de pesos, $w_{e}$, asigna una importancia relativa a
+la distancia de cada componente de $d_{ez}$.
 
 Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos
 no nulos implican que los ejemplares correspondientes son similares a $e$. La
@@ -969,12 +986,218 @@ final de la secuencia de imágenes.
     \end{array}
 \end{equation}
 
-\section{Analisis de deportes con 6 camaras}
+\section{Homografía}
+
+\subsection{Aplicación y utilización}
+
+La técnica de la homografía se utiliza para poder transformar la vista
+tridimensional de la secuencia de video (la imagen del estadio de futbol), en
+una vista de dos dimensiones (el campo de futbol visto desde arriba). Esto
+facilita el análisis y los cálculos de las velocidades y posiciones de los
+jugadores, lo cual permite sacar conclusiones y efectuar juicios complejos como
+en el caso de la regla del fuera de juego. Además, visualmente elimina
+ambigüedades que pueden suceder en el caso de la vista tridimensional por
+razones de perspectiva, lo cual facilita el entendimiento al ser humano.
+
+Considerese dos imágenes, $f(x,y)$ y $f'(x,y)$, relacionadas por una transformación geométrica. Sean $p_{k}$ y $p'_{k}$ para $k = 0 ... N$ puntos de las imágenes
+$f$ y $f'$ respectivamente, y dadas correspondencias tentativas $p_{k} \to p'_{k}$, se quiere estimar la transformación $T$, tal que
+
+\begin{equation}
+    f(x,y) = f(T(x,y))
+\end{equation}
+
+Esta transformación $T$ se puede modelar como una transformación de coordenadas lineales
+
+\begin{equation}
+    \begin{bmatrix}
+        x_{0} \\
+        y_{0} \\
+        z_{0} \\
+    \end{bmatrix}
+    = H
+    \begin{bmatrix}
+        x_{1} \\
+        y_{1} \\
+        1 \\
+    \end{bmatrix}
+\end{equation}
+
+en donde $H$ es una matriz de $3 \times 3$ que representa la proyección, rotación, escalamiento, sesgo y perspectiva.
+
+Se puede observar que para aplicar $H$ se extiende el vector de dos dimensiones $[x,y]^{T}$ a tres componentes. El valor de la
+tercera componente puede variar, y define una clase equivalencia tal que
+
+\begin{equation}
+    \begin{bmatrix}
+        zx \\
+        zy \\
+        z \\
+    \end{bmatrix}
+    \equiv
+    \begin{bmatrix}
+        x \\
+        y \\
+        1 \\
+    \end{bmatrix}
+\end{equation}
+
+Este tipo de coordenadas se denominan homogéneas.
+
+La forma de $H$ determina el tipo de transformación geométrica representada. Por ejemplo,
+
+\begin{equation}
+    H =
+    \begin{bmatrix}
+        sa\cos(\theta) & -sb\sin(\theta) & t_{x}\\
+        sa\sin(\theta) & sb\cos(\theta) & t_{y} \\
+        p_{0}          & p_{1}          & 1     \\
+    \end{bmatrix}
+\end{equation}
+
+Representa una rotación de ángulo $\theta$, una traslación dada por $t_{x}$ y $t_{y}$ (notesé el uso del ``1'' de coordenadas
+homogéneas), una escalamiento dado por el factor $s$, un sesgo introducido por $a$ y $b$ y un cambio de perspectiva
+dado por $p_{0}$ y $p{1}$.
+
+En total, son 8 las parámetros encodeados en la matriz $H$, y sus elementos son
+
+\begin{equation}
+    H =
+    \begin{bmatrix}
+        H_{00} & H_{01} & H_{02}\\
+        H_{10} & H_{11} & H_{12}\\
+        H_{20} & H_{21} & 1\\
+    \end{bmatrix}
+\end{equation}
+
+\subsection{Estimación de una homografía}
+
+Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basandose en correspondencias de puntos conocidas.
+La transformación de una coordenada, $x$ en coordenadas homogéneas ($z=1$), a una coordenada objetivo $x'= Hx$ da como resultado
+
+\begin{eqnarray*}
+    x' &=& H_{00}x + H_{01}y + H_{02}\\
+    y' &=& H_{10}x + H_{11}y + H_{12}\\
+    z' &=& H_{20}x + H_{21}y + H_{22}\\
+\end{eqnarray*}
+
+Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en a la forma Euclideana, y con un poco de álgebra básica se puede llegar a
+
+\begin{eqnarray*}
+    \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{00}x - H_{01}y - H_{02}\\
+    \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{10}x - H_{11}y - H_{12}\\
+\end{eqnarray*}
+
+Que también puede ser escrito como
+
+\begin{flalign}
+    Ah =
+    \begin{bmatrix}
+        -x & -y & -1 & 0 & 0 & 0 & \frac{x'x}{z'} & \frac{x'y}{z'} & \frac{x'}{z'}\\
+        0 & 0 & 0 & -x & -y & -1 & \frac{y'x}{z'} & \frac{y'y}{z'} & \frac{y'}{z'}\\
+          &   &   &    & \vdots & &               &                &\\
+    \end{bmatrix}
+    \begin{bmatrix}
+        H_{00} \\
+        H_{01} \\
+        H_{02} \\
+        H_{10} \\
+        H_{11} \\
+        H_{12} \\
+        H_{20} \\
+        H_{21} \\
+        H_{22} \\
+    \end{bmatrix}
+    = 0
+\end{flalign}
+Cada correspondencia de puntos agrega dos filas a la matriz $A$, por lo que $n$ correspondencias generan una matriz de $2N \times 9$.
+
+Como consecuencia, se tiene el siguiente sistema de ecuaciones lineales para resolver
+
+\begin{equation}
+    Ah = 0 \hspace{1cm} h \neq 0
+\end{equation}
+
+Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} y la única solución es el espacio nulo de $A$. Para más correspondencias,
+el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma norma
+%TODO maybe agregar alguna mini explicación de porque?
+
+\begin{equation}
+    argmin_{\norm{h}=1} \norm{Ah} = argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
+\end{equation}
+
+donde $\lambda_{min}$ es el menor autovalor de $A^{T}A$. Esto se desprende de las propiedades de la norma 2 de matrices y de la propiedad de
+las matrices cuadradas simétricas que dice que dado $B = A^{T}A$, $\lambda_{i}$ y $q_{i}$ sus autovalores y autovectores respectivamente, las matrices
+
+\begin{equation}
+    Q = \begin{bmatrix}
+            q_{0} q_{2} \dots q_{n-1}
+        \end{bmatrix}
+\end{equation}
+y
+
+\begin{equation}
+    D = \begin{bmatrix}
+            \lambda_{0} & & & \\
+                        & \lambda_{2} & & \\
+                        & & \ddots & \\
+                        & & & \lambda_{n-1}\\
+        \end{bmatrix}
+\end{equation}
+
+cumplen $B = QDQ^{T}$.
+
+\begin{equation}
+    argmin_{\norm{h}=1} h^{T}QDQ^{T}h = argmin_{\norm{y}=1} y^{T}Dy = argmin_{\norm{y}=1} \lambda_{1}y^{2}_{1} + ... + \lambda_{n}y^{2}_{n}
+\end{equation}
+
+Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las componentes de $y$ se anulan excepto por $y_{i} = 1$. Como $y = Q^{T}h$,
+$h=Qy = q_{min}$, el autovector de $B$ correspondiente al mínimo autovalor.
+
+El problema reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares
+%TODO footnote o referencia
+\begin{equation}
+    A = U\Sigma V^{T}
+\end{equation}
+
+donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A{T}A$, mientras que $\Sigma$ es una matriz
+diagonal con los autovalores de $$A{T}A$$ en su diagonal. Notesé que los autovalores de $A{T}A$ son iguales a los autovalores de $A$ al cuadrado.
+
+La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto
+se toma como solución la última columna de $V$, correspondiente al menor autovalor de $A^{T}A$.
+
+\subsection{Distorsión de la lente de la cámara}
+
+El material utilizado fue obtenido con una lente con una baja distancia focal,
+lo que genera una distorsión de tipo \textit{barril}, donde líneas rectas
+se curvan hacia el exterior. El modelo de \textit{Brown} plantea una solución
+general para múltiples niveles de distorsión, tanto de tipo radial como
+tangencial.
+
+Para obtener los valores de la imagen sin distorción se utilizó la siguiente
+corrección:
+
+\[
+  x_u = (x_d - x_c) (1+K r^2) \\
+  y_u = (x_d - x_c) (1+K r^2)
+\]
+
+Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorción, $x_d$ y $y_d$ son
+puntos en la imágen original, $x_c$ y $y_c$ son los puntos centrales de la
+imágen (se puede asumir que el punto central de la cámara es el punto central
+de la imágen), $K$ es un coeficiente de distorsión radial, y $r =
+\sqrt{(x_d-x_c)^2) + (y_d-y_c)^2}$, la distancia del punto al centro de la
+imágen.
+
+
+\section{Análisis de partidas de Fútbol}
+\label{sec:futbol}
+
+\subsection{Análisis utilizando 6 cámaras}
 \label{sec:6-camaras}
 
 % Tanos
 
-\section{Analisis de deportes con 8 camaras}
+\subsection{Análisis utilizando 8 camaras}
 \label{sec:8-camaras}
 
 \citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a
@@ -1050,11 +1273,11 @@ un determinado umbral, se empieza a considerar que las mediciones de dos
 cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo
 jugador.
 
-\section{Analisis de deportes con multiples camaras}
+\subsection{Análisis de deportes con múltiples camaras}
 \label{sec:var-camaras}
 
 % SIFT Base blablablabla
-\subsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
+\subsubsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
 
 \citeauthor*{beetz-05} analizaron, desde el punto de vista de la inteligencia
 artificial, el problema de detectar el comportamiento de los jugadores dentro
@@ -1147,20 +1370,23 @@ hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este
 modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
 \textit{dribbling} por los autores).
 
-\section{Analisis de deportes con video televizado}
+\subsection{Analisis de deportes con video televizado}
 \label{sec:tv-video}
 
-\subsection{\citetitle{LIU20061146}}
+En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
+jugadores y la pelota utilizando la transmision televizada de un partido de
+futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
 
-En \cite{LIU20061146} se plantea una tecnica para obtener las posiciones de los jugadores y la pelota utilizando la transmision televizada de un partido de futbol.
-El algoritmo se puede dividir en los siguientes grandes rasgos:
 \begin{itemize}
-\item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
-\item Estimación de la posición de la camara en las coordenadas del mundo
-\item Detección y tracking de la pelota
-\item Detección de la cancha
-\item Detección de los jugadores
+  \item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
+  \item Estimación de la posición de la camara en las coordenadas del mundo
+  \item Detección y tracking de la pelota
+  \item Detección de la cancha
+  \item Detección de los jugadores
 \end{itemize}
+
+\subsubsection{\citetitle{LIU20061146}}
+
 
 Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
 Siendo $M = (x, y, 1)$ un punto en el plano de la cancha en coordenadas homogeneas y $m = (u, v, 1)$ la posición del punto en la imagen, se puede convertir $ m = H M $.
