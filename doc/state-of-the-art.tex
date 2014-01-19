@@ -1381,6 +1381,8 @@ modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
 \subsection{Analisis de deportes con video televizado}
 \label{sec:tv-video}
 
+\subsubsection{\citetitle{LIU20061146}}
+
 En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
 jugadores y la pelota utilizando la transmision televizada de un partido de
 futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
@@ -1393,12 +1395,7 @@ futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
   \item Detección de los jugadores
 \end{itemize}
 
-\subsubsection{\citetitle{LIU20061146}}
-
-
 Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
-Siendo $M = (x, y, 1)$ un punto en el plano de la cancha en coordenadas homogeneas y $m = (u, v, 1)$ la posición del punto en la imagen, se puede convertir $ m = H M $.
-
 Como la perspectiva de la camara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
 Si en la imagen actual se encuentran 4 puntos conocidos (Esquinas de la cancha o de las areas), la homografia puede ser calculada directamente.
 De no ser asi, se estima considerando que la homografia del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
@@ -1406,14 +1403,14 @@ Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y
 Luego $ H_t = H_{t-1} P_{t-1,t}$.
 
 Para obtener la posición de la camara se descompone la homografia en 2 matrices:
-\begin{equation}
-H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix}
+\begin{eqnarray*}
+H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix} \\
 K = \begin{pmatrix}
     \alpha & \gamma & u_0 \\
     0 & \beta & v_0 \\
     0 & 0 & 1
     \end{pmatrix}
-\end{equation}
+\end{eqnarray*}
 
 Donde $\alpha$, $\beta$ representan la amplitud focal de la camara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
 Se asume que la amplitud focal se mantiene constante, $\gamma = 0$ y el punto principal es el centro de la imagen.
@@ -1439,7 +1436,7 @@ Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ 
 \end{bmatrix}
 \end{equation}
 
-Se usa el metodo \textit{KLT} \cite{KLT} para encontrar los puntos de referencia a seguir para el calculo de $P$.
+Se usa el metodo \textit{KLT} (Ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el calculo de $P$.
 
 \subsubsection*{Seguimiento de la pelota}
 
@@ -1447,12 +1444,14 @@ El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
 La primer etapa es de detección utilizando un algoritmo basado en \textit{Viterbi}.
 La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter}.
 
-Para detección se crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
+El algoritmo de la primer etapa, crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
 Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota.
 Esta operación se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
-Los nodos de este grafo representan candidatos, con un peso segun que tan parecidos son a una pelota ideal.
-Y los vertices se colocan si estan a una cierta proximidad y pesados segun que tan cerca y parecidos sean los nodos.
-Sobre este grafo se hace una busqueda de camino optimo, y de este la posición de la pelota en el ultimo cuadro.
+En este grafo los nodos representan posibles candidatos de la posición de la pelota en los $T$ cuadros.
+Cada nodo tiene asignado un peso segun que tanto se parece ese candidato a una pelota ideal.
+Luego, se coloca un vertice entre un nodo del cuadro $t$ y otro del $t + 1$ si son parecidos en caracteristicas y cercanos en posicion.
+Sobre este grafo se hace una busqueda de camino optimo. Los nodos que forman parte del camino optimo se consideran entonces
+como la pelota real.
 
 Una vez detectada la pelota, se utiliza seguimiento hasta que no se confia en el resultado del algoritmo de seguimiento.
 En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriormente.
@@ -1462,12 +1461,14 @@ En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriorm
 Para detectar la cancha y aislar el resto de los objetos, se computa un histograma de colores de la imagen.
 Los autores consideran que el color de la cancha representa el mayor pico en el histograma.
 Por lo tanto, buscan este pico en el histograma y toman todos los colores adyacentes en el histograma que esten dentro de un rango de ocurrencia relativo al pico principal.
+Todo pixel cuyo valor caiga dentro de ese rango se considera parte del fondo.
 
 \subsubsection*{Detección de jugadores}
 
 Una vez que se determinó el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
 Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pelota, adaptada a la morfologia de los jugadores.
-Como se conoce la posición en la imagen de los jugadores, y la homografia $H_t$ se puede calcular la posición real de los jugadores en ese cuadro fácilmente.
+Una vez que se conoce la posición en el cuadro $t$ de los jugadores, utilizando la homografia $H_t$ se puede calcular la posición 
+en la cancha de los jugadores.
 
 \printbibliography
 
