@@ -1253,7 +1253,7 @@ pertenecen a la intersección de ambas máscaras:
 
 Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son
 representadas por la posición en el plano de la imágen $\mathbf{x}_l$ y su
-error en la medición $\mathbf{z}_l$ en un filtro de Kalman:
+error en la medición $\mathbf{z}_l$ en un filtro de Kalman (Ver \cite{funk2003study}):
 
 \[
 \mathbf{x}_l = [r_c \; c_c \;  \mathbf{\dot r}_c  \; \mathbf{\dot c}_c \;  \Delta r_1  \; \Delta c_1 \;  \Delta r_2 \;  \Delta c_2]^T
@@ -1442,7 +1442,7 @@ Se usa el metodo \textit{KLT} (Ver \cite{KLT}) para encontrar los puntos de refe
 
 El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
 La primer etapa es de detección utilizando un algoritmo basado en \textit{Viterbi}.
-La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter}.
+La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter} (Ver \cite{funk2003study}).
 
 El algoritmo de la primer etapa, crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
 Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota.
