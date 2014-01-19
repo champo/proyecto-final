@@ -1066,7 +1066,7 @@ Representa una rotación de ángulo $\theta$, una traslación dada por $t_{x}$ y
 homogéneas), una escalamiento dado por el factor $s$, un sesgo introducido por $a$ y $b$ y un cambio de perspectiva
 dado por $p_{0}$ y $p{1}$.
 
-En total, son 8 las parámetros encodeados en la matriz $H$, y sus elementos son
+En total, son 8 los parámetros que definen la matriz $H$, y sus elementos son
 
 \begin{equation}
     H =
@@ -1088,14 +1088,14 @@ La transformación de una coordenada, $x$ en coordenadas homogéneas ($z=1$), a 
     z' &=& H_{20}x + H_{21}y + H_{22}\\
 \end{eqnarray*}
 
-Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en a la forma Euclideana, y con un poco de álgebra básica se puede llegar a
+Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en coordenadas Euclideana, se puede llegar a
 
 \begin{eqnarray*}
     \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{00}x - H_{01}y - H_{02}\\
     \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{10}x - H_{11}y - H_{12}\\
 \end{eqnarray*}
 
-Que también puede ser escrito como
+Teniendo varias correspondecias como la anterior, se puede las puede escribir en forma matricial:
 
 \begin{flalign}
     Ah =
@@ -1167,8 +1167,8 @@ El problema reduce entonces a hallar este autovector. Para ello, se recurre a la
     A = U\Sigma V^{T}
 \end{equation}
 
-donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A{T}A$, mientras que $\Sigma$ es una matriz
-diagonal con los autovalores de $$A{T}A$$ en su diagonal. Notesé que los autovalores de $A{T}A$ son iguales a los autovalores de $A$ al cuadrado.
+donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A^{T}A$, mientras que $\Sigma$ es una matriz
+diagonal con los autovalores de $$A^{T}A$$ en su diagonal. Notesé que los autovalores de $A^{T}A$ son iguales a los autovalores de $A$ al cuadrado.
 
 La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto
 se toma como solución la última columna de $V$, correspondiente al menor autovalor de $A^{T}A$.
@@ -1184,10 +1184,10 @@ tangencial.
 Para obtener los valores de la imagen sin distorción se utilizó la siguiente
 corrección:
 
-\[
-  x_u = (x_d - x_c) (1+K r^2) \\
-  y_u = (x_d - x_c) (1+K r^2)
-\]
+\begin{eqnarray*}
+    x_u &=& (x_d - x_c) (1+K r^2) \\
+    y_u &=& (x_d - x_c) (1+K r^2)
+\end{eqnarray*}
 
 Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorción, $x_d$ y $y_d$ son
 puntos en la imágen original, $x_c$ y $y_c$ son los puntos centrales de la
