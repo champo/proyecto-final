@@ -176,12 +176,12 @@ En \cite{alp, original-linear-predictors} los autores utilizan predictores para
 hacer seguimiento de objetos en video.  El objetivo es relacionar el cambio de
 valor de varios píxeles cuadro a cuadro con el movimiento del objeto entre
 dichos cuadros.  Para soportar cualquier clase de movimiento, este se
-representa mediante una homografia (\cite{homography-estimation}), $H \in
+representa mediante una homografía (Ver \cite{homography-estimation}), $H \in
 R^{3\times3}$.
 
 Los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$
 donde cada fila representa una función de predicción.  De dos cuadros
-consecutivos se obtiene el vector de cambios en el valor de píxeles $X = (x_1,
+consecutivos se obtiene el vector de cambios de los valores de píxeles $X = (x_1,
 \dots, x_n)$ y se computa:
 
 \begin{eqnarray*}
@@ -200,10 +200,10 @@ Una vez conocida la posición, se toman $n$ muestras aleatorias del valor de
 píxeles en ese cuadro.
 
 Luego se crean $m$ perturbaciones de la posición del objeto, y se computa la
-homografia $H_i$ (para $i = 1, 2, \dots m$) que representa la perturbación.
-Llamemos al vector que representa cada homografia $B_i$. Ademas, tomamos
+homografía $H_i$ (para $i = 1, 2, \dots m$) que representa la perturbación.
+Se denomina $B_i$ al vector que representa cada homografía. Además, se toman
 muestras de valores de píxeles ($X_i$) con sus posiciones alteradas por la
-homografia $H_i$. Se plantea:
+homografía $H_i$. Se plantea:
 
 \begin{equation}
     A \left( X_1 \lvert \dots \lvert X_m \right) = \left( B_1 \lvert \dots \lvert B_m \right)
@@ -213,10 +213,10 @@ El cual es un sistema de ecuaciones lineales que puede ser resuelto de manera se
 \subsubsection{Mejoras}
 
 Para mejorar la efectividad de los algoritmos, se calculan varios predictores y se disponen en capas.
-Cada capa se construye para buscar cambios de posición cada vez más pequeños.
-Es decir, la primer capa busca cambios bruscos y la ultima pequeños cambios.
+Cada capa se construye para buscar cambios de posición cada vez más finos o pequeños.
+Es decir, la primer capa busca cambios bruscos y la última pequeños cambios.
 
-\citeauthor*{alp} (\cite{alp}) introducen una forma para manejo de oclusiones
+\citeauthor*{alp} (Ver \cite{alp}) introducen una nueva técnica para manejo de oclusiones
 parciales de manera eficiente. Para esto se divide el objeto en pequeñas
 secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de
 la siguiente manera:
@@ -227,8 +227,8 @@ la siguiente manera:
     A &=& Y H^T(HH^T)^{-1}
 \end{eqnarray*}
 
-Esto permite mediante una fórmula compleja pero eficiente actualizar $A$
-rápidamente para remover y agregar \textit{templates}. O sea, permite ignorar
+Esto permite actualizar $A$
+rápidamente para remover y agregar \textit{templates}. Es decir, permite ignorar
 secciones ocultas del objeto hasta que éstas vuelven a ser visibles.
 
 \subsection{Aprendizaje Local}
@@ -250,25 +250,24 @@ complicada o poco clara.
 
 Si bien se puede pensar al seguimiento de objetos como una tarea de clasificación binaria
 que apunta a separar el objeto del resto de la imagen o fondo, en realidad, el principal
-problema reside en relacionar las apariciones del objeto entre 2 cuadros
-consecutivos. Es por esto que la métrica de distancia para determinar el grado
-de relación entre los puntos característicos \footnote{Los puntos
+problema reside en relacionar las apariciones del objeto entre dos cuadros
+consecutivos. Esto se logra mediante una función de distancia que
+establece el grado la similaridad entre los puntos característicos \footnote{Los puntos
   característicos son puntos que se diferencian del resto por poseer o mostrar
 ciertas características específicas y representativas. En el caso del
 seguimiento de objetos, son los puntos que mejor representan las
 características del objeto, y que tienen mayor resistencia a variar con los
-diferentes cambios de escala, rotación, iluminación, etc...} del objeto
-adquiere gran importancia.
+diferentes cambios de escala, rotación, iluminación, etc...} de cada cuadro.
 
-La elección de la medida de distancia es de suma importancia. A modeo de
-ejemplo la distancia Euclideana puede llevar a algoritmos de seguimiento
+La elección de la medida de distancia es de suma importancia. A modo de
+ejemplo, la distancia Euclideana puede llevar a algoritmos de seguimiento
 inestables a la hora de diferenciar el objeto del fondo de la imagen. Por lo
 tanto, se requiere una mejor y más compleja medida de distancia. Esta es la
 idea princial que proponen Li y Lu \cite{local-learning}.
 
 La función de distancia que usan es una combinación lineal de distancias
 elementales, como se presenta en \cite{malisiewicz-cvpr08}. Definen a la
-función de distancia entre dos punto característicos, a los que llaman
+función de distancia entre dos puntos característicos, a los que llaman
 \textit{ejemplares}, $e$ y $z$ como:
 
 \begin{equation}
@@ -279,8 +278,9 @@ función de distancia entre dos punto característicos, a los que llaman
 donde $w_{e}$ es el vector de pesos de $e$, y $d_{ez}$ es el vector de
 distancia n-dimensional entre $e$ y $z$, cuya n-ésima componente es la
 distancia $L_{2}$ entre la característica n-ésima de $e$ y $z$. Cabe destacar
-que la función del vector de pesos, $w_{e}$, asigna una importancia relativa a
-la distancia de cada componente de $d_{ez}$.
+que la función del vector de pesos, $w_{e}$, es asignar una importancia relativa a
+la distancia de cada componente de $d_{ez}$. De esta forma, se ponderan las distancias
+entra ciertas características por sobre otras.
 
 Cada ejemplar está también asociado con un vector binario $B_{e}$, cuyos elementos
 no nulos implican que los ejemplares correspondientes son similares a $e$. La
@@ -322,7 +322,7 @@ Sirve para hallar las causas de la variabilidad de los datos y ordenarlas por im
 Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en
 autovalores de la matriz de covarianza, normalmente tras centrar los datos en la media de cada atributo.}
 de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
-$F = 5$ (\cite{local-learning}).
+$F = 5$ (Ver \cite{local-learning}).
 
 Los mejores resultados se seleccionan como muestras de entrenamiento positivas, mientras que
 los peores resultados, se toman como muestras negativas. Se obtienen las características
@@ -361,7 +361,7 @@ toman aleatoriamente utilizando un filtro de partículas
 \footnote{El filtro de partículas es un método empleado para estimar el estado
   de un sistema que cambia a lo largo del tiempo. Más concretamente es un
   método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las
-  partículas) y unos valores, o pesos, asociados a cada una de esas muestras.
+  partículas) y valores, o pesos, asociados a cada una de esas muestras.
   Las partículas son estados posibles del proceso, que se pueden representar
   como puntos en el espacio de estados de dicho proceso.}
 
@@ -402,7 +402,6 @@ malas actualizaciones, se realizan correciones al modelo,
 en este caso, las funciones de distancia. Esto es, una distancia
 menor a $Thr_{D}$ indica que el candidato pertenece a la misma clase,
 mientras que una distancia mayor indica lo contrario. Utilizando
-% TODO: Revisar ref de abajo
 la ecuación \ref{eq:learning-model-update-1}, se agregan candidatos,
 como muestras positivas de entrenamiento y cada 5 cuadros,
 se utiliza el conjunto actualizado de entrenamiento para
@@ -497,8 +496,7 @@ tomada como la unión de los árboles cuyas raíces son marcadores internos.
     \end{algorithmic}
 \end{algorithm}
 
-% TODO: Cambiar "la figura" por "el algoritmo"
-La figura \ref{alg:IFTrace-algorithm1-IFTrace} muestra el algoritmo de IFTrace
+El algoritmo \ref{alg:IFTrace-algorithm1-IFTrace} muestra el algoritmo de IFTrace
 desde el más alto nivel. IFTrace toma como input un video $I$, modelado como un
 array 3D de píxeles, siendo las dimensiones el alto y ancho de la imagen, y
 número de cuadro de la secuencia de video, y una máscara binaria $O^{(1)}$,
@@ -512,11 +510,11 @@ a localizarlos en el siguiente cuadro a través del procedimiento \textit{trackM
 
 Si el conjunto de píxeles que representan al objeto $S_{0}^{(t)}$ no resulta
 vacío para este nuevo cuadro, entonces el seguimiento fue exitoso. A
-continuación, a partir de los dos conjuntos de coordenadas $S_{0}^{(t)}$ y
-$S_{x}^{(t)}$, el clasificador de color del cuadro anterior $C^{(t-1)}$ y el
-cuadro actual $I{(t)}$, se obtiene la máscara del objeto para el cuadro actual,
-denominado $O{(t)}$. Todo este proceso se realiza en el procedimiento
-\textit{IFTSegment}.
+continuación, se utiliza el procedimiento
+\textit{IFTSegment} para obtener la máscara del objeto para el cuadro actual,
+denominado $O{(t)}$. Este procedimiento toma los conjuntos de pixeles pertenecientes al objeto $S_{0}^{(t)}$ y
+a sus alrededores $S_{x}^{(t)}$, el clasificador de color del cuadro anterior $C^{(t-1)}$ y el
+cuadro actual $I{(t)}$.
 
 Como paso final, se obtiene el clasificador de color del cuadro actual $C{(t)}$, a partir de la máscara del objeto $O{(t)}$ y el cuadro actual $I{(t)}$.
 
