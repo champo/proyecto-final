@@ -115,8 +115,8 @@ factibilidad de conocer el estado del juego completo en cada instante de tiempo.
 
 \part*{Introducción}
 
-Dentro del área de análisis de imágenes, uno de los problemas más relevantes y
-estudiados es el problema de reconocer objectos en una secuencia de
+Dentro del área del análisis de imágenes, uno de los problemas más relevantes y
+estudiados es el problema de reconocer objetos en una secuencia de
 imágenes para seguir su posición, detectar cambios de orientación o en su
 forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras
 variaciones del problema. Tiene aplicaciones en muchos campos, como ser
@@ -126,9 +126,9 @@ y gestual, etcétera.
 Existe una tendencia en los deportes en las últimas décadas por pasar a ser
 controlados automáticamente. Un ejemplo de esto son las cámaras de alta
 velocidad en tenis, y las repeticiones y análisis de los árbitros en fútbol
-americano. Para la industria del entretenimiento, la tendencia a utilizar
-mecanismos automatizados de análisis del estado del juego provee datos
-estadísticos, como en el caso de fútbol puede ser poseción de pelota, cantidad
+americano o rugby. Para la industria del entretenimiento, estos
+mecanismos automatizados de análisis del estado del juego proveen datos
+estadísticos, como en el caso del fútbol pueden ser posesión de pelota, cantidad
 de pases exitosos, tiros al arco, fracción del tiempo que cada jugador trotó,
 corrió o caminó, entre otros.
 
@@ -144,12 +144,15 @@ de objetos categorizados en cuatro familias:
 \textit{Corte de Grafos},
 y \textit{Contornos Activos}.
 
-En la sección \ref{sec:futbol} se discuten los avances modernos en esta rama.
-Se presenta sistemas implementados que resuelven el problema de seguimiento de
-jugadores, pelota, y estado del juego. Y también se describe técnicas con
+En la sección \ref{sec:homography} se describe el concepto teórico de homografía y
+su utilidad y aplicación en la resolución del problema, así como su cálculo numérico.
+
+En la sección \ref{sec:futbol} se discuten los avances modernos en el fútbol.
+Se presentan sistemas implementados que resuelven el problema de seguimiento de
+jugadores, pelota, y estado del juego. También se describen técnicas con
 mayor nivel semántico que detectan movimientos de jugadores, pases de pelota,
-tiros al arco, entre otros. Se dividen los mismos categorizados por los
-sistemas de cámaras utilizadas (una sola cámara fija, video televizado, o
+tiros al arco, entre otros. Se dividen por los
+sistemas de cámaras utilizados (una sola cámara fija, video televizado, o
 múltiples cámaras fijas).
 
 \newpage
@@ -994,7 +997,9 @@ final de la secuencia de imágenes.
     \end{array}
 \end{equation}
 
+
 \section{Homografía}
+\label{sec:homography}
 
 \subsection{Aplicación y utilización}
 
