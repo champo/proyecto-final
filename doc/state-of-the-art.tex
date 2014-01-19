@@ -676,7 +676,7 @@ cada píxel $p$ un costo $V(p) = \pi(p)$, y un marcador raíz $R(p)$, el marcado
 que se encuentra en la raíz del árbol al cual pertenece.
 
 IFTrace depende de la IFT
-para segmentar los objetos a trackear. Usa la función de conectividad $f_{max}$, que
+para segmentar los objetos a seguir. Usa la función de conectividad $f_{max}$, que
 asigna a un camino $\pi$ el máximo costo para todas las aritas en $\pi$.
 Los píxeles marcadores utilizados son tanto los marcadores interiores, obtenidos
 por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.
@@ -1354,7 +1354,7 @@ actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las
 características de un partido de fútbol para mejorar esta estimación:
 
 \begin{itemize}
-  \item \textbf{Trackeo de personas}: No se dá el caso de que un jugador
+  \item \textbf{Seguimiento de personas}: No se dá el caso de que un jugador
     desaparezca de la cancha de un \textit{frame} a otro. Aparecen gradualmente
     desde el borde del campo de visión.
 
@@ -1388,7 +1388,7 @@ futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
 \begin{itemize}
   \item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
   \item Estimación de la posición de la camara en las coordenadas del mundo
-  \item Detección y tracking de la pelota
+  \item Detección y seguimiento de la pelota
   \item Detección de la cancha
   \item Detección de los jugadores
 \end{itemize}
@@ -1454,7 +1454,7 @@ Los nodos de este grafo representan candidatos, con un peso segun que tan pareci
 Y los vertices se colocan si estan a una cierta proximidad y pesados segun que tan cerca y parecidos sean los nodos.
 Sobre este grafo se hace una busqueda de camino optimo, y de este la posición de la pelota en el ultimo cuadro.
 
-Una vez detectada la pelota, se utiliza tracking hasta que no se confia en el resultado del algoritmo de tracking.
+Una vez detectada la pelota, se utiliza seguimiento hasta que no se confia en el resultado del algoritmo de seguimiento.
 En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriormente.
 
 \subsubsection*{Detección de la cancha}
