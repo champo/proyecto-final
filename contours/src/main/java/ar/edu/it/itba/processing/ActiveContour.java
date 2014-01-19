@@ -3,7 +3,6 @@ package ar.edu.it.itba.processing;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +21,7 @@ public class ActiveContour {
 	public final static int RADIUS_X = 20;
 	public final static int RADIUS_Y = 30;
 	public final static int BUCKETS = 32;
-	public final static double PONDER[] = new double[]{ 0.5, 0.5, 1 };
+	public final static double PONDER[] = new double[]{ 1, 0.25, 0.25 };
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
@@ -69,7 +68,7 @@ public class ActiveContour {
 	private RGBPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
 		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
 		colors.add(getAverageColor(frame, contour));
-		colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
+		//colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
@@ -87,14 +86,14 @@ public class ActiveContour {
 			final Contour contour) {
 		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
 		colors.add(getAverageBackgroundColor(frame, contour));
-		colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
+		//colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
 	public float adapt(final BufferedImage frame) {
 
 		final long time = System.currentTimeMillis();
-		final int nMax = 100;
+		final int nMax = max(frame.getHeight(), frame.getWidth());
 
 		final boolean[] done = new boolean[contours.length];
 		int completed = 0;
@@ -510,7 +509,7 @@ public class ActiveContour {
 			i++;
 
 		}
-		return result / (referenceColors.length * MAX_PIXEL_VALUE);
+		return result / MAX_PIXEL_VALUE;
 	}
 
 	private RGBPoint getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
@@ -553,7 +552,7 @@ public class ActiveContour {
 		double green = 0;
 		double blue = 0;
 		int points = 0;
-		for (final Point p : r) {
+		for (final Point p : r.getLout()) {
 			final RGBPoint c = new RGBPoint(frame.getRGB(p.x, p.y));
 			red += c.red;
 			green += c.green;
@@ -642,7 +641,7 @@ public class ActiveContour {
 				avgBlue = i;
 			}
 		}
-		if (!changed) {
+		if (true || !changed) {
 			return new RGBPoint[] { results[0] };
 		}
 		results[1] = new RGBPoint((int) ((avgRed + 0.5) * BUCKETS),
@@ -669,7 +668,7 @@ public class ActiveContour {
 				avgBlue = i;
 			}
 		}
-		if (true || !changed) {
+		if (!changed) {
 			return new RGBPoint[] { results[0], results[1] };
 		}
 		results[2] = new RGBPoint((int) ((avgRed + 0.5) * BUCKETS),

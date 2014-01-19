@@ -34,7 +34,6 @@ import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
-import ar.edu.it.itba.video.LensCorrection;
 
 /**
  *
@@ -59,26 +58,7 @@ public class MainApp extends javax.swing.JFrame {
         new Color(0, 255, 0),
         new Color(0, 255, 255),
         new Color(255, 255, 255),
-        new Color(128, 128, 128),
-        Color.cyan,
-        Color.darkGray,
-        Color.magenta,
-        Color.orange,
-        Color.pink,
-        Color.white,
-        new Color(0,0,0),
-        new Color(255, 0, 0),
-        new Color(255, 0, 255),
-        new Color(0, 255, 0),
-        new Color(0, 255, 255),
-        new Color(255, 255, 255),
-        new Color(128, 128, 128),
-        Color.cyan,
-        Color.darkGray,
-        Color.magenta,
-        Color.orange,
-        Color.pink,
-        Color.white
+        new Color(128, 128, 128)
     };
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
@@ -362,8 +342,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        //frameDecoder = new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/repo/material/happyoccluded.mpeg");
-        frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4"), 2.4);
+        frameDecoder = new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/repo/material/happyoccluded.mpeg");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -587,11 +566,11 @@ public class MainApp extends javax.swing.JFrame {
                 	}
                 }
 
-//                for (int i = (int) (frame.getWidth() * 0.7); i < frame.getWidth(); i++) {
-//            		for (int j = 0; j < frame.getHeight(); j++) {
-//            			frame.setRGB(i, j, Color.GREEN.getRGB());
-//            		}
-//            	}
+                for (int i = (int) (frame.getWidth() * 0.7); i < frame.getWidth(); i++) {
+            		for (int j = 0; j < frame.getHeight(); j++) {
+            			frame.setRGB(i, j, Color.GREEN.getRGB());
+            		}
+            	}
 
                 if (ac != null) {
                 	BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
