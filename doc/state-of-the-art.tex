@@ -850,73 +850,53 @@ entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
 \subsection{Contornos Activo}
 
-La segmentación basada en contornos activos se basa en características
-que presente el contorno de una región o regiones de interés. Se define una
-región como una distribución $p(\Theta(x))$, donde $x$ es un pixel y $\Theta =
-\{\theta_{1}, ..., \theta_{n}\}$ es el vector de características definido para
-cada pixel. El vector característico es un conjunto de características
-distintivas. Puede ser el color promedio en la muestra de pixeles de la región,
-los parámetros estimados de una región utilizando un modelo estadístico, etc.
-Teniendo esto en cuenta, un objeto, como por ejemplo el objeto de interés,
-queda caracterizado por un conjunto de parámetros $\Theta$.
-
-El contorno o borde de una región $s$ se representa por una curva paramétrica
-dada por:
+La segmentación basada en contornos activos se basa en definir una region en base a su contorno.
+El contorno o borde de una región $\Omega_i$ se representa por una curva paramétrica dada por:
 
 \begin{equation}
-    C(s) = (x(s), y(s))
+    C_i(s) = (x_i(s), y_i(s))
 \end{equation}
 
-donde $0 \leq s \leq S$, y $C(0) = C(S)$. $C(0)$ es la región
-\textit{background}, que contiene los puntos que no pertenecen a ningún
-contorno del cual se está haciendo un seguimiento.
+donde $0 \leq s \leq S_i$, y $C_i(0) = C_i(S_i)$, siendo $S_i$ el total de puntos que conforman la curva.
+Es decir, $C_i$ es una curva cerrada. 
 
-Al analizar una suceción de imágenes (correspondientes a los cuadros de un
-video), esta curva es modificada como se describe a continuación. Sea $F(s)$ la
-fuerza que incide sobre el objeto y provoca el cambio en la curva, la ecuación
-de la curva se define en función del tiempo:
+Se define tantos contornos como objetos de interes hay en la secuencia ($i$ es un entero entre 1 y el numero de objetos).
+Adicionalmente, se considera una region $\Omega_0$ que contiene a todo punto que no forma parte de ninguna otra region. 
+Se la denomina \textit{region de fondo}.
+
+Se declara una funcion de probabilidad $p$ que nos permite saber que tan probable es que un pixel forme parte una dada region.
+Para esto es necesaria una funcion $v$ que dado un pixel, entrega un vector de caracteristicas $v(x)$.
+Esto permite formular la probabilidad de que un pixel $x$ forme parte de una region $omega_i$ como $p(v(x) \vert \Omega_i)$.
+Los autores no definen ninguna de estas funciones, ya que estas dependen de la secuencia particular a ser analizada.
+Como ejemplo, se toma los valores \textit{RGB} como vector de caracteristicas y para 
+$p(v(x) \vert \Omega_i) = \| v(x) - v_i \| $, donde $v_i$ es el valor promedio \textit{RGB} de toda la region.
+
+Teniendo bien definido cada parte, se introduce la funcion de energia de los contornos:
 
 \begin{equation}
-    C(s,t) = (x(s), y(s), t)
+    \label{eq:ac-energy}
+    E = - \sum_{m=0}^{M}{\int_{\Omega_m}{\log{p(v(x) \vert \Omega_m)} dx} + \lambda \int_{C_m}{ds}}
 \end{equation}
 
-donde $0 \leq s \leq S$, $C(0,t) = C(S,t)$, y $t$ es la variable del tiempo.
+Los algoritmos basados en contornos activos, buscan minimizar esta ecuacion. Si es minima para un cuadro, los contornos
+deberian haber encontrado la mejor aproximacion de la region de los objetos interes posible. De \ref{eq:ac-energy} se
+deriva la ecuacion de evolucion de cualquier curva $C_m$:
 
-\begin{eqnarray}
-    C(s,t) &=& \overrightarrow{N}_{C(s,t)}F(s)\\
-    C(s,0) &=& C_{0}(s)\\
-\end{eqnarray}
+\begin{eqnarray*}
+    \frac{dC_m}{dt} &=& (F_d + F_s) \overrightarrow{N}_{C_m} \\
+    F_d &=& \log{p(v(x) \vert \Omega_m) / p(v(x) \vert \Omega_0)} \\
+    F_s &=& \lambda \kappa_m
+\end{eqnarray*}
 
-donde $\overrightarrow{N}_{C(s,t)}$ es el vector normal de $C(s,t)$ y $
-C_{0}(s)$ es la curva inicial, determinada por algún otro algoritmo o por un
-operador.
-
-Dentro de la fuerza $F(s)$, se distinguen dos fuerzas $F_{d}$ y $F_{s}$.
-$F_{d}$ es la velocidad de evolución y $F_{s}$ es una fuerza que suaviza la
-curva. $F_{d}$ se puede modelar como
-
-\begin{equation}
-    F_{d}(x) = log(p(\Theta^{i}(x) | \Omega_{i}) / p(\Theta^{j}(x) | \Omega_{j}))
-\end{equation}
-
-donde $\Theta^{i}$ y $\Theta^{j}$ son los vectores característicos de las
-regiones $\Omega_{i}$ y $\Omega_{j}$ respectivamente.
-
-Por otro lado, $F_{s}$ tiene la forma
-
-\begin{equation}
-    \label{eq:active-contours-fs}
-    F_{s}(x) = -2\lambda\kappa(x)
-\end{equation}
-
-donde $\kappa$ es la curvatura.
+$F_d$ y $F_s$ son fuerzas derivadas de la ecuacion de energia. $F_d$ representa la competencia entre regiones y $F_s$ un
+suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
 Existe otra formulación del problema de evolución de curvas, que consiste en
 representar la curva como el nivel cero de una superficie $\phi$ \ref{Osher88}.
 
 \subsection{Implementación Numérica}
 
-En la implementación, el borde se representa usando dos conjuntos de píxeles
+En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
 correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
 respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
 estos dos conjuntos.
@@ -930,8 +910,10 @@ segmentación de múltiples objetos.
 El objeto de interés $\Omega_{1}$ y el fondo $\Omega_{0}$ cumplen
 $\Omega_{1}\cup\Omega_{0} = I_{k}$ donde $I_{k}$ es la imagen del cuadro $k$ de
 la secuencia de imágenes, y $\Omega_{1}\cap\Omega_{0} = \emptyset$. Cada una de
-las regiones está caracterizada por el vector característico $\Theta_{m}, m =
-\{0,1\}$. La función $\phi$  se define como
+las regiones está caracterizada por el vector característico $v_{m}, m =
+\{0,1\}$. 
+
+Se define una funcion $\phi(x)$ que indica si un pixel $x$ pertence a una region o al fondo de la siguiente manera:
 
 \begin{equation}
 \phi(x) =
@@ -948,14 +930,14 @@ las regiones está caracterizada por el vector característico $\Theta_{m}, m =
 Los conjuntos $L_{in}$ y $L_{out}$ se definen como
 
 \begin{equation}
-    L_{in} = {x \mbox{ es un pixel }| \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{de modo que } \phi(y) > 0}
+    L_{in} = {x \mbox{ es un pixel } \vert \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) > 0}
 \end{equation}
 
 \begin{equation}
-    L_{out} = {x \mbox{ es un pixel }| \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{de modo que } \phi(y) < 0}
+    L_{out} = {x \mbox{ es un pixel } \vert \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0}
 \end{equation}
 
-donde $N_{4}(x) = { y \mbox{ es un pixel } | |x-y| = 1}$, son los píxeles
+donde $N_{4}(x) = { y \mbox{ es un pixel } \vert |x-y| = 1}$, son los píxeles
 vecinos de un píxel $x$.
 
 El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
@@ -990,9 +972,9 @@ ser píxeles externos y por lo tanto se sacan de $L_{out}$ y se hacer $\phi(x) =
 \end{enumerate}
 
 En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal
-forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. El
-resultado final es análogo a modificar la curva de acuerdo a la ecuación
-\ref{eq:active-contours-fs} al discretizar el procedimiento.
+forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. Para aplicar $F_s$ se usan los mismos
+pasos que para $F_d$. El resultado final es análogo a modificar la curva de acuerdo 
+a la definicion formal dada anteriormente.
 
 En cada cuadro, el borde del contorno del objeto es actualizado de acuerdo al
 resultado obtenido por el algoritmo en el cuadro anterior. En el caso de la
