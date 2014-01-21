@@ -523,7 +523,6 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane3.setPreferredSize(oldSoccerSize);
         jScrollPane3.setMaximumSize(oldSoccerSize);
 
-
         loadNextFrame();
         return this;
     }

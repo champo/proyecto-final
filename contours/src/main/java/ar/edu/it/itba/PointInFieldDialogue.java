@@ -4,6 +4,17 @@
  */
 package ar.edu.it.itba;
 
+import ar.edu.it.itba.HomeographyManager.Pair;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.JFrame;
+import javax.swing.JRadioButton;
+
 /**
  *
  * @author eordano
@@ -135,7 +146,7 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
         });
 
         buttonGroup1.add(jRadioButton10);
-        jRadioButton10.setText("Top left Big Area Left Team");
+        jRadioButton10.setText("Top left Big Area Right Team");
         jRadioButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRadioButton10ActionPerformed(evt);
@@ -143,7 +154,7 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
         });
 
         buttonGroup1.add(jRadioButton11);
-        jRadioButton11.setText("Top left Small Area Left Team");
+        jRadioButton11.setText("Top left Small Area Right Team");
         jRadioButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRadioButton11ActionPerformed(evt);
@@ -158,7 +169,6 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
-        buttonGroup1.add(jRadioButton13);
         jRadioButton13.setText("Top left Big Area Left Team");
         jRadioButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,7 +216,6 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
-        buttonGroup1.add(jRadioButton19);
         jRadioButton19.setText("Top left Small Area Left Team");
         jRadioButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -242,7 +251,6 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
-        buttonGroup1.add(jRadioButton26);
         jRadioButton26.setText("Penalty Left Team");
 
         buttonGroup1.add(jRadioButton27);
@@ -537,6 +545,126 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
+    }
+    public static interface PointInFieldListener {
+        public void getResult(Pair p);
+    }
+
+    public static void showUp(JFrame parent, final Point p, final int width, final int depth, final PointInFieldListener listener) {
+        final PointInFieldDialogue d = new PointInFieldDialogue(parent, true);
+        d.jButton1.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Point result = new Point();
+                JRadioButton j = null;
+                Enumeration<AbstractButton> elements = d.buttonGroup1.getElements();
+                while (elements.hasMoreElements()) {
+                    JRadioButton button = (JRadioButton) elements.nextElement();
+                    if (button.isSelected()) {
+                        j = button;
+                    }
+                }
+                if (j != null) {
+                    String t = j.getText();
+                    int middleDepth = depth / 2;
+                    int middleWidth = width / 2;
+                    int circleArea = 915;
+                    int penaltyDistance = 1100;
+                    int bigAreaDepth = 1650;
+                    int smallAreaDepth = 550;
+                    int bigAreaWidth = 4030;
+                    int smallAreaWidth = 1832;
+                    if (t.equals("Top left Corner")) {
+                        result.x = 0;
+                        result.y = width;
+                    } else if (t.equals("Top right Corner")) {
+                        result.x = depth;
+                        result.y = width;
+                    } else if (t.equals("Bottom left Corner")) {
+                        result.x = 0;
+                        result.y = 0;
+                    } else if (t.equals("Bottom right Corner")) {
+                        result.x = depth;
+                        result.y = 0;
+                    } else if (t.equals("Top center cross")) {
+                        result.x = middleDepth;
+                        result.y = width;
+                    } else if (t.equals("Bottom center cross")) {
+                        result.x = middleDepth;
+                        result.y = 0;
+                    } else if (t.equals("Field Center")) {
+                        result.x = middleDepth;
+                        result.y = middleWidth;
+                    } else if (t.equals("Field Center Area Top")) {
+                        result.x = middleDepth;
+                        result.y = middleWidth + circleArea;
+                    } else if (t.equals("Field Center Area Bottom")) {
+                        result.x = middleDepth;
+                        result.y = middleWidth + circleArea;
+                    } else if (t.equals("Top left Big Area Left Team")) {
+                        result.x = 0;
+                        result.y = middleWidth + bigAreaWidth;
+                    } else if (t.equals("Top left Small Area Left Team")) {
+                        result.x = 0;
+                        result.y = middleWidth + smallAreaWidth;
+                    } else if (t.equals("Bottom left Big Area Left Team")) {
+                        result.x = 0;
+                        result.y = middleWidth - bigAreaWidth;
+                    } else if (t.equals("Bottom left Small Area Left Team")) {
+                        result.x = 0;
+                        result.y = middleWidth - smallAreaWidth;
+                    }else if (t.equals("Top right Big Area Left Team")) {
+                        result.x = bigAreaDepth;
+                        result.y = middleWidth + bigAreaWidth;
+                    } else if (t.equals("Top right Small Area Left Team")) {
+                        result.x = smallAreaDepth;
+                        result.y = middleWidth + smallAreaWidth;
+                    } else if (t.equals("Bottom right Big Area Left Team")) {
+                        result.x = bigAreaDepth;
+                        result.y = middleWidth - bigAreaWidth;
+                    } else if (t.equals("Bottom right Small Area Left Team")) {
+                        result.x = smallAreaDepth;
+                        result.y = middleWidth - smallAreaWidth;
+                    } else if (t.equals("Penalty Left Team")) {
+                        result.x = penaltyDistance;
+                        result.y = middleWidth;
+                    } else if (t.equals("Top right Big Area Right Team")) {
+                        result.x = depth;
+                        result.y = middleWidth + bigAreaWidth;
+                    } else if (t.equals("Top right Small Area Right Team")) {
+                        result.x = depth;
+                        result.y = middleWidth + smallAreaWidth;
+                    } else if (t.equals("Bottom right Big Area Right Team")) {
+                        result.x = depth;
+                        result.y = middleWidth - bigAreaWidth;
+                    } else if (t.equals("Bottom right Small Area Right Team")) {
+                        result.x = depth;
+                        result.y = middleWidth - smallAreaWidth;
+                    } else if (t.equals("Top left Big Area Right Team")) {
+                        result.x = depth - bigAreaDepth;
+                        result.y = middleWidth + bigAreaWidth;
+                    } else if (t.equals("Top left Small Area Right Team")) {
+                        result.x = depth - smallAreaDepth;
+                        result.y = middleWidth + smallAreaWidth;
+                    } else if (t.equals("Bottom left Big Area Right Team")) {
+                        result.x = depth - bigAreaDepth;
+                        result.y = middleWidth - bigAreaWidth;
+                    } else if (t.equals("Bottom left Small Area Right Team")) {
+                        result.x = depth - smallAreaDepth;
+                        result.y = middleWidth - smallAreaWidth;
+                    } else if (t.equals("Penalty Right Team")) {
+                        result.x = depth - penaltyDistance;
+                        result.y = middleWidth;
+                    } else {
+                        System.err.println("COULDN'T GET POINT");
+                    }
+                    listener.getResult(new Pair(p, result));
+                }
+                d.dispose();
+            }
+        });
+        d.setVisible(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

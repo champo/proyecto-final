@@ -57,7 +57,7 @@ public class LensCorrection implements FrameProvider {
 	    	}
 	    }
 
-		return copy;
+            return copy;
 	}
 
 }

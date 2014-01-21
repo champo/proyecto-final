@@ -7,10 +7,15 @@ package ar.edu.it.itba;
 import ar.edu.it.itba.HomeographyManager.Pair;
 import ar.edu.it.itba.config.ConfigRetrieval;
 import ar.edu.it.itba.config.SequenceSettings;
+import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,13 +69,14 @@ public class Main2 extends javax.swing.JFrame {
         deleteHomographyPointButton = new javax.swing.JButton();
         jTextFieldCorrection = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jButtonUpdateLensCorrection = new javax.swing.JButton();
+        jFixFieldSize = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabelSelectPoint = new javax.swing.JLabel();
         jTextFieldWidth = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jTextFieldDepth = new javax.swing.JTextField();
+        jButtonUpdateLensCorrection = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanelVideo = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -140,7 +146,7 @@ public class Main2 extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jFileChooser1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .add(jFileChooser1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -178,14 +184,14 @@ public class Main2 extends javax.swing.JFrame {
         deleteHomographyPointButton.setText("Delete");
         deleteHomographyPointButton.setEnabled(false);
 
-        jTextFieldCorrection.setText("1.0");
+        jTextFieldCorrection.setText("0.0");
 
         jLabel4.setText("Correction Factor");
 
-        jButtonUpdateLensCorrection.setText("Update");
-        jButtonUpdateLensCorrection.addActionListener(new java.awt.event.ActionListener() {
+        jFixFieldSize.setText("Fix Field Size");
+        jFixFieldSize.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUpdateLensCorrectionActionPerformed(evt);
+                jFixFieldSizeActionPerformed(evt);
             }
         });
 
@@ -198,6 +204,11 @@ public class Main2 extends javax.swing.JFrame {
                 jTextFieldWidthActionPerformed(evt);
             }
         });
+        jTextFieldWidth.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jTextFieldWidthPropertyChange(evt);
+            }
+        });
 
         jLabel6.setText("Field width");
 
@@ -206,6 +217,18 @@ public class Main2 extends javax.swing.JFrame {
         jTextFieldDepth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldDepthActionPerformed(evt);
+            }
+        });
+        jTextFieldDepth.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jTextFieldDepthPropertyChange(evt);
+            }
+        });
+
+        jButtonUpdateLensCorrection.setText("Update");
+        jButtonUpdateLensCorrection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateLensCorrectionActionPerformed(evt);
             }
         });
 
@@ -240,18 +263,23 @@ public class Main2 extends javax.swing.JFrame {
                                     .add(homographySettingsPanelLayout.createSequentialGroup()
                                         .add(6, 6, 6)
                                         .add(jLabelSelectPoint))
-                                    .add(homographySettingsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                        .add(homographySettingsPanelLayout.createSequentialGroup()
-                                            .add(jLabel3)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .add(jButtonUpdateLensCorrection))
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, homographySettingsPanelLayout.createSequentialGroup()
-                                            .add(jLabel4)
-                                            .add(18, 18, 18)
-                                            .add(jTextFieldCorrection))
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 202, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                    .add(homographySettingsPanelLayout.createSequentialGroup()
+                                        .add(jLabel4)
+                                        .add(18, 18, 18)
+                                        .add(jTextFieldCorrection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 202, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .add(0, 0, Short.MAX_VALUE)))
-                        .add(1, 1, 1))))
+                        .add(1, 1, 1))
+                    .add(homographySettingsPanelLayout.createSequentialGroup()
+                        .add(jLabel3)
+                        .add(0, 0, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, homographySettingsPanelLayout.createSequentialGroup()
+                        .add(0, 0, Short.MAX_VALUE)
+                        .add(jFixFieldSize))))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, homographySettingsPanelLayout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jButtonUpdateLensCorrection)
+                .addContainerGap())
         );
         homographySettingsPanelLayout.setVerticalGroup(
             homographySettingsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -264,16 +292,18 @@ public class Main2 extends javax.swing.JFrame {
                 .add(homographySettingsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextFieldDepth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel7))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(5, 5, 5)
+                .add(jFixFieldSize)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(homographySettingsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jTextFieldCorrection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel4))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButtonUpdateLensCorrection)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(14, 14, 14)
                 .add(jLabel3)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 275, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 245, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(homographySettingsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(newHomographyPointButton)
@@ -315,9 +345,10 @@ public class Main2 extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .add(homographySettingsPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 16, Short.MAX_VALUE))
-            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .add(0, 29, Short.MAX_VALUE))
+            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Homography", jPanel2);
@@ -330,7 +361,7 @@ public class Main2 extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 557, Short.MAX_VALUE)
+            .add(0, 576, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Tracking", jPanel3);
@@ -343,7 +374,7 @@ public class Main2 extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 557, Short.MAX_VALUE)
+            .add(0, 576, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Visualize Psi", jPanel4);
@@ -393,21 +424,27 @@ public class Main2 extends javax.swing.JFrame {
         loadVideo();
     }//GEN-LAST:event_jList1ValueChanged
 
-    private void jButtonUpdateLensCorrectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateLensCorrectionActionPerformed
+    private void jFixFieldSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFixFieldSizeActionPerformed
+                                                                
         Double data;
         try {
-            data = Double.valueOf(jTextFieldCorrection.getText());
+            data = Double.valueOf(jTextFieldWidth.getText());
         } catch (NumberFormatException e) {
             data = null;
         }
-        if (data != null) {
-            currentSettings.setLensCorrection(data);
-            imagePanel.setImage(((LensCorrection) frameDecoder).setStrength(data));
+        currentSettings.setFieldWidth(data);
+        try {
+            data = Double.valueOf(jTextFieldDepth.getText());
+        } catch (NumberFormatException e) {
+            data = null;
         }
-    }//GEN-LAST:event_jButtonUpdateLensCorrectionActionPerformed
+        currentSettings.setFieldDepth(data);
+        tryEnableButtons();
+    }//GEN-LAST:event_jFixFieldSizeActionPerformed
 
     private void newHomographyPointButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newHomographyPointButtonActionPerformed
         jLabelSelectPoint.setVisible(true);
+        selectingPoint = true;
     }//GEN-LAST:event_newHomographyPointButtonActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -421,17 +458,6 @@ public class Main2 extends javax.swing.JFrame {
     }//GEN-LAST:event_jTabbedPane1ComponentResized
 
     private void jTextFieldWidthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldWidthActionPerformed
-                                                              
-        Double data;
-        try {
-            data = Double.valueOf(jTextFieldCorrection.getText());
-        } catch (NumberFormatException e) {
-            data = null;
-        }
-        if (data != null) {
-            currentSettings.setFieldWidth(data);
-            tryEnableButtons();
-        }
     }//GEN-LAST:event_jTextFieldWidthActionPerformed
 
     private void jPanel2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel2ComponentShown
@@ -445,6 +471,18 @@ public class Main2 extends javax.swing.JFrame {
 
     private void jTextFieldDepthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDepthActionPerformed
                                                              
+
+    }//GEN-LAST:event_jTextFieldDepthActionPerformed
+
+    private void jTextFieldDepthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldDepthPropertyChange
+
+    }//GEN-LAST:event_jTextFieldDepthPropertyChange
+
+    private void jTextFieldWidthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldWidthPropertyChange
+
+    }//GEN-LAST:event_jTextFieldWidthPropertyChange
+
+    private void jButtonUpdateLensCorrectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateLensCorrectionActionPerformed
         Double data;
         try {
             data = Double.valueOf(jTextFieldCorrection.getText());
@@ -452,10 +490,10 @@ public class Main2 extends javax.swing.JFrame {
             data = null;
         }
         if (data != null) {
-            currentSettings.setFieldDepth(data);
-            tryEnableButtons();
+            currentSettings.setLensCorrection(data);
+            setupImageHomo(((LensCorrection) frameDecoder).setStrength(data));
         }
-    }//GEN-LAST:event_jTextFieldDepthActionPerformed
+    }//GEN-LAST:event_jButtonUpdateLensCorrectionActionPerformed
 
     private void loadVideo() {
         jTabbedPane1.setSelectedIndex(1);
@@ -485,6 +523,43 @@ public class Main2 extends javax.swing.JFrame {
         jScrollPane3.setPreferredSize(frameDim);
         jPanelVideo.add(imagePanel);
         imagePanel.setImage(frame);
+        imagePanel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (selectingPoint) {
+                    PointInFieldDialogue.showUp(Main2.this, e.getPoint(),
+                            currentSettings.getFieldWidth().intValue(), currentSettings.getFieldDepth().intValue(),
+                            new PointInFieldDialogue.PointInFieldListener() {
+
+                        @Override
+                        public void getResult(Pair p) {
+                            homeographyManager.setMapping(p.image, p.mapped);
+                            jListPoints.updateUI();
+                            // Force redraw
+                            setupImageHomo(((LensCorrection) frameDecoder).setStrength(currentSettings.getLensCorrection()));
+                            selectingPoint = false;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
 
         jListPoints.setModel(homeographyManager.getListModel());                                                  
         jLabelSelectPoint.setVisible(false);
@@ -532,6 +607,7 @@ public class Main2 extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonUpdateLensCorrection;
     private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JButton jFixFieldSize;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -561,8 +637,31 @@ public class Main2 extends javax.swing.JFrame {
         if (currentSettings.getFieldDepth() != null && currentSettings.getFieldWidth() != null) {
             jTextFieldDepth.setEnabled(false);
             jTextFieldWidth.setEnabled(false);
+            jFixFieldSize.setEnabled(false);
             newHomographyPointButton.setEnabled(true);
             deleteHomographyPointButton.setEnabled(true);
         }
+    }
+
+    private void setupImageHomo(BufferedImage newImage) {
+        if (homeographyManager.getListModel().getSize() > 3) {
+            Homography homography = homeographyManager.calculateHomography();
+            // Draw field limits
+            for (int i = 0; i < 500; i++) {
+                Point inverseApply = homography.inverseApply(0, (int)(i / currentSettings.getFieldDepth()));
+                newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                inverseApply = homography.inverseApply(currentSettings.getFieldWidth().intValue(), (int) (i / currentSettings.getFieldDepth()));
+                newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), 0);
+                newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), currentSettings.getFieldDepth().intValue());
+                newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                
+                // Middle of the field
+                inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), currentSettings.getFieldDepth().intValue() / 2);
+                newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+            }
+        }
+        imagePanel.setImage(newImage);
     }
 }

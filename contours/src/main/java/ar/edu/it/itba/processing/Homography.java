@@ -38,4 +38,8 @@ public class Homography {
 		mapped = mapped.divide(mapped.get(2));
 		return new Point((int) mapped.get(0), (int) mapped.get(1));
 	}
+
+    public Point inverseApply(Double fieldWidth, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

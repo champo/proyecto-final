@@ -331,7 +331,7 @@
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="buttonGroup1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Top left Big Area Left Team"/>
+        <Property name="text" type="java.lang.String" value="Top left Big Area Right Team"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRadioButton10ActionPerformed"/>
@@ -342,7 +342,7 @@
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="buttonGroup1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Top left Small Area Left Team"/>
+        <Property name="text" type="java.lang.String" value="Top left Small Area Right Team"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRadioButton11ActionPerformed"/>
@@ -361,9 +361,6 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButton13">
       <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Top left Big Area Left Team"/>
       </Properties>
       <Events>
@@ -427,9 +424,6 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButton19">
       <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Top left Small Area Left Team"/>
       </Properties>
       <Events>
@@ -492,9 +486,6 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButton26">
       <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="Penalty Left Team"/>
       </Properties>
     </Component>
