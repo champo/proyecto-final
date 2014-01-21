@@ -80,6 +80,10 @@ public class Main2 extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanelVideo = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -146,7 +150,7 @@ public class Main2 extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jFileChooser1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                .add(jFileChooser1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -347,21 +351,64 @@ public class Main2 extends javax.swing.JFrame {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(homographySettingsPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 29, Short.MAX_VALUE))
+                .add(0, 152, Short.MAX_VALUE))
             .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Homography", jPanel2);
 
+        jPanel3.setPreferredSize(new java.awt.Dimension(770, 400));
+
+        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 760, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 482, Short.MAX_VALUE)
+        );
+
+        jScrollPane4.setViewportView(jPanel5);
+
+        jButton1.setText("Next Frame");
+
+        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 294, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+        );
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 770, Short.MAX_VALUE)
+            .add(jPanel3Layout.createSequentialGroup()
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane4)
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 576, Short.MAX_VALUE)
+            .add(jPanel3Layout.createSequentialGroup()
+                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 486, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Tracking", jPanel3);
@@ -374,7 +421,7 @@ public class Main2 extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 576, Short.MAX_VALUE)
+            .add(0, 699, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Visualize Psi", jPanel4);
@@ -538,7 +585,6 @@ public class Main2 extends javax.swing.JFrame {
                             jListPoints.updateUI();
                             // Force redraw
                             setupImageHomo(((LensCorrection) frameDecoder).setStrength(currentSettings.getLensCorrection()));
-                            selectingPoint = false;
                         }
                     });
                 }
@@ -604,6 +650,7 @@ public class Main2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteHomographyPointButton;
     private javax.swing.JPanel homographySettingsPanel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonUpdateLensCorrection;
     private javax.swing.JFileChooser jFileChooser1;
@@ -621,10 +668,13 @@ public class Main2 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanelVideo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextFieldCorrection;
     private javax.swing.JTextField jTextFieldDepth;
@@ -647,18 +697,28 @@ public class Main2 extends javax.swing.JFrame {
         if (homeographyManager.getListModel().getSize() > 3) {
             Homography homography = homeographyManager.calculateHomography();
             // Draw field limits
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 100; i++) {
                 Point inverseApply = homography.inverseApply(0, (int)(i / currentSettings.getFieldDepth()));
+                if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
+                if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
                 inverseApply = homography.inverseApply(currentSettings.getFieldWidth().intValue(), (int) (i / currentSettings.getFieldDepth()));
+                if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
+                if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
                 inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), 0);
+                if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
+                if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
                 inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), currentSettings.getFieldDepth().intValue());
+                if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
+                if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
                 
                 // Middle of the field
                 inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), currentSettings.getFieldDepth().intValue() / 2);
+                if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
+                if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
             }
         }

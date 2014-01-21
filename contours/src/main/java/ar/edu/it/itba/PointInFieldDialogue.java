@@ -169,6 +169,7 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
+        buttonGroup1.add(jRadioButton13);
         jRadioButton13.setText("Top left Big Area Left Team");
         jRadioButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,6 +217,7 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
+        buttonGroup1.add(jRadioButton19);
         jRadioButton19.setText("Top left Small Area Left Team");
         jRadioButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,6 +253,7 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
             }
         });
 
+        buttonGroup1.add(jRadioButton26);
         jRadioButton26.setText("Penalty Left Team");
 
         buttonGroup1.add(jRadioButton27);
@@ -573,8 +576,8 @@ public class PointInFieldDialogue extends javax.swing.JDialog {
                     int penaltyDistance = 1100;
                     int bigAreaDepth = 1650;
                     int smallAreaDepth = 550;
-                    int bigAreaWidth = 4030;
-                    int smallAreaWidth = 1832;
+                    int bigAreaWidth = 2015;
+                    int smallAreaWidth = 916;
                     if (t.equals("Top left Corner")) {
                         result.x = 0;
                         result.y = width;
