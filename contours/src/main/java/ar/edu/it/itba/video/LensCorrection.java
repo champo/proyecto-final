@@ -6,6 +6,7 @@ public class LensCorrection implements FrameProvider {
 
 	private final FrameProvider provider;
 
+        private BufferedImage backup;
 	private double strength;
 
 	public LensCorrection(final FrameProvider provider, final double strength) {
@@ -16,6 +17,7 @@ public class LensCorrection implements FrameProvider {
 
 	public void setStrength(final double strength) {
 		this.strength = strength;
+                this.apply(backup, strength);
 	}
 
 	@Override
@@ -25,9 +27,10 @@ public class LensCorrection implements FrameProvider {
 
 	private BufferedImage apply(final BufferedImage original, final double strength) {
 
-		int imageWidth = original.getWidth();
-		int imageHeight = original.getHeight();
-		BufferedImage copy = new BufferedImage(imageWidth, imageHeight, original.getType());
+            this.backup = original;
+            int imageWidth = original.getWidth();
+            int imageHeight = original.getHeight();
+            BufferedImage copy = new BufferedImage(imageWidth, imageHeight, original.getType());
 
 	    int halfWidth = imageWidth / 2;
 	    int halfHeight = imageHeight / 2;

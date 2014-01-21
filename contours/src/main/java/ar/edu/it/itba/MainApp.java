@@ -308,7 +308,7 @@ public class MainApp extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
-			public void run() {
+            public void run() {
                 try {
                     new MainApp().run();
                 } catch (IOException ex) {
@@ -342,7 +342,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/repo/material/happyoccluded.mpeg");
+        frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());

@@ -23,7 +23,7 @@ import ar.edu.it.itba.processing.Homography;
  *
  * @author eordano
  */
-class HomeographyManager {
+public class HomeographyManager {
 
     private final List<Pair> points = new ArrayList<Pair>();
     private ListModel listModel;
@@ -102,10 +102,10 @@ class HomeographyManager {
         points.remove(selectedIndex);
     }
 
-    private static class Pair {
+    public static class Pair {
 
-        private final Point image;
-        private final Point mapped;
+        public final Point image;
+        public final Point mapped;
         public Pair(final Point a, final Point b) {
             image = a;
             mapped = b;
