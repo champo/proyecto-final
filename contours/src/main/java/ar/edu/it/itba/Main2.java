@@ -7,6 +7,8 @@ package ar.edu.it.itba;
 import ar.edu.it.itba.HomeographyManager.Pair;
 import ar.edu.it.itba.config.ConfigRetrieval;
 import ar.edu.it.itba.config.SequenceSettings;
+import ar.edu.it.itba.processing.ActiveContour;
+import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
@@ -19,9 +21,13 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 
@@ -34,9 +40,27 @@ public class Main2 extends javax.swing.JFrame {
     FrameProvider frameDecoder;
     List<SequenceSettings> settings;
     SequenceSettings currentSettings;
+    BufferedImage frame;
+    int framesElapsed = 1;
     ImagePanel imagePanel;
-    private HomeographyManager homeographyManager;
+    private HomeographyManager homographyManager;
     boolean selectingPoint;
+    private BufferedImage firstFrame;
+    private ActiveContour ac;
+    private List<Contour> contour = new LinkedList<>();
+    private Homography homography;
+    private int selected= 0;
+    private FileOutputStream outBuffer;
+    
+    public static Color phiColoring[] = new Color[] {
+        new Color(0,0,0),
+        new Color(255, 0, 0),
+        new Color(255, 0, 255),
+        new Color(0, 255, 0),
+        new Color(0, 255, 255),
+        new Color(255, 255, 255),
+        new Color(128, 128, 128)
+    };
     /**
      * Creates new form Main2
      */
@@ -81,7 +105,7 @@ public class Main2 extends javax.swing.JFrame {
         jPanelVideo = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jPanel5 = new javax.swing.JPanel();
+        jPanelVideo2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -200,6 +224,11 @@ public class Main2 extends javax.swing.JFrame {
         });
 
         jButton2.setText("Continue");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabelSelectPoint.setText("Select point in the field");
 
@@ -359,20 +388,25 @@ public class Main2 extends javax.swing.JFrame {
 
         jPanel3.setPreferredSize(new java.awt.Dimension(770, 400));
 
-        org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        org.jdesktop.layout.GroupLayout jPanelVideo2Layout = new org.jdesktop.layout.GroupLayout(jPanelVideo2);
+        jPanelVideo2.setLayout(jPanelVideo2Layout);
+        jPanelVideo2Layout.setHorizontalGroup(
+            jPanelVideo2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 760, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        jPanelVideo2Layout.setVerticalGroup(
+            jPanelVideo2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 482, Short.MAX_VALUE)
         );
 
-        jScrollPane4.setViewportView(jPanel5);
+        jScrollPane4.setViewportView(jPanelVideo2);
 
         jButton1.setText("Next Frame");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -454,9 +488,9 @@ public class Main2 extends javax.swing.JFrame {
         currentSettings = new SequenceSettings();
         currentSettings.setName("Unnamed_1");
         currentSettings.setPath(path);
-        homeographyManager = new HomeographyManager();
+        homographyManager = new HomeographyManager();
         for (Pair p : currentSettings.getPoints()) {
-            homeographyManager.setMapping(p.image, p.mapped);
+            homographyManager.setMapping(p.image, p.mapped);
         }
         loadVideo();
     }//GEN-LAST:event_jFileChooser1ActionPerformed
@@ -464,7 +498,7 @@ public class Main2 extends javax.swing.JFrame {
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
 
         currentSettings = settings.get(jList1.getSelectedIndex());
-        homeographyManager = new HomeographyManager();
+        homographyManager = new HomeographyManager();
         Double data = currentSettings.getLensCorrection();
         double value = data == null ? data : 0;
         frameDecoder = new LensCorrection(new FrameDecoder(currentSettings.getPath()), value);
@@ -542,6 +576,66 @@ public class Main2 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonUpdateLensCorrectionActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        settings.add(currentSettings);
+        try {
+            ConfigRetrieval.saveToSink(settings, new FileOutputStream("settings.txt"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        jTabbedPane1.setSelectedIndex(2);
+        
+        imagePanel = new ImagePanel();
+        frame = frameDecoder.nextFrame();
+        firstFrame = frame;
+        Dimension frameDim = new Dimension(frame.getWidth(), frame.getHeight());
+        imagePanel.setSize(frameDim);
+        jPanelVideo2.setPreferredSize(frameDim);
+        jScrollPane4.setPreferredSize(frameDim);
+        jPanelVideo2.add(imagePanel);
+        imagePanel.setImage(frame);
+        imagePanel.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (framesElapsed == 1) {
+                    
+                    contour.add(Contour.aroundPoint(selected++, e.getPoint()));
+                    BufferedImage image = imagePanel.getImage();
+                    ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                    imagePanel.setImage(image);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            loadNextFrame();
+        } catch (IOException ex) {
+            Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void loadVideo() {
         jTabbedPane1.setSelectedIndex(1);
         if (currentSettings.getLensCorrection() != null) {
@@ -563,7 +657,8 @@ public class Main2 extends javax.swing.JFrame {
         }
         
         imagePanel = new ImagePanel();
-        BufferedImage frame = frameDecoder.nextFrame();
+        frame = frameDecoder.nextFrame();
+        firstFrame = frame;
         Dimension frameDim = new Dimension(frame.getWidth(), frame.getHeight());
         imagePanel.setSize(frameDim);
         jPanelVideo.setPreferredSize(frameDim);
@@ -581,7 +676,7 @@ public class Main2 extends javax.swing.JFrame {
 
                         @Override
                         public void getResult(Pair p) {
-                            homeographyManager.setMapping(p.image, p.mapped);
+                            homographyManager.setMapping(p.image, p.mapped);
                             jListPoints.updateUI();
                             // Force redraw
                             setupImageHomo(((LensCorrection) frameDecoder).setStrength(currentSettings.getLensCorrection()));
@@ -607,7 +702,7 @@ public class Main2 extends javax.swing.JFrame {
             }
         });
 
-        jListPoints.setModel(homeographyManager.getListModel());                                                  
+        jListPoints.setModel(homographyManager.getListModel());                                                  
         jLabelSelectPoint.setVisible(false);
         
         tryEnableButtons();
@@ -668,9 +763,9 @@ public class Main2 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanelVideo;
+    private javax.swing.JPanel jPanelVideo2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -694,8 +789,8 @@ public class Main2 extends javax.swing.JFrame {
     }
 
     private void setupImageHomo(BufferedImage newImage) {
-        if (homeographyManager.getListModel().getSize() > 3) {
-            Homography homography = homeographyManager.calculateHomography();
+        if (homographyManager.getListModel().getSize() > 3) {
+            Homography homography = homographyManager.calculateHomography();
             // Draw field limits
             for (int i = 0; i < 100; i++) {
                 Point inverseApply = homography.inverseApply(0, (int)(i / currentSettings.getFieldDepth()));
@@ -723,5 +818,66 @@ public class Main2 extends javax.swing.JFrame {
             }
         }
         imagePanel.setImage(newImage);
+    }
+
+    private void loadNextFrame() throws IOException {
+        if (framesElapsed == 1) {
+            ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
+            homography = homographyManager.calculateHomography();
+            String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
+            File outFile = new File(outFilename);
+            outFile.createNewFile();
+            outBuffer = new FileOutputStream(outFile);
+        }
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                frame = frameDecoder.nextFrame();
+                framesElapsed++;
+                if (firstFrame == null) {
+                	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
+
+                	for (int i = 0; i < frame.getWidth(); i++) {
+                		for (int j = 0; j < frame.getHeight(); j++) {
+                			firstFrame.setRGB(i, j, frame.getRGB(i, j));
+                		}
+                	}
+                }
+
+                for (int i = (int) (frame.getWidth() * 0.7); i < frame.getWidth(); i++) {
+            		for (int j = 0; j < frame.getHeight(); j++) {
+            			frame.setRGB(i, j, Color.GREEN.getRGB());
+            		}
+            	}
+
+                if (ac != null) {
+                	BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
+                	int phiMapping[][] = ac.getMapping();
+                	for (int x = 0; x < frame.getWidth(); x++) {
+                            for (int y = 0; y < frame.getHeight(); y++) {
+                	        phiColor.setRGB(x, y, phiColoring[phiMapping[x][y]].getRGB());
+                	    }
+                	}
+                	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
+                	ac.adapt(coloredFrame);
+                	int index = 0;
+                	for (Contour c : contour) {
+                		ImageOperations.drawContourOnBuffer(coloredFrame, c);
+
+                		if (homography != null) {
+                                    Point mapped = homography.apply(c.centroidX(), c.maxY());
+                                    try {
+                                        outBuffer.write(String.format("%d, %d, %d, %d\n", framesElapsed, index++, mapped.x, mapped.y).getBytes());
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                		}
+                	}
+                	imagePanel.setImage(coloredFrame);
+                } else {
+                    imagePanel.setImage(frame);
+                }
+            }
+        });
     }
 }
