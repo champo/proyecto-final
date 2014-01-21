@@ -15,18 +15,18 @@ import java.util.List;
 public class SequenceSettings {
     String name;
     String path;
-    double lensCorrection;
+    Double lensCorrection;
     List<HomeographyManager.Pair> points = new ArrayList<>();
     // Depth is in the direction of opposing goal areas
     // Width is between laterals
-    double fieldWidth;
-    double fieldDepth;
+    Double fieldWidth;
+    Double fieldDepth;
 
-    public double getFieldDepth() {
+    public Double getFieldDepth() {
         return fieldDepth;
     }
 
-    public double getFieldWidth() {
+    public Double getFieldWidth() {
         return fieldWidth;
     }
 
@@ -38,7 +38,7 @@ public class SequenceSettings {
         return path;
     }
 
-    public double getLensCorrection() {
+    public Double getLensCorrection() {
         return lensCorrection;
     }
 
@@ -57,4 +57,13 @@ public class SequenceSettings {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public void setFieldDepth(Double fieldDepth) {
+        this.fieldDepth = fieldDepth;
+    }
+
+    public void setFieldWidth(Double fieldWidth) {
+        this.fieldWidth = fieldWidth;
+    }
+    
 }

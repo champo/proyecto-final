@@ -74,8 +74,9 @@ public class ConfigRetrieval {
                     settings.fieldDepth = Double.valueOf(data[1]);
                 }
                 if (data[0].equals("lens")) {
-                    settings.lensCorrection = Double.valueOf(data[1]);
+//                    settings.lensCorrection = Double.valueOf(data[1]);
                 }
+            }
         }
         return returnList;
     }

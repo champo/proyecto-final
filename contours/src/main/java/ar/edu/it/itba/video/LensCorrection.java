@@ -15,9 +15,9 @@ public class LensCorrection implements FrameProvider {
 		this.strength = strength;
 	}
 
-	public void setStrength(final double strength) {
+	public BufferedImage setStrength(final double strength) {
 		this.strength = strength;
-                this.apply(backup, strength);
+                return this.apply(backup, strength);
 	}
 
 	@Override
