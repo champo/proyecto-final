@@ -106,7 +106,7 @@ en las actividades cotidianas. En el ámbito deportivo pueden ser útiles para
 soportar (o hasta reemplazar) las decisiones de los jueces o árbitros del
 juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
 movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
-otras aplicaciones. Se describe a lo largo de este trabajo técnicas aplicables
+otras aplicaciones. Se describen a lo largo de este trabajo técnicas aplicables
 al problema de seguimiento de múltiples jugadores de fútbol mediante el uso de
 una o varias cámaras de video. Se presentan las bases teóricas para estos
 métodos y se analizan características y limitaciones de cada uno, asi como la
@@ -1207,7 +1207,85 @@ imagen.
 \subsection{Análisis utilizando 6 cámaras}
 \label{sec:6-camaras}
 
-% Tanos
+% TODO (eordano): Ref correcta a los tanos
+\citeauthor*{Tanos} estudian la viabilidad de juzgar si en un partido de fútbol
+se dió una posición adelantada, utilizando seis cámaras dispuestas en ambos
+laterales de la cancha para reducir errores de medición y perspectiva. Las
+imágenes obtenidas por las cámaras son sincronizadas y procesadas para obtener
+la posición de cada jugador y de la pelota en todo momento, y a partir de estos
+datos detectar pases de la pelota para finalmente detectar si se cometió una
+falta de posición adelantada.
+
+El sistema consiste de seis cámaras de alta resolución, tres en cada lateral de
+la cancha, con sus ejes ópticos paralelos a las líneas de llegada de la cancha
+con el objetivo de reducir errores de perspectiva. Cáda cámara envía sus
+imágenes a una de seis computadoras dispuestas con el objetivo de analizar las
+imágenes y detectar la posición de los jugadores, la pelota, y posibles pases
+entre jugadores de un mismo equipo. Un computador central recibe estos datos y
+valida que las mediciones de distintas cámaras sean congruentes.
+
+A continuación se presentan las técnicas de análisis de imágen aplicadas.
+
+\subsubsection{Extracción del fondo}
+Un algoritmo de eliminación de fondo basado en una técnica de nivel local de
+energía en ventana temporal detecta aquellas áreas candidatas a contener a
+alguno de los jugadores en la cancha, la pelota, al referí o jueces de línea.
+Según los autores, este algoritmo es lo suficientemente robusto y confiable y
+detecta correctamente objetos en primer plano, tanto en movimiento como quieto
+durante un largo tiempo. Se analiza la conexidad de las áreas candidatas de
+acuerdo a su topología para descartar sombras que puedan llegar a generar
+errores en análisis posteriores.
+
+Este análisis utiliza la técnica de ``ventana deslizante'', ya que el análisis
+se basa en una cantidad de imágenes consecutivas de la secuencia (se referirá a
+esta subsecuencia como $W$ y se la denominá ``ventana''). Los autores del
+trabajo utilizaron una ventana de 60 cuadros, equivalente a $2.5$ segundos,
+valor obtenido empíricamente y suficiente, ya que se determinó que los objetos
+en primer plano (principalmente los jugadores) no se mantenían durante tanto
+tiempo en posición completamente estática.
+
+Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la ecuación \ref{eq:tanos-energy}:
+
+\begin{equation}
+    \label{eq:tanos-energy}
+    E(x, y) = \sum_{t \in W} \| I^t(x, y) - B_C (x, y) \| ^2
+\end{equation}
+
+Donde  $I^t(x, y)$ es la intensidad del punto en coordenadas $(x, y)$ para la
+imágen $t$, y $B_C(x, y)$ es una estimación de la intensidad del fondo para el
+punto $(x, y)$. Para determinar $B_C$ se aplican sucesivos filtros gaussianos
+al cuadro inicial.
+
+% TODO (eordano): escribir "nivel local de energía en ventana temporal de mejor manera
+% TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Análisis utilizando 8 camaras}
 \label{sec:8-camaras}
