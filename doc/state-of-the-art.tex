@@ -176,7 +176,7 @@ En \cite{alp, original-linear-predictors} los autores utilizan predictores para
 hacer seguimiento de objetos en video.  El objetivo es relacionar el cambio de
 valor de varios píxeles cuadro a cuadro con el movimiento del objeto entre
 dichos cuadros.  Para soportar cualquier clase de movimiento, este se
-representa mediante una homografía (Ver \cite{homography-estimation}), $H \in
+representa mediante una homografía (ver \cite{homography-estimation}), $H \in
 R^{3\times3}$.
 
 Los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$
@@ -216,7 +216,7 @@ Para mejorar la efectividad de los algoritmos, se calculan varios predictores y 
 Cada capa se construye para buscar cambios de posición cada vez más finos o pequeños.
 Es decir, la primer capa busca cambios bruscos y la última pequeños cambios.
 
-\citeauthor*{alp} (Ver \cite{alp}) introducen una nueva técnica para manejo de oclusiones
+\citeauthor*{alp} (ver \cite{alp}) introducen una nueva técnica para manejo de oclusiones
 parciales de manera eficiente. Para esto se divide el objeto en pequeñas
 secciones cuadradas, llamadas \textit{templates}, y se computa la matriz $A$ de
 la siguiente manera:
@@ -579,19 +579,20 @@ o más regiones conexas. Si el objeto está visible en el cuadro actual,
 su proyección debería coincidir con alguna de estas regiones. Entonces
 se procede a analizar cada una de estas regiones, para las cuales se obtienen
 los dos conjuntos de marcadores $S_{0}^{(t)}$ y $S_{x}^{(t)}$, utilizando la misma técnica que en el
-en algoritmo \ref{alg:IFTrace-algorithm1-IFTrace}.
+algoritmo \ref{alg:IFTrace-algorithm1-IFTrace}.
 
- Luego se utiliza
-nuevamente el algoritmo IFT para conseguir una proyección $K'$ de esa región $K$ que
-se está analizando, para luego compararla con la máscara del objeto en el cuadro
-$k$ utilizado como referencia. En caso de ser similar, se construye el clasificador
+% TODO Lo parafraseé por la correción. Se entiende? (Seen by: Alvaneitor)
+ Luego, para cada región $K$, se utiliza
+nuevamente el algoritmo IFT para conseguir una proyección $K'$ de la región
+y compararla con la máscara del objeto en el cuadro
+$k$, utilizado como referencia. En caso de ser similares, se construye el clasificador
 de color $C'$ y se retorna junto a la proyección $K'$ como máscara representativa
 del objeto para el actual cuadro.
 
 Cabe destacar que, por simplicidad, para la comparación de formas se utilizan
 las Invariantes de Momento de Maitra \cite{MaitraMomentInvariants}, y las formas se consideran similares
 si la distancia Euclideana entre sus vectores de invariantes es menor a 2.
-Sin embargo se podría utilizar otros descriptores de formas.
+Sin embargo se podrían utilizar otros descriptores de formas.
 
 Si ninguna de las regiones resulta similar a la máscara del objeto,
 \textit{recoverObj} intenta el mismo procedimiento utilizando como cuadro de
@@ -604,7 +605,7 @@ cuadro.
 \subsubsection{Selección de Marcadores}
 El procedimiento \textit{selectMarkers} es el encargado de elegir dos conjuntos
 de marcadores $R_{0}^{(t)}$ y $R_{x}^{(t)}$, los que están dentro de la máscara del objeto, y los que están a
-su alrededor.
+su alrededor, respectivamente.
 
 Los marcadores internos se eligen aplicando una erosión morfológica
 \footnote{La erosión morfológica es una de las dos operaciones fundamentales de la matemática morfológica. Consiste
@@ -623,25 +624,26 @@ de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
 \end{equation}
 
 
-donde $L[p]$ es la luminancia del píxel $p$, y las sumatorias incluyen a todos los
+\noindent donde $L[p]$ es la luminancia del píxel $p$, y las sumatorias incluyen a todos los
 píxeles $q$ en una ventana de $9x9$ centrada en $p$.\\
-Se define el grado de ``igualdad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$.
+Se define el grado de ``similaridad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$.
 Solo los píxeles con $\lambda > 1$ son escogidos para utilizarlos en la
 propagación KLT. Esto coincide con los autores Tomasi y Karade \cite{Tomasi91detectionand}
-quienes afirman que los píxeles con mayor $\lambda$ tienen más posibilidades
+quienes afirman que los píxeles con mayor valor de $\lambda$ tienen más posibilidades
 de ser localizados por el algoritmo KLT.\\
-Los marcadores externos son escogidos aplicando una dilatación morfológica,
+Los marcadores externos son escogidos aplicando una dilatación morfológica
 \footnote{La dilatación morfológica es otra de las operaciones  básicas de la matématica morfológica. Generalmente utiliza un elemento
 estructurador para expandir alguna forma contenida en la imagen.}
 % TODO maybe poner refrencia a la wiki o la imagen del ejemplo en algun apendice?
 %  Por ejemplo, si se utiliza un disco para dilatar un cuadrado, se logra un cuadrado mayor con los bordes redondeados
- con cierto radio $\delta_{x}$, y tomando los píxeles a lo largo del borde del resultado.
+a la máscara del objeto $0$
+,con radio $\delta_{x}$, y tomando los píxeles a lo largo del borde del objeto.
 
 \subsubsection{Seguimiento de Marcadores}
 
 El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores
 internos en el cuadro actual, que se corresponden con los puntos internos del objeto
-en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT. descrito por Tomasi y
+en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT, descrito por Tomasi y
 Karade \cite{Tomasi91detectionand}.
 
 El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada
@@ -662,34 +664,36 @@ hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento
 
 \subsubsection{Segmentación de objetos - IFT}
 
+%TODO Again, se entiende? (Seen by: Alvaneitor)
 La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los píxeles y cuyas
 aristas unen dos nodos si los píxeles que representan son adyacentes. IFT toma como parámetros un conjunto de
-píxeles marcadores $S$, una función de costo de arista $w$, y una función de
-conectividad $f$ que asigna un costo de camino $f(\pi)$ a todo camino $\pi$ in $G$,
+marcadores (píxeles) $S$, una función de costo de arista $w$, y una función de
+conectividad $f$ que asigna un costo de camino $f(\pi)$ a todo camino $\pi$ en $G$,
 dependiendo del costo de sus aristas.\\
 Para cada píxel $p$, IFT encuentra un camino directo óptimo (de costo mínimo), que lo
-conecta con su raíz $R(p)$ en el conjunto $S$ de píxeles marcadores. Estos caminos forman un bosque de caminos
+conecta con su raíz $R(p)$, perteneciente al conjunto $S$ de marcadores. Estos caminos forman un bosque de caminos
 óptimos. Cada árbol en este bosque de caminos óptimos
-tiene como raíz a algun marcador $r$, y agrupa a todos los píxeles de la imagen que
-están mejor conectados a $r$ que a cualquier otro marcador, es decir que su distancia a $r$ es menor
-que su distancia a cualquier otro marcador. IFT también le asigna a
-cada píxel $p$ un costo $V(p) = \pi(p)$, y un marcador raíz $R(p)$, el marcador
+tiene como raíz a algún marcador $r$, y agrupa a todos los píxeles de la imagen que
+están mejor conectados, es decir tienen menor distancia, a $r$ que a cualquier otro marcador.
+IFT también le asigna a
+cada píxel $p$ un costo $V(p) = \pi(p)$, es decir el costo del camino mínimo para llegar a $p$ partiendo desde su raíz
+y un marcador raíz $R(p)$, el marcador
 que se encuentra en la raíz del árbol al cual pertenece.
 
 IFTrace depende de la IFT
 para segmentar los objetos a seguir. Usa la función de conectividad $f_{max}$, que
-asigna a un camino $\pi$ el máximo costo para todas las aritas en $\pi$.
+asigna a un camino $\pi$ el máximo costo para todas las aristas en $\pi$.
 Los píxeles marcadores utilizados son tanto los marcadores interiores, obtenidos
 por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.
 
 La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad
-\textit{minimax}. Sea la \textit{frontera} de una segmentación el conjunto de todas las aristas cuyos nodos
+\textit{minimax}. Sea la \textit{frontera} del objeto de interés el conjunto de todas las aristas cuyos nodos
 pertenecen a distintos segmentos, dicha segmentación maximiza el costo mínimo de todas las aristas en la frontera de la
 segmentación. Esto significa que la segmentación IFT/$f_{max}$ es esencialmente
 la misma que la famosa segmentación \textit{divisoria} \cite{watershed-segmentation}. Esto
-hace que sea particularmente apropiada para casos en los que el objeto esté
+hace que sea particularmente apropiada para casos en los que el objeto está
 mejor caracterizado por su conectividad que por su forma o tamaño. Es por esto que
-se elige una función de costo de arista $w(p,q)$ que se base en la probabilidad de
+se elige una función de costo de arista $w(p,q)$ que se basa en la probabilidad de
 que $p$ y $q$ estén en diferentes lados del borde del objeto.
 
 \subsubsection{Algoritmo IFT}
@@ -697,7 +701,7 @@ que $p$ y $q$ estén en diferentes lados del borde del objeto.
 Para algunas funciones de conectividad, como $f_{max}$, el bosque de caminos
 óptimos se puede computar eficientemente mediante una variante del famoso
 algoritmo de Dijkstra \cite{watershed-segmentation}. Por cuestiones de
-eficiencia, el algoritmo retorna un mapa de raices $R$, que almacena, para
+eficiencia, el algoritmo retorna un mapa de raíces $R$, que almacena, para
 cada nodo $p$, su raíz $R(p)$.\\
 
 \begin{algorithm}
@@ -720,7 +724,7 @@ cada nodo $p$, su raíz $R(p)$.\\
         \While{$Q \neq \emptyset$}
             \State Remover $p$ de $Q$ tal que $V(p)$ sea minimo.
             \ForEach{$q$ 4-vecino de $p$, tal que $V(q) > V(p)$}
-                \State Computar $tmp \gets max{V(p), w(p,q)}$
+                \State Computar $tmp \gets max\{V(p), w(p,q)\}$
                 \If{$tmp < V(q)$}
                     \If{$V(q) \neq + \infty$} remover $q$ de $Q$ \EndIf
                     \State $P(q) \gets p$, $R(q) \gets R(p)$, $V(q) \gets tmp$
@@ -739,8 +743,7 @@ principal computa un camino óptimo desde las raíces a cada nodo $p$. En
 cada iteración, un camino de valor $V(p)$ mínimo se encuentra cuando
 removemos el último píxel $p$ de la cola. Luego se evalua si el camino que
 alcanza el píxel adyacente $q$ a través de $p$ es más barato que el actual
-camino que termina en $q$ y se actualizan $Q$, $V(q)$, $R(q)$ y $P(q)$
-acordemente.
+camino que termina en $q$ y se actualizan $Q$, $V(q)$, $R(q)$ y $P(q)$.
 
 Este algoritmo se puede modificar para recomputar el bosque de camino óptimo
 en forma incremental, a medida que se van agregando o quitando marcadores,
@@ -750,10 +753,8 @@ generalmente en tiempo sub-lineal.
 % Comparación con otros algoritmos de Graph-Cut
 
 Boykov and Funka-Lea [5,12] han propuesto otra alternativa para la segmentación
-% de imágenes basada en grafos, conocida como \textit{Graph-Cut}, que explota
-de imágenes basada en grafos, conocida como Corte de Grafos, que explota
-la conexión que existe entre cortes de capacidad mínima y flujos de volumen
-máximo. En este enfoque, el grafo de píxeles se modela como una red de flujo,
+de imágenes basada en grafos, conocida como Corte de Grafos.
+En este enfoque, el grafo de píxeles se modela como una red de flujo,
 donde el objeto es la fuente y el fondo el sumidero. Se puede probar que el máximo flujo total de todas las fuentes
 hacia todos los sumideros es igual a la mínima capacidad total de todo corte
 (conjunto de aristas) que separa fuentes de sumideros. Este flujo máximo y su
@@ -768,12 +769,11 @@ el mejor algoritmo \textit{Corte de Grafos} es $O(n^{2.5})$), y además tiende a
 minimizar el número de aristas en el corte, en vez de sus capacidades. Esto
 último quiere decir que muestra una preferencia a segmentar basada en la
 longitud del borde, en lugar de basarse en la importancia de la conexión
-entre el objeto y el fondo.\cite{journals/jmiv/MirandaF09}
+entre el objeto y el fondo (ver \cite{journals/jmiv/MirandaF09}).
 
-% Se puede introducir una corrección al algoritmo de \textit{Graph-Cut} para
 Se puede introducir una corrección al algoritmo de \textit{Corte de Grafos} para
-remediar este segunda problema, pero lo único que se obtiene es el mismos
-resultado de la IFT, con un costo computacional mucho mayor. \cite{journals/jmiv/MirandaF09}
+remediar este segundo problema, pero lo único que se obtiene es el mismo
+resultado de la IFT, con un costo computacional mucho mayor (ver \cite{journals/jmiv/MirandaF09}).
 
 \subsubsection{Costo de arista de IFT}
 
@@ -806,11 +806,11 @@ se mide en el espacio de colores $Lab$ de $CIE$
 Un espacio de colores \textit{Lab} es un espacio de colores de 3 dimensiones, $L$ para la luminosidad o claridad, $a$ para la posición entre rojo y verde y
 $b$ para su posición entre amarillo y azul. Existen dos espacios muy similares \textit{Hunter Lab} y \textit{CIE Lab}, que se diferencian en la forma de
 calcular las coordenadas de color a partir de los datos: el primero utiliza raíces cuadradas y el segundo raíces cúbicas.}
-, en vez del tradicional RGB. La
+ en lugar del tradicional RGB. La
 justificación para esto es que las distancias entre colores se aprecian más de
 esta forma. %TODO VER TEMA DE CIELAB y references
 
-El segundo componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
+La segunda componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
 de colores $M$, una imagen en escala de grises donde cada píxel $M[p]$ es
 la probabilidad de que un píxel con color $v=I[p]$ pertenezca a la proyección
 del objeto. Los colores que ocurran solo dentro del objeto deberían estar
@@ -821,11 +821,12 @@ importancia a los bordes entre colores que son internos del objeto, o
 totalmente ajenos al objeto, y enfatizar los bordes que efectivamente
 delimitan el objeto del fondo de la imagen.
 
-El mapa de clasificación de colores $M$ se obtiene de la imagen $I$ por medio de un
-clasificador de color difuso $C$, una función no lineal $C : \mathbb{V} \to [0,1]$.
+El mapa de clasificación de colores $M$ se obtiene de la imagen $I$ por medio de una
+función de clasificación difusa $C$, una función no lineal $C : \mathbb{V} \to [0,1]$.
 En \textit{IFTrace}, la función $C$ se implementa como una variante del clasificador
-del vecino más cercano, \textit{nearest neighbor} (NN). Esta determinada por dos conjuntos de
-colores, que se asumen son representativos del objeto de interés y del fondo, respectivamente.Para evaluar $C(v)$ para
+del vecino más cercano, \textit{nearest neighbor} (NN) y determina dos conjuntos de
+colores $\mathbb{U}_{0}$ y $\mathbb{U}_{x}$, que se asumen son representativos del objeto de interés y del fondo, respectivamente.
+Para evaluar $C(v)$ para
 cierto color $v$, se debe buscar 2 colores representantes $u_{0} \in \mathbb{U}_{0}$
 y $u_{x} \in \mathbb{U}_{x}$ que son los más cercanos a $v$.
 La probabilidad de que un píxel de color $v$ sea parte del objeto es entonces estimada
@@ -849,9 +850,9 @@ $R_{0},R_{x}$, respectivamente los que están dentro y fuera de la actual másca
 del objeto. Pero si alguno de estos conjuntos tiene más de 200 elementos,
 entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
-\subsection{Contornos Activo}
+\subsection{Contornos Activos}
 
-La segmentación basada en contornos activos se basa en definir una region en base a su contorno.
+La segmentación basada en contornos activos se basa en definir una región en base a su contorno.
 El contorno o borde de una región $\Omega_i$ se representa por una curva paramétrica dada por:
 
 \begin{equation}
@@ -859,29 +860,29 @@ El contorno o borde de una región $\Omega_i$ se representa por una curva param�
 \end{equation}
 
 donde $0 \leq s \leq S_i$, y $C_i(0) = C_i(S_i)$, siendo $S_i$ el total de puntos que conforman la curva.
-Es decir, $C_i$ es una curva cerrada. 
+Es decir, $C_i$ es una curva cerrada.
 
-Se define tantos contornos como objetos de interes hay en la secuencia ($i$ es un entero entre 1 y el numero de objetos).
-Adicionalmente, se considera una region $\Omega_0$ que contiene a todo punto que no forma parte de ninguna otra region. 
-Se la denomina \textit{region de fondo}.
+Se definen tantos contornos como objetos de interés haya en la secuencia ($i$ es un entero entre 1 y el número de objetos).
+Adicionalmente, se considera una región $\Omega_0$ que contiene a todo punto que no forma parte de ninguna otra región.
+Se la denomina \textit{región de fondo}.
 
-Se declara una funcion de probabilidad $p$ que nos permite saber que tan probable es que un pixel forme parte una dada region.
-Para esto es necesaria una funcion $v$ que dado un pixel, entrega un vector de caracteristicas $v(x)$.
-Esto permite formular la probabilidad de que un pixel $x$ forme parte de una region $omega_i$ como $p(v(x) \vert \Omega_i)$.
-Los autores no definen ninguna de estas funciones, ya que estas dependen de la secuencia particular a ser analizada.
-Como ejemplo, se toma los valores \textit{RGB} como vector de caracteristicas y para 
-$p(v(x) \vert \Omega_i) = \| v(x) - v_i \| $, donde $v_i$ es el valor promedio \textit{RGB} de toda la region.
+Se declara una función de probabilidad $p$ que permite saber que tan probable es que un píxel forme parte una dada región.
+Para esto, es necesaria una función $v$ que dado un píxel, devuelve un vector de características $v(x)$.
+Esto permite calcular $p(v(x) \vert \Omega_i)$, la probabilidad de que un píxel $x$ forme parte de una región $omega_i$ .
+Estas funciones dependen de la secuencia particular a ser analizada, por lo que varían dependiendo del caso de estudio.
+Como ejemplo, se toman los valores \textit{RGB} como vector de características y
+$p(v(x) \vert \Omega_i) = \| v(x) - v_i \| $, donde $v_i$ es el valor promedio \textit{RGB} de toda la región.
 
-Teniendo bien definido cada parte, se introduce la funcion de energia de los contornos:
+Se define la función de energía de los contornos:
 
 \begin{equation}
     \label{eq:ac-energy}
     E = - \sum_{m=0}^{M}{\int_{\Omega_m}{\log{p(v(x) \vert \Omega_m)} dx} + \lambda \int_{C_m}{ds}}
 \end{equation}
 
-Los algoritmos basados en contornos activos, buscan minimizar esta ecuacion. Si es minima para un cuadro, los contornos
-deberian haber encontrado la mejor aproximacion de la region de los objetos interes posible. De \ref{eq:ac-energy} se
-deriva la ecuacion de evolucion de cualquier curva $C_m$:
+Los algoritmos basados en contornos activos, buscan minimizar esta ecuación. Si el valor de $E$ es mínimo para un cuadro, se
+debería haber encontrado la mejor aproximación de la región de los objetos interés. De \ref{eq:ac-energy} se
+deriva la ecuación de evolución de cualquier curva $C_m$:
 
 \begin{eqnarray*}
     \frac{dC_m}{dt} &=& (F_d + F_s) \overrightarrow{N}_{C_m} \\
@@ -889,7 +890,8 @@ deriva la ecuacion de evolucion de cualquier curva $C_m$:
     F_s &=& \lambda \kappa_m
 \end{eqnarray*}
 
-$F_d$ y $F_s$ son fuerzas derivadas de la ecuacion de energia. $F_d$ representa la competencia entre regiones y $F_s$ un
+%TODO representa la competencia entre regiones? (Seen by: Alvaneitor)
+$F_d$ y $F_s$ son fuerzas derivadas de la ecuación de energía. $F_d$ representa la competencia entre regiones y $F_s$ un
 suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
 Existe otra formulación del problema de evolución de curvas, que consiste en
@@ -902,28 +904,28 @@ correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
 respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
 estos dos conjuntos.
 
-A continuación se detalla el enfoque para la segmentación de un solo objeto de
-interés pero se puede fácilmente extrapolar y utilizar esta técnica para la
-segmentación de múltiples objetos.
-
-%TODO maybe footnote aclarando como? Basta con marcar cada region con un identificador distinto
+A continuación se detalla la técnica para la segmentación de un solo objeto de
+interés que se puede fácilmente extrapolar y utilizar para la
+segmentación de múltiples objetos
+\footnote{Para la segmentación de múltiples objetos basta con marcar las distintas regiones con un identificador
+distinto y seguirlas por separado.}.
 
 El objeto de interés $\Omega_{1}$ y el fondo $\Omega_{0}$ cumplen
 $\Omega_{1}\cup\Omega_{0} = I_{k}$ donde $I_{k}$ es la imagen del cuadro $k$ de
 la secuencia de imágenes, y $\Omega_{1}\cap\Omega_{0} = \emptyset$. Cada una de
 las regiones está caracterizada por el vector característico $v_{m}, m =
-\{0,1\}$. 
+\{0,1\}$.
 
-Se define una funcion $\phi(x)$ que indica si un pixel $x$ pertence a una region o al fondo de la siguiente manera:
+Se define una función $\phi(x)$ que indica si un píxel $x$ pertenece a una región o al fondo de la siguiente manera:
 
 \begin{equation}
 \phi(x) =
 \left\{
     \begin{array}{ll}
-        3  & \mbox{if } x \in \Omega_{0} \mbox{  and  } x \notin L_{out} \\
+        3  & \mbox{if } x \in \Omega_{0} \mbox{  y  } x \notin L_{out} \\
         1  & \mbox{if } x \in L_{out}\\
         -1  & \mbox{if } x \in L_{in}\\
-        -3 & \mbox{if } x \in \Omega_{1} \mbox{  and  } x \notin L_{in} \\
+        -3 & \mbox{if } x \in \Omega_{1} \mbox{  y  } x \notin L_{in} \\
     \end{array}
 \right.
 \end{equation}
@@ -931,20 +933,20 @@ Se define una funcion $\phi(x)$ que indica si un pixel $x$ pertence a una region
 Los conjuntos $L_{in}$ y $L_{out}$ se definen como
 
 \begin{equation}
-    L_{in} = {x \mbox{ es un pixel } \vert \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) > 0}
+    L_{in} = {x \mbox{ es un píxel } \vert \mbox{    }  \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) > 0}
 \end{equation}
 
 \begin{equation}
-    L_{out} = {x \mbox{ es un pixel } \vert \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0}
+    L_{out} = {x \mbox{ es un píxel } \vert \mbox{    } \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0}
 \end{equation}
 
 donde $N_{4}(x) = { y \mbox{ es un pixel } \vert |x-y| = 1}$, son los píxeles
-vecinos de un píxel $x$.
+vecinos del píxel $x$.
 
 El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
 especificación inicial de la curva en forma supervisada \footnote{Podría no ser
 supervisada. Existen variantes con determinaciones semi-supervisadas del objeto
-de interés, así como también detección automáticas basadas en ciertas
+de interés, así como también detección automática basada en ciertas
 características predefinidas.} se intercambian los píxeles de $L_{in}$ y
 $L_{out}$ en dos ciclos. En el primero, se aplica la fuerza $F_{d}(x)$, y en el
 segundo se aplica $F_{s}(x)$ para la regularización.
@@ -954,28 +956,27 @@ N_{a} < max(filas, columnas)$.
 
 \begin{enumerate}
 
-    \item Para cada $x \in L_{out}$, si $F_{d}(x) > 0$ entonces borrar $x$ de
-$L_{out}$ y agregarlo a $L_{in}$. Luego, $\forall y \in N_{4}(x)$, con $\phi(y)
-= 3$, agregar $y$ to $L_{out}$ y hacer $\phi(y) = 1$.
+    \item Para cada $x \in L_{out}$, si $F_{d}(x) > 0$ entonces borrar $x$ de $L_{out}$ y agregarlo a $L_{in}$. \\
+    Luego, $\forall y \in N_{4}(x)$, con $\phi(y) = 3$, agregar $y$ to $L_{out}$ y hacer $\phi(y) = 1$.
 
-    \item Después del paso 1 algunos de los píxeles $x$ en $L_{in}$ pasan a ser
-píxeles internos y por lo tanto se sacan de $L_{in}$ y se hacer $\phi(x) = -3$.
+    \item Después del paso 1 algunos de los píxeles $x$ en $L_{in}$ pasan a ser píxeles internos. \\
+    Por lo tanto, se sacan de $L_{in}$ y se hace $\phi(x) = -3$.
 
-    \item Para cada $x \in L_{in}$ , si $F_{d}(x) < 0$ entonces, borra $x$ de
-$L_{in}$ y agregarlo a $L_{out}$. Luego, $\forall y \in N_{4}(x)$, con $\phi(y)
-= -3$, agregar $y$ a $L_{in}$ y a hacer $\phi(y) = -1$.
+    \item Para cada $x \in L_{in}$ , si $F_{d}(x) < 0$ entonces, borrar $x$ de $L_{in}$ y agregarlo a $L_{out}$. \\
+    Luego, $\forall y \in N_{4}(x)$, con $\phi(y) = -3$, agregar $y$ a $L_{in}$ y hacer $\phi(y) = -1$.
 
 
-    \item Después del paso 3 algunos de los píxeles $x$ en $L_{out}$ pasan a
-ser píxeles externos y por lo tanto se sacan de $L_{out}$ y se hacer $\phi(x) =
-3$.
+    \item Después del paso 3 algunos de los píxeles $x$ en $L_{out}$ pasan a ser píxeles externos. \\
+    Por lo tanto, se sacan de $L_{out}$ y se hace $\phi(x) = 3$.
 
 \end{enumerate}
 
+%TODO Maybe poner footnote o algo sobre filtros Gaussianos? Apendice? (Seen by: Alvaneitor)
 En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal
 forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. Para aplicar $F_s$ se usan los mismos
-pasos que para $F_d$. El resultado final es análogo a modificar la curva de acuerdo 
-a la definicion formal dada anteriormente.
+pasos que para $F_d$. El resultado final es análogo a modificar la curva de acuerdo
+a la definición formal dada anteriormente.
+%TODO "definición formal dada anteriormente" cual? maybe referencia? (Seen by: Alvaneitor)
 
 En cada cuadro, el borde del contorno del objeto es actualizado de acuerdo al
 resultado obtenido por el algoritmo en el cuadro anterior. En el caso de la
@@ -1002,7 +1003,7 @@ final de la secuencia de imágenes.
 \subsection{Aplicación y utilización}
 
 La técnica de la homografía se utiliza para poder transformar la vista
-tridimensional de la secuencia de video (la imagen del estadio de futbol), en
+tridimensional de la secuencia de imágenes (la imagen del estadio de futbol), en
 una vista de dos dimensiones (el campo de futbol visto desde arriba). Esto
 facilita el análisis y los cálculos de las velocidades y posiciones de los
 jugadores, lo cual permite sacar conclusiones y efectuar juicios complejos como
@@ -1010,7 +1011,7 @@ en el caso de la regla del fuera de juego. Además, visualmente elimina
 ambigüedades que pueden suceder en el caso de la vista tridimensional por
 razones de perspectiva, lo cual facilita el entendimiento al ser humano.
 
-Considerese dos imágenes, $f(x,y)$ y $f'(x,y)$, relacionadas por una transformación geométrica. Sean $p_{k}$ y $p'_{k}$ para $k = 0 ... N$ puntos de las imágenes
+Considérese dos imágenes, $f(x,y)$ y $f'(x,y)$, relacionadas por una transformación geométrica. Sean $p_{k}$ y $p'_{k}$ para $k = 0 ... N$ puntos de las imágenes
 $f$ y $f'$ respectivamente, y dadas correspondencias tentativas $p_{k} \to p'_{k}$, se quiere estimar la transformación $T$, tal que
 
 \begin{equation}
@@ -1082,8 +1083,8 @@ En total, son 8 los parámetros que definen la matriz $H$, y sus elementos son
 
 \subsection{Estimación de una homografía}
 
-Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basandose en correspondencias de puntos conocidas.
-La transformación de una coordenada, $x$ en coordenadas homogéneas ($z=1$), a una coordenada objetivo $x'= Hx$ da como resultado
+Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basándose en correspondencias de puntos conocidas.
+La transformación de una coordenada $x$ en coordenadas homogéneas ($z=1$), a una coordenada objetivo $x'= Hx$ da como resultado
 
 \begin{eqnarray*}
     x' &=& H_{00}x + H_{01}y + H_{02}\\
@@ -1091,14 +1092,14 @@ La transformación de una coordenada, $x$ en coordenadas homogéneas ($z=1$), a 
     z' &=& H_{20}x + H_{21}y + H_{22}\\
 \end{eqnarray*}
 
-Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en coordenadas Euclideana, se puede llegar a
+Diviendo las primeras 2 ecuaciones por $z'$ para convertirlas en coordenadas Euclideanas, se puede llegar a
 
 \begin{eqnarray*}
     \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{00}x - H_{01}y - H_{02}\\
     \frac{x}{z'}(H_{20}x + H_{21}y + H_{22}) - H_{10}x - H_{11}y - H_{12}\\
 \end{eqnarray*}
 
-Teniendo varias correspondecias como la anterior, se puede las puede escribir en forma matricial:
+Teniendo varias correspondecias como la anterior, se las puede escribir en forma matricial:
 
 \begin{flalign}
     Ah =
@@ -1129,8 +1130,8 @@ Como consecuencia, se tiene el siguiente sistema de ecuaciones lineales para res
 \end{equation}
 
 Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} y la única solución es el espacio nulo de $A$. Para más correspondencias,
-el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma norma
-%TODO maybe agregar alguna mini explicación de porque?
+el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma 2.
+%TODO maybe agregar alguna mini explicación de porque? (Seen by: Alvaneitor).
 
 \begin{equation}
     argmin_{\norm{h}=1} \norm{Ah} = argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
@@ -1164,14 +1165,14 @@ cumplen $B = QDQ^{T}$.
 Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las componentes de $y$ se anulan excepto por $y_{i} = 1$. Como $y = Q^{T}h$,
 $h=Qy = q_{min}$, el autovector de $B$ correspondiente al mínimo autovalor.
 
-El problema reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares
-%TODO footnote o referencia
+El problema se reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares
+%TODO footnote o referencia? (Seen by: alvaneitor)
 \begin{equation}
     A = U\Sigma V^{T}
 \end{equation}
 
 donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A^{T}A$, mientras que $\Sigma$ es una matriz
-diagonal con los autovalores de $$A^{T}A$$ en su diagonal. Notesé que los autovalores de $A^{T}A$ son iguales a los autovalores de $A$ al cuadrado.
+diagonal con los autovalores de $$A^{T}A$$ en su diagonal. Nótese que los autovalores de $A^{T}A$ son iguales a los autovalores de $A$ al cuadrado.
 
 La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto
 se toma como solución la última columna de $V$, correspondiente al menor autovalor de $A^{T}A$.
@@ -1179,12 +1180,12 @@ se toma como solución la última columna de $V$, correspondiente al menor autov
 \subsection{Distorsión de la lente de la cámara}
 
 El material utilizado fue obtenido con una lente con una baja distancia focal,
-lo que genera una distorsión de tipo \textit{barril}, donde líneas rectas
+lo que genera una distorsión de tipo \textit{barril}, donde las líneas rectas
 se curvan hacia el exterior. El modelo de \textit{Brown} plantea una solución
 general para múltiples niveles de distorsión, tanto de tipo radial como
 tangencial.
 
-Para obtener los valores de la imagen sin distorción se utilizó la siguiente
+Para obtener los valores de la imagen sin distorsión se utilizó la siguiente
 corrección:
 
 \begin{eqnarray*}
@@ -1192,12 +1193,12 @@ corrección:
     y_u &=& (x_d - x_c) (1+K r^2)
 \end{eqnarray*}
 
-Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorción, $x_d$ y $y_d$ son
-puntos en la imágen original, $x_c$ y $y_c$ son los puntos centrales de la
-imágen (se puede asumir que el punto central de la cámara es el punto central
-de la imágen), $K$ es un coeficiente de distorsión radial, y $r =
+Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorsión, $x_d$ y $y_d$ son
+puntos en la imagen original, $x_c$ y $y_c$ son los puntos centrales de la
+imagen (se puede asumir que el punto central de la cámara es el punto central
+de la imagen), $K$ es un coeficiente de distorsión radial, y $r =
 \sqrt{(x_d-x_c)^2) + (y_d-y_c)^2}$, la distancia del punto al centro de la
-imágen.
+imagen.
 
 
 \section{Análisis de partidas de Fútbol}
@@ -1212,17 +1213,18 @@ imágen.
 \label{sec:8-camaras}
 
 \citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a
-sistemas que analizan la información y a través de una capa de red envían la
-información a un supervisor, encargado del mantenimiento de la posición de los
+sistemas que analizan la información y a través de una capa de red la envían
+a un supervisor, encargado del mantenimiento de la posición de los
 jugadores. El sistema supervisor no tiene acceso a los datos crudos de la
-imágen obtenida.
+imagen obtenida.
 
-Cada cámara realiza un preprocesamiento de la imágen para estimar la posición
+Cada cámara realiza un preprocesamiento de la imagen para estimar la posición
 de la cámara y detectar áreas de interés (candidatos a ser los jugadores en
 pantalla). Para la eliminación del fondo, se utilizan dos máscaras, una
 geométrica, que se aproxima a la geometría de la cancha y una que extrae
 información acerca de los píxeles y genera un histograma para detectar el color
-verde del pasto de la cancha. Para la primera máscara, se pasa la imágen de
+verde del pasto de la cancha. Para la primera máscara, se pasa la imagen del
+espacio de colores
 \textit{RGB} a \textit{HSI} y se analiza el histograma de \textit{hue} para los
 mayores valores de intensidad. Luego, los píxeles que serán considerados son
 aquellos que no pertenezcan a un rango de \textit{hue} entre un mínimo y un
@@ -1244,10 +1246,10 @@ comprende los siguientes puntos:
   M_g = { (u, v) | E(u, v)  \in P }
 \]
 
-Donde P es el rango de coordenadas en el mundo real correspondiente a la cancha
+Donde $P$ es el rango de coordenadas en el mundo real correspondiente a la cancha
 y $E(u, v)$ es la correspondencia del punto $(u, v)$ en el mundo real, de
 acuerdo a una corrección utilizando ángulos de Euler. Por último la máscara que
-determina aquellos pixeles que corresponden al pasto de la cancha son los que
+determina aquellos píxeles que corresponden al pasto de la cancha son los que
 pertenecen a la intersección de ambas máscaras:
 
 \[
@@ -1255,8 +1257,8 @@ pertenecen a la intersección de ambas máscaras:
 \]
 
 Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son
-representadas por la posición en el plano de la imágen $\mathbf{x}_l$ y su
-error en la medición $\mathbf{z}_l$ en un filtro de Kalman (Ver \cite{funk2003study}):
+representadas por la posición en el plano de la imagen $\mathbf{x}_l$ y su
+error en la medición $\mathbf{z}_l$ en un filtro de Kalman (ver \cite{funk2003study}):
 
 \[
 \mathbf{x}_l = [r_c \; c_c \;  \mathbf{\dot r}_c  \; \mathbf{\dot c}_c \;  \Delta r_1  \; \Delta c_1 \;  \Delta r_2 \;  \Delta c_2]^T
@@ -1267,7 +1269,7 @@ error en la medición $\mathbf{z}_l$ en un filtro de Kalman (Ver \cite{funk2003s
 \]
 
 Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la \textit{bounding box} y
-$r_c$ y $c_c$ son los centroides de la \textit{bounding box}. Estos valores son
+$r_c$ y $c_c$ sus centroides. Estos valores son
 actualizados cuadro por cuadro, asumiendo que la variación en alto y ancho es
 baja. Se utilizan ángulos de Euler para traducir estos valores a la posición
 esperada dentro del plano de la cancha. La varianza es estimada utilizando el
@@ -1276,6 +1278,7 @@ jugadores de acuerdo al histograma de colores, clasificando de acuerdo a los
 cinco posibles uniformes (uno para cada equipo, uno para cada arquero, y los
 árbitros).
 
+%TODO mayber footnote o referencia a que es una distancia de Mahalanobis? (Seen by:alvaneitor)
 El módulo supervisor recibe de cada computadora los datos preprocesados y
 ninguna información acerca de las imágenes. Se unifican los valores obtenidos
 de todos los módulos y se los asocia utilizando una matriz que es actualizada
@@ -1287,15 +1290,15 @@ jugador.
 \subsection{Análisis de deportes con múltiples camaras}
 \label{sec:var-camaras}
 
-% SIFT Base blablablabla
+% SIFT Base
 \subsubsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
 
 \citeauthor*{beetz-05} analizaron, desde el punto de vista de la inteligencia
 artificial, el problema de detectar el comportamiento de los jugadores dentro
 de la cancha. Para eso, propusieron un sistema con dos módulos, uno que extrae
-características e información de videos provenientes de un número de cámaras, y
+características e información de videos provenientes de mùltiples cámaras, y
 un módulo de análisis y seguimiento del comportamiento de cada objeto (un
-sector candidato de la imágen a contener a la pelota o a una persona en el campo de
+sector candidato de la imagen a contener a la pelota o a una persona en el campo de
 juego, llamado \textit{blob} en el trabajo).
 
 Respecto al módulo que extrae características, encontraron una gran dificultad
@@ -1308,7 +1311,7 @@ la información obtenida.
 Como parte del trabajo se encuentra la detección de sectores y líneas en la
 cancha, las líneas blancas que demarcan sectores importantes del campo de
 juego, y los distintos tonos de verde en franjas que es frecuentemente el caso
-del césped de estadios de Europa. Esta característica no se vé en las canchas
+del césped de estadios de Europa. Esta característica no se ve en las canchas
 de fútbol en la mayoría de los países de América Latina.
 
 Para mantener información acerca del movimiento sobre el eje de la cámara
@@ -1342,7 +1345,7 @@ El análisis del video se compone de las siguientes etapas:
     o blancos (pasto o líneas de la cancha) son candidatos a ser jugadores o el
     árbitro. Estos son segmentados y analizados en busca de ciertas
     particularidades: se espera que en general sean más altos que anchos, con
-    segmentos definidos: segmentos diferenciados por color correspondientes al
+    segmentos definidos, diferenciados por color, correspondientes al
     pelo, camisa, piernas, que son aprendidos y actualizados a lo largo del
     análisis.
 
@@ -1357,7 +1360,7 @@ actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las
 características de un partido de fútbol para mejorar esta estimación:
 
 \begin{itemize}
-  \item \textbf{Seguimiento de personas}: No se dá el caso de que un jugador
+  \item \textbf{Seguimiento de personas}: No se da el caso de que un jugador
     desaparezca de la cancha de un \textit{frame} a otro. Aparecen gradualmente
     desde el borde del campo de visión.
 
@@ -1381,14 +1384,14 @@ hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este
 modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
 \textit{dribbling} por los autores).
 
-\subsection{Analisis de deportes con video televizado}
+\subsection{Análisis de deportes con video televizado}
 \label{sec:tv-video}
 
 \subsubsection{\citetitle{LIU20061146}}
 
 En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
 jugadores y la pelota utilizando la transmision televizada de un partido de
-futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
+futbol. El algoritmo se puede dividir en las siguientes etapas:
 
 \begin{itemize}
   \item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
@@ -1398,14 +1401,14 @@ futbol. El algoritmo se puede dividir en los siguientes grandes rasgos:
   \item Detección de los jugadores
 \end{itemize}
 
-Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografia.
-Como la perspectiva de la camara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
-Si en la imagen actual se encuentran 4 puntos conocidos (Esquinas de la cancha o de las areas), la homografia puede ser calculada directamente.
-De no ser asi, se estima considerando que la homografia del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
+Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografía.
+Como la perspectiva de la cámara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
+Si en la imagen actual se encuentran 4 puntos conocidos (esquinas de la cancha o de las areas), la homografía puede ser calculada directamente.
+De no ser asi, se estima considerando que la homografía del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
 Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
 Luego $ H_t = H_{t-1} P_{t-1,t}$.
 
-Para obtener la posición de la camara se descompone la homografia en 2 matrices:
+Para obtener la posición de la cámara se descompone la homografía en 2 matrices:
 \begin{eqnarray*}
 H = K \begin{bmatrix} r_1 & r_2 & t \end{bmatrix} \\
 K = \begin{pmatrix}
@@ -1415,11 +1418,11 @@ K = \begin{pmatrix}
     \end{pmatrix}
 \end{eqnarray*}
 
-Donde $\alpha$, $\beta$ representan la amplitud focal de la camara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
+Donde $\alpha$, $\beta$ representan la amplitud focal de la cámara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
 Se asume que la amplitud focal se mantiene constante, $\gamma = 0$ y el punto principal es el centro de la imagen.
 $r_1$, $r_2$ son parte de una rotación $R = (r_1, r_2, r_1 \times r_2)$, y $t$ son las coordenadas del origen de la cancha en coordenadas de la imagen.
-Conocidas $H$ y $K$ se puede calcular la posición de la camara como $R^{-1} t$.
-Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ de la siguiente manera:
+Conocidas $H$ y $K$ se puede calcular la posición de la cámara como $R^{-1} t$.
+Para el cálculo de $K$ se necesitan $\alpha$ y $\beta$ que se calcula usando $P$ de la siguiente manera:
 
 \begin{equation}
 \begin{bmatrix}
@@ -1439,38 +1442,39 @@ Para el calculo de $K$ se necesita $\alpha$ y $\beta$ que se calcula usando $P$ 
 \end{bmatrix}
 \end{equation}
 
-Se usa el metodo \textit{KLT} (Ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el calculo de $P$.
+Se usa el método \textit{KLT} (ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el cálculo de $P$.
 
 \subsubsection*{Seguimiento de la pelota}
 
 El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
-La primer etapa es de detección utilizando un algoritmo basado en \textit{Viterbi}.
-La segunda etapa es de seguimiento utilizando un \textit{Kalman Filter} (Ver \cite{funk2003study}).
+La primer etapa es de detección y utiliza un algoritmo basado en \textit{Viterbi}.
+La segunda etapa es de seguimiento y utiliza un filtro \textit{Kalman} (ver \cite{funk2003study}).
 
-El algoritmo de la primer etapa, crea una imagen binaria, segmentando segun la caracteristica blanca de la pelota.
-Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas caracteristicas morfologicas de la pelota.
+El algoritmo de la primer etapa, crea una imagen binaria, segmentando según la característica blanca de la pelota.
+Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas características morfológicas de la pelota.
 Esta operación se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
 En este grafo los nodos representan posibles candidatos de la posición de la pelota en los $T$ cuadros.
-Cada nodo tiene asignado un peso segun que tanto se parece ese candidato a una pelota ideal.
-Luego, se coloca un vertice entre un nodo del cuadro $t$ y otro del $t + 1$ si son parecidos en caracteristicas y cercanos en posicion.
-Sobre este grafo se hace una busqueda de camino optimo. Los nodos que forman parte del camino optimo se consideran entonces
+Cada nodo tiene asignado un peso según el grado de similaridad entre el candidato y una pelota ideal.
+Luego, se coloca un vértice entre un nodo del cuadro $t$ y otro del cuadro $t + 1$ si son parecidos en caracteristícas y cercanos en posición.
+Sobre este grafo se hace una búsqueda de camino óptimo. Los nodos que forman parte del camino óptimo se consideran entonces
 como la pelota real.
 
+%TODO cuando es ese "ya no se confia en el resultado del seguimiento"?? (Seen by:_alvaneitor)
 Una vez detectada la pelota, se utiliza seguimiento hasta que no se confia en el resultado del algoritmo de seguimiento.
-En esa instancia se vuelve a detectar la pelota con el algoritmo dicho anteriormente.
+En esa instancia se vuelve a detectar la pelota con el algoritmo de detección detallado anteriormente.
 
 \subsubsection*{Detección de la cancha}
 
 Para detectar la cancha y aislar el resto de los objetos, se computa un histograma de colores de la imagen.
 Los autores consideran que el color de la cancha representa el mayor pico en el histograma.
 Por lo tanto, buscan este pico en el histograma y toman todos los colores adyacentes en el histograma que esten dentro de un rango de ocurrencia relativo al pico principal.
-Todo pixel cuyo valor caiga dentro de ese rango se considera parte del fondo.
+Todo píxel cuyo valor caiga dentro de ese rango se considera parte del fondo.
 
 \subsubsection*{Detección de jugadores}
 
 Una vez que se determinó el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
-Construida esta imagen, se aplica la misma tecnica que se usa para seguir la pelota, adaptada a la morfologia de los jugadores.
-Una vez que se conoce la posición en el cuadro $t$ de los jugadores, utilizando la homografia $H_t$ se puede calcular la posición 
+Construida esta imagen, se aplica la misma técnica que se usa para seguir la pelota, adaptada a la morfología de los jugadores.
+Una vez que se conoce la posición en el cuadro $t$ de los jugadores, utilizando la homografía $H_t$ se puede calcular la posición
 en la cancha de los jugadores.
 
 \printbibliography
