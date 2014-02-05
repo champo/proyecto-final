@@ -1225,6 +1225,8 @@ entre jugadores de un mismo equipo. Un computador central recibe estos datos y
 valida que las mediciones de distintas cámaras sean congruentes.
 
 A continuación se presentan las técnicas de análisis de imágen aplicadas.
+% TODO (eordano): escribir "nivel local de energía en ventana temporal de mejor manera
+% TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
 
 \subsubsection{Extracción del fondo}
 Un algoritmo de eliminación de fondo basado en una técnica de nivel local de
@@ -1244,7 +1246,8 @@ valor obtenido empíricamente y suficiente, ya que se determinó que los objetos
 en primer plano (principalmente los jugadores) no se mantenían durante tanto
 tiempo en posición completamente estática.
 
-Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la ecuación \ref{eq:tanos-energy}:
+Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la
+ecuación \ref{eq:tanos-energy}:
 
 \begin{equation}
     \label{eq:tanos-energy}
@@ -1254,32 +1257,42 @@ Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la
 Donde  $I^t(x, y)$ es la intensidad del punto en coordenadas $(x, y)$ para la
 imágen $t$, y $B_C(x, y)$ es una estimación de la intensidad del fondo para el
 punto $(x, y)$. Para determinar $B_C$ se aplican sucesivos filtros gaussianos
-al cuadro inicial.
+al primer cuadro de $W$.
 
-% TODO (eordano): escribir "nivel local de energía en ventana temporal de mejor manera
-% TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
+Para la siguientes ventanas se refina el modelo del fondo de la imágen. Se
+calcula la función $B_F$, definida para todo punto de un cuadro, cuya imágen es
+$R^2$ y corresponde a la media y la desviación estándar de $E(x, y)$.
 
+Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
 
+\begin{equation}
+  \label{eq:tanos-bf1}
+  % TODO (eordano): Copiar el latex de los tanos
+\end{equation}
 
+Donde $th(W)$ es un valor de umbral obtenido empíricamente, proporcional al
+tamaño de $W$. Un bajo nivel de energía corresponde a un punto estático,
+por lo tanto se considera que ese punto pertenece al fondo y $B_F$
+contendrá la media y la desviación estándar para ese punto. Si la imágen
+tiene un alto valor de energía, se considera al punto un candidato a
+contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
+vacío. %TODO: o indefinido???
 
+En sucesivas ventanas se utiliza un parámetro de actualización $\beta$ (los
+autores utilizaron un valor de $0.1$) y $B_F$ es recalculado en base a su valor
+anterior y nuevos valores de $E(x, y)$, utilizando la ecuación
+\ref{eq:tanos-bf2}:
 
+\begin{equation} \label{eq:tanos-bf2}
+  % TODO (eordano): Copiar el latex de los tanos
+\end{equation}
 
+% TODO: El paper nombra que utiliza un análisis de conectividad de puntos de foreground y la mofología de los conjuntos obtenidos
+% pero no explica un carajo como lo hace.
 
+\subsubsection{Clasificación de Jugadores y Referies}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\subsubsection{Seguimiento de Jugadores}
 
 
 
