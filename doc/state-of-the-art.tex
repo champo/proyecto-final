@@ -1393,92 +1393,73 @@ jugador.
 artificial, el problema de detectar el comportamiento de los jugadores dentro
 de la cancha. Para eso, propusieron un sistema con dos módulos, uno que extrae
 características e información de videos provenientes de mùltiples cámaras, y
-un módulo de análisis y seguimiento del comportamiento de cada objeto (un
-sector candidato de la imagen a contener a la pelota o a una persona en el campo de
-juego, llamado \textit{blob} en el trabajo).
+un módulo de análisis y seguimiento del comportamiento de cada objeto.
+Los objetos de interes son los jugadores, la pelota y los arbitros.
 
-Respecto al módulo que extrae características, encontraron una gran dificultad
-en detectar la posición de jugadores más alejados de la cámara, dado que el
-material con el que trabajaron en general eran cámaras situadas a no más de 18
-metros de altura. Esto hacía que la resolución en el lateral opuesto de la
-cancha sea de 1,5 metros por píxel, insuficiente para hacer un análisis real de
-la información obtenida.
+Encontraron una gran dificultad en detectar la posición de jugadores más alejados de la cámara,
+dado que el material con el que trabajaron en general eran cámaras situadas a no más de 18
+metros de altura. Esto genera una imagen borrosa de los jugadores que estan
+en el otro extremo de la cancha, dificultando el analisis.
 
-Como parte del trabajo se encuentra la detección de sectores y líneas en la
-cancha, las líneas blancas que demarcan sectores importantes del campo de
-juego, y los distintos tonos de verde en franjas que es frecuentemente el caso
-del césped de estadios de Europa. Esta característica no se ve en las canchas
-de fútbol en la mayoría de los países de América Latina.
+El primer modulo se encuentra encargado de procesar los cuadros de video y producir informacion
+de posición de las regiones que potencialmente contienen los objetos de interes.
+Como herramienta principal de detección, se utiliza la segmentacíon por colores.
+Se conoce de manera supervizada las clases de colores que representan el pasto, los jugadores de un equipo,
+los jugadores del otro equipo, los arbitros, las lineas de la cancha y la pelota.
+Con esta informacion, es posible armar filtros complejos a la hora de buscar una clase de objeto particular.
+Por ejemplo, para encontrar jugadores, tomo la region que queda de eliminar arbitros, lineas, pasto y la pelota,
+y de esto, tomo las parte que cumple con la representación por colores de los jugadores.
+Para evitar problemas de iluminación, cada un cierto numero de cuadros se re-aprende la clase de color
+que corresponde al verde del pasto.
 
-Para mantener información acerca del movimiento sobre el eje de la cámara
-(denominado \textit{panning}), se utiliza un algoritmo de aprendizaje basado en
-\textit{KLT} para detectar características en los carteles publicitarios
-usualmente presentes en los laterales de la cancha. Esto ayuda a la robustez
-del algoritmo, pero en ciertos casos no es suficiente, como sucede cuando el
-camarógrafo mueve la cámara rápidamente para no perder de vista la pelota en el
-caso de un pase largo. El estudio reporta que no se pudo mantener el seguimiento
-correcto de la orientación y posición de la cámara por más de 2,5 minutos.
+Para detectar las regiones de interes, se utilizan las clases de color para aislar potenciales regiones.
+A partir de estas, se utiliza caracteristicas morfologicas de cada clase de objeto para eliminar regiones
+invalidas. Se asume que los jugadores siempre van a estar parados, y por lo tanto tienen regiones rectangulares.
+De la misma manera, se espera que la region que contiene a la pelota sea circular.
+Notese que no se espera que los resultados obtenidos en este paso sean finales.
+La información producida por este modulo es procesada por el 2do modulo para producir los resultados finales de
+seguimiento.
 
-El análisis del video se compone de las siguientes etapas:
+Finalmente, la ultima tarea asignada al primer modulo es la de estimar los parametros de la camara.
+Esto es necesario para poder asignar una ubicacion en el plano de la cancha a un objeto representado
+por una region en el plano de la imagen.
+De manera supervisada y previa a la ejecucion del algoritmo, se genera un modelo de la cancha.
+Este modelo incluye lineas de la cancha, arcos y los carteles de propaganda.
+Luego, durante la ejecución se aplica un algoritmo iterativo de 3 pasos:
+\begin{enumerate}
+\item Proyectar el modelo sobre la cancha
+\item Utilizar algoritmos de deteccion de lineas para calcular el error de la proyección
+\item Ajustar los parametros para minimizar el error de proyeccion
+\end{enumerate} 
 
+Como existe la posibilidad de que no haya suficiente información en un cuadro de imagen para estimar
+utilizando el metodo anterior, se utiliza ademas un algoritmo de extracción de caracteristicas y seguimiento.
+En particular, la implementación de \citeauthor{shi-tomasi-tracking} (Ver \cite{shi-tomasi-tracking}).
+
+La información de regiones y sus posiciones es entregada al 2do modulo.
+Este utiliza el algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por
+\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de cámara y movimiento 
+probabilístico para estimar la posición de los jugadores y actualizarlas en cada observación.
+El algoritmo fue adapatado para tener en cuenta algunas restricciones encontradas en el futbol:
 \begin{itemize}
-
-  \item \textbf{Segmentación por color}: Se diferencia el verde de la cancha,
-    los jugadores, la publicidad de fondo, y las líneas blancas de la cancha
-    mediante el color de los mismos. Debido a diferencias de iluminación, se
-    actualizan los parámetros para la detección de valores que corresponden al
-    pasto verde de acuerdo a un algoritmo de aprendizaje que es sensible al
-    ángulo estimado de la cámara y al tiempo.
-
-  \item \textbf{Estimación de la posición de la cámara}: Se tiene un modelo de
-    los bordes rectos que debieran detectarse en la cámara, y sus posiciones en
-    tres dimensiones. A partir de esto, se obtienen datos acerca de la
-    perspectiva. Para fortalecer la detección, se corrigen las posiciones
-    utilizando un algoritmo de aprendizaje que toma como entrada las
-    publicidades que se ven en el extremo opuesto de la cancha.
-
-  \item \textbf{Detección de \textit{blobs}}: Otros objetos que no sean verdes
-    o blancos (pasto o líneas de la cancha) son candidatos a ser jugadores o el
-    árbitro. Estos son segmentados y analizados en busca de ciertas
-    particularidades: se espera que en general sean más altos que anchos, con
-    segmentos definidos, diferenciados por color, correspondientes al
-    pelo, camisa, piernas, que son aprendidos y actualizados a lo largo del
-    análisis.
-
+\item Todos los objetos de interes se encuentran en el mismo plano
+\item Los objetos de interes solo pueden desaparecer de la imagen por los bordes
 \end{itemize}
 
-Luego del análisis de características del video, el procesamiento y seguimiento
-de los jugadores es realizado utilizando una extensión del algoritmo
-\textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por
-\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de
-cámara y movimiento probabilístico para estimar la posición de los jugadores y
-actualizarlas en cada observación. Se utilizan muchas hipótesis propias de las
-características de un partido de fútbol para mejorar esta estimación:
+Ya obtenida la posición de cada objeto de interes en la imagen, podemos hacer un analisis del estado del partido.
+Los autores solo observan al jugador que tiene la pelota en un dado cuadro.
+Para este jugador construyen eventos de movimiento. Un evento de movimiento es un cambio de posición del jugador
+tal que puede ser representado por una function lineal. Por lo tanto, se termina describiendo el movimiento de un
+jugador a lo largo de una jugada, de manera aproximada, como una serie de pequeñas lineas rectas.
 
-\begin{itemize}
-  \item \textbf{Seguimiento de personas}: No se da el caso de que un jugador
-    desaparezca de la cancha de un \textit{frame} a otro. Aparecen gradualmente
-    desde el borde del campo de visión.
+Con estos eventos de movimiento, se construye un episodio. Esto es la serie de eventos de movimiento que realiza
+un jugador desde que recibe la pelota en un cuadro $t_i$, hasta que ya no la tiene en su contral en un cuadro $t_f$.
+Como no siempre se conoce con precisión la posición de la pelota, se ingresa de manera supervisada el momento en el
+que un jugador toma contacto con la pelota, y cuando lo pierde.
 
-  \item \textbf{Oclusiones entre jugadores}: No se descarta la información
-    sobre la estimación de un jugador cuando éste pasa a estar ocluído por otro
-    jugador.
-
-  \item \textbf{Jugadores sobre un plano}: Se asume que la cancha es un plano
-    tridimencional y que los jugadores están posicionados sobre este plano.
-    Esto además permite relacionar el tamaño de los \textit{blobs} con la
-    cercanía del jugador a la cámara.
-
-\end{itemize}
-
-Por último, este análisis genera información de alto nivel semántico:
-\textit{movimientos} de la pelota y \textit{episodios}. Para modelar los
-movimientos de la pelota, se modeló la posición de la pelota como una función
-lineal por partes. Un episodio es definido como la secuencia de
-\textit{movimientos} de la pelota desde que un jugador toma control de ella
-hasta que lo pierde. Los movimientos exitosos que un jugador ejecuta en este
-modelo son pases, tiros al arco, o cambios bruscos de dirección (llamado
-\textit{dribbling} por los autores).
+Finalmente, se intenta clasificar los episodios segun su resultado: un pase, un tiro al arco, una evasión o perdida de pelota.
+Para esto se utiliza un arbol de clasificaciones, con reglas simples para los primeros 3 casos.
+En el caso de la perdida de pelota, se utiliza un arbol de decisión mas complejo.
 
 \subsection{Análisis de deportes con video televizado}
 \label{sec:tv-video}
