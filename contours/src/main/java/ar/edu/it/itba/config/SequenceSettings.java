@@ -16,7 +16,7 @@ public class SequenceSettings {
     String name;
     String path;
     Double lensCorrection;
-    List<HomeographyManager.Pair> points = new ArrayList<>();
+    List<HomeographyManager.Pair> points = new ArrayList<HomeographyManager.Pair>();
     // Depth is in the direction of opposing goal areas
     // Width is between laterals
     Double fieldWidth;
@@ -64,6 +64,10 @@ public class SequenceSettings {
 
     public void setFieldWidth(Double fieldWidth) {
         this.fieldWidth = fieldWidth;
+    }
+
+    public void setHomography(HomeographyManager homographyManager) {
+        points = homographyManager.getPairs();
     }
     
 }

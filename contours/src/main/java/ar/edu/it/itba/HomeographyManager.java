@@ -102,6 +102,10 @@ public class HomeographyManager {
         points.remove(selectedIndex);
     }
 
+    public List<Pair> getPairs() {
+        return new ArrayList<Pair>(points);
+    }
+
     public static class Pair {
 
         public final Point image;

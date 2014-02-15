@@ -47,7 +47,7 @@ public class ConfigRetrieval {
 
         final BufferedReader reader = new BufferedReader(new InputStreamReader(source));
         String line;
-        List<SequenceSettings> returnList = new ArrayList<>();
+        List<SequenceSettings> returnList = new ArrayList<SequenceSettings>();
         SequenceSettings settings = new SequenceSettings();
         while ((line = reader.readLine()) != null) {
             if (line.isEmpty()) {

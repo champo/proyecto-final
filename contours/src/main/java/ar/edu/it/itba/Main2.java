@@ -47,7 +47,7 @@ public class Main2 extends javax.swing.JFrame {
     boolean selectingPoint;
     private BufferedImage firstFrame;
     private ActiveContour ac;
-    private List<Contour> contour = new LinkedList<>();
+    private List<Contour> contour = new LinkedList<Contour>();
     private Homography homography;
     private int selected= 0;
     private FileOutputStream outBuffer;
@@ -579,7 +579,10 @@ public class Main2 extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         settings.add(currentSettings);
         try {
-            ConfigRetrieval.saveToSink(settings, new FileOutputStream("settings.txt"));
+            FileOutputStream fso = new FileOutputStream("settings.txt");
+            currentSettings.setHomography(homographyManager);
+            ConfigRetrieval.saveToSink(settings, fso);
+            fso.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -718,7 +721,7 @@ public class Main2 extends javax.swing.JFrame {
         try {
             instance.settings = ConfigRetrieval.retrieveFromSource(new FileInputStream(new File("./settings.txt")));
         } catch (IOException e) {
-            instance.settings = new LinkedList<>();
+            instance.settings = new LinkedList<SequenceSettings>();
             Logger.getLogger("Main2").warning("Unable to retrieve settings!");
         }
        instance.jList1.setModel(new AbstractListModel() {

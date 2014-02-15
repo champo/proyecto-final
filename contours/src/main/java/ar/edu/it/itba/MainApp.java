@@ -32,6 +32,7 @@ import javax.swing.event.ListSelectionListener;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
+import ar.edu.it.itba.video.BackgroundDetection;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 
@@ -342,7 +343,8 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
+        frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
+        //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -511,7 +513,9 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane2.setMaximumSize(oldSize);
         imageContainerPanel.revalidate();
 
-        frameDecoder.nextFrame();
+        for (int i = 0; i < 70; i++) {
+        	frameDecoder.nextFrame();
+        }
         frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
 
@@ -564,12 +568,12 @@ public class MainApp extends javax.swing.JFrame {
                 		}
                 	}
                 }
-
+                /* Ugly code that got commited to paint in green the right side of the image
                 for (int i = (int) (frame.getWidth() * 0.7); i < frame.getWidth(); i++) {
             		for (int j = 0; j < frame.getHeight(); j++) {
             			frame.setRGB(i, j, Color.GREEN.getRGB());
             		}
-            	}
+            	}*/
 
                 if (ac != null) {
                 	BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
