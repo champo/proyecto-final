@@ -1550,7 +1550,7 @@ La segunda etapa es de seguimiento y utiliza un filtro \textit{Kalman} (ver \cit
 
 El algoritmo de la primer etapa, crea una imagen binaria, segmentando según la característica blanca de la pelota.
 Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas características morfológicas de la pelota.
-Esta operación se realiza en $T$ cuadros distintos, a partir de esto se construye un grafo pesado.
+Esta operación se realiza en $T$ cuadros distintos, y a partir de esto se construye un grafo pesado como se explica a continuación.
 En este grafo los nodos representan posibles candidatos de la posición de la pelota en los $T$ cuadros.
 Cada nodo tiene asignado un peso según el grado de similaridad entre el candidato y una pelota ideal.
 Luego, se coloca un vértice entre un nodo del cuadro $t$ y otro del cuadro $t + 1$ si son parecidos en caracteristícas y cercanos en posición.
@@ -1558,7 +1558,9 @@ Sobre este grafo se hace una búsqueda de camino óptimo. Los nodos que forman p
 como la pelota real.
 
 %TODO cuando es ese "ya no se confia en el resultado del seguimiento"?? (Seen by:_alvaneitor)
-Una vez detectada la pelota, se utiliza seguimiento hasta que no se confia en el resultado del algoritmo de seguimiento.
+% better? (champo)
+Una vez detectada la pelota, se utiliza un filtro de \textit{Kalman}.
+Cuando el filtro devuelve una posición con un margen de error mayor a un cierto umbral, se considera perdida.
 En esa instancia se vuelve a detectar la pelota con el algoritmo de detección detallado anteriormente.
 
 \subsubsection*{Detección de la cancha}
