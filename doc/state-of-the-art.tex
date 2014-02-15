@@ -884,13 +884,12 @@ Los algoritmos basados en contornos activos, buscan minimizar esta ecuación. Si
 debería haber encontrado la mejor aproximación de la región de los objetos interés. De \ref{eq:ac-energy} se
 deriva la ecuación de evolución de cualquier curva $C_m$:
 
-\begin{eqnarray*}
+\begin{eqnarray}
     \frac{dC_m}{dt} &=& (F_d + F_s) \overrightarrow{N}_{C_m} \\
     F_d &=& \log{p(v(x) \vert \Omega_m) / p(v(x) \vert \Omega_0)} \\
-    F_s &=& \lambda \kappa_m
-\end{eqnarray*}
+    F_s &=& \lambda \kappa_m \label{eq:ac-formal}
+\end{eqnarray}
 
-%TODO representa la competencia entre regiones? (Seen by: Alvaneitor)
 $F_d$ y $F_s$ son fuerzas derivadas de la ecuación de energía. $F_d$ representa la competencia entre regiones y $F_s$ un
 suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
@@ -975,8 +974,7 @@ N_{a} < max(filas, columnas)$.
 En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal
 forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. Para aplicar $F_s$ se usan los mismos
 pasos que para $F_d$. El resultado final es análogo a modificar la curva de acuerdo
-a la definición formal dada anteriormente.
-%TODO "definición formal dada anteriormente" cual? maybe referencia? (Seen by: Alvaneitor)
+a la definición formal dada anteriormente (Ecuación \ref{eq:ac-formal}).
 
 En cada cuadro, el borde del contorno del objeto es actualizado de acuerdo al
 resultado obtenido por el algoritmo en el cuadro anterior. En el caso de la
