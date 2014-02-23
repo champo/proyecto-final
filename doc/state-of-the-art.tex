@@ -894,10 +894,11 @@ $F_d$ y $F_s$ son fuerzas derivadas de la ecuación de energía. $F_d$ represent
 suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
 Existe otra formulación del problema de evolución de curvas, que consiste en
-representar la curva como el nivel cero de una superficie $\phi$ \ref{Osher88}.
+representar la curva como el nivel cero de una superficie $\phi$ (Ver \cite{Osher88}).
 
 \subsection{Implementación Numérica}
 
+Se toma de referencia la implementación segun \citeauthor{fast-level-set} (Ver \cite{fast-level-set})
 En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
 correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
 respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
