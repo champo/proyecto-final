@@ -145,7 +145,7 @@ de objetos categorizados en cuatro familias:
 y \textit{Contornos Activos}.
 
 En la sección \ref{sec:homography} se describe el concepto teórico de homografía y
-su utilidad y aplicación en la resolución del problema, así como su cálculo numérico.
+su utilidad y aplicación en el analisis de imagenes, así como su cálculo numérico.
 
 En la sección \ref{sec:futbol} se discuten los avances modernos en el fútbol.
 Se presentan sistemas implementados que resuelven el problema de seguimiento de
@@ -357,14 +357,12 @@ caso, se quiere ver si los candidatos cumplen con las condiciones necesarias
 % TODO (jpcivile): Verificar si la frase "los candidatos..." es correcta, no se entendía nada
 para ser puntos característicos. Los candidatos a puntos característicos se
 toman aleatoriamente utilizando un filtro de partículas
-
 \footnote{El filtro de partículas es un método empleado para estimar el estado
   de un sistema que cambia a lo largo del tiempo. Más concretamente es un
   método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las
   partículas) y valores, o pesos, asociados a cada una de esas muestras.
   Las partículas son estados posibles del proceso, que se pueden representar
   como puntos en el espacio de estados de dicho proceso.}
-
 sobre el resultado del cuadro anterior. Luego, se extraen las características
 RGB y LBP como muestras de testeo. Después de calcular las distancias
 elementales entre las muestras de testeo y de entrenamiento, se forma una
