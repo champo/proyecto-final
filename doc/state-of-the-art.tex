@@ -864,12 +864,12 @@ Se definen tantos contornos como objetos de interés haya en la secuencia ($i$ e
 Adicionalmente, se considera una región $\Omega_0$ que contiene a todo punto que no forma parte de ninguna otra región.
 Se la denomina \textit{región de fondo}.
 
-Se declara una función de probabilidad $p$ que permite saber que tan probable es que un píxel forme parte una dada región.
-Para esto, es necesaria una función $v$ que dado un píxel, devuelve un vector de características $v(x)$.
-Esto permite calcular $p(v(x) \vert \Omega_i)$, la probabilidad de que un píxel $x$ forme parte de una región $omega_i$ .
+Se declara una función de probabilidad $p$ que permite saber que tan probable es que un píxel forme parte de una dada región.
+Para esto, es necesaria una función $v$ que dado un píxel, devuelve un vector $v(x)$ de caracteristicas, por ejemplo los valores RGB del pixel.
+Esto permite calcular $p(v(x) \vert \Omega_i)$, la probabilidad de que un píxel $x$ forme parte de una región $\Omega_i$ .
 Estas funciones dependen de la secuencia particular a ser analizada, por lo que varían dependiendo del caso de estudio.
-Como ejemplo, se toman los valores \textit{RGB} como vector de características y
-$p(v(x) \vert \Omega_i) = \| v(x) - v_i \| $, donde $v_i$ es el valor promedio \textit{RGB} de toda la región.
+Como ejemplo, se toman los valores RGB como vector de características y
+$p(v(x) \vert \Omega_i) = \| v(x) - v_i \| $, donde $v_i$ es el valor promedio RGB de todo pixel en la región $\Omega_i$.
 
 Se define la función de energía de los contornos:
 
@@ -896,7 +896,7 @@ representar la curva como el nivel cero de una superficie $\phi$ (Ver \cite{Oshe
 
 \subsection{Implementación Numérica}
 
-Se toma de referencia la implementación segun \citeauthor{fast-level-set} (Ver \cite{fast-level-set})
+Se toma de referencia la implementación segun \citeauthor{fast-level-set} (Ver \cite{fast-level-set}).
 En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
 correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
 respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
@@ -911,7 +911,7 @@ distinto y seguirlas por separado.}.
 El objeto de interés $\Omega_{1}$ y el fondo $\Omega_{0}$ cumplen
 $\Omega_{1}\cup\Omega_{0} = I_{k}$ donde $I_{k}$ es la imagen del cuadro $k$ de
 la secuencia de imágenes, y $\Omega_{1}\cap\Omega_{0} = \emptyset$. Cada una de
-las regiones está caracterizada por el vector característico $v_{m}, m =
+las regiones está caracterizada por su vector característico $v_{m}, m =
 \{0,1\}$.
 
 Se define una función $\phi(x)$ que indica si un píxel $x$ pertenece a una región o al fondo de la siguiente manera:
@@ -920,10 +920,10 @@ Se define una función $\phi(x)$ que indica si un píxel $x$ pertenece a una reg
 \phi(x) =
 \left\{
     \begin{array}{ll}
-        3  & \mbox{if } x \in \Omega_{0} \mbox{  y  } x \notin L_{out} \\
-        1  & \mbox{if } x \in L_{out}\\
-        -1  & \mbox{if } x \in L_{in}\\
-        -3 & \mbox{if } x \in \Omega_{1} \mbox{  y  } x \notin L_{in} \\
+        3  & \mbox{si } x \in \Omega_{0} \mbox{  y  } x \notin L_{out} \\
+        1  & \mbox{si } x \in L_{out}\\
+        -1  & \mbox{si } x \in L_{in}\\
+        -3 & \mbox{si } x \in \Omega_{1} \mbox{  y  } x \notin L_{in} \\
     \end{array}
 \right.
 \end{equation}
@@ -931,14 +931,14 @@ Se define una función $\phi(x)$ que indica si un píxel $x$ pertenece a una reg
 Los conjuntos $L_{in}$ y $L_{out}$ se definen como
 
 \begin{equation}
-    L_{in} = {x \mbox{ es un píxel } \vert \mbox{    }  \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) > 0}
+    L_{in} = \{ x \mbox{ es un píxel } \vert \mbox{    }  \phi(x) < 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) > 0 \}
 \end{equation}
 
 \begin{equation}
-    L_{out} = {x \mbox{ es un píxel } \vert \mbox{    } \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0}
+    L_{out} = \{ x \mbox{ es un píxel } \vert \mbox{    } \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0 \}
 \end{equation}
 
-donde $N_{4}(x) = { y \mbox{ es un pixel } \vert |x-y| = 1}$, son los píxeles
+donde $N_{4}(x) = \{ y \mbox{ es un pixel } \vert \mbox{   } |x-y| = 1 \}$, son los píxeles
 vecinos del píxel $x$.
 
 El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
@@ -982,8 +982,7 @@ usuario, o bien puede ser obtenida de forma automática mediante algoritmos de
 aprendizaje complejos basados en características predefinidas.
 
 El algoritmo termina cuando se alcanza la condición de corte, dada por las
-ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el
-final de la secuencia de imágenes.
+ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el numero de iteraciones $N_a$
 
 \begin{equation}
 \label{eq:active-contours-stoppingCondition}
@@ -1065,7 +1064,7 @@ La forma de $H$ determina el tipo de transformación geométrica representada. P
 
 Representa una rotación de ángulo $\theta$, una traslación dada por $t_{x}$ y $t_{y}$ (notesé el uso del ``1'' de coordenadas
 homogéneas), una escalamiento dado por el factor $s$, un sesgo introducido por $a$ y $b$ y un cambio de perspectiva
-dado por $p_{0}$ y $p{1}$.
+dado por $p_{0}$ y $p_{1}$.
 
 En total, son 8 los parámetros que definen la matriz $H$, y sus elementos son
 
@@ -1130,6 +1129,7 @@ Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} 
 el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma 2.
 %TODO maybe agregar alguna mini explicación de porque? (Seen by: Alvaneitor).
 
+% TODO: Apenas entiendo que garcha pasa despues de esto. 
 \begin{equation}
     argmin_{\norm{h}=1} \norm{Ah} = argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
 \end{equation}
