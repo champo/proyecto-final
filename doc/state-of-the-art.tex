@@ -1385,6 +1385,43 @@ encontrada en la posición $\tilde{x},\tilde{y}$.
 
 \subsubsection{Detección de Pases y Posición Adelantada}
 
+Los datos analizados en una computadora por cada cámara son entonces transmitidos
+a un servidor (llamado ``supervisor'') que unifica la información recibida de
+cada cámara, considera sus posiciones relativas, y arma el estado del juego,
+compuesto por el tiempo desde el inicio del partido, la posición de todos los
+jugadores, el referí, jueces de línea, sus respectivas velocidades y estimación
+de la aceleración, si la pelota fue detectada o no, la posición y la confianza
+en la posición de la pelota. Los jugadores son posicionados a través de una
+transformación homográfica y el supervisor correlaciona los datos provenientes
+de distintas cámaras para formar un estado consolidado.
+
+Para la detección de una jugada de posición adelantada, se requiere:
+
+\begin{itemize}
+
+  \item \textit{Determinar qué jugador pateó la pelota}: esta es la tarea más
+    compleja del análisis. Se requiere determinar la posición de la pelota en
+    tres dimensiones. Para lograr esto, se detecta la posición de puntos
+    conocidos del campo de juego en la cámara y se utiliza la homografía para
+    calcular la posición estimada de la pelota. Se hace uso también de la
+    posición relativa de las cámaras en la cancha: dado que están enfrentadas,
+    las mediciones de la posición de la pelota de dos cámaras enfrentadas
+    debería ser similar. Se estima que el jugador más cercano a la pelota es
+    aquél que la patea al detectar un cambio repentino en la velocidad de la
+    pelota.
+
+  \item \textit{Determinar si es una posición adelantada activa}: Se analiza
+    la posición de jugadores en estado de ``posición adelantada pasiva''. De
+    las reglas del juego, si un jugador está adelantado pero no recibe la
+    pelota, la jugada puede seguir y no se ha cometido una falta. Durante los
+    tres segundos posteriores a un pase largo (tres segundos es una estimación
+    del tiempo que la pelota está en el aire desde que es pateada hasta que es
+    recibida) el supervisor evalúa si los jugadores en posición adelantada
+    interceptan la pelota, en cuyo caso, se anuncia que el jugador está en
+    falta.
+
+\end{itemize}
+
 \subsection{Análisis utilizando 8 camaras}
 \label{sec:8-camaras}
 
