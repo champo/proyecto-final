@@ -1339,15 +1339,51 @@ etiquetas si el cuadro está en estado de colisión.
 \end{itemize}
 
 Para cada nuevo cuadro, se actualiza la posición de la caja que contiene a
-los sectores candidatos, y se mantiene el estado de las \textit{bounding box}
-(si está en contacto con otra, la velocidad, y la posición). Para resolver
-situaciones en la que se esté terminando la colisión, se utilizan datos
-correspondientes a la clase de los objetos detectados y la velocidad de cada
-jugador previo a la colisión de \textit{bounding boxes}.
+los sectores candidatos analizando el movimiento de sectores dentro del
+\textit{bounding box} para actualizar la velocidad, posición y tamaño,
+y respecto a otras cajas para actualizar su estado (si entró en contacto).
+Para resolver situaciones en la que se esté terminando la colisión, se utilizan
+datos correspondientes a la clase de los objetos detectados y la velocidad de
+cada jugador previo a la colisión de las \textit{bounding boxes}.
+
+Para la detección de la posición de la pelota, se utiliza un clasificador
+entranado con un conjunto de entrenamiento de pelotas en distintas posiciones y
+tamaños. Se elige el candidato a ser la pelota cuyo coeficiente de correlación
+con el clasificador sea mayor en caso de que haya varios candidatos.
+
+La velocidad de la pelota es determinada a partir de las observaciones de la
+cámara por la ecuación:
+
+\[
+  V_x = \frac{(P_{x_t} - P_{x_{t-n}})}{n}, V_y = \frac{(P_{y_t} - P_{y_{t-n}})}{n}
+\]
+
+donde $P_{x_t}, P_{y_t}$ es la posición de la pelota en el cuadro $t$, y $n$ es
+la cantidad de cuadros entre la imágen actual y la última ubicación correcta de
+la pelota.
+
+Sin embargo, para que una posición candidata para la pelota sea seleccionada
+como un verdadero positivo, debe recaudarse información sobre más de un cuadro.
+Para esto, se genera un mapa de probabilidad de que la pelota se encuentre en
+cada punto de la imágen, basado en observaciones de cuadros anteriores. Esta
+posibilidad está definida como sigue:
+\[
+  P(x, y) = \exp \[ (- \vert ( x - \vert \tilde{x} + V_x \sign(\cos \theta) \vert )
+  + ( y - \vert \tilde{y} + V_y \sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi}\]
+\]
+
+donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota,
+\[
+  \sigma = \frac{R_p V_{max} n}{R_{cm}T}
+\]
+donde $V_x$ y $V_y$ representan la velocidad de la pelota en las coordenadas
+$x$ e $y$, $\theta$ es $\atan(\tfrac{V_y}{V_x}$, $R_p$ es el radio de la pelota
+en píxeles, $V_{max}$ es el máximo valor admitido para la velocidad de la
+pelota, $R_{cm}$ es el radio de la pelota en centímetros, $T$ es la cantidad de
+cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
+encontrada en la posición $\tilde{x},\tilde{y}$.
 
 \subsubsection{Detección de Pases y Posición Adelantada}
-
-
 
 \subsection{Análisis utilizando 8 camaras}
 \label{sec:8-camaras}
