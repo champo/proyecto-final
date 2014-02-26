@@ -1129,7 +1129,7 @@ Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} 
 el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma 2.
 %TODO maybe agregar alguna mini explicación de porque? (Seen by: Alvaneitor).
 
-% TODO: Apenas entiendo que garcha pasa despues de esto. 
+% TODO: Apenas entiendo que garcha pasa despues de esto.
 \begin{equation}
     argmin_{\norm{h}=1} \norm{Ah} = argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
 \end{equation}
@@ -1237,11 +1237,11 @@ errores en análisis posteriores.
 
 Este análisis utiliza la técnica de ``ventana deslizante'', ya que el análisis
 se basa en una cantidad de imágenes consecutivas de la secuencia (se referirá a
-esta subsecuencia como $W$ y se la denominá ``ventana''). Los autores del
-trabajo utilizaron una ventana de 60 cuadros, equivalente a $2.5$ segundos,
-valor obtenido empíricamente y suficiente, ya que se determinó que los objetos
-en primer plano (principalmente los jugadores) no se mantenían durante tanto
-tiempo en posición completamente estática.
+esta subsecuencia como $W$ y se la denominá ``ventana temporal'' o simplemente
+``ventana''). Los autores del trabajo utilizaron una ventana de 60 cuadros,
+equivalente a $2.5$ segundos, valor obtenido empíricamente y suficiente, ya que
+se determinó que los objetos en primer plano (principalmente los jugadores) no
+se mantenían durante tanto tiempo en posición completamente estática.
 
 Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la
 ecuación \ref{eq:tanos-energy}:
@@ -1285,22 +1285,67 @@ anterior y nuevos valores de $E(x, y)$, utilizando la ecuación
 \end{equation}
 
 Por último, se realiza un análisis de conectividad de los puntos de primer
-plano, para descartar conjuntos de puntos por debajo de un tamaño establecido
-experimentalmente; y se realiza un análisis de la morfología de los objetos
-para descartar la sombra proyectada por los jugadores (el artículo publicado
-no entra en detalles acerca de este proceso).
+plano y los conjuntos de puntos conexos son denominados sectores candidatos
+a ser personas en la cancha o la pelota. Luego, se descartan sectores
+cuyo tamaño no supere un umbral (determinado experimentalmente con el
+objetivo de descartar sectores muy chicos) y se realiza un análisis de la
+morfología de los conjuntos conexos, para eliminar la sombra proyectada por los
+jugadores (el artículo publicado no entra en detalles acerca de este proceso).
 
 \subsubsection{Clasificación de Jugadores y Referies}
 
+Luego de identificar sectores candidatos, son clasificados para determinar a
+que clase pertenece. Dado que los colores de las camisetas de los jugadores
+no se conocen previamente, es necesario utilizar un mecanismo de clasificación
+no supervisado que consiste de dos pasos: En primer lugar, se crean
+las clases de objetos con un algoritmo de \textit{clustering} basado en una
+versión modificada del algoritmo BSAS.% TODO (eordano): Cita
+Segundo, el clasificador obtenido es utilizado para determinar la clase
+de cada objeto candidato obtenido del análisis anterior.
 
+El algoritmo BSAS sólo requiere para funcionar una medida de semejanza $d(x, C)$,
+y un valor de umbral denominado $th$ para generar las clases de objetos.
+Se realizan varias iteraciones, unificando clases de objetos si no difieren
+por más de $th$.
+
+Para clasificar a los objetos en su clase correspondiente se minimiza la
+distancia determinada por:
+\[
+  C_k = \frac{1}{w_k+1}(w_k C_k + V)
+\]
+
+donde $C_k$ es el prototipo de la clase $k$, $V$ es el vector de
+características asociadas a la clase $k$, y $w_k$ es el número de
+objetos clasificados dentro de la clase $k$ de acuerdo a las últimas dos
+ventanas temporales $W$.
 
 \subsubsection{Seguimiento de Jugadores}
 
+Se utiliza una técnica de seguimiento representando al área donde un jugador se
+encuentra mediante una \textit{bounding box}.       % TODO traducir?
+Dos \textit{bounding boxes} pueden estar en estado de colisión si sus lados se
+intersectan. El vector de seguimiento de un jugador está definido por la tupla
+$x_{ti} = (p_i, v_i, d_i, l_i, c_i, s_i)$, donde:
+
+\begin{itemize}
+  \item $p_i$, $v_i$, $d_i$ son la posición, velocidad, y dimensiones
+    (ancho y alto del \textit{bounding box}) para el jugador $i$.
+  \item $s_i$ define el estado del seguimiento, para resolver
+    colisiones entre cuadros y la aparición o desaparición de
+    sectores candidatos en el área.
+  \item $c_i$ es la clase a la que pertenece el jugador.
+  \item $l_i$ es una etiqueta identificadora del jugador, o un conjunto de
+etiquetas si el cuadro está en estado de colisión.
+\end{itemize}
+
+Para cada nuevo cuadro, se actualiza la posición de la caja que contiene a
+los sectores candidatos, y se mantiene el estado de las \textit{bounding box}
+(si está en contacto con otra, la velocidad, y la posición). Para resolver
+situaciones en la que se esté terminando la colisión, se utilizan datos
+correspondientes a la clase de los objetos detectados y la velocidad de cada
+jugador previo a la colisión de \textit{bounding boxes}.
+
 \subsubsection{Detección de Pases y Posición Adelantada}
-
-
-
-
 
 
 
@@ -1429,7 +1474,7 @@ Luego, durante la ejecución se aplica un algoritmo iterativo de 3 pasos:
 \item Proyectar el modelo sobre la cancha
 \item Utilizar algoritmos de deteccion de lineas para calcular el error de la proyección
 \item Ajustar los parametros para minimizar el error de proyeccion
-\end{enumerate} 
+\end{enumerate}
 
 Como existe la posibilidad de que no haya suficiente información en un cuadro de imagen para estimar
 utilizando el metodo anterior, se utiliza ademas un algoritmo de extracción de caracteristicas y seguimiento.
@@ -1437,7 +1482,7 @@ En particular, la implementación de \citeauthor{shi-tomasi-tracking} (Ver \cite
 
 La información de regiones y sus posiciones es entregada al 2do modulo.
 Este utiliza el algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por
-\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de cámara y movimiento 
+\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de cámara y movimiento
 probabilístico para estimar la posición de los jugadores y actualizarlas en cada observación.
 El algoritmo fue adapatado para tener en cuenta algunas restricciones encontradas en el futbol:
 \begin{itemize}
