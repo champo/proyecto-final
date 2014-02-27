@@ -1215,7 +1215,6 @@ imagen.
 \subsection{Análisis utilizando 6 cámaras}
 \label{sec:6-camaras}
 
-% TODO (eordano): Ref correcta a los tanos
 \citeauthor*{papers-tanos} estudian la viabilidad de juzgar si en un partido de fútbol
 se dió una posición adelantada, utilizando seis cámaras dispuestas en ambos
 laterales de la cancha para reducir errores de medición y perspectiva. Las
@@ -1288,7 +1287,7 @@ por lo tanto se considera que ese punto pertenece al fondo y $B_F$
 contendrá la media y la desviación estándar para ese punto. Si la imágen
 tiene un alto valor de energía, se considera al punto un candidato a
 contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
-vacío. %TODO: o indefinido???
+indefinido.
 
 En sucesivas ventanas se utiliza un parámetro de actualización $\beta$ (los
 autores utilizaron un valor de $0.1$) y $B_F$ es recalculado en base a su valor
@@ -1318,7 +1317,7 @@ que clase pertenece. Dado que los colores de las camisetas de los jugadores
 no se conocen previamente, es necesario utilizar un mecanismo de clasificación
 no supervisado que consiste de dos pasos: En primer lugar, se crean
 las clases de objetos con un algoritmo de \textit{clustering} basado en una
-versión modificada del algoritmo BSAS.% TODO (eordano): Cita
+versión modificada del algoritmo BSAS (ver \cite[BSAS]).
 Segundo, el clasificador obtenido es utilizado para determinar la clase
 de cada objeto candidato obtenido del análisis anterior.
 
