@@ -172,12 +172,12 @@ función tiene la forma $f(x_1, ..., x_n) = \beta_0 + \beta_1 x_1 + \dots +
 Se dice que el predictor es lineal debido a la condición $\beta_i \in \mathbb{R}$
 \footnote{Cualquier $x_i$ no lineal, puede expresarse como $x'_i = g(x_i)$ y tratarse como lineal}.
 
-En \cite{alp, original-linear-predictors} los autores utilizan predictores para
-hacer seguimiento de objetos en video.  El objetivo es relacionar el cambio de
-valor de varios píxeles cuadro a cuadro con el movimiento del objeto entre
-dichos cuadros.  Para soportar cualquier clase de movimiento, este se
-representa mediante una homografía (ver \cite{homography-estimation}), $H \in
-R^{3\times3}$.
+En los artículos \cite{alp, original-linear-predictors} los autores utilizan
+predictores para hacer seguimiento de objetos en video.  El objetivo es
+relacionar el cambio de valor de varios píxeles cuadro a cuadro con el
+movimiento del objeto entre dichos cuadros.  Para soportar cualquier clase de
+movimiento, este se representa mediante una homografía (ver
+\cite{homography-estimation}), $H \in R^{3\times3}$.
 
 Los predictores se representan mediante una matriz $A \in \mathbb{R}^{9xn}$
 donde cada fila representa una función de predicción.  De dos cuadros
@@ -234,9 +234,11 @@ secciones ocultas del objeto hasta que éstas vuelven a ser visibles.
 \subsection{Aprendizaje Local}
 % Local learning
 
-El aprendizaje local es otra técnica que permite resolver el problema del seguimiento de objetos en secuencias de imágenes,
-que ha sido también un tema de investigación en el área del aprendizaje automático \cite{local-learning-machine-learning} y usado principalmente en la clasificación
-de imágenes, recuperación y reconocimiento de objetos.
+El aprendizaje local es otra técnica que permite resolver el problema del
+seguimiento de objetos en secuencias de imágenes, que ha sido también un tema
+de investigación en el área del aprendizaje automático (ver
+\cite{local-learning-machine-learning}) y usado principalmente en la
+clasificación de imágenes, recuperación y reconocimiento de objetos.
 
 A diferencia del aprendizaje global, que entrena un modelo basado en
 todos los datos de entrenamiento, en \textit{local learning} se consideran
@@ -263,7 +265,7 @@ La elección de la medida de distancia es de suma importancia. A modo de
 ejemplo, la distancia Euclideana puede llevar a algoritmos de seguimiento
 inestables a la hora de diferenciar el objeto del fondo de la imagen. Por lo
 tanto, se requiere una mejor y más compleja medida de distancia. Esta es la
-idea princial que proponen Li y Lu \cite{local-learning}.
+idea princial que proponen Li y Lu (ver \cite{local-learning}).
 
 La función de distancia que usan es una combinación lineal de distancias
 elementales, como se presenta en \cite{malisiewicz-cvpr08}. Definen a la
@@ -322,7 +324,7 @@ Sirve para hallar las causas de la variabilidad de los datos y ordenarlas por im
 Técnicamente, busca la proyección según la cual los datos queden mejor representados en términos de cuadrados mínimos. Involucra el cálculo de la descomposición en
 autovalores de la matriz de covarianza, normalmente tras centrar los datos en la media de cada atributo.}
 de forma incremental en los primeros $F$ cuadros. En su trabajo, Li y Lu usan
-$F = 5$ (Ver \cite{local-learning}).
+$F = 5$ (ver \cite{local-learning}).
 
 Los mejores resultados se seleccionan como muestras de entrenamiento positivas, mientras que
 los peores resultados, se toman como muestras negativas. Se obtienen las características
@@ -428,7 +430,7 @@ de entrenamiento positivas.
 \subsection{Graph based}
 % IFTrace
 
-El algoritmo conocido como \textit{IFTrace} \cite{IFTrace} tiene como objetivo
+El algoritmo conocido como \textit{IFTrace} (ver \cite{IFTrace}) tiene como objetivo
 seguir un objeto en una secuencia de imágenes. Este algoritmo realiza algunas
 asunciones sobre el objeto a seguir:
 
@@ -588,9 +590,10 @@ de color $C'$ y se retorna junto a la proyección $K'$ como máscara representat
 del objeto para el actual cuadro.
 
 Cabe destacar que, por simplicidad, para la comparación de formas se utilizan
-las Invariantes de Momento de Maitra \cite{MaitraMomentInvariants}, y las formas se consideran similares
-si la distancia Euclideana entre sus vectores de invariantes es menor a 2.
-Sin embargo se podrían utilizar otros descriptores de formas.
+las Invariantes de Momento de Maitra (ver \cite{MaitraMomentInvariants}), y las
+formas se consideran similares si la distancia Euclideana entre sus vectores de
+invariantes es menor a 2. Sin embargo se podrían utilizar otros descriptores de
+formas.
 
 Si ninguna de las regiones resulta similar a la máscara del objeto,
 \textit{recoverObj} intenta el mismo procedimiento utilizando como cuadro de
@@ -626,7 +629,7 @@ de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
 píxeles $q$ en una ventana de $9x9$ centrada en $p$.\\
 Se define el grado de ``similaridad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$.
 Solo los píxeles con $\lambda > 1$ son escogidos para utilizarlos en la
-propagación KLT. Esto coincide con los autores Tomasi y Karade \cite{Tomasi91detectionand}
+propagación KLT. Esto coincide con los autores Tomasi y Karade (ver \cite{Tomasi91detectionand})
 quienes afirman que los píxeles con mayor valor de $\lambda$ tienen más posibilidades
 de ser localizados por el algoritmo KLT.\\
 Los marcadores externos son escogidos aplicando una dilatación morfológica
@@ -642,7 +645,7 @@ a la máscara del objeto $0$
 El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores
 internos en el cuadro actual, que se corresponden con los puntos internos del objeto
 en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT, descrito por Tomasi y
-Karade \cite{Tomasi91detectionand}.
+Karade (ver \cite{Tomasi91detectionand}).
 
 El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada
 $q_{0}$ en el próximo cuadro $I^{t}$, y busca un punto $q$ tal que los vecinos
@@ -651,7 +654,7 @@ varios parámetros de configuración que alteran su comportamiento: $\ell$, la c
 escalas consideradas; $\kappa$, el factor de reducción entre las sucesivas escalas; y
 $\omega$, el ancho de la ventana usada para comparar vecinos en cada escala.
 La implementación de IFTrace está configurada para usar $\ell=2$,$\kappa=4$ y
-$\omega=9$, como en la implementación de KLT de Birchfield \cite{Birchfield-KLT-implementation}.
+$\omega=9$, como en la implementación de KLT de Birchfield (ver \cite{Birchfield-KLT-implementation}).
 
 Los marcadores exteriores no son seguidos con KLT, ya que no tiene sentido debido
 a que la mayoría se perdería por oclusión con el objeto o se seguiría el fondo, en
@@ -685,20 +688,22 @@ Los píxeles marcadores utilizados son tanto los marcadores interiores, obtenido
 por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.
 
 La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad
-\textit{minimax}. Sea la \textit{frontera} del objeto de interés el conjunto de todas las aristas cuyos nodos
-pertenecen a distintos segmentos, dicha segmentación maximiza el costo mínimo de todas las aristas en la frontera de la
+\textit{minimax}. Sea la \textit{frontera} del objeto de interés el conjunto de
+todas las aristas cuyos nodos pertenecen a distintos segmentos, dicha
+segmentación maximiza el costo mínimo de todas las aristas en la frontera de la
 segmentación. Esto significa que la segmentación IFT/$f_{max}$ es esencialmente
-la misma que la famosa segmentación \textit{divisoria} \cite{watershed-segmentation}. Esto
-hace que sea particularmente apropiada para casos en los que el objeto está
-mejor caracterizado por su conectividad que por su forma o tamaño. Es por esto que
-se elige una función de costo de arista $w(p,q)$ que se basa en la probabilidad de
-que $p$ y $q$ estén en diferentes lados del borde del objeto.
+la misma que la famosa segmentación \textit{divisoria} (ver
+\cite{watershed-segmentation}). Esto hace que sea particularmente apropiada
+para casos en los que el objeto está mejor caracterizado por su conectividad
+que por su forma o tamaño. Es por esto que se elige una función de costo de
+arista $w(p,q)$ que se basa en la probabilidad de que $p$ y $q$ estén en
+diferentes lados del borde del objeto.
 
 \subsubsection{Algoritmo IFT}
 
 Para algunas funciones de conectividad, como $f_{max}$, el bosque de caminos
 óptimos se puede computar eficientemente mediante una variante del famoso
-algoritmo de Dijkstra \cite{watershed-segmentation}. Por cuestiones de
+algoritmo de Dijkstra (ver \cite{watershed-segmentation}). Por cuestiones de
 eficiencia, el algoritmo retorna un mapa de raíces $R$, que almacena, para
 cada nodo $p$, su raíz $R(p)$.\\
 
@@ -757,7 +762,7 @@ donde el objeto es la fuente y el fondo el sumidero. Se puede probar que el máx
 hacia todos los sumideros es igual a la mínima capacidad total de todo corte
 (conjunto de aristas) que separa fuentes de sumideros. Este flujo máximo y su
 corte mínimo asociado se puede encontrar con el clásico algoritmo
-Ford Fulkerson \cite{Cormen:2009:IAT:1614191}.
+Ford Fulkerson (ver \cite{Cormen:2009:IAT:1614191}).
 
 % En comparación con la IFT, \textit{Graph-Cut} tiene 2 grandes desventajas: es
 En comparación con la IFT, \textit{Corte de Grafos} tiene 2 grandes desventajas:
@@ -892,11 +897,11 @@ $F_d$ y $F_s$ son fuerzas derivadas de la ecuación de energía. $F_d$ represent
 suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
 Existe otra formulación del problema de evolución de curvas, que consiste en
-representar la curva como el nivel cero de una superficie $\phi$ (Ver \cite{Osher88}).
+representar la curva como el nivel cero de una superficie $\phi$ (ver \cite{Osher88}).
 
 \subsection{Implementación Numérica}
 
-Se toma de referencia la implementación segun \citeauthor{fast-level-set} (Ver \cite{fast-level-set}).
+Se toma de referencia la implementación segun \citeauthor{fast-level-set} (ver \cite{fast-level-set}).
 En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
 correspondientes a los bordes interno y externo, $L_{in}$ y $L_{out}$
 respectivamente. Entonces, la evolución se realiza intercambiando píxeles entre
@@ -1559,11 +1564,11 @@ Luego, durante la ejecución se aplica un algoritmo iterativo de 3 pasos:
 
 Como existe la posibilidad de que no haya suficiente información en un cuadro de imagen para estimar
 utilizando el metodo anterior, se utiliza ademas un algoritmo de extracción de caracteristicas y seguimiento.
-En particular, la implementación de \citeauthor{shi-tomasi-tracking} (Ver \cite{shi-tomasi-tracking}).
+En particular, la implementación de \citeauthor{shi-tomasi-tracking} (ver \cite{shi-tomasi-tracking}).
 
 La información de regiones y sus posiciones es entregada al 2do modulo.
-Este utiliza el algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} \cite{MHT-1, MHT-2} mejorado por
-\citeauthor*{Schmitt-1}\cite{Schmitt-2}. Este algoritmo utiliza un modelo de cámara y movimiento
+Este utiliza el algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} (ver \cite{MHT-1, MHT-2}) mejorado por
+\citeauthor*{Schmitt-1} (ver \cite{Schmitt-2}). Este algoritmo utiliza un modelo de cámara y movimiento
 probabilístico para estimar la posición de los jugadores y actualizarlas en cada observación.
 El algoritmo fue adapatado para tener en cuenta algunas restricciones encontradas en el futbol:
 \begin{itemize}
