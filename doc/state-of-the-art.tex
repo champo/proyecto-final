@@ -304,17 +304,16 @@ de aprendizaje formulado de la siguiente manera:
    w \geq 0, B_{i} \in {0,1}, \sum_{i} B_{i} = M
 \end{equation}
 
-Nótese que se descarta el subíndice $e$ para tener una mayor claridad.
-El conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$ y $M$
-es el mínimo número de ejemplares similares a $e$ (predefinido). La función $L$ puede ser
-cualquier función de costo o pérdida
-\footnote{Una función de pérdida o función de costo es simplemente una función que mapea un evento o los valores de una o más variables
-a un número real que representa algún ``costo'' asociado al evento.}
-, estrictamente positiva.
-El vector de pesos $w$
-se requiere que sea positivo para asegurar que una mayor distancia elemental (entre
-alguna de las características) no pueda nunca llevar a una menor distancia total,
-lo que implicaría una mayor similaridad.
+Nótese que se descarta el subíndice $e$ para tener una mayor claridad. El
+conjunto $C$ es el conjunto de todos los ejemplares con el mismo rótulo que $e$
+y $M$ es el mínimo número de ejemplares similares a $e$ (predefinido). La
+función $L$ puede ser cualquier función de costo o pérdida \footnote{Una
+función de pérdida o función de costo es simplemente una función que mapea un
+evento o los valores de una o más variables a un número real que representa
+algún ``costo'' asociado al evento.} , estrictamente positiva. El vector de
+pesos $w$ se requiere que sea positivo para asegurar que una mayor distancia
+elemental (entre alguna de las características) no pueda nunca llevar a una
+menor distancia total, lo que implicaría una mayor similaridad.
 
 Previo al seguimiento se deben especificar manualmente algunos parámetros iniciales,
 como ser: punto central, ancho, altura y rotación del objeto. En el proceso de
@@ -352,8 +351,8 @@ pequeños de $L(-w \cdot d_{i})$ y $0$ para el resto. Dado $B^{k}$, se puede
 obtener fácilmente $w^{k}$, resolviendo la ecuación \ref{eq:local-learning-w-k}.
 El aprendizaje termina cuando $B^{k+1}=B^{k}$.\\
 
-En el proceso de seguimiento, para cada cuadro nuevo, se generan los candidatos
-a ejemplares. En el área del aprendizaje automático, siempre se seleccionan
+En el proceso de seguimiento, para cada cuadro nuevo, se determinan cuáles son los candidatos
+a ser ejemplares. En el área del aprendizaje automático, siempre se seleccionan
 candidatos para luego verificar si cumplen las condiciones requeridas. En este
 caso, se quiere ver si los candidatos cumplen con las condiciones necesarias
 % TODO (jpcivile): Verificar si la frase "los candidatos..." es correcta, no se entendía nada
@@ -386,7 +385,7 @@ Finalmente, se utiliza la matriz $D$ para localizar al objeto como sigue:
     \forall j \in \{j : j \in S^{+}, D_{j}(t) > Thr_{D} \}
 \end{equation}
 
-Donde $t$ es un posible candidato y $T$ es el objeto. $S^{+}$ es el
+Donde $t$ es un candidato y $T$ es el objeto. $S^{+}$ es el
 conjunto de muestras de entrenamiento positivas. La idea consiste en
 que las muestras cuyas distancias sean menor que el umbral $Thr_{D}$
 contribuyan más a localizar el objeto, entonces la constante $c$ debería tener
