@@ -608,12 +608,14 @@ de marcadores $R_{0}^{(t)}$ y $R_{x}^{(t)}$, los que están dentro de la máscar
 su alrededor, respectivamente.
 
 Los marcadores internos se eligen aplicando una erosión morfológica
-\footnote{La erosión morfológica es una de las dos operaciones fundamentales de la matemática morfológica. Consiste
-en reducir o ``erosionar'' los bordes de un determinado objeto, reduciendo su tamaño. }
+\footnote{La erosión morfológica es una de las dos operaciones fundamentales de
+la matemática morfológica. Consiste en reducir o ``erosionar'' los bordes de un
+determinado objeto, reduciendo su tamaño. }
 %TODO Mismo caso que morfological dilation, valdría la pena la refrencia a la wiki? O alguna imagen o ejemplo en un apendice?
- a la máscara del objeto, con radio $\delta_{o}$, y
-luego seleccionando los píxeles de la región resultante que tengan mayor probabilidad
-de ser seguidos por el algoritmo KLT. Específicamente, se construye la matriz:
+% Respuesta (eordano): Creo que como son muy conocidas en tratamiento de imágenes no hace falta
+ a la máscara del objeto, con radio $\delta_{o}$, y luego seleccionando los
+ píxeles de la región resultante que tengan mayor probabilidad de ser seguidos
+ por el algoritmo KLT. Específicamente, se construye la matriz:
 
 \begin{equation}
     H[p] = \left[\begin{array}{cc}
@@ -636,6 +638,7 @@ Los marcadores externos son escogidos aplicando una dilatación morfológica
 estructurador para expandir alguna forma contenida en la imagen.}
 % TODO maybe poner refrencia a la wiki o la imagen del ejemplo en algun apendice?
 %  Por ejemplo, si se utiliza un disco para dilatar un cuadrado, se logra un cuadrado mayor con los bordes redondeados
+% (eordano) Misma respuesta que TODO anterior
 a la máscara del objeto $0$
 ,con radio $\delta_{x}$, y tomando los píxeles a lo largo del borde del objeto.
 
@@ -665,26 +668,29 @@ hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento
 \subsubsection{Segmentación de objetos - IFT}
 
 %TODO Again, se entiende? (Seen by: Alvaneitor)
-La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los píxeles y cuyas
-aristas unen dos nodos si los píxeles que representan son adyacentes. IFT toma como parámetros un conjunto de
-marcadores (píxeles) $S$, una función de costo de arista $w$, y una función de
-conectividad $f$ que asigna un costo de camino $f(\pi)$ a todo camino $\pi$ en $G$,
-dependiendo del costo de sus aristas.\\
-Para cada píxel $p$, IFT encuentra un camino directo óptimo (de costo mínimo), que lo
-conecta con su raíz $R(p)$, perteneciente al conjunto $S$ de marcadores. Estos caminos forman un bosque de caminos
-óptimos. Cada árbol en este bosque de caminos óptimos
-tiene como raíz a algún marcador $r$, y agrupa a todos los píxeles de la imagen que
-están mejor conectados, es decir tienen menor distancia, a $r$ que a cualquier otro marcador.
-IFT también le asigna a
-cada píxel $p$ un costo $V(p) = \pi(p)$, es decir el costo del camino mínimo para llegar a $p$ partiendo desde su raíz
-y un marcador raíz $R(p)$, el marcador
-que se encuentra en la raíz del árbol al cual pertenece.
+% Revisado (eordano) -- looks good
+La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los
+píxeles y cuyas aristas unen dos nodos si los píxeles que representan son
+adyacentes. IFT toma como parámetros un conjunto de marcadores (píxeles) $S$,
+una función de costo de arista $w$, y una función de conectividad $f$ que
+asigna un costo de camino $f(\pi)$ a todo camino $\pi$ en $G$, dependiendo del
+costo de sus aristas.
 
-IFTrace depende de la IFT
-para segmentar los objetos a seguir. Usa la función de conectividad $f_{max}$, que
-asigna a un camino $\pi$ el máximo costo para todas las aristas en $\pi$.
-Los píxeles marcadores utilizados son tanto los marcadores interiores, obtenidos
-por el algoritmo KLT, como los exteriores que se ubican alrededor del objeto.
+Para cada píxel $p$, IFT encuentra un camino directo óptimo (de costo mínimo),
+que lo conecta con su raíz $R(p)$, perteneciente al conjunto $S$ de marcadores.
+Estos caminos forman un bosque de caminos óptimos. Cada árbol en este bosque de
+caminos óptimos tiene como raíz a algún marcador $r$, y agrupa a todos los
+píxeles de la imagen para los cuales existe un camino a $r$ de costo menor
+a cualquier otro camino a otro marcador en $S$. IFT también le asigna a cada
+píxel $p$ un costo $V(p) = \pi(p)$, de valor igual al costo del camino mínimo
+para llegar a $p$ partiendo desde su raíz y un marcador raíz $R(p)$, el
+marcador que se encuentra en la raíz del árbol al cual pertenece.
+
+IFTrace depende de la IFT para segmentar los objetos a seguir. Usa la función
+de conectividad $f_{max}$, que asigna a un camino $\pi$ el máximo costo para
+todas las aristas en $\pi$. Los píxeles marcadores utilizados son tanto los
+marcadores interiores, obtenidos por el algoritmo KLT, como los exteriores que
+se ubican alrededor del objeto.
 
 La segmentación obtenida al usar $f_{max}$ tiene una importante propiedad
 \textit{minimax}. Sea la \textit{frontera} del objeto de interés el conjunto de
