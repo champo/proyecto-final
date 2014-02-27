@@ -1264,7 +1264,11 @@ Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
 
 \begin{equation}
   \label{eq:tanos-bf1}
-  % TODO (eordano): Copiar el latex de los tanos
+  B_F(x, y) =
+  \begin{cases}
+    \mu(x, y), \sigma(x, y) & if E(x, y) < th(W) \\
+    \phi & if E(x, y) > th(W)
+  \end{cases}
 \end{equation}
 
 Donde $th(W)$ es un valor de umbral obtenido empíricamente, proporcional al
@@ -1281,7 +1285,11 @@ anterior y nuevos valores de $E(x, y)$, utilizando la ecuación
 \ref{eq:tanos-bf2}:
 
 \begin{equation} \label{eq:tanos-bf2}
-  % TODO (eordano): Copiar el latex de los tanos
+  B_F(x, y) = \begin{cases}
+    \mu(x, y), \sigma(x, y) & if E(x, y) < th(W) \wedge B_F(x, y) = \phi \\
+    \beta B_F(x, y) + (1-\beta) \mu\left[mu(x, y), \sigma(x, y)\right] & if E(x, y) < th(W) \wedge B_F(x, y) \neq \phi \\
+    \phi & if E(x, y) > th(W)
+  \end{cases}
 \end{equation}
 
 Por último, se realiza un análisis de conectividad de los puntos de primer
@@ -1368,8 +1376,8 @@ Para esto, se genera un mapa de probabilidad de que la pelota se encuentre en
 cada punto de la imágen, basado en observaciones de cuadros anteriores. Esta
 posibilidad está definida como sigue:
 \[
-  P(x, y) = \exp \[ (- \vert ( x - \vert \tilde{x} + V_x \sign(\cos \theta) \vert )
-  + ( y - \vert \tilde{y} + V_y \sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi}\]
+  P(x, y) = \exp \left[ (- \vert ( x - \vert \tilde{x} + V_x sign(\cos \theta) \vert )
+  + ( y - \vert \tilde{y} + V_y sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi} \right]
 \]
 
 donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota,
@@ -1377,7 +1385,7 @@ donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota,
   \sigma = \frac{R_p V_{max} n}{R_{cm}T}
 \]
 donde $V_x$ y $V_y$ representan la velocidad de la pelota en las coordenadas
-$x$ e $y$, $\theta$ es $\atan(\tfrac{V_y}{V_x}$, $R_p$ es el radio de la pelota
+$x$ e $y$, $\theta$ es $\arctan(\tfrac{V_y}{V_x}$, $R_p$ es el radio de la pelota
 en píxeles, $V_{max}$ es el máximo valor admitido para la velocidad de la
 pelota, $R_{cm}$ es el radio de la pelota en centímetros, $T$ es la cantidad de
 cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
