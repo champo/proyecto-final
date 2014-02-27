@@ -581,12 +581,12 @@ los dos conjuntos de marcadores $S_{0}^{(t)}$ y $S_{x}^{(t)}$, utilizando la mis
 algoritmo \ref{alg:IFTrace-algorithm1-IFTrace}.
 
 % TODO Lo parafraseé por la correción. Se entiende? (Seen by: Alvaneitor)
- Luego, para cada región $K$, se utiliza
-nuevamente el algoritmo IFT para conseguir una proyección $K'$ de la región
-y compararla con la máscara del objeto en el cuadro
-$k$, utilizado como referencia. En caso de ser similares, se construye el clasificador
-de color $C'$ y se retorna junto a la proyección $K'$ como máscara representativa
-del objeto para el actual cuadro.
+% Respuesta (eordano): Saqué ", utilizado como referencia" porque me pareció sonaba mal y minor edits
+Luego, para cada región $K$, se utiliza nuevamente el algoritmo IFT para
+conseguir una proyección $K'$ de la región y compararla con la máscara del
+objeto en el cuadro $k$. En caso de ser similares, se construye el clasificador
+de color $C'$ y se retorna como resultado, junto a la proyección $K'$ que es la
+máscara representativa del objeto para el actual cuadro.
 
 Cabe destacar que, por simplicidad, para la comparación de formas se utilizan
 las Invariantes de Momento de Maitra (ver \cite{MaitraMomentInvariants}), y las
