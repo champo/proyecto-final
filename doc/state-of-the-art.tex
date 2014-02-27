@@ -807,16 +807,17 @@ una combinación lineal
 donde $\gamma$ es un parámetro definido por el usuario, $\nabla I$ es el gradiente
 del color de la imagen y $M$ es un mapa de clasificación de color.
 
-La primer componente $w_{f}(p,q)$ es la distancia Euclideana entre los colores de
-los extremos de la arista, como se menciona anteriormente pero con una particularidad:
-se mide en el espacio de colores $Lab$ de $CIE$
-\footnote{
-Un espacio de colores \textit{Lab} es un espacio de colores de 3 dimensiones, $L$ para la luminosidad o claridad, $a$ para la posición entre rojo y verde y
-$b$ para su posición entre amarillo y azul. Existen dos espacios muy similares \textit{Hunter Lab} y \textit{CIE Lab}, que se diferencian en la forma de
-calcular las coordenadas de color a partir de los datos: el primero utiliza raíces cuadradas y el segundo raíces cúbicas.}
- en lugar del tradicional RGB. La
-justificación para esto es que las distancias entre colores se aprecian más de
-esta forma. %TODO VER TEMA DE CIELAB y references
+La primer componente $w_{f}(p,q)$ es la distancia Euclideana entre los colores
+de los extremos de la arista, como se menciona anteriormente pero con una
+particularidad: se mide en el espacio de colores $Lab$ de $CIE$ \footnote{ Un
+  espacio de colores \textit{Lab} es un espacio de colores de 3 dimensiones,
+  $L$ para la luminosidad o claridad, $a$ para la posición entre rojo y verde y
+  $b$ para su posición entre amarillo y azul. Existen dos espacios muy similares
+  \textit{Hunter Lab} y \textit{CIE Lab}, que se diferencian en la forma de
+  calcular las coordenadas de color a partir de los datos: el primero utiliza
+  raíces cuadradas y el segundo raíces cúbicas.} en lugar del tradicional RGB.
+La justificación para esto es que las distancias entre colores se aprecian
+más de esta forma. %TODO VER TEMA DE CIELAB y references
 
 La segunda componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
 de colores $M$, una imagen en escala de grises donde cada píxel $M[p]$ es
