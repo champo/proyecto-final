@@ -355,9 +355,8 @@ En el proceso de seguimiento, para cada cuadro nuevo, se determinan cuáles son 
 a ser ejemplares. En el área del aprendizaje automático, siempre se seleccionan
 candidatos para luego verificar si cumplen las condiciones requeridas. En este
 caso, se quiere ver si los candidatos cumplen con las condiciones necesarias
-% TODO (jpcivile): Verificar si la frase "los candidatos..." es correcta, no se entendía nada
-para ser puntos característicos. Los candidatos a puntos característicos se
-toman aleatoriamente utilizando un filtro de partículas
+para ser puntos característicos. Para ello, se seleccionan
+aleatoriamente aplicando un filtro de partículas
 \footnote{El filtro de partículas es un método empleado para estimar el estado
   de un sistema que cambia a lo largo del tiempo. Más concretamente es un
   método de Montecarlo(secuencial). Se compone de un conjunto de muestras (las
@@ -580,8 +579,6 @@ se procede a analizar cada una de estas regiones, para las cuales se obtienen
 los dos conjuntos de marcadores $S_{0}^{(t)}$ y $S_{x}^{(t)}$, utilizando la misma técnica que en el
 algoritmo \ref{alg:IFTrace-algorithm1-IFTrace}.
 
-% TODO Lo parafraseé por la correción. Se entiende? (Seen by: Alvaneitor)
-% Respuesta (eordano): Saqué ", utilizado como referencia" porque me pareció sonaba mal y minor edits
 Luego, para cada región $K$, se utiliza nuevamente el algoritmo IFT para
 conseguir una proyección $K'$ de la región y compararla con la máscara del
 objeto en el cuadro $k$. En caso de ser similares, se construye el clasificador
@@ -611,11 +608,9 @@ Los marcadores internos se eligen aplicando una erosión morfológica
 \footnote{La erosión morfológica es una de las dos operaciones fundamentales de
 la matemática morfológica. Consiste en reducir o ``erosionar'' los bordes de un
 determinado objeto, reduciendo su tamaño. }
-%TODO Mismo caso que morfological dilation, valdría la pena la refrencia a la wiki? O alguna imagen o ejemplo en un apendice?
-% Respuesta (eordano): Creo que como son muy conocidas en tratamiento de imágenes no hace falta
- a la máscara del objeto, con radio $\delta_{o}$, y luego seleccionando los
- píxeles de la región resultante que tengan mayor probabilidad de ser seguidos
- por el algoritmo KLT. Específicamente, se construye la matriz:
+a la máscara del objeto, con radio $\delta_{o}$, y luego seleccionando los
+píxeles de la región resultante que tengan mayor probabilidad de ser seguidos
+por el algoritmo KLT. Específicamente, se construye la matriz:
 
 \begin{equation}
     H[p] = \left[\begin{array}{cc}
@@ -636,9 +631,6 @@ de ser localizados por el algoritmo KLT.\\
 Los marcadores externos son escogidos aplicando una dilatación morfológica
 \footnote{La dilatación morfológica es otra de las operaciones  básicas de la matématica morfológica. Generalmente utiliza un elemento
 estructurador para expandir alguna forma contenida en la imagen.}
-% TODO maybe poner refrencia a la wiki o la imagen del ejemplo en algun apendice?
-%  Por ejemplo, si se utiliza un disco para dilatar un cuadrado, se logra un cuadrado mayor con los bordes redondeados
-% (eordano) Misma respuesta que TODO anterior
 a la máscara del objeto $0$
 ,con radio $\delta_{x}$, y tomando los píxeles a lo largo del borde del objeto.
 
@@ -815,7 +807,7 @@ particularidad: se mide en el espacio de colores $Lab$ de $CIE$ \footnote{ Un
   calcular las coordenadas de color a partir de los datos: el primero utiliza
   raíces cuadradas y el segundo raíces cúbicas.} en lugar del tradicional RGB.
 La justificación para esto es que las distancias entre colores se aprecian
-más de esta forma. %TODO VER TEMA DE CIELAB y references
+más de esta forma.
 
 La segunda componente $w_{o}(p,q)$, es el gradiente del mapa de clasificación
 de colores $M$, una imagen en escala de grises donde cada píxel $M[p]$ es
@@ -1338,7 +1330,7 @@ ventanas temporales $W$.
 \subsubsection{Seguimiento de Jugadores}
 
 Se utiliza una técnica de seguimiento representando al área donde un jugador se
-encuentra mediante una \textit{bounding box}.       % TODO traducir?
+encuentra mediante una "caja delimitadora".
 Dos \textit{bounding boxes} pueden estar en estado de colisión si sus lados se
 intersectan. El vector de seguimiento de un jugador está definido por la tupla
 $x_{ti} = (p_i, v_i, d_i, l_i, c_i, s_i)$, donde:
@@ -1680,8 +1672,6 @@ Luego, se coloca un vértice entre un nodo del cuadro $t$ y otro del cuadro $t +
 Sobre este grafo se hace una búsqueda de camino óptimo. Los nodos que forman parte del camino óptimo se consideran entonces
 como la pelota real.
 
-%TODO cuando es ese "ya no se confia en el resultado del seguimiento"?? (Seen by:_alvaneitor)
-% better? (champo)
 Una vez detectada la pelota, se utiliza un filtro de \textit{Kalman}.
 Cuando el filtro devuelve una posición con un margen de error mayor a un cierto umbral, se considera perdida.
 En esa instancia se vuelve a detectar la pelota con el algoritmo de detección detallado anteriormente.
