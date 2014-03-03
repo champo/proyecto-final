@@ -1199,51 +1199,49 @@ de la imagen), $K$ es un coeficiente de distorsión radial, y $r =
 imagen.
 
 
-\section{Análisis de partidas de Fútbol}
+\section{Análisis de partidos de Fútbol}
 \label{sec:futbol}
 
 \subsection{Análisis utilizando 6 cámaras}
 \label{sec:6-camaras}
 
 \citeauthor*{papers-tanos} estudian la viabilidad de juzgar si en un partido de fútbol
-se dió una posición adelantada, utilizando seis cámaras dispuestas en ambos
+ocurrió una posición adelantada, utilizando seis cámaras dispuestas en ambos
 laterales de la cancha para reducir errores de medición y perspectiva. Las
 imágenes obtenidas por las cámaras son sincronizadas y procesadas para obtener
 la posición de cada jugador y de la pelota en todo momento, y a partir de estos
-datos detectar pases de la pelota para finalmente detectar si se cometió una
-falta de posición adelantada.
+datos detectar pases de pelota para finalmente detectar si se cometió una
+posición adelantada.
 
-El sistema consiste de seis cámaras de alta resolución, tres en cada lateral de
+El sistema consiste de seis cámaras de alta resolución, tres en cada lado de
 la cancha, con sus ejes ópticos paralelos a las líneas de llegada de la cancha
-con el objetivo de reducir errores de perspectiva. Cáda cámara envía sus
+con el objetivo de reducir errores de perspectiva. Cada cámara envía sus
 imágenes a una de seis computadoras dispuestas con el objetivo de analizar las
 imágenes y detectar la posición de los jugadores, la pelota, y posibles pases
-entre jugadores de un mismo equipo. Un computador central recibe estos datos y
+entre jugadores de un mismo equipo. Una computadora central recibe estos datos y
 valida que las mediciones de distintas cámaras sean congruentes.
 
-A continuación se presentan las técnicas de análisis de imágen aplicadas.
+A continuación se presentan las técnicas de análisis de imagen aplicadas.
 % TODO (eordano): escribir "nivel local de energía en ventana temporal de mejor manera
 % TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
 
 \subsubsection{Extracción del fondo}
 Un algoritmo de eliminación de fondo basado en una técnica de nivel local de
-energía en ventana temporal detecta aquellas áreas candidatas a contener a
-alguno de los jugadores en la cancha, la pelota, al árbitro o jueces de línea.
-Según los autores, este algoritmo es lo suficientemente robusto y confiable y
-detecta correctamente objetos en primer plano, tanto en movimiento como quieto
-durante un largo tiempo. Se analiza la conexidad de las áreas candidatas de
+energía con ventana temporal detecta aquellas áreas candidatas a contener a
+alguno de los jugadores, la pelota, el árbitro o los jueces de línea.
+Se analiza la conexidad de las áreas candidatas de
 acuerdo a su topología para descartar sombras que puedan llegar a generar
 errores en análisis posteriores.
 
-Este análisis utiliza la técnica de ``ventana deslizante'', ya que el análisis
+Este análisis utiliza la técnica de ``ventana deslizante'', ya que
 se basa en una cantidad de imágenes consecutivas de la secuencia (se referirá a
-esta subsecuencia como $W$ y se la denominá ``ventana temporal'' o simplemente
-``ventana''). Los autores del trabajo utilizaron una ventana de 60 cuadros,
-equivalente a $2.5$ segundos, valor obtenido empíricamente y suficiente, ya que
-se determinó que los objetos en primer plano (principalmente los jugadores) no
+esta subsecuencia como $W$ y se la denominará ``ventana temporal'' o simplemente
+``ventana''). \citeauthor*{papers-tanos} utilizan una ventana de 60 cuadros,
+equivalente a $2.5$ segundos, valor obtenido empíricamente y suficiente para
+determinar que los objetos en primer plano (principalmente los jugadores) no
 se mantenían durante tanto tiempo en posición completamente estática.
 
-Inicialmente, la energía de un punto $(x, y)$ en una imágen es definida por la
+Inicialmente, la energía de un punto $(x, y)$ en una imagen es definida por la
 ecuación \ref{eq:tanos-energy}:
 
 \begin{equation}
@@ -1252,12 +1250,12 @@ ecuación \ref{eq:tanos-energy}:
 \end{equation}
 
 Donde  $I^t(x, y)$ es la intensidad del punto en coordenadas $(x, y)$ para la
-imágen $t$, y $B_C(x, y)$ es una estimación de la intensidad del fondo para el
+imagen $t$, y $B_C(x, y)$ es una estimación de la intensidad del fondo para el
 punto $(x, y)$. Para determinar $B_C$ se aplican sucesivos filtros gaussianos
 al primer cuadro de $W$.
 
-Para la siguientes ventanas se refina el modelo del fondo de la imágen. Se
-calcula la función $B_F$, definida para todo punto de un cuadro, cuya imágen es
+Para la siguientes ventanas se refina el modelo del fondo de la imagen. Se
+calcula la función $B_F$, definida para todo punto de un cuadro, cuya imagen es
 $R^2$ y corresponde a la media y la desviación estándar de $E(x, y)$.
 
 Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
@@ -1274,15 +1272,15 @@ Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
 Donde $th(W)$ es un valor de umbral obtenido empíricamente, proporcional al
 tamaño de $W$. Un bajo nivel de energía corresponde a un punto estático,
 por lo tanto se considera que ese punto pertenece al fondo y $B_F$
-contendrá la media y la desviación estándar para ese punto. Si la imágen
+contendrá la media y la desviación estándar para ese punto. Si la imagen
 tiene un alto valor de energía, se considera al punto un candidato a
 contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
 indefinido.
 
-En sucesivas ventanas se utiliza un parámetro de actualización $\beta$ (los
-autores utilizaron un valor de $0.1$) y $B_F$ es recalculado en base a su valor
-anterior y nuevos valores de $E(x, y)$, utilizando la ecuación
-\ref{eq:tanos-bf2}:
+En sucesivas ventanas se utiliza un parámetro de actualización $\beta$
+(\citeauthor*{papers-tanos} utilizaron un valor de $0.1$) y $B_F$ es
+recalculado en base a su valor anterior y a los nuevos valores de $E(x, y)$,
+utilizando la ecuación \ref{eq:tanos-bf2}:
 
 \begin{equation} \label{eq:tanos-bf2}
   B_F(x, y) = \begin{cases}
@@ -1298,18 +1296,20 @@ a ser personas en la cancha o la pelota. Luego, se descartan sectores
 cuyo tamaño no supere un umbral (determinado experimentalmente con el
 objetivo de descartar sectores muy chicos) y se realiza un análisis de la
 morfología de los conjuntos conexos, para eliminar la sombra proyectada por los
-jugadores (el artículo publicado no entra en detalles acerca de este proceso).
+jugadores.
+% Leaving this as a reminder.(el artículo publicado no entra en detalles acerca de este proceso).
 
 \subsubsection{Clasificación de Jugadores y Árbitros}
 
-Luego de identificar sectores candidatos, son clasificados para determinar a
-que clase pertenece. Dado que los colores de las camisetas de los jugadores
-no se conocen previamente, es necesario utilizar un mecanismo de clasificación
-no supervisado que consiste de dos pasos: En primer lugar, se crean
-las clases de objetos con un algoritmo de \textit{clustering} basado en una
-versión modificada del algoritmo BSAS (ver \cite[BSAS]).
-Segundo, el clasificador obtenido es utilizado para determinar la clase
-de cada objeto candidato obtenido del análisis anterior.
+Luego de identificar los sectores candidatos, éstos son clasificados para
+determinar a que clase pertenecen (jugadores o arquero de uno u otro equipo
+o árbitros). Dado que los colores de las camisetas de
+los jugadores no se conocen previamente, es necesario utilizar un mecanismo
+de clasificación no supervisado. Dicho mecanismo consiste de dos pasos. En
+primer lugar, se crean las clases de objetos con un algoritmo de
+\textit{clustering} basado en una versión modificada del algoritmo BSAS
+(ver \cite[BSAS]). En segundo lugar, el clasificador obtenido es utilizado
+para determinar la clase de cada objeto candidato obtenido del análisis anterior.
 
 El algoritmo BSAS sólo requiere para funcionar una medida de semejanza $d(x, C)$,
 y un valor de umbral denominado $th$ para generar las clases de objetos.
@@ -1331,13 +1331,13 @@ ventanas temporales $W$.
 
 Se utiliza una técnica de seguimiento representando al área donde un jugador se
 encuentra mediante una "caja delimitadora".
-Dos \textit{bounding boxes} pueden estar en estado de colisión si sus lados se
+Dos "cajas delimitadoras" pueden estar en estado de colisión si sus lados se
 intersectan. El vector de seguimiento de un jugador está definido por la tupla
 $x_{ti} = (p_i, v_i, d_i, l_i, c_i, s_i)$, donde:
 
 \begin{itemize}
   \item $p_i$, $v_i$, $d_i$ son la posición, velocidad, y dimensiones
-    (ancho y alto del \textit{bounding box}) para el jugador $i$.
+    (ancho y alto del caja) para el jugador $i$.
   \item $s_i$ define el estado del seguimiento, para resolver
     colisiones entre cuadros y la aparición o desaparición de
     sectores candidatos en el área.
@@ -1346,18 +1346,19 @@ $x_{ti} = (p_i, v_i, d_i, l_i, c_i, s_i)$, donde:
 etiquetas si el cuadro está en estado de colisión.
 \end{itemize}
 
+%TODO tebex revisate esta primer oración que quedó medio sucia (más allá de la traduccion)
 Para cada nuevo cuadro, se actualiza la posición de la caja que contiene a
-los sectores candidatos analizando el movimiento de sectores dentro del
-\textit{bounding box} para actualizar la velocidad, posición y tamaño,
-y respecto a otras cajas para actualizar su estado (si entró en contacto).
+los sectores candidatos analizando el movimiento de sectores dentro de la
+caja para actualizar la velocidad, posición y tamaño,
+respecto a otras cajas para actualizar su estado (si entró en contacto).
 Para resolver situaciones en la que se esté terminando la colisión, se utilizan
 datos correspondientes a la clase de los objetos detectados y la velocidad de
-cada jugador previo a la colisión de las \textit{bounding boxes}.
+cada jugador previo a la colisión de las cajas.
 
 Para la detección de la posición de la pelota, se utiliza un clasificador
-entranado con un conjunto de entrenamiento de pelotas en distintas posiciones y
-tamaños. Se elige el candidato a ser la pelota cuyo coeficiente de correlación
-con el clasificador sea mayor en caso de que haya varios candidatos.
+entrenado con un conjunto de entrenamiento de imágenes de pelotas en distintas
+posiciones y de distintos tamaños. Se elige el candidato a ser la pelota a
+aquél sector cuyo coeficiente de correlación con el clasificador sea el mayor.
 
 La velocidad de la pelota es determinada a partir de las observaciones de la
 cámara por la ecuación:
@@ -1367,25 +1368,25 @@ cámara por la ecuación:
 \]
 
 donde $P_{x_t}, P_{y_t}$ es la posición de la pelota en el cuadro $t$, y $n$ es
-la cantidad de cuadros entre la imágen actual y la última ubicación correcta de
+la cantidad de cuadros entre la imagen actual y la última ubicación correcta de
 la pelota.
 
 Sin embargo, para que una posición candidata para la pelota sea seleccionada
 como un verdadero positivo, debe recaudarse información sobre más de un cuadro.
-Para esto, se genera un mapa de probabilidad de que la pelota se encuentre en
-cada punto de la imágen, basado en observaciones de cuadros anteriores. Esta
+Para esto, se genera un mapa de probabilidades de que la pelota se encuentre en
+cada punto de la imagen, basado en observaciones de cuadros anteriores. Esta
 posibilidad está definida como sigue:
 \[
   P(x, y) = \exp \left[ (- \vert ( x - \vert \tilde{x} + V_x sign(\cos \theta) \vert )
   + ( y - \vert \tilde{y} + V_y sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi} \right]
 \]
 
-donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota,
+donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota, y
 \[
   \sigma = \frac{R_p V_{max} n}{R_{cm}T}
 \]
 donde $V_x$ y $V_y$ representan la velocidad de la pelota en las coordenadas
-$x$ e $y$, $\theta$ es $\arctan(\tfrac{V_y}{V_x}$, $R_p$ es el radio de la pelota
+$x$ e $y$, $\theta$ es $\arctan(\tfrac{V_y}{V_x}$), $R_p$ es el radio de la pelota
 en píxeles, $V_{max}$ es el máximo valor admitido para la velocidad de la
 pelota, $R_{cm}$ es el radio de la pelota en centímetros, $T$ es la cantidad de
 cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
@@ -1414,9 +1415,9 @@ Para la detección de una jugada de posición adelantada, se requiere:
     calcular la posición estimada de la pelota. Se hace uso también de la
     posición relativa de las cámaras en la cancha: dado que están enfrentadas,
     las mediciones de la posición de la pelota de dos cámaras enfrentadas
-    debería ser similar. Se estima que el jugador más cercano a la pelota es
-    aquél que la patea al detectar un cambio repentino en la velocidad de la
-    pelota.
+    debería ser similar. Al detectar un cambio repentino en la velocidad de
+    la pelota, se estima que el jugador más cercano a la pelota es el que
+    la pateó.
 
   \item \textit{Determinar si es una posición adelantada activa}: Se analiza
     la posición de jugadores en estado de ``posición adelantada pasiva''. De
