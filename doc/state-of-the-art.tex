@@ -1191,7 +1191,7 @@ corrección:
     y_u &=& (x_d - x_c) (1+K r^2)
 \end{eqnarray*}
 
-Donde $x_u$ y $y_u$ son los puntos en la imágen sin distorsión, $x_d$ y $y_d$ son
+Donde $x_u$ y $y_u$ son los puntos en la imagen sin distorsión, $x_d$ y $y_d$ son
 puntos en la imagen original, $x_c$ y $y_c$ son los puntos centrales de la
 imagen (se puede asumir que el punto central de la cámara es el punto central
 de la imagen), $K$ es un coeficiente de distorsión radial, y $r =
@@ -1526,100 +1526,105 @@ jugador.
 % SIFT Base
 \subsubsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
 
-\citeauthor*{beetz-05} analizaron, desde el punto de vista de la inteligencia
-artificial, el problema de detectar el comportamiento de los jugadores dentro
+%Tiempo verbal BEGIN
+\citeauthor*{beetz-05} analizan, desde el punto de vista de la inteligencia
+artificial, el problema de detectar el movimiento de los jugadores dentro
 de la cancha. Para eso, propusieron un sistema con dos módulos, uno que extrae
-características e información de videos provenientes de mùltiples cámaras, y
+características e información de videos provenientes de múltiples cámaras, y
 un módulo de análisis y seguimiento del comportamiento de cada objeto.
-Los objetos de interes son los jugadores, la pelota y los arbitros.
+Los objetos de ínteres son los jugadores, la pelota y los árbitros.
 
 Encontraron una gran dificultad en detectar la posición de jugadores más alejados de la cámara,
 dado que el material con el que trabajaron en general eran cámaras situadas a no más de 18
-metros de altura. Esto genera una imagen borrosa de los jugadores que estan
+metros de altura. Esto genera una imagen borrosa de los jugadores que están
 en el otro extremo de la cancha, dificultando el analisis.
+%Tiempo verbal END
 
-El primer modulo se encuentra encargado de procesar los cuadros de video y producir informacion
-de posición de las regiones que potencialmente contienen los objetos de interes.
-Como herramienta principal de detección, se utiliza la segmentacíon por colores.
-Se conoce de manera supervizada las clases de colores que representan el pasto, los jugadores de un equipo,
-los jugadores del otro equipo, los arbitros, las lineas de la cancha y la pelota.
-Con esta informacion, es posible armar filtros complejos a la hora de buscar una clase de objeto particular.
-Por ejemplo, para encontrar jugadores, tomo la region que queda de eliminar arbitros, lineas, pasto y la pelota,
-y de esto, tomo las parte que cumple con la representación por colores de los jugadores.
-Para evitar problemas de iluminación, cada un cierto numero de cuadros se re-aprende la clase de color
-que corresponde al verde del pasto.
+El primer módulo se encarga de procesar los cuadros de video y producir información
+de la posición de las regiones que potencialmente contienen los objetos de ínteres.
+Se utiliza la segmentacíon por colores como herramienta principal de detección.
+Se conoce de manera supervisada las clases de colores que representan el cesped, los jugadores de un equipo,
+los jugadores del otro equipo, los árbitros, las líneas de la cancha y la pelota.
+Con esta información, es posible armar filtros complejos a la hora de buscar una clase de objeto particular.
+Por ejemplo, para encontrar jugadores, se toma la región que queda de
+eliminar los árbitros, las líneas, el césped y la pelota,
+y de esto, se toman las parte que cumplen con la representación por colores de los jugadores.
+Para evitar problemas de iluminación, cada cierto número de cuadros se re-aprende la clase de color
+que corresponde al verde del césped.
 
-Para detectar las regiones de interes, se utilizan las clases de color para aislar potenciales regiones.
-A partir de estas, se utiliza caracteristicas morfologicas de cada clase de objeto para eliminar regiones
-invalidas. Se asume que los jugadores siempre van a estar parados, y por lo tanto tienen regiones rectangulares.
-De la misma manera, se espera que la region que contiene a la pelota sea circular.
-Notese que no se espera que los resultados obtenidos en este paso sean finales.
-La información producida por este modulo es procesada por el 2do modulo para producir los resultados finales de
+% What??
+Para detectar las regiones de ínteres, se utilizan las clases de color para aislar potenciales regiones.
+A partir de estas, se utilizan las caracteristícas morfológicas de cada clase de objeto para eliminar regiones
+inválidas. Se asume que los jugadores siempre van a estar parados, y por lo tanto tienen regiones rectangulares.
+De la misma manera, se espera que la región que contiene a la pelota sea circular.
+Nótese que no se espera que los resultados obtenidos en este paso sean finales.
+La información producida por este módulo es procesada por el segundo módulo para producir los resultados finales de
 seguimiento.
 
-Finalmente, la ultima tarea asignada al primer modulo es la de estimar los parametros de la camara.
-Esto es necesario para poder asignar una ubicacion en el plano de la cancha a un objeto representado
-por una region en el plano de la imagen.
-De manera supervisada y previa a la ejecucion del algoritmo, se genera un modelo de la cancha.
-Este modelo incluye lineas de la cancha, arcos y los carteles de propaganda.
+Finalmente, la última tarea asignada al primer módulo es la de estimar los parámetros de la cámara.
+Esto es necesario para poder asignar una ubicación en el plano de la cancha a un objeto representado
+por una región en el plano de la imagen.
+De manera supervisada y previa a la ejecución del algoritmo, se genera un modelo de la cancha.
+Este modelo incluye líneas de la cancha, arcos y los carteles de propaganda.
 Luego, durante la ejecución se aplica un algoritmo iterativo de 3 pasos:
 \begin{enumerate}
 \item Proyectar el modelo sobre la cancha
-\item Utilizar algoritmos de deteccion de lineas para calcular el error de la proyección
-\item Ajustar los parametros para minimizar el error de proyeccion
+\item Utilizar algoritmos de detección de líneas para calcular el error de la proyección
+\item Ajustar los parámetros para minimizar el error de proyección
 \end{enumerate}
 
-Como existe la posibilidad de que no haya suficiente información en un cuadro de imagen para estimar
-utilizando el metodo anterior, se utiliza ademas un algoritmo de extracción de caracteristicas y seguimiento.
+Como existe la posibilidad de que no haya suficiente información en un cuadro para estimar
+utilizando el método anterior, se utiliza además un algoritmo de extracción de características y seguimiento.
 En particular, la implementación de \citeauthor{shi-tomasi-tracking} (ver \cite{shi-tomasi-tracking}).
 
-La información de regiones y sus posiciones es entregada al 2do modulo.
+La información de regiones y sus posiciones es entregada al segundo módulo.
 Este utiliza el algoritmo \textbf{Multiple Hypothesis Tracking(MHT)} (ver \cite{MHT-1, MHT-2}) mejorado por
 \citeauthor*{Schmitt-1} (ver \cite{Schmitt-2}). Este algoritmo utiliza un modelo de cámara y movimiento
 probabilístico para estimar la posición de los jugadores y actualizarlas en cada observación.
 El algoritmo fue adapatado para tener en cuenta algunas restricciones encontradas en el futbol:
 \begin{itemize}
-\item Todos los objetos de interes se encuentran en el mismo plano
-\item Los objetos de interes solo pueden desaparecer de la imagen por los bordes
+\item Todos los objetos de ínteres se encuentran en el mismo plano
+\item Los objetos de ínteres solo pueden desaparecer de la imagen por los bordes
 \end{itemize}
 
-Ya obtenida la posición de cada objeto de interes en la imagen, podemos hacer un analisis del estado del partido.
-Los autores solo observan al jugador que tiene la pelota en un dado cuadro.
-Para este jugador construyen eventos de movimiento. Un evento de movimiento es un cambio de posición del jugador
-tal que puede ser representado por una function lineal. Por lo tanto, se termina describiendo el movimiento de un
-jugador a lo largo de una jugada, de manera aproximada, como una serie de pequeñas lineas rectas.
+Una vez obtenida la posición de cada objeto de ínteres, se puede hacer un análisis del estado del partido.
+Sólo se observa al jugador que tiene la pelota en un dado cuadro.
+Para este jugador se construyen eventos de movimiento. Un evento de movimiento es un cambio de posición del jugador
+tal que puede ser representado por una función lineal. Por lo tanto, se termina describiendo el movimiento de un
+jugador a lo largo de una jugada, de manera aproximada, como una serie de pequeñas líneas rectas.
 
 Con estos eventos de movimiento, se construye un episodio. Esto es la serie de eventos de movimiento que realiza
-un jugador desde que recibe la pelota en un cuadro $t_i$, hasta que ya no la tiene en su contral en un cuadro $t_f$.
+un jugador desde que recibe la pelota en un cuadro $t_i$, hasta que la pierde en un cuadro $t_f$.
 Como no siempre se conoce con precisión la posición de la pelota, se ingresa de manera supervisada el momento en el
 que un jugador toma contacto con la pelota, y cuando lo pierde.
 
-Finalmente, se intenta clasificar los episodios segun su resultado: un pase, un tiro al arco, una evasión o perdida de pelota.
-Para esto se utiliza un arbol de clasificaciones, con reglas simples para los primeros 3 casos.
-En el caso de la perdida de pelota, se utiliza un arbol de decisión mas complejo.
+Finalmente, se intenta clasificar los episodios según su resultado: un pase, un tiro al arco, una evasión o pérdida de pelota.
+Para esto se utiliza un árbol de clasificaciones, con reglas simples para los primeros 3 casos.
+En el caso de la pérdida de pelota, se utiliza un árbol de decisión más complejo.
 
-\subsection{Análisis de deportes con video televizado}
+\subsection{Análisis de deportes con video televisado}
 \label{sec:tv-video}
 
 \subsubsection{\citetitle{LIU20061146}}
 
 En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
-jugadores y la pelota utilizando la transmision televizada de un partido de
+jugadores y la pelota utilizando la transmisión televisada de un partido de
 futbol. El algoritmo se puede dividir en las siguientes etapas:
 
 \begin{itemize}
   \item Estimación de la relación entre puntos en la imagen y coordenadas en la cancha
-  \item Estimación de la posición de la camara en las coordenadas del mundo
+  \item Estimación de la posición de la cámara en las coordenadas del mundo
   \item Detección y seguimiento de la pelota
   \item Detección de la cancha
   \item Detección de los jugadores
 \end{itemize}
 
 Para estimar la relación entre los puntos en la imagen y las coordenadas en la cancha se calcula una homografía.
-Como la perspectiva de la cámara cambia cuadro a cuadro, esta debe ser calculada en cada cuadro nuevamente.
+Como la perspectiva de la cámara cambia cuadro a cuadro, ésta debe ser calculada en cada cuadro nuevamente.
 Si en la imagen actual se encuentran 4 puntos conocidos (esquinas de la cancha o de las areas), la homografía puede ser calculada directamente.
-De no ser asi, se estima considerando que la homografía del cuadro actual $H_t$ se puede relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
-Este parametro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
+De no ser así, se estima considerando que la homografía del cuadro actual $H_t$ se puede
+relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
+Este parámetro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
 Luego $ H_t = H_{t-1} P_{t-1,t}$.
 
 Para obtener la posición de la cámara se descompone la homografía en 2 matrices:
@@ -1632,7 +1637,7 @@ K = \begin{pmatrix}
     \end{pmatrix}
 \end{eqnarray*}
 
-Donde $\alpha$, $\beta$ representan la amplitud focal de la cámara, $\gamma$ representa el \textit{skew} y $(u_0, v_0)$ es la coordenada del punto principal.
+Donde $\alpha$, $\beta$ representan la amplitud focal de la cámara, $\gamma$ representa el sesgo y $(u_0, v_0)$ es la coordenada del punto principal.
 Se asume que la amplitud focal se mantiene constante, $\gamma = 0$ y el punto principal es el centro de la imagen.
 $r_1$, $r_2$ son parte de una rotación $R = (r_1, r_2, r_1 \times r_2)$, y $t$ son las coordenadas del origen de la cancha en coordenadas de la imagen.
 Conocidas $H$ y $K$ se puede calcular la posición de la cámara como $R^{-1} t$.
@@ -1674,19 +1679,20 @@ Sobre este grafo se hace una búsqueda de camino óptimo. Los nodos que forman p
 como la pelota real.
 
 Una vez detectada la pelota, se utiliza un filtro de \textit{Kalman}.
-Cuando el filtro devuelve una posición con un margen de error mayor a un cierto umbral, se considera perdida.
+Cuando el filtro devuelve una posición con un margen de error mayor a un cierto umbral, se considera pérdida.
 En esa instancia se vuelve a detectar la pelota con el algoritmo de detección detallado anteriormente.
 
 \subsubsection*{Detección de la cancha}
 
 Para detectar la cancha y aislar el resto de los objetos, se computa un histograma de colores de la imagen.
-Los autores consideran que el color de la cancha representa el mayor pico en el histograma.
-Por lo tanto, buscan este pico en el histograma y toman todos los colores adyacentes en el histograma que esten dentro de un rango de ocurrencia relativo al pico principal.
+El color de la cancha representa el mayor pico en el histograma.
+Por lo tanto, se busca este pico en el histograma y se toman todos los colores adyacentes en el histograma
+que esten dentro de un rango de ocurrencia relativo al pico principal.
 Todo píxel cuyo valor caiga dentro de ese rango se considera parte del fondo.
 
 \subsubsection*{Detección de jugadores}
 
-Una vez que se determinó el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
+Una vez que se determina el rango de colores de la cancha, se construye una imagen binaria separando la cancha de todo otro objeto.
 Construida esta imagen, se aplica la misma técnica que se usa para seguir la pelota, adaptada a la morfología de los jugadores.
 Una vez que se conoce la posición en el cuadro $t$ de los jugadores, utilizando la homografía $H_t$ se puede calcular la posición
 en la cancha de los jugadores.
