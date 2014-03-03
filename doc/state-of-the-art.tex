@@ -1236,7 +1236,7 @@ A continuación se presentan las técnicas de análisis de imágen aplicadas.
 \subsubsection{Extracción del fondo}
 Un algoritmo de eliminación de fondo basado en una técnica de nivel local de
 energía en ventana temporal detecta aquellas áreas candidatas a contener a
-alguno de los jugadores en la cancha, la pelota, al referí o jueces de línea.
+alguno de los jugadores en la cancha, la pelota, al árbitro o jueces de línea.
 Según los autores, este algoritmo es lo suficientemente robusto y confiable y
 detecta correctamente objetos en primer plano, tanto en movimiento como quieto
 durante un largo tiempo. Se analiza la conexidad de las áreas candidatas de
@@ -1308,7 +1308,7 @@ objetivo de descartar sectores muy chicos) y se realiza un análisis de la
 morfología de los conjuntos conexos, para eliminar la sombra proyectada por los
 jugadores (el artículo publicado no entra en detalles acerca de este proceso).
 
-\subsubsection{Clasificación de Jugadores y Referies}
+\subsubsection{Clasificación de Jugadores y Árbitros}
 
 Luego de identificar sectores candidatos, son clasificados para determinar a
 que clase pertenece. Dado que los colores de las camisetas de los jugadores
@@ -1405,7 +1405,7 @@ Los datos analizados en una computadora por cada cámara son entonces transmitid
 a un servidor (llamado ``supervisor'') que unifica la información recibida de
 cada cámara, considera sus posiciones relativas, y arma el estado del juego,
 compuesto por el tiempo desde el inicio del partido, la posición de todos los
-jugadores, el referí, jueces de línea, sus respectivas velocidades y estimación
+jugadores, el árbitro, jueces de línea, sus respectivas velocidades y estimación
 de la aceleración, si la pelota fue detectada o no, la posición y la confianza
 en la posición de la pelota. Los jugadores son posicionados a través de una
 transformación homográfica y el supervisor correlaciona los datos provenientes
