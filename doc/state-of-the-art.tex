@@ -667,8 +667,6 @@ hay rápidos cambios de tamaño o de forma (por ejemplo, rotaciones o movimiento
 
 \subsubsection{Segmentación de objetos - IFT}
 
-%TODO Again, se entiende? (Seen by: Alvaneitor)
-% Revisado (eordano) -- looks good
 La IFT interpreta a la imagen $I$ como un grafo $G$, cuyos nodos son los
 píxeles y cuyas aristas unen dos nodos si los píxeles que representan son
 adyacentes. IFT toma como parámetros un conjunto de marcadores (píxeles) $S$,
@@ -683,7 +681,7 @@ caminos óptimos tiene como raíz a algún marcador $r$, y agrupa a todos los
 píxeles de la imagen para los cuales existe un camino a $r$ de costo menor
 a cualquier otro camino a otro marcador en $S$. IFT también le asigna a cada
 píxel $p$ un costo $V(p) = \pi(p)$, de valor igual al costo del camino mínimo
-para llegar a $p$ partiendo desde su raíz y un marcador raíz $R(p)$, el
+para llegar a $p$ partiendo desde su raíz, y un marcador raíz $R(p)$, el
 marcador que se encuentra en la raíz del árbol al cual pertenece.
 
 IFTrace depende de la IFT para segmentar los objetos a seguir. Usa la función
