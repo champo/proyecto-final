@@ -1441,25 +1441,25 @@ Para la detección de una jugada de posición adelantada, se requiere:
 \subsection{Análisis utilizando 8 camaras}
 \label{sec:8-camaras}
 
-\citeauthor*{xu-8cams} proponen un sistema que consta de 8 cámaras conectadas a
-sistemas que analizan la información y a través de una capa de red la envían
-a un supervisor, encargado del mantenimiento de la posición de los
+\citeauthor*{xu-8cams} proponen un sistema que consta de 8 módulos, conectados
+a cámaras, que recolectan y envían información
+a un módulo supervisor, encargado del mantenimiento de la posición de los
 jugadores. El sistema supervisor no tiene acceso a los datos crudos de la
-imagen obtenida.
+imagen obtenida, sino que reciben información procesada de cada nodo.
 
-Cada cámara realiza un preprocesamiento de la imagen para estimar la posición
-de la cámara y detectar áreas de interés (candidatos a ser los jugadores en
-pantalla). Para la eliminación del fondo, se utilizan dos máscaras, una
-geométrica, que se aproxima a la geometría de la cancha y una que extrae
+\subsubsection{Pre-procesamiento del video}
+
+Cada nodo realiza un preprocesamiento de la imagen para estimar la posición
+de la cámara y detectar áreas de interés (candidatas a ser los jugadores en
+pantalla). El primer paso es la eliminación del fondo. Para ello, se utilizan dos máscaras,
+una geométrica, que aproxima la geometría de la cancha, y otra que extrae
 información acerca de los píxeles y genera un histograma para detectar el color
 verde del pasto de la cancha. Para la primera máscara, se pasa la imagen del
 espacio de colores
 \textit{RGB} a \textit{HSI} y se analiza el histograma de \textit{hue} para los
-mayores valores de intensidad. Luego, los píxeles que serán considerados son
-aquellos que no pertenezcan a un rango de \textit{hue} entre un mínimo y un
-máximo, correspondientes a los valores que hagan que el máximo valor del
-histograma caiga al 10\% de su valor original.  Luego, la máscara que elimina
-valores de acuerdo a su color queda definida por:
+valores de intensidad. Luego, los píxeles que serán considerados son
+aquellos que no pertenezcan a un determinado rango de \textit{hue}.
+Luego, la máscara que elimina valores de acuerdo a su color queda definida por:
 
 \[
   M_c = ({(u, v) | H(u, v) \in [H_l, H_h]} \oplus B ) \ominus B
@@ -1477,7 +1477,7 @@ comprende los siguientes puntos:
 
 Donde $P$ es el rango de coordenadas en el mundo real correspondiente a la cancha
 y $E(u, v)$ es la correspondencia del punto $(u, v)$ en el mundo real, de
-acuerdo a una corrección utilizando ángulos de Euler. Por último la máscara que
+acuerdo a una corrección utilizando ángulos de Euler. Por último, la máscara que
 determina aquellos píxeles que corresponden al pasto de la cancha son los que
 pertenecen a la intersección de ambas máscaras:
 
@@ -1485,7 +1485,9 @@ pertenecen a la intersección de ambas máscaras:
   M = M_c \cap M_g
 \]
 
-Las \textit{bounding boxes} de los objetos candidatos a ser jugadores son
+El segundo paso consiste en un proceso de seguimiento local. Cada nodo
+determina pequeñas "cajas delimitadoras" alrededor de las áreas donde
+es posible que haya jugadores. Estas cajas son
 representadas por la posición en el plano de la imagen $\mathbf{x}_l$ y su
 error en la medición $\mathbf{z}_l$ en un filtro de Kalman (ver \cite{funk2003study}):
 
@@ -1497,23 +1499,32 @@ error en la medición $\mathbf{z}_l$ en un filtro de Kalman (ver \cite{funk2003s
 \mathbf{z}_l = [r_c \;  c_c  \; r_1  \; c_1  \; r_2  \; c_2]^T
 \]
 
-Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la \textit{bounding box} y
+Donde $r_1 < r_2$ y $c_1 < c_2$ son los límites de la caja y
 $r_c$ y $c_c$ sus centroides. Estos valores son
 actualizados cuadro por cuadro, asumiendo que la variación en alto y ancho es
 baja. Se utilizan ángulos de Euler para traducir estos valores a la posición
 esperada dentro del plano de la cancha. La varianza es estimada utilizando el
-jacobiano de la matriz de Euler. Por último, se analiza la categoría de los
+jacobiano de la matriz de Euler.
+
+Por último, se analiza la categoría de los
 jugadores de acuerdo al histograma de colores, clasificando de acuerdo a los
 cinco posibles uniformes (uno para cada equipo, uno para cada arquero, y los
 árbitros).
 
-%TODO mayber footnote o referencia a que es una distancia de Mahalanobis? (Seen by:alvaneitor)
-El módulo supervisor recibe de cada computadora los datos preprocesados y
-ninguna información acerca de las imágenes. Se unifican los valores obtenidos
+\subsubsection{Seguimiento multi-cámara}
+
+%TODO esta sección quizas podría tener un poco más de contenido. Pasa que el
+% paper es fucking- disgusting! No se entiende un soto. Tebex? (by:Alvanator)
+El módulo supervisor recibe los datos pre-procesados de los demás módulos.
+Se unifican los valores obtenidos
 de todos los módulos y se los asocia utilizando una matriz que es actualizada
-de acuerdo a la distancia de Mahalanobis. Si esta distancia queda por debajo de
+de acuerdo a la distancia de Mahalanobis \footnote {La distancia de Mahalanobis
+es una medida de distancia que sirve para determinar la similitud entre dos
+variables aleatorias multidimensionales. Se diferencia de la distancia
+euclídea en que tiene en cuenta la correlación entre
+las variables aleatorias y posee invariancia de la escala.}. Si esta distancia queda por debajo de
 un determinado umbral, se empieza a considerar que las mediciones de dos
-cámaras distintas para dos \textit{bounding boxes} pasan a ser el mismo
+cámaras distintas para dos "cajas delimitadoras" pasan a ser el mismo
 jugador.
 
 \subsection{Análisis de deportes con múltiples camaras}
