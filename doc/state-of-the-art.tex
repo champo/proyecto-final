@@ -1553,7 +1553,7 @@ los jugadores del otro equipo, los árbitros, las líneas de la cancha y la pelo
 Con esta información, es posible armar filtros complejos a la hora de buscar una clase de objeto particular.
 Por ejemplo, para encontrar jugadores, se toma la región que queda de
 eliminar los árbitros, las líneas, el césped y la pelota,
-y de esto, se toman las parte que cumplen con la representación por colores de los jugadores.
+y de esto, se toman las partes que cumplen con la representación por colores de los jugadores.
 Para evitar problemas de iluminación, cada cierto número de cuadros se re-aprende la clase de color
 que corresponde al verde del césped.
 
@@ -1629,8 +1629,8 @@ Como la perspectiva de la cámara cambia cuadro a cuadro, ésta debe ser calcula
 Si en la imagen actual se encuentran 4 puntos conocidos (esquinas de la cancha o de las areas), la homografía puede ser calculada directamente.
 De no ser así, se estima considerando que la homografía del cuadro actual $H_t$ se puede
 relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
-Este parámetro $P_{t-1,t}$ se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
-Luego $ H_t = H_{t-1} P_{t-1,t}$.
+Este parámetro $P_{t-1,t}$ es una homografia que se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
+Luego $ H_t = H_{t-1} P_{t-1,t}$. Se utiliza el método \textit{KLT} (ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el cálculo de $P$.
 
 Para obtener la posición de la cámara se descompone la homografía en 2 matrices:
 \begin{eqnarray*}
@@ -1666,7 +1666,6 @@ Para el cálculo de $K$ se necesitan $\alpha$ y $\beta$ que se calcula usando $P
 \end{bmatrix}
 \end{equation}
 
-Se usa el método \textit{KLT} (ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el cálculo de $P$.
 
 \subsubsection*{Seguimiento de la pelota}
 
