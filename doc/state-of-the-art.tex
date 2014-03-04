@@ -1277,6 +1277,8 @@ tiene un alto valor de energía, se considera al punto un candidato a
 contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
 indefinido.
 
+% TODO: @eordano: no deberia ser un B_F' que se calcula en base a B_F y E'? 
+% queda confuso sino me pa
 En sucesivas ventanas se utiliza un parámetro de actualización $\beta$
 (\citeauthor*{papers-tanos} utilizaron un valor de $0.1$) y $B_F$ es
 recalculado en base a su valor anterior y a los nuevos valores de $E(x, y)$,
@@ -1289,6 +1291,8 @@ utilizando la ecuación \ref{eq:tanos-bf2}:
     \phi & if E(x, y) > th(W)
   \end{cases}
 \end{equation}
+
+% TODO: @eordano no me queda claro para que sirve B_F
 
 Por último, se realiza un análisis de conectividad de los puntos de primer
 plano y los conjuntos de puntos conexos son denominados sectores candidatos
@@ -1316,6 +1320,7 @@ y un valor de umbral denominado $th$ para generar las clases de objetos.
 Se realizan varias iteraciones, unificando clases de objetos si no difieren
 por más de $th$.
 
+% TODO: @eordano esto es una distancia? suena a una regla de actualizacion esto...
 Para clasificar a los objetos en su clase correspondiente se minimiza la
 distancia determinada por:
 \[
@@ -1391,6 +1396,8 @@ en píxeles, $V_{max}$ es el máximo valor admitido para la velocidad de la
 pelota, $R_{cm}$ es el radio de la pelota en centímetros, $T$ es la cantidad de
 cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
 encontrada en la posición $\tilde{x},\tilde{y}$.
+
+% TODO: @eordano, que hacen con esa P?
 
 \subsubsection{Detección de Pases y Posición Adelantada}
 
