@@ -1462,7 +1462,7 @@ aquellos que no pertenezcan a un determinado rango de \textit{hue}.
 Luego, la máscara que elimina valores de acuerdo a su color queda definida por:
 
 \[
-  M_c = ({(u, v) | H(u, v) \in [H_l, H_h]} \oplus B ) \ominus B
+  M_c = (\left\{(u, v) | H(u, v) \in [H_l, H_h]\right\} \oplus B ) \ominus B
 \]
 
 Donde $H(u, v)$ es el valor de \textit{hue} del píxel en la posición $(u, v)$,
@@ -1472,7 +1472,7 @@ jugadores y eliminar las líneas de campo blancas. La máscara geométrica
 comprende los siguientes puntos:
 
 \[
-  M_g = { (u, v) | E(u, v)  \in P }
+  M_g = \left\{ (u, v) | E(u, v)  \in P \right\}
 \]
 
 Donde $P$ es el rango de coordenadas en el mundo real correspondiente a la cancha
@@ -1486,7 +1486,7 @@ pertenecen a la intersección de ambas máscaras:
 \]
 
 El segundo paso consiste en un proceso de seguimiento local. Cada nodo
-determina pequeñas "cajas delimitadoras" alrededor de las áreas donde
+determina pequeñas ``cajas delimitadoras'' alrededor de las áreas donde
 es posible que haya jugadores. Estas cajas son
 representadas por la posición en el plano de la imagen $\mathbf{x}_l$ y su
 error en la medición $\mathbf{z}_l$ en un filtro de Kalman (ver \cite{funk2003study}):
@@ -1524,7 +1524,7 @@ variables aleatorias multidimensionales. Se diferencia de la distancia
 euclídea en que tiene en cuenta la correlación entre
 las variables aleatorias y posee invariancia de la escala.}. Si esta distancia queda por debajo de
 un determinado umbral, se empieza a considerar que las mediciones de dos
-cámaras distintas para dos "cajas delimitadoras" pasan a ser el mismo
+cámaras distintas para dos ``cajas delimitadoras'' pasan a ser el mismo
 jugador.
 
 \subsection{Análisis de deportes con múltiples camaras}
