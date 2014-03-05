@@ -1222,16 +1222,15 @@ entre jugadores de un mismo equipo. Una computadora central recibe estos datos y
 valida que las mediciones de distintas cámaras sean congruentes.
 
 A continuación se presentan las técnicas de análisis de imagen aplicadas.
-% TODO (eordano): escribir "nivel local de energía en ventana temporal de mejor manera
 % TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
 
 \subsubsection{Extracción del fondo}
-Un algoritmo de eliminación de fondo basado en una técnica de nivel local de
-energía con ventana temporal detecta aquellas áreas candidatas a contener a
-alguno de los jugadores, la pelota, el árbitro o los jueces de línea.
-Se analiza la conexidad de las áreas candidatas de
-acuerdo a su topología para descartar sombras que puedan llegar a generar
-errores en análisis posteriores.
+Un algoritmo de eliminación de fondo basado en una técnica que analiza el nivel
+de energía (ver \cite{tanos-cita-21}) en una ventana temporal (una secuencia de
+cuadros consecutivos) para detectar aquellas áreas candidatas a contener a
+alguno de los jugadores, la pelota, el árbitro o los jueces de línea. Se
+analiza la conexidad de las áreas candidatas de acuerdo a su topología para
+descartar sombras que puedan llegar a generar errores en análisis posteriores.
 
 Este análisis utiliza la técnica de ``ventana deslizante'', ya que
 se basa en una cantidad de imágenes consecutivas de la secuencia (se referirá a
@@ -1277,7 +1276,7 @@ tiene un alto valor de energía, se considera al punto un candidato a
 contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
 indefinido.
 
-% TODO: @eordano: no deberia ser un B_F' que se calcula en base a B_F y E'? 
+% TODO: @eordano: no deberia ser un B_F' que se calcula en base a B_F y E'?
 % queda confuso sino me pa
 En sucesivas ventanas se utiliza un parámetro de actualización $\beta$
 (\citeauthor*{papers-tanos} utilizaron un valor de $0.1$) y $B_F$ es
@@ -1321,8 +1320,10 @@ Se realizan varias iteraciones, unificando clases de objetos si no difieren
 por más de $th$.
 
 % TODO: @eordano esto es una distancia? suena a una regla de actualizacion esto...
-Para clasificar a los objetos en su clase correspondiente se minimiza la
-distancia determinada por:
+% REPLY: yeap. Does this look better?
+Para clasificar a los objetos en su clase correspondiente se toma la clase con
+menor \textit{distancia Manhattan} al prototipo, y se actualiza la clase
+ganadora mediante la fórmula:
 \[
   C_k = \frac{1}{w_k+1}(w_k C_k + V)
 \]
