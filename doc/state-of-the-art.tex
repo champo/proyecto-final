@@ -1392,11 +1392,11 @@ como un verdadero positivo, debe recaudarse información sobre más de un cuadro
 Para esto, se genera un mapa de probabilidades de que la pelota se encuentre en
 cada punto de la imagen, basado en observaciones de cuadros anteriores. Esta
 posibilidad está definida como sigue:
-\[
+\begin{equation}
   \label{eqn-tanos-posicion-1}
   P(x, y) = \exp \left[ (- \vert ( x - \vert \tilde{x} + V_x sign(\cos \theta) \vert )
   + ( y - \vert \tilde{y} + V_y sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi} \right]
-\]
+\end{equation}
 
 donde $\tilde{x},\tilde{y}$ es la última posición conocida de la pelota, y
 \[
