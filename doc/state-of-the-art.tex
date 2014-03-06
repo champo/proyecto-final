@@ -1222,7 +1222,6 @@ entre jugadores de un mismo equipo. Una computadora central recibe estos datos y
 valida que las mediciones de distintas cámaras sean congruentes.
 
 A continuación se presentan las técnicas de análisis de imagen aplicadas.
-% TODO (eordano): buscar cita para esta técnica (21 en el paper de los tanos)
 
 \subsubsection{Extracción del fondo}
 Un algoritmo de eliminación de fondo basado en una técnica que analiza el nivel
@@ -1278,10 +1277,14 @@ indefinido.
 
 % TODO: @eordano: no deberia ser un B_F' que se calcula en base a B_F y E'?
 % queda confuso sino me pa
-En sucesivas ventanas se utiliza un parámetro de actualización $\beta$
-(\citeauthor*{papers-tanos} utilizaron un valor de $0.1$) y $B_F$ es
-recalculado en base a su valor anterior y a los nuevos valores de $E(x, y)$,
-utilizando la ecuación \ref{eq:tanos-bf2}:
+% REPLY: Sounds better?
+Una vez que este primer $B_F$ contiene un modelo que identifica zonas en primer
+plano y en el fondo, para sucesivas ventanas se utiliza esa información y se la
+complementa con nuevas observaciones, utilizando un parámetro de actualización
+$\beta$ (\citeauthor*{papers-tanos} utilizaron un valor de $0.1$). De este
+modo, luego de la primer aproximación a $B_F$, éste será calculado en base a su
+valor anterior y a los nuevos valores de energía ($E(x, y)$), utilizando la
+ecuación \ref{eq:tanos-bf2}:
 
 \begin{equation} \label{eq:tanos-bf2}
   B_F(x, y) = \begin{cases}
@@ -1292,6 +1295,13 @@ utilizando la ecuación \ref{eq:tanos-bf2}:
 \end{equation}
 
 % TODO: @eordano no me queda claro para que sirve B_F
+% REPLY:
+De esta manera, $B_F$ contiene ahora información para determinar si un punto
+pertenece al primer plano o es un punto del fondo o estático. Un punto en la
+siguiente ventana temporal pertenece al primer plano si $B_F(x, y) = \phi$ o
+bien $E(x, y) - \mu(x, y) > N \sigma(x, y)$, es decir, la energía en ese punto
+difiere del valor esperado por más de $N$ desviaciones estándar (los autores
+utilizaron un valor de 2 para $N$).
 
 Por último, se realiza un análisis de conectividad de los puntos de primer
 plano y los conjuntos de puntos conexos son denominados sectores candidatos
@@ -1383,6 +1393,7 @@ Para esto, se genera un mapa de probabilidades de que la pelota se encuentre en
 cada punto de la imagen, basado en observaciones de cuadros anteriores. Esta
 posibilidad está definida como sigue:
 \[
+  \label{eqn-tanos-posicion-1}
   P(x, y) = \exp \left[ (- \vert ( x - \vert \tilde{x} + V_x sign(\cos \theta) \vert )
   + ( y - \vert \tilde{y} + V_y sign(\sin \theta) \vert)\vert ^ 2 / 2\theta^2) /\sigma \sqrt{2\pi} \right]
 \]
@@ -1399,6 +1410,11 @@ cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
 encontrada en la posición $\tilde{x},\tilde{y}$.
 
 % TODO: @eordano, que hacen con esa P?
+% REPLY
+En sucesivos cuadros, se utiliza esta información para evitar buscar la pelota
+en todo el campo de juego, y sólo se analizan los píxeles con alta probabilidad
+de contener la pelota (la probabilidad disminuye exponencialmente con la
+distancia según la ecuación \ref{eqn-tanos-posicion-1}).
 
 \subsubsection{Detección de Pases y Posición Adelantada}
 
