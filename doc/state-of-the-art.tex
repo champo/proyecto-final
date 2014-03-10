@@ -1132,7 +1132,7 @@ el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluc
 
 % TODO: Apenas entiendo que garcha pasa despues de esto.
 \begin{equation}
-    argmin_{\norm{h}=1} \norm{Ah} = argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
+    \argmin_{\norm{h}=1} \norm{Ah} = \argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
 \end{equation}
 
 donde $\lambda_{min}$ es el menor autovalor de $A^{T}A$. Esto se desprende de las propiedades de la norma 2 de matrices y de la propiedad de
@@ -1157,7 +1157,7 @@ y
 cumplen $B = QDQ^{T}$.
 
 \begin{equation}
-    argmin_{\norm{h}=1} h^{T}QDQ^{T}h = argmin_{\norm{y}=1} y^{T}Dy = argmin_{\norm{y}=1} \lambda_{1}y^{2}_{1} + ... + \lambda_{n}y^{2}_{n}
+    \argmin_{\norm{h}=1} h^{T}QDQ^{T}h = \argmin_{\norm{y}=1} y^{T}Dy = \argmin_{\norm{y}=1} \lambda_{1}y^{2}_{1} + ... + \lambda_{n}y^{2}_{n}
 \end{equation}
 
 Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las componentes de $y$ se anulan excepto por $y_{i} = 1$. Como $y = Q^{T}h$,
