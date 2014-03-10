@@ -293,6 +293,7 @@ public class MainApp extends javax.swing.JFrame {
 
     private void calculateButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateButtonActionPerformed
         homeography = homeographyManager.calculateHomography();
+//        homeography = homeographyManager.calculateIterativeHomegraphy(1);
         mapButton.setEnabled(homeography != null);
     }//GEN-LAST:event_calculateButtonActionPerformed
 
@@ -343,7 +344,7 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
+        frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
@@ -416,6 +417,7 @@ public class MainApp extends javax.swing.JFrame {
 
                 ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
                 homeography = homeographyManager.calculateHomography();
+//                homeography = homeographyManager.calculateIterativeHomegraphy(1);
                 addNextFrameButton();
 
             }

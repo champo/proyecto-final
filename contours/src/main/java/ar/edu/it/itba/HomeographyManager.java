@@ -6,8 +6,8 @@ package ar.edu.it.itba;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
@@ -119,5 +119,23 @@ public class HomeographyManager {
             return String.format("(%s, %s) -> (%s, %s)", image.x, image.y, mapped.x, mapped.y);
         }
     }
+
+	public Homography calculateIterativeHomegraphy(int n) {
+		Homography currentH = calculateHomography();
+		for (int i = 0; i < n; i++) {
+			Homography h_inverse = currentH.getInverse();
+			List<Point> proyectedMappedPoints = new LinkedList<Point>();
+			for (Pair pair : points) {
+				proyectedMappedPoints.add(h_inverse.apply(pair.mapped));
+			}
+			HomeographyManager auxManager = new HomeographyManager();
+			for (int j = 0; j < points.size(); j++) {
+				auxManager.setMapping(proyectedMappedPoints.get(j), points.get(j).image);
+			}
+			Homography h_1 = auxManager.calculateHomography();
+			currentH = currentH.compose(h_1);
+		}
+		return currentH;
+	}
 
 }

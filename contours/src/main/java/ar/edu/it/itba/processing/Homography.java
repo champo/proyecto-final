@@ -6,7 +6,8 @@ import org.ejml.simple.SimpleMatrix;
 
 public class Homography {
 
-	private final SimpleMatrix mat;
+	final SimpleMatrix mat;
+	private SimpleMatrix inverse;
 
 	public Homography(final SimpleMatrix mat) {
 		this.mat = mat;
@@ -34,12 +35,27 @@ public class Homography {
 		pos.set(1, y);
 		pos.set(2, 1);
 
-		SimpleMatrix mapped = mat.invert().mult(pos);
+		SimpleMatrix mapped = getInverseMatrix().mult(pos);
 		mapped = mapped.divide(mapped.get(2));
 		return new Point((int) mapped.get(0), (int) mapped.get(1));
 	}
 
     public Point inverseApply(Double fieldWidth, int i) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Homography getInverse() {
+        return new Homography(getInverseMatrix());
+    }
+
+	private SimpleMatrix getInverseMatrix() {
+		if (this.inverse == null) {
+			this.inverse = mat.invert();
+		}
+		return this.inverse;
+	}
+
+    public Homography compose(Homography otherHomography) {
+        return new Homography(mat.mult(otherHomography.mat));
     }
 }
