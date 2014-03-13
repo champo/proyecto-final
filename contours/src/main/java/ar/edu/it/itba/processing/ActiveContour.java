@@ -505,18 +505,7 @@ public class ActiveContour {
 	}
 
 	private static double diffObject(final BufferedImage frame, final Contour c, final Point p, final RGBPoint color, final RGBPoint ... referenceColors) {
-		double result = 0;
-		int i = 0;
-
-		for (final RGBPoint referenceColor : referenceColors) {
-			result += color.diff(referenceColor) * PONDER[i];
-			i++;
-		}
-
-		RGBPoint stdDev = calculateStandardDeviation(p, frame);
-		result += 0.1 * stdDev.diff(c.getLastStdDev());
-
-		return result / ((referenceColors.length + 1) * MAX_PIXEL_VALUE);
+		return diffBackground(color, p, frame, c.getLastStdDev(), referenceColors);
 	}
 
 	private static RGBPoint calculateStandardDeviation(final Point center, final BufferedImage frame) {
@@ -587,7 +576,7 @@ public class ActiveContour {
 			i++;
 		}
 
-		result += calculateStandardDeviation(p, frame).diff(stdDev);
+		result += 0.1 * calculateStandardDeviation(p, frame).diff(stdDev);
 
 		return result / ((referenceColors.length + 1) * MAX_PIXEL_VALUE);
 	}
