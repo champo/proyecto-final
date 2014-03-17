@@ -13,7 +13,7 @@ public class Contour implements Iterable<Point> {
 		MISSING
 	}
 
-	private static final double mu = 0.7;
+	private static final double mu = 0.5;
 
 	private final Set<Point> points;
 	private final Set<Point> lin;

@@ -168,7 +168,7 @@ public class ActiveContour {
 
 	private void markExpandedArea(final BufferedImage frame, final Contour c) {
 
-		int searchRadius = Math.max(15 + c.cyclesLost(), 30);
+		int searchRadius = Math.max(5 + c.cyclesLost(), 10);
 		Point center = c.getLastCentroid();
 
 		clearContour(c);
