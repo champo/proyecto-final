@@ -15,13 +15,13 @@ import ar.edu.it.itba.processing.PointMapping.Provider;
 
 public class ActiveContour {
 
-	private static final double MAX_PIXEL_VALUE = Math.pow(256, 3);
+	private static final double MAX_PIXEL_VALUE = 256 * 3;
 
 	// Define the radiud to find the colors for the objects to track
 	public final static int RADIUS_X = 20;
 	public final static int RADIUS_Y = 30;
 	public final static int BUCKETS = 32;
-	public final static double PONDER[] = new double[]{ 0.9, 0, 0 };
+	public final static double PONDER[] = new double[]{ 1, 0, 0 };
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 400*400;
@@ -576,7 +576,7 @@ public class ActiveContour {
 			i++;
 		}
 
-		result += 0.1 * calculateStandardDeviation(p, frame).diff(stdDev);
+		result += calculateStandardDeviation(p, frame).diff(stdDev);
 
 		return result / ((referenceColors.length + 1) * MAX_PIXEL_VALUE);
 	}

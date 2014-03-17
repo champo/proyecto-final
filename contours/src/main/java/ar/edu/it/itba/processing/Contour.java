@@ -63,7 +63,7 @@ public class Contour implements Iterable<Point> {
 	}
 
 	public static Contour aroundPoint(final int color, final Point point) {
-		return new Contour(color, new Rectangle(point.x - 5, point.y - 5, 10, 10));
+		return new Contour(color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
 	}
 
 	public int minX() {
