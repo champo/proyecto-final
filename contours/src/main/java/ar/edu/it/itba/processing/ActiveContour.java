@@ -68,17 +68,7 @@ public class ActiveContour {
 		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
 		colors.add(getAverageColor(frame, contour));
 		//colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
-		return arrayResult(colors);
-	}
-
-
-	private ColorPoint[] arrayResult(final List<ColorPoint> colors) {
-		final ColorPoint[] result = new ColorPoint[colors.size()];
-		int i = 0;
-		for (final ColorPoint color : colors) {
-			result[i++] = color;
-		}
-		return result;
+		return colors.toArray(new ColorPoint[0]);
 	}
 
 	private ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
@@ -86,7 +76,7 @@ public class ActiveContour {
 		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
 		colors.add(getAverageBackgroundColor(frame, contour));
 		//colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
-		return arrayResult(colors);
+		return colors.toArray(new ColorPoint[0]);
 	}
 
 	public float adapt(final BufferedImage frame) {
