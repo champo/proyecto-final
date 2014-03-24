@@ -10,9 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import ar.edu.it.itba.processing.ColorPoint.Type;
 import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.PointMapping.Provider;
+import ar.edu.it.itba.processing.color.ColorPoint;
+import ar.edu.it.itba.processing.color.ColorPoint.Type;
 
 public class ActiveContour {
 

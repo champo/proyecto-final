@@ -1,4 +1,4 @@
-package ar.edu.it.itba.processing;
+package ar.edu.it.itba.processing.color;
 
 
 public class HSPoint extends HSIPoint {

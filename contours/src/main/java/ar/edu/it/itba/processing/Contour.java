@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import ar.edu.it.itba.processing.ColorPoint.Type;
+import ar.edu.it.itba.processing.color.ColorPoint;
+import ar.edu.it.itba.processing.color.ColorPoint.Type;
 
 public class Contour implements Iterable<Point> {
 

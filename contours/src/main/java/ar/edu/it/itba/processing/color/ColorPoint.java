@@ -1,11 +1,11 @@
-package ar.edu.it.itba.processing;
+package ar.edu.it.itba.processing.color;
 
 
 public class ColorPoint {
 
-	protected int red;
-	protected int blue;
-	protected int green;
+	public int red;
+	public int blue;
+	public int green;
 
 	public ColorPoint(final int red, final int green, final int blue) {
 		this.red = red;

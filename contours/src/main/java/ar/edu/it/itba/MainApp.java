@@ -30,9 +30,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import ar.edu.it.itba.processing.ActiveContour;
-import ar.edu.it.itba.processing.ColorPoint;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
+import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
