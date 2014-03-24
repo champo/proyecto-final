@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ar.edu.it.itba.processing.ColorPoint.Type;
 import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.PointMapping.Provider;
 
@@ -41,10 +42,6 @@ public class ActiveContour {
 	}
 
 	private final Contour[] contours;
-
-	private final RGBPoint[][] omega;
-	private final RGBPoint[][] omegaZero;
-	private final RGBPoint[] backgroundDeviations;
 	private final int[][] phi;
 
 	private final PointMapping theta;
@@ -56,41 +53,37 @@ public class ActiveContour {
 		phi = new int[frame.getWidth()][frame.getHeight()];
 		theta = getTheta(c);
 
-		omega = new RGBPoint[c.length][];
-		omegaZero = new RGBPoint[c.length][];
-		backgroundDeviations = new RGBPoint[c.length];
-
 		for (int i = 0; i < c.length; i++) {
 			Contour contour = contours[i];
 
-			omega[i] = getCharacteristics(frame, contour);
-			omegaZero[i] = getBackgroundCharacteristics(frame, contour);
-			backgroundDeviations[i] = calculateBackgroundStandardDeviation(contour, frame);
+			contour.omega = getCharacteristics(frame, contour);
+			contour.omegaZero = getBackgroundCharacteristics(frame, contour);
+			contour.bgDeviation = calculateBackgroundStandardDeviation(contour, frame);
 			contour.setLastStdDev(calculateStandardDeviation(contour, frame));
 		}
 
 	}
 
-	private RGBPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
-		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
+	private ColorPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
+		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
 		colors.add(getAverageColor(frame, contour));
 		//colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
 		return arrayResult(colors);
 	}
 
 
-	private RGBPoint[] arrayResult(final List<RGBPoint> colors) {
-		final RGBPoint[] result = new RGBPoint[colors.size()];
+	private ColorPoint[] arrayResult(final List<ColorPoint> colors) {
+		final ColorPoint[] result = new ColorPoint[colors.size()];
 		int i = 0;
-		for (final RGBPoint color : colors) {
+		for (final ColorPoint color : colors) {
 			result[i++] = color;
 		}
 		return result;
 	}
 
-	private RGBPoint[] getBackgroundCharacteristics(final BufferedImage frame,
+	private ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
 			final Contour contour) {
-		final List<RGBPoint> colors = new ArrayList<RGBPoint>();
+		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
 		colors.add(getAverageBackgroundColor(frame, contour));
 		//colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
 		return arrayResult(colors);
@@ -113,7 +106,7 @@ public class ActiveContour {
 				}
 
 				final Contour c = contours[j];
-				final PointMapping F_d = getF(frame, c, omegaZero[j], omega[j], backgroundDeviations[j]);
+				final PointMapping F_d = getF(frame, c);
 
 				if (!applyForce(c, F_d, theta, frame)) {
 					done[j] = true;
@@ -488,27 +481,26 @@ public class ActiveContour {
 		}
 	}
 
-	static PointMapping getF(final BufferedImage frame, final Contour c, final RGBPoint omegaZero[],
-			final RGBPoint[] omega, final RGBPoint stdDev) {
+	static PointMapping getF(final BufferedImage frame, final Contour c) {
 		return new PointMapping(new Provider() {
 
 			@Override
 			public double valueForPoint(final Point p) {
-				return prob(frame, c, p, omegaZero, omega, stdDev);
+				return prob(frame, c, p);
 			}
 		});
 	}
 
-	private static Double prob(final BufferedImage frame, final Contour c, final Point p, final RGBPoint omegaZero[], final RGBPoint omega[], final RGBPoint stdDev) {
-		RGBPoint color = new RGBPoint(frame.getRGB(p.x, p.y));
-		return Math.log((1 - diffObject(frame, c, p, color, omega)) / (1 - diffBackground(color, p, frame, stdDev, omegaZero)));
+	private static Double prob(final BufferedImage frame, final Contour c, final Point p) {
+		ColorPoint color = ColorPoint.buildFromRGB(c.getType(), frame.getRGB(p.x, p.y));
+		return Math.log((1 - diffObject(frame, c, p, color)) -  Math.log(1 - diffBackground(color, p, frame, c.bgDeviation, c.omegaZero)));
 	}
 
-	private static double diffObject(final BufferedImage frame, final Contour c, final Point p, final RGBPoint color, final RGBPoint ... referenceColors) {
-		return diffBackground(color, p, frame, c.getLastStdDev(), referenceColors);
+	private static double diffObject(final BufferedImage frame, final Contour c, final Point p, final ColorPoint color) {
+		return diffBackground(color, p, frame, c.getLastStdDev(), c.omega);
 	}
 
-	private static RGBPoint calculateStandardDeviation(final Point center, final BufferedImage frame) {
+	private static ColorPoint calculateStandardDeviation(final Type type, final Point center, final BufferedImage frame) {
 		double red = 0;
 		double green = 0;
 		double blue = 0;
@@ -518,7 +510,7 @@ public class ActiveContour {
 		pixels.add(center);
 
 		for (final Point p : pixels) {
-			final RGBPoint v = new RGBPoint(frame.getRGB(p.x, p.y));
+			final ColorPoint v = ColorPoint.buildFromRGB(type, frame.getRGB(p.x, p.y));
 			red += v.red;
 			green += v.green;
 			blue += v.blue;
@@ -534,7 +526,7 @@ public class ActiveContour {
 		double greenDeviation = 0;
 
 		for (final Point p : pixels) {
-			final RGBPoint v = new RGBPoint(frame.getRGB(p.x, p.y));
+			final ColorPoint v = ColorPoint.buildFromRGB(type, frame.getRGB(p.x, p.y));
 			redDeviation += Math.pow(v.red - avgRed, 2);
 			greenDeviation += Math.pow(v.green - avgGreen, 2);
 			blueDeviation += Math.pow(v.blue - avgBlue, 2);
@@ -544,10 +536,10 @@ public class ActiveContour {
 		blueDeviation = Math.sqrt(blueDeviation / (points - 1));
 		greenDeviation = Math.sqrt(greenDeviation / (points - 1));
 
-		return new RGBPoint((int) redDeviation, (int) blueDeviation, (int) greenDeviation);
+		return ColorPoint.build(type, (int) redDeviation, (int) blueDeviation, (int) greenDeviation);
 	}
 
-	private static RGBPoint calculateStandardDeviation(final Contour c, final BufferedImage frame) {
+	private static ColorPoint calculateStandardDeviation(final Contour c, final BufferedImage frame) {
 
 		double red = 0;
 		double green = 0;
@@ -555,7 +547,7 @@ public class ActiveContour {
 		int points = 0;
 
 		for (Point p : c) {
-			RGBPoint stdDev = calculateStandardDeviation(p, frame);
+			ColorPoint stdDev = calculateStandardDeviation(c.getType(), p, frame);
 			red += stdDev.red;
 			green += stdDev.green;
 			blue += stdDev.blue;
@@ -563,25 +555,25 @@ public class ActiveContour {
 			points++;
 		}
 
-		return new RGBPoint((int) red / points, (int) blue / points, (int) green / points);
+		return ColorPoint.build(c.getType(), (int) red / points, (int) blue / points, (int) green / points);
 	}
 
-	private static double diffBackground(final RGBPoint color, final Point p, final BufferedImage frame, final RGBPoint stdDev, final RGBPoint ... referenceColors) {
+	private static double diffBackground(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
 		double result = 0;
 		int i = 0;
 
-		for (final RGBPoint referenceColor : referenceColors) {
+		for (final ColorPoint referenceColor : referenceColors) {
 
 			result += color.diff(referenceColor) * PONDER[i];
 			i++;
 		}
 
-		result += calculateStandardDeviation(p, frame).diff(stdDev);
+		result += calculateStandardDeviation(stdDev.getType(), p, frame).diff(stdDev);
 
 		return result / ((referenceColors.length + 1) * MAX_PIXEL_VALUE);
 	}
 
-	private RGBPoint calculateBackgroundStandardDeviation(final Contour r, final BufferedImage frame) {
+	private ColorPoint calculateBackgroundStandardDeviation(final Contour r, final BufferedImage frame) {
 		int med_x = 0;
 		int med_y = 0;
 		for (final Point p : r.getLout()) {
@@ -602,7 +594,7 @@ public class ActiveContour {
 			for (int y = Math.max(0, med_y - RADIUS_Y); y <= maxY; y++) {
 				final Point p = new Point(x, y);
 				if (!r.contains(x, y)) {
-					RGBPoint c = calculateStandardDeviation(p, frame);
+					ColorPoint c = calculateStandardDeviation(r.getType(), p, frame);
 
 					red += c.red;
 					green += c.green;
@@ -611,13 +603,14 @@ public class ActiveContour {
 				}
 			}
 		}
-		return new RGBPoint((int) (red / sum),
+		return ColorPoint.build(r.getType(),
+				(int) (red / sum),
 				(int) (green / sum),
 				(int) (blue / sum));
 	}
 
 
-	private RGBPoint getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
+	private ColorPoint getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
 		int med_x = 0;
 		int med_y = 0;
 		for (final Point p : r.getLout()) {
@@ -638,7 +631,7 @@ public class ActiveContour {
 			for (int y = Math.max(0, med_y - RADIUS_Y); y <= maxY; y++) {
 				final Point p = new Point(x, y);
 				if (!r.contains(x, y)) {
-					final RGBPoint c = new RGBPoint(frame.getRGB(p.x, p.y));
+					final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(p.x, p.y));
 					final double distFactor = Math.abs(med_x - x)/RADIUS_X + Math.abs(med_y - y)*RADIUS_Y;
 					red += c.red * distFactor;
 					green += c.green * distFactor;
@@ -647,18 +640,19 @@ public class ActiveContour {
 				}
 			}
 		}
-		return new RGBPoint((int) (red / sum),
+		return ColorPoint.build(r.getType(),
+				(int) (red / sum),
 				(int) (green / sum),
 				(int) (blue / sum));
 	}
 
-	static private RGBPoint getAverageColor(final BufferedImage frame, final Contour r) {
+	static private ColorPoint getAverageColor(final BufferedImage frame, final Contour r) {
 		double red = 0;
 		double green = 0;
 		double blue = 0;
 		int points = 0;
 		for (final Point p : r) {
-			final RGBPoint c = new RGBPoint(frame.getRGB(p.x, p.y));
+			final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(p.x, p.y));
 			red += c.red;
 			green += c.green;
 			blue += c.blue;
@@ -667,10 +661,11 @@ public class ActiveContour {
 		final double avgRed = red / points;
 		final double avgGreen = green / points;
 		final double avgBlue = blue / points;
-		return new RGBPoint((int) avgRed, (int) avgGreen, (int) avgBlue);
+		return ColorPoint.build(r.getType(), (int) avgRed, (int) avgGreen, (int) avgBlue);
 	}
 
-	static RGBPoint[] mostFrequentColors(final BufferedImage frame, final Contour r) {
+/*
+	static ColorPoint[] mostFrequentColors(final BufferedImage frame, final Contour r) {
 		final double red[] = new double[BUCKETS];
 		final double green[] = new double[BUCKETS];
 		final double blue[] = new double[BUCKETS];
@@ -688,7 +683,7 @@ public class ActiveContour {
 		while (!queue.isEmpty() && iterations < MAX_ITERATIONS) {
 			iterations++;
 			final Point p = queue.pop();
-			final RGBPoint c = new RGBPoint(frame.getRGB(p.x, p.y));
+			final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(p.x, p.y));
 			red[c.red / BUCKETS] += 1;
 			green[c.green / BUCKETS] += 1;
 			blue[c.blue / BUCKETS] += 1;
@@ -702,7 +697,7 @@ public class ActiveContour {
 		return extractThreeMostCommon(red, green, blue);
 	}
 
-	private static RGBPoint[] extractThreeMostCommon(final double[] red, final double[] green,
+	private static ColorPoint[] extractThreeMostCommon(final double[] red, final double[] green,
 			final double[] blue) {
 		int avgRed = 0;
 		int avgGreen = 0;
@@ -712,8 +707,8 @@ public class ActiveContour {
 			avgGreen = green[avgGreen] > green[i] ? avgGreen : i;
 			avgBlue = blue[avgBlue] > blue[i] ? avgBlue : i;
 		}
-		final RGBPoint results[] = new RGBPoint[3];
-		results[0] = new RGBPoint((int) ((avgRed + 0.5) * BUCKETS),
+		final ColorPoint results[] = new ColorPoint[3];
+		results[0] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
 				(int) ((avgGreen + 0.5) * BUCKETS),
 				(int) ((avgBlue + 0.5) * BUCKETS));
 		final double FRACTION_OF_MOST_COMMON = 0.5;
@@ -747,9 +742,9 @@ public class ActiveContour {
 			}
 		}
 		if (true || !changed) {
-			return new RGBPoint[] { results[0] };
+			return new ColorPoint[] { results[0] };
 		}
-		results[1] = new RGBPoint((int) ((avgRed + 0.5) * BUCKETS),
+		results[1] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
 				(int) ((avgGreen + 0.5) * BUCKETS),
 				(int) ((avgBlue + 0.5) * BUCKETS));
 		red[avgRed] = 0;
@@ -774,9 +769,9 @@ public class ActiveContour {
 			}
 		}
 		if (!changed) {
-			return new RGBPoint[] { results[0], results[1] };
+			return new ColorPoint[] { results[0], results[1] };
 		}
-		results[2] = new RGBPoint((int) ((avgRed + 0.5) * BUCKETS),
+		results[2] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
 				(int) ((avgGreen + 0.5) * BUCKETS),
 				(int) ((avgBlue + 0.5) * BUCKETS));
 
@@ -784,7 +779,7 @@ public class ActiveContour {
 		return results;
 	}
 
-	private RGBPoint[] getMostFrequentBackgroundColors(final BufferedImage frame, final Contour r) {
+	private ColorPoint[] getMostFrequentBackgroundColors(final BufferedImage frame, final Contour r) {
 		final int maxX = Math.min(frame.getWidth(), r.maxX() + 15);
 		final int maxY = Math.min(frame.getHeight(), r.maxY() + 15);
 
@@ -795,7 +790,7 @@ public class ActiveContour {
 			for (int j = Math.max(0, r.minY() - 15); j < maxY; j++) {
 
 				if (!r.contains(i, j)) {
-					final RGBPoint c = new RGBPoint(frame.getRGB(i, j));
+					final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(i, j));
 					red[c.red / BUCKETS] += 1;
 					green[c.green / BUCKETS] += 1;
 					blue[c.blue / BUCKETS] += 1;
@@ -804,6 +799,7 @@ public class ActiveContour {
 		}
 		return extractThreeMostCommon(red, green, blue);
 	}
+*/
 
 	static boolean endCondition(final PointMapping F_d, final BufferedImage coloredFrame, final Contour r) {
 

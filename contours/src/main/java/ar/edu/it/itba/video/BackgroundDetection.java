@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public class BackgroundDetection implements FrameProvider {
 
 	private static final double THRESHOLD_ENERGY = 8000;
-	private static final double THRESHOLD_FIRST_PASS = 60;
+	private static final double THRESHOLD_FIRST_PASS = 25;
 	private static final double BETA = 0.1; 
 	private final FrameProvider provider;
 

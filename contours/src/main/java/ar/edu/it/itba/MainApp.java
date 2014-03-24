@@ -30,11 +30,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import ar.edu.it.itba.processing.ActiveContour;
+import ar.edu.it.itba.processing.ColorPoint;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
-import ar.edu.it.itba.video.BackgroundDetection;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
+import ar.edu.it.itba.video.LensCorrection;
 
 /**
  *
@@ -63,7 +64,6 @@ public class MainApp extends javax.swing.JFrame {
     };
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
-    private ImagePanel phiPanel;
     private FrameProvider frameDecoder;
 
     private File outFile;
@@ -84,6 +84,10 @@ public class MainApp extends javax.swing.JFrame {
 	protected Homography homeography;
 	protected boolean mappingPoint;
 	private BufferedImage frame;
+	protected boolean selectRectangle = true;
+	private Button shapeButton;
+	private Button typeButton;
+	protected ColorPoint.Type type = ColorPoint.Type.RGB;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -344,8 +348,11 @@ public class MainApp extends javax.swing.JFrame {
     private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
-        frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
+        //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 60);
+        //frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
+        //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
+        frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -393,7 +400,16 @@ public class MainApp extends javax.swing.JFrame {
             	} else if (selectingPoint) {
                     setCurrentSelectedImagePoint(arg0.getPoint());
                 } else if (selectingFirst) {
-                    contour.add(Contour.aroundPoint(selected++, arg0.getPoint()));
+                    Contour c;
+
+                    if (selectRectangle) {
+                    	c = Contour.aroundPoint(selected++, arg0.getPoint());
+                    } else {
+                    	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
+                    }
+                    c.setType(type);
+
+					contour.add(c);
                     BufferedImage image = imagePanel.getImage();
                     ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                     imagePanel.setImage(image);
@@ -401,9 +417,50 @@ public class MainApp extends javax.swing.JFrame {
             }
 
         };
-        phiPanel = new ImagePanel();
-        phiPanel.setSize(frame.getWidth(), frame.getHeight());
-        phiImagePanel.add(phiPanel, CENTER_ALIGNMENT);
+
+        shapeButton = new Button("Rectangle");
+        shapeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+            	selectRectangle = !selectRectangle;
+
+            	if (selectRectangle) {
+            		shapeButton.setLabel("Rectangle");
+            	} else {
+            		shapeButton.setLabel("Square");
+            	}
+            }
+        });
+
+        phiImagePanel.setLayout(new GridLayout(1, 2));
+        phiImagePanel.add(shapeButton, LEFT_ALIGNMENT);
+
+        typeButton = new Button("Type = RGB");
+        typeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+            	switch (type) {
+				case HS:
+					type = ColorPoint.Type.RGB;
+					typeButton.setLabel("Type = RGB");
+					break;
+				case HSI:
+					type = ColorPoint.Type.HS;
+					typeButton.setLabel("Type = HS");
+					break;
+				case RGB:
+					type = ColorPoint.Type.HSI;
+					typeButton.setLabel("Type = HSI");
+					break;
+				default:
+					break;
+            	}
+            }
+        });
+
+        phiImagePanel.add(typeButton, RIGHT_ALIGNMENT);
 
         imagePanel.addMouseListener(mouseListener);
         startTrackingButton = new Button("Start tracking");
@@ -515,10 +572,10 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane2.setMaximumSize(oldSize);
         imageContainerPanel.revalidate();
 
-        for (int i = 0; i < 70; i++) {
-        	frameDecoder.nextFrame();
-        }
-        frameDecoder.nextFrame();
+//        for (int i = 0; i < 70; i++) {
+//        	frameDecoder.nextFrame();
+//        }
+//        frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
 
 
@@ -578,6 +635,7 @@ public class MainApp extends javax.swing.JFrame {
             	}*/
 
                 if (ac != null) {
+                	/*
                 	BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
                 	int phiMapping[][] = ac.getMapping();
                 	for (int x = 0; x < frame.getWidth(); x++) {
@@ -587,6 +645,8 @@ public class MainApp extends javax.swing.JFrame {
                 	}
                         phiPanel.setImage(phiColor);
                         phiPanel.repaint();
+                	 */
+
                 	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
                 	ac.adapt(coloredFrame);
                 	int index = 0;

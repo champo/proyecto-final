@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ar.edu.it.itba.processing.ColorPoint.Type;
+
 public class Contour implements Iterable<Point> {
 
 	enum State {
@@ -30,7 +32,15 @@ public class Contour implements Iterable<Point> {
 
 	private int cyclesLost;
 
-	private RGBPoint lastStdDev;
+	private ColorPoint lastStdDev;
+
+	public ColorPoint omega[];
+
+	public ColorPoint omegaZero[];
+
+	public ColorPoint bgDeviation;
+
+	private ColorPoint.Type type = Type.RGB;
 
 	public Contour(final int color, final Rectangle rect) {
                 this.color = color;
@@ -64,6 +74,10 @@ public class Contour implements Iterable<Point> {
 
 	public static Contour aroundPoint(final int color, final Point point) {
 		return new Contour(color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
+	}
+
+	public static Contour squareAroundPoint(final int color, final Point point) {
+		return new Contour(color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
 	}
 
 	public int minX() {
@@ -213,12 +227,21 @@ public class Contour implements Iterable<Point> {
 		return cyclesLost;
 	}
 
-	public RGBPoint getLastStdDev() {
+	public ColorPoint getLastStdDev() {
 		return lastStdDev;
 	}
 
-	public void setLastStdDev(final RGBPoint lastStdDev) {
+	public void setLastStdDev(final ColorPoint lastStdDev) {
 		System.out.println("Std Dev = " + lastStdDev.red + ", " + lastStdDev.blue + ", " + lastStdDev.green);
 		this.lastStdDev = lastStdDev;
 	}
+
+	public void setType(final ColorPoint.Type type) {
+		this.type = type;
+	}
+
+	public ColorPoint.Type getType() {
+		return type;
+	}
 }
+
