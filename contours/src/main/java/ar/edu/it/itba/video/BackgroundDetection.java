@@ -4,9 +4,10 @@ import java.awt.image.BufferedImage;
 
 public class BackgroundDetection implements FrameProvider {
 
-	private static final double THRESHOLD_ENERGY = 8000;
+	private static final double THRESHOLD_ENERGY = 40;
 	private static final double THRESHOLD_FIRST_PASS = 25;
-	private static final double BETA = 0.1; 
+	private static final double BETA = 0.1;
+
 	private final FrameProvider provider;
 
 	private int wSize;
@@ -23,7 +24,7 @@ public class BackgroundDetection implements FrameProvider {
 	private double variance[][];
 	private double delta[][];
 	private double M2[][];
-	
+
 	private boolean firstRound;
 
 	public BackgroundDetection(final FrameProvider provider,
@@ -66,10 +67,13 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private static double getInstensity(int rgb) {
+
 		int red = (rgb >> 16) & 0xFF;
-		int green = (rgb >> 8) & 0xFF; 
+		int green = (rgb >> 8) & 0xFF;
 		int blue= rgb & 0xFF;
 
+		// Testing using hue instead of intensity: uncomment this
+		// return getHueValue(red, green, blue);
 		return 0.30 * red + 0.59 * green + 0.11 * blue;
 	}
 
@@ -111,7 +115,6 @@ public class BackgroundDetection implements FrameProvider {
 	private void resetForNewWindow() {
 		for (int i = 0; i < energy.length; i++) {
 			for (int j = 0; j < energy[i].length; j++) {
-				energy[i][j] = 0;
 				delta[i][j] = 0;
 				variance[i][j] = 0;
 				M2[i][j] = 0;
@@ -149,7 +152,6 @@ public class BackgroundDetection implements FrameProvider {
 				if (energy[i][j] > THRESHOLD_ENERGY) {
 					empty[i][j] = true;
 				} else {
-					empty[i][j] = false;
 					double currStd = Math.sqrt(M2[i][j]/(wSize - 1));
 					if (firstRound || empty[i][j]) {
 						expected[i][j] = mean[i][j];
@@ -159,8 +161,52 @@ public class BackgroundDetection implements FrameProvider {
 						expected[i][j] = BETA * expected[i][j] + (1-BETA) * mean[i][j];
 						std[i][j] = BETA * std[i][j] + (1-BETA) * currStd;
 					}
+					empty[i][j] = false;
 				}
 			}
 		}
+	}
+
+	private static int getHueValue(int red, int green, int blue) {
+		float min;    //Min. value of RGB
+		float max;    //Max. value of RGB
+		float delMax; //Delta RGB value
+
+		final float r = red / 255.0f;
+		final float g = green / 255.0f;
+		final float b = blue / 255.0f;
+
+		if (r > g) {
+			min = g;
+			max = r;
+		} else {
+			min = r;
+			max = g;
+		}
+		if (b > max) {
+			max = b;
+		}
+		if (b < min) {
+			min = b;
+		}
+
+		delMax = max - min;
+
+		float H = 0;
+
+		if ( delMax == 0 ) {
+			H = 0;
+		} else {
+			if ( r == max ) {
+				H = (g - b) / delMax % 6;
+			} else if ( g == max ) {
+				H = 2 + (b - r) / delMax;
+			} else if ( b == max ) {
+				H = 4 +  (r - g) / delMax;
+			}
+
+			H *= 60;
+		}
+		return (int) (H * 255.0f / 360.0f);
 	}
 }
