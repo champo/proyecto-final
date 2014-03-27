@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class BackgroundDetection implements FrameProvider {
 
-	private static final double THRESHOLD_ENERGY = 10;
+	private static final double THRESHOLD_ENERGY = 2.5;
 	private static final double THRESHOLD_FIRST_PASS = 25;
 	private static final double BETA = 0.1;
 
@@ -28,7 +28,7 @@ public class BackgroundDetection implements FrameProvider {
 	private boolean firstRound;
 
 	// For debugging purposes
-	private static final double BIN_SIZE = 1000;
+	private static final double BIN_SIZE = 1;
 	private double[] histogram;
 
 	public BackgroundDetection(final FrameProvider provider, final int wSize) {
@@ -141,7 +141,7 @@ public class BackgroundDetection implements FrameProvider {
 		variance = new double[width][height];
 		delta = new double[width][height];
 		M2 = new double[width][height];
-		histogram = new double[1000];
+		histogram = new double[1000000];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
