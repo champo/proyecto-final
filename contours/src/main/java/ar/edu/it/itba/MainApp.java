@@ -357,10 +357,10 @@ public class MainApp extends javax.swing.JFrame {
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
         List<Point> points = new LinkedList<Point>();
-        points.add(new Point(620, 400));
-        points.add(new Point(220, 720));
-        points.add(new Point(1800, 740));
-        points.add(new Point(1400, 420));
+        points.add(new Point(630, 418));
+        points.add(new Point(275, 695));
+        points.add(new Point(1700, 720));
+        points.add(new Point(1335, 430));
 
         frameDecoder = // new BackgroundDetection(
     			new BlackOutOutskirts(
