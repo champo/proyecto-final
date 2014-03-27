@@ -362,19 +362,19 @@ public class MainApp extends javax.swing.JFrame {
         points.add(new Point(1700, 720));
         points.add(new Point(1335, 430));
 
-        frameDecoder = new BackgroundDetection(
+        frameDecoder = // new BackgroundDetection(
     			new BlackOutOutskirts(
 	        		new LensCorrection(
-	        			new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"),
+	        			new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"),
 	        		2.35),
-	        	points),
-    		60)
+	        	points)//,
+    		//60)
         ;
         /* Con Background Detection + Blackout
         frameDecoder = new BackgroundDetection(
     			new BlackOutOutskirts(
 	        		new LensCorrection(
-	        			new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"),
+	        			new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"),
 	        		2.35),
 	        	points),
     		60)
@@ -598,7 +598,7 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane2.setMaximumSize(oldSize);
         imageContainerPanel.revalidate();
 
-        for (int i = 0; i < 70; i++) {
+        for (int i = 0; i < 12; i++) {
         	frameDecoder.nextFrame();
         }
         frameDecoder.nextFrame();

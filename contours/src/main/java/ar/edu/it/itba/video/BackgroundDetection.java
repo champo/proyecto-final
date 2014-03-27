@@ -4,7 +4,11 @@ import java.awt.image.BufferedImage;
 
 public class BackgroundDetection implements FrameProvider {
 
-	private static final double THRESHOLD_ENERGY = 2.5;
+	// 1.9 falls in the 80th percentile
+	// 3.0 falls about the 90th percentile
+	// 8.0 falls in the 95th percentile
+	// 20.0 falls in the 97.5th percentile
+	private static final double THRESHOLD_ENERGY = 3.0;
 	private static final double THRESHOLD_FIRST_PASS = 25;
 	private static final double BETA = 0.1;
 
@@ -21,15 +25,15 @@ public class BackgroundDetection implements FrameProvider {
 	private double[][] std;
 
 	private double mean[][];
-	private double variance[][];
 	private double delta[][];
 	private double M2[][];
 
 	private boolean firstRound;
 
 	// For debugging purposes
-	private static final double BIN_SIZE = 1;
+	private static final double BIN_SIZE = 15;
 	private double[] histogram;
+	private int[] cases;
 
 	public BackgroundDetection(final FrameProvider provider, final int wSize) {
 		super();
@@ -58,12 +62,13 @@ public class BackgroundDetection implements FrameProvider {
 
 	private void analyzeFrame(BufferedImage frame) {
 		// Update online variance values
+		int count = 0;
 		for (int i = 0; i < frame.getWidth(); i++) {
 			for (int j = 0; j < frame.getHeight(); j++) {
 				double intensity = getInstensity(frame.getRGB(i, j));
-				delta[i][j] = intensity - variance[i][j];
-				variance[i][j] = variance[i][j] + delta[i][j];
-				M2[i][j] = M2[i][j] + delta[i][j] * (intensity - variance[i][j]);
+				delta[i][j] = intensity - mean[i][j];
+				mean[i][j] = mean[i][j] + delta[i][j] / count++;
+				M2[i][j] += delta[i][j] * (intensity - mean[i][j]);
 				energy[i][j] += Math.pow(intensity - bgModel[i][j], 2);
 			}
 		}
@@ -104,11 +109,14 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private boolean isForeground(double intensity, int i, int j) {
+		if (intensity == 0) {
+			return false;
+		}
 		if (!firstRound) {
 			if (empty[i][j]) {
-				return (intensity - expected[i][j]) > 2 * std[i][j];
+				return Math.abs(intensity - expected[i][j]) > 2 * std[i][j];
 			} else {
-				return true;
+				return false;
 			}
 		} else {
 			return Math.abs(intensity - bgModel[i][j]) > THRESHOLD_FIRST_PASS;
@@ -116,10 +124,11 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private void resetForNewWindow() {
+		cases = new int[5];
 		for (int i = 0; i < energy.length; i++) {
 			for (int j = 0; j < energy[i].length; j++) {
 				delta[i][j] = 0;
-				variance[i][j] = 0;
+				mean[i][j] = 0;
 				M2[i][j] = 0;
 				energy[i][j] = 0;
 			}
@@ -135,13 +144,12 @@ public class BackgroundDetection implements FrameProvider {
 		empty = new boolean[width][height];
 		std = new double[width][height];
 		bgModel = new double[width][height];
+		cases = new int[5];
 
 		mean = new double[width][height];
 		expected = new double[width][height];
-		variance = new double[width][height];
 		delta = new double[width][height];
 		M2 = new double[width][height];
-		histogram = new double[1000000];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -152,12 +160,8 @@ public class BackgroundDetection implements FrameProvider {
 
 	private void calculateNewModel() {
 
-		for (int i = 0; i < 40; i++) {
-			histogram[i] = 0;
-		}
 		for (int i = 0; i < energy.length; i++) {
 			for (int j = 0; j < energy[i].length; j++) {
-				histogram[(int)(energy[i][j] / BIN_SIZE / wSize)]++;
 				if (energy[i][j] > THRESHOLD_ENERGY * wSize) {
 					empty[i][j] = true;
 				} else {
@@ -173,10 +177,6 @@ public class BackgroundDetection implements FrameProvider {
 					empty[i][j] = false;
 				}
 			}
-		}
-		for (int i = 0; i < 40; i++) {
-			System.out.println("Histogram[" + i * BIN_SIZE + " to " + (i + 1) * BIN_SIZE + "] = "
-					+ (100.0 * histogram[i] / (energy.length * energy[0].length)));
 		}
 	}
 
