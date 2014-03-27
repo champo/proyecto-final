@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class BackgroundDetection implements FrameProvider {
 
-	private static final double THRESHOLD_ENERGY = 40;
+	private static final double THRESHOLD_ENERGY = 10;
 	private static final double THRESHOLD_FIRST_PASS = 25;
 	private static final double BETA = 0.1;
 
@@ -27,8 +27,11 @@ public class BackgroundDetection implements FrameProvider {
 
 	private boolean firstRound;
 
-	public BackgroundDetection(final FrameProvider provider,
-			final int wSize) {
+	// For debugging purposes
+	private static final double BIN_SIZE = 1000;
+	private double[] histogram;
+
+	public BackgroundDetection(final FrameProvider provider, final int wSize) {
 		super();
 		this.provider = provider;
 		this.wSize = wSize;
@@ -138,6 +141,7 @@ public class BackgroundDetection implements FrameProvider {
 		variance = new double[width][height];
 		delta = new double[width][height];
 		M2 = new double[width][height];
+		histogram = new double[1000];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -147,9 +151,14 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private void calculateNewModel() {
+
+		for (int i = 0; i < 40; i++) {
+			histogram[i] = 0;
+		}
 		for (int i = 0; i < energy.length; i++) {
 			for (int j = 0; j < energy[i].length; j++) {
-				if (energy[i][j] > THRESHOLD_ENERGY) {
+				histogram[(int)(energy[i][j] / BIN_SIZE / wSize)]++;
+				if (energy[i][j] > THRESHOLD_ENERGY * wSize) {
 					empty[i][j] = true;
 				} else {
 					double currStd = Math.sqrt(M2[i][j]/(wSize - 1));
@@ -164,6 +173,10 @@ public class BackgroundDetection implements FrameProvider {
 					empty[i][j] = false;
 				}
 			}
+		}
+		for (int i = 0; i < 40; i++) {
+			System.out.println("Histogram[" + i * BIN_SIZE + " to " + (i + 1) * BIN_SIZE + "] = "
+					+ (100.0 * histogram[i] / (energy.length * energy[0].length)));
 		}
 	}
 

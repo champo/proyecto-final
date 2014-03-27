@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +34,8 @@ import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.processing.color.ColorPoint;
+import ar.edu.it.itba.video.BackgroundDetection;
+import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
@@ -352,7 +355,30 @@ public class MainApp extends javax.swing.JFrame {
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
-        frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
+        // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
+        List<Point> points = new LinkedList<Point>();
+        points.add(new Point(620, 400));
+        points.add(new Point(220, 720));
+        points.add(new Point(1800, 740));
+        points.add(new Point(1400, 420));
+
+        frameDecoder = // new BackgroundDetection(
+    			new BlackOutOutskirts(
+	        		new LensCorrection(
+	        			new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"),
+	        		2.35),
+	        	points) //,
+    		// 60)
+        ;
+        /* Con Background Detection + Blackout
+        frameDecoder = new BackgroundDetection(
+    			new BlackOutOutskirts(
+	        		new LensCorrection(
+	        			new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"),
+	        		2.35),
+	        	points),
+    		60)
+        ;*/
         imagePanel = new ImagePanel();
         BufferedImage frame = frameDecoder.nextFrame();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
@@ -572,10 +598,10 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane2.setMaximumSize(oldSize);
         imageContainerPanel.revalidate();
 
-//        for (int i = 0; i < 70; i++) {
-//        	frameDecoder.nextFrame();
-//        }
-//        frameDecoder.nextFrame();
+        for (int i = 0; i < 70; i++) {
+        	//frameDecoder.nextFrame();
+        }
+        frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
 
 
