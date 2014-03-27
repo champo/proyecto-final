@@ -599,7 +599,7 @@ public class MainApp extends javax.swing.JFrame {
         imageContainerPanel.revalidate();
 
         for (int i = 0; i < 12; i++) {
-        	frameDecoder.nextFrame();
+        	//frameDecoder.nextFrame();
         }
         frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
