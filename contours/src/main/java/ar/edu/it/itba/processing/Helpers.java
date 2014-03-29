@@ -23,18 +23,12 @@ public final class Helpers {
 	}
 
 	public static ColorPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
-		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
-		colors.add(getAverageColor(frame, contour));
-		//colors.addAll(Arrays.asList(mostFrequentColors(frame, contour)));
-		return colors.toArray(new ColorPoint[0]);
+		return new ColorPoint[] { getAverageColor(frame, contour) };
 	}
 
 	public static ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
 			final Contour contour) {
-		final List<ColorPoint> colors = new ArrayList<ColorPoint>();
-		colors.add(getAverageBackgroundColor(frame, contour));
-		//colors.addAll(Arrays.asList(getMostFrequentBackgroundColors(frame, contour)));
-		return colors.toArray(new ColorPoint[0]);
+		return new ColorPoint[] { getAverageBackgroundColor(frame, contour) };
 	}
 
 	public static boolean isBorder(final BufferedImage frame, final Point p) {
@@ -272,140 +266,4 @@ public final class Helpers {
 		return ColorPoint.build(r.getType(), (int) avgRed, (int) avgGreen, (int) avgBlue);
 	}
 
-/*
-	static ColorPoint[] mostFrequentColors(final BufferedImage frame, final Contour r) {
-		final double red[] = new double[BUCKETS];
-		final double green[] = new double[BUCKETS];
-		final double blue[] = new double[BUCKETS];
-		final Set<Point> visited = new HashSet<Point>();
-
-		for (final Point p : r.getLout()) {
-			visited.add(p);
-		}
-		final Deque<Point> queue = new LinkedList<Point>();
-		for (final Point p : r.getLin()) {
-			visited.add(p);
-			queue.push(p);
-		}
-		int iterations = 0;
-		while (!queue.isEmpty() && iterations < MAX_ITERATIONS) {
-			iterations++;
-			final Point p = queue.pop();
-			final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(p.x, p.y));
-			red[c.red / BUCKETS] += 1;
-			green[c.green / BUCKETS] += 1;
-			blue[c.blue / BUCKETS] += 1;
-			for (final Point n : neighbors(p, Integer.MAX_VALUE, Integer.MAX_VALUE)) {
-				if (!visited.contains(n)) {
-					visited.add(n);
-					queue.push(n);
-				}
-			}
-		}
-		return extractThreeMostCommon(red, green, blue);
-	}
-
-	public static ColorPoint[] extractThreeMostCommon(final double[] red, final double[] green,
-			final double[] blue) {
-		int avgRed = 0;
-		int avgGreen = 0;
-		int avgBlue = 0;
-		for (int i = 0; i < BUCKETS; i++) {
-			avgRed = red[avgRed] > red[i] ? avgRed : i;
-			avgGreen = green[avgGreen] > green[i] ? avgGreen : i;
-			avgBlue = blue[avgBlue] > blue[i] ? avgBlue : i;
-		}
-		final ColorPoint results[] = new ColorPoint[3];
-		results[0] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
-				(int) ((avgGreen + 0.5) * BUCKETS),
-				(int) ((avgBlue + 0.5) * BUCKETS));
-		final double FRACTION_OF_MOST_COMMON = 0.5;
-		for (int i = 0; i < BUCKETS; i++) {
-			if (red[i] >= FRACTION_OF_MOST_COMMON * red[avgRed]) {
-				red[i] = 0;
-			}
-			if (green[i] >= FRACTION_OF_MOST_COMMON * green[avgGreen]) {
-				green[i] = 0;
-			}
-			if (blue[i] >= FRACTION_OF_MOST_COMMON * blue[avgBlue]) {
-				blue[i] = 0;
-			}
-		}
-		avgRed = 0;
-		avgGreen = 0;
-		avgBlue = 0;
-		boolean changed = false;
-		for (int i = 0; i < BUCKETS; i++) {
-			if (red[avgRed] < red[i]) {
-				changed = true;
-				avgRed = i;
-			}
-			if (green[avgGreen] < green[i]) {
-				changed = true;
-				avgGreen = i;
-			}
-			if (blue[avgBlue] < blue[i]) {
-				changed = true;
-				avgBlue = i;
-			}
-		}
-		if (true || !changed) {
-			return new ColorPoint[] { results[0] };
-		}
-		results[1] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
-				(int) ((avgGreen + 0.5) * BUCKETS),
-				(int) ((avgBlue + 0.5) * BUCKETS));
-		red[avgRed] = 0;
-		green[avgGreen] = 0;
-		blue[avgBlue] = 0;
-		avgRed = 0;
-		avgGreen = 0;
-		avgBlue = 0;
-		changed = false;
-		for (int i = 0; i < BUCKETS; i++) {
-			if (red[avgRed] < red[i]) {
-				changed = true;
-				avgRed = i;
-			}
-			if (green[avgGreen] < green[i]) {
-				changed = true;
-				avgGreen = i;
-			}
-			if (blue[avgBlue] < blue[i]) {
-				changed = true;
-				avgBlue = i;
-			}
-		}
-		if (!changed) {
-			return new ColorPoint[] { results[0], results[1] };
-		}
-		results[2] = new ColorPoint((int) ((avgRed + 0.5) * BUCKETS),
-				(int) ((avgGreen + 0.5) * BUCKETS),
-				(int) ((avgBlue + 0.5) * BUCKETS));
-
-
-		return results;
-	}
-
-	public ColorPoint[] getMostFrequentBackgroundColors(final BufferedImage frame, final Contour r) {
-		final int maxX = Math.min(frame.getWidth(), r.maxX() + 15);
-		final int maxY = Math.min(frame.getHeight(), r.maxY() + 15);
-
-		final double red[] = new double[BUCKETS];
-		final double green[] = new double[BUCKETS];
-		final double blue[] = new double[BUCKETS];
-		for (int i = Math.max(0, r.minX() - 15); i < maxX; i++) {
-			for (int j = Math.max(0, r.minY() - 15); j < maxY; j++) {
-
-				if (!r.contains(i, j)) {
-					final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(i, j));
-					red[c.red / BUCKETS] += 1;
-					green[c.green / BUCKETS] += 1;
-					blue[c.blue / BUCKETS] += 1;
-				}
-			}
-		}
-		return extractThreeMostCommon(red, green, blue);
-	}
-*/
 }
