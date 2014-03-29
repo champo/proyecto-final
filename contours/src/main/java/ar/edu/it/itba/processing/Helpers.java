@@ -163,6 +163,7 @@ public final class Helpers {
 	public static double diffBackground(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
 		double result = 0;
 		int i = 0;
+		int extra = 0;
 
 		for (final ColorPoint referenceColor : referenceColors) {
 
@@ -170,9 +171,28 @@ public final class Helpers {
 			i++;
 		}
 
-		result += calculateStandardDeviation(stdDev.getType(), p, frame).diff(stdDev);
+		ColorPoint pointStdDev = calculateStandardDeviation(stdDev.getType(), p, frame);
 
-		return result / ((referenceColors.length + 1) * MAX_PIXEL_VALUE);
+		// Desvio standard
+		extra++;
+		result += pointStdDev.diff(stdDev);
+
+		// Coeficiente de varianza
+//		extra++;
+//		result += Math.abs(calculateVariationCoeficient(color.blue, pointStdDev.blue) - calculateVariationCoeficient(referenceColors[0].blue, stdDev.blue));
+//		result += Math.abs(calculateVariationCoeficient(color.red, pointStdDev.red) - calculateVariationCoeficient(referenceColors[0].red, stdDev.red));
+//		result += Math.abs(calculateVariationCoeficient(color.green, pointStdDev.green) - calculateVariationCoeficient(referenceColors[0].green, stdDev.green));
+
+
+		return result / ((referenceColors.length + extra) * MAX_PIXEL_VALUE);
+	}
+
+	private static int calculateVariationCoeficient(final int color, final int stdDev) {
+		if (stdDev == 0) {
+			return 255;
+		}
+
+		return Math.min(255, color / stdDev);
 	}
 
 	public static ColorPoint calculateBackgroundStandardDeviation(final Contour r, final BufferedImage frame) {
