@@ -27,7 +27,6 @@
 \usepackage{algorithm}
 \usepackage{letltxmacro}
 
-
 %%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
 \algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
 % LEAVES BLANK LINE AT END \algblockdefx[FOREACH]{ForEach}{EndFor}{\textbf{for each }}{}
@@ -41,6 +40,8 @@
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \algnewcommand\algorithmicauxiliary{\textbf{Auxiliary:}}
 \algnewcommand\Auxiliary{\item[\algorithmicauxiliary]}
+
+\DefineBibliographyStrings{spanish}{andothers = {et\addabbrvspace al\adddot}}
 
 \floatname{algorithm}{Algoritmo}
 %%%%% END ALGPSEUDOCODE STUFF %%%%%%
@@ -109,7 +110,7 @@ movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, ent
 otras aplicaciones. Se describen a lo largo de este trabajo técnicas aplicables
 al problema de seguimiento de múltiples jugadores de fútbol mediante el uso de
 una o varias cámaras de video. Se presentan las bases teóricas para estos
-métodos y se analizan características y limitaciones de cada uno, asi como la
+métodos y se analizan características y limitaciones de cada uno, así como la
 factibilidad de conocer el estado del juego completo en cada instante de tiempo.
 } \end{customabstract}
 
@@ -119,7 +120,7 @@ Dentro del área del análisis de imágenes, uno de los problemas más relevante
 estudiados es el problema de reconocer objetos en una secuencia de
 imágenes para seguir su posición, detectar cambios de orientación o en su
 forma, reconocerlo aunque esté parcialmente (o totalmente) ocluído, y otras
-variaciones del problema. Tiene aplicaciones en muchos campos, como ser
+variaciones del problema. Esto tiene aplicaciones en muchos campos, como ser
 medicina, control automatizado de procesos industriales, reconocimiento facial
 y gestual, etcétera.
 
@@ -132,11 +133,12 @@ estadísticos, como en el caso del fútbol pueden ser posesión de pelota, canti
 de pases exitosos, tiros al arco, fracción del tiempo que cada jugador trotó,
 corrió o caminó, entre otros.
 
-Para permitir estos análisis de manera automática y recuperar datos con alto
-nivel semántico, se debe plantear un sistema que automatice la recolección
+Para que el análisis sea automático y poder extraer información útil,
+se debe plantear un sistema que automatice la recolección
 y procesamiento de imágenes. En este trabajo se estudia el estado
 actual de las distintas tecnologías usadas para este fin.
 
+Este trabajo está compuesto de la siguiente manera:
 En la sección \ref{sec:tracking} se describen los algoritmos de seguimiento
 de objetos categorizados en cuatro familias:
 \textit{Predictores Lineales},
@@ -145,12 +147,13 @@ de objetos categorizados en cuatro familias:
 y \textit{Contornos Activos}.
 
 En la sección \ref{sec:homography} se describe el concepto teórico de homografía y
-su utilidad y aplicación en el analisis de imagenes, así como su cálculo numérico.
+su utilidad y aplicación en el análisis de imágenes, así como su cálculo numérico.
 
-En la sección \ref{sec:futbol} se discuten los avances modernos en el fútbol.
+En la sección \ref{sec:futbol} se discuten los avances de las técnicas modernas en
+análisis automático de video de eventos deportivos.
 Se presentan sistemas implementados que resuelven el problema de seguimiento de
-jugadores, pelota, y estado del juego. También se describen técnicas con
-mayor nivel semántico que detectan movimientos de jugadores, pases de pelota,
+jugadores, pelota, y estado del juego. También se describen técnicas
+que detectan movimientos de jugadores, pases de pelota,
 tiros al arco, entre otros. Se dividen por los
 sistemas de cámaras utilizados (una sola cámara fija, video televizado, o
 múltiples cámaras fijas).
@@ -688,7 +691,7 @@ todas las aristas cuyos nodos pertenecen a distintos segmentos, dicha
 segmentación maximiza el costo mínimo de todas las aristas en la frontera de la
 segmentación. Esto significa que la segmentación IFT/$f_{max}$ es esencialmente
 la misma que la famosa segmentación \textit{divisoria} (ver
-\cite{watershed-segmentation}). Esto hace que sea particularmente apropiada
+\cite{IFT}). Esto hace que sea particularmente apropiada
 para casos en los que el objeto está mejor caracterizado por su conectividad
 que por su forma o tamaño. Es por esto que se elige una función de costo de
 arista $w(p,q)$ que se basa en la probabilidad de que $p$ y $q$ estén en
@@ -698,7 +701,7 @@ diferentes lados del borde del objeto.
 
 Para algunas funciones de conectividad, como $f_{max}$, el bosque de caminos
 óptimos se puede computar eficientemente mediante una variante del famoso
-algoritmo de Dijkstra (ver \cite{watershed-segmentation}). Por cuestiones de
+algoritmo de Dijkstra (ver \cite{IFT}). Por cuestiones de
 eficiencia, el algoritmo retorna un mapa de raíces $R$, que almacena, para
 cada nodo $p$, su raíz $R(p)$.\\
 
@@ -1012,7 +1015,7 @@ Considérese dos imágenes, $f(x,y)$ y $f'(x,y)$, relacionadas por una transform
 $f$ y $f'$ respectivamente, y dadas correspondencias tentativas $p_{k} \to p'_{k}$, se quiere estimar la transformación $T$, tal que
 
 \begin{equation}
-    f(x,y) = f(T(x,y))
+    f(x,y) = f'(T(x,y))
 \end{equation}
 
 Esta transformación $T$ se puede modelar como una transformación de coordenadas lineales
@@ -1030,7 +1033,6 @@ Esta transformación $T$ se puede modelar como una transformación de coordenada
         1 \\
     \end{bmatrix}
 \end{equation}
-
 en donde $H$ es una matriz de $3 \times 3$ que representa la proyección, rotación, escalamiento, sesgo y perspectiva.
 
 Se puede observar que para aplicar $H$ se extiende el vector de dos dimensiones $[x,y]^{T}$ a tres componentes. El valor de la
@@ -1134,7 +1136,6 @@ el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluc
 \begin{equation}
     \argmin_{\norm{h}=1} \norm{Ah} = \argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
 \end{equation}
-
 donde $\lambda_{min}$ es el menor autovalor de $A^{T}A$. Esto se desprende de las propiedades de la norma 2 de matrices y de la propiedad de
 las matrices cuadradas simétricas que dice que dado $B = A^{T}A$, $\lambda_{i}$ y $q_{i}$ sus autovalores y autovectores respectivamente, las matrices
 
@@ -1153,7 +1154,6 @@ y
                         & & & \lambda_{n-1}\\
         \end{bmatrix}
 \end{equation}
-
 cumplen $B = QDQ^{T}$.
 
 \begin{equation}
@@ -1168,7 +1168,6 @@ El problema se reduce entonces a hallar este autovector. Para ello, se recurre a
 \begin{equation}
     A = U\Sigma V^{T}
 \end{equation}
-
 donde las columnas de $U$ contienen los autovectores de $AA^{T}$ y las columnas de $V$ los autovectores de $A^{T}A$, mientras que $\Sigma$ es una matriz
 diagonal con los autovalores de $$A^{T}A$$ en su diagonal. Nótese que los autovalores de $A^{T}A$ son iguales a los autovalores de $A$ al cuadrado.
 
@@ -1190,8 +1189,7 @@ corrección:
     x_u &=& (x_d - x_c) (1+K r^2) \\
     y_u &=& (x_d - x_c) (1+K r^2)
 \end{eqnarray*}
-
-Donde $x_u$ y $y_u$ son los puntos en la imagen sin distorsión, $x_d$ y $y_d$ son
+donde $x_u$ y $y_u$ son los puntos en la imagen sin distorsión, $x_d$ y $y_d$ son
 puntos en la imagen original, $x_c$ y $y_c$ son los puntos centrales de la
 imagen (se puede asumir que el punto central de la cámara es el punto central
 de la imagen), $K$ es un coeficiente de distorsión radial, y $r =
@@ -1240,23 +1238,22 @@ determinar que los objetos en primer plano (principalmente los jugadores) no
 se mantenían durante tanto tiempo en posición completamente estática.
 
 Inicialmente, la energía de un punto $(x, y)$ en una imagen es definida por la
-ecuación \ref{eq:tanos-energy}:
+ecuación:
 
 \begin{equation}
     \label{eq:tanos-energy}
     E(x, y) = \sum_{t \in W} \| I^t(x, y) - B_C (x, y) \| ^2
 \end{equation}
-
-Donde  $I^t(x, y)$ es la intensidad del punto en coordenadas $(x, y)$ para la
+donde  $I^t(x, y)$ es la intensidad del punto en coordenadas $(x, y)$ para la
 imagen $t$, y $B_C(x, y)$ es una estimación de la intensidad del fondo para el
 punto $(x, y)$. Para determinar $B_C$ se aplican sucesivos filtros gaussianos
 al primer cuadro de $W$.
 
 Para la siguientes ventanas se refina el modelo del fondo de la imagen. Se
 calcula la función $B_F$, definida para todo punto de un cuadro, cuya imagen es
-$R^2$ y corresponde a la media y la desviación estándar de $E(x, y)$.
+$\mathbb{R}^2$ y corresponde a la media $\mu$ y la desviación estándar $\sigma$ de $E(x, y)$.
 
-Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
+Se define $B_F$ inicialmente mediante la ecuación:
 
 \begin{equation}
   \label{eq:tanos-bf1}
@@ -1266,8 +1263,7 @@ Se define $B_F$ inicialmente mediante la ecuación \ref{eq:tanos-bf1}:
     \phi & if E(x, y) > th(W)
   \end{cases}
 \end{equation}
-
-Donde $th(W)$ es un valor de umbral obtenido empíricamente, proporcional al
+donde $th(W)$ es un valor de umbral obtenido empíricamente, proporcional al
 tamaño de $W$. Un bajo nivel de energía corresponde a un punto estático,
 por lo tanto se considera que ese punto pertenece al fondo y $B_F$
 contendrá la media y la desviación estándar para ese punto. Si la imagen
@@ -1455,7 +1451,7 @@ Para la detección de una jugada de posición adelantada, se requiere:
 
 \end{itemize}
 
-\subsection{Análisis utilizando 8 camaras}
+\subsection{Análisis utilizando 8 cámaras}
 \label{sec:8-camaras}
 
 \citeauthor*{xu-8cams} proponen un sistema que consta de 8 módulos, conectados
@@ -1506,7 +1502,7 @@ El segundo paso consiste en un proceso de seguimiento local. Cada nodo
 determina pequeñas ``cajas delimitadoras'' alrededor de las áreas donde
 es posible que haya jugadores. Estas cajas son
 representadas por la posición en el plano de la imagen $\mathbf{x}_l$ y su
-error en la medición $\mathbf{z}_l$ en un filtro de Kalman (ver \cite{funk2003study}):
+error en la medición $\mathbf{z}_l$ en un filtro de \textit{Kalman} (ver \cite{funk2003study}):
 
 \[
 \mathbf{x}_l = [r_c \; c_c \;  \mathbf{\dot r}_c  \; \mathbf{\dot c}_c \;  \Delta r_1  \; \Delta c_1 \;  \Delta r_2 \;  \Delta c_2]^T
@@ -1544,11 +1540,11 @@ un determinado umbral, se empieza a considerar que las mediciones de dos
 cámaras distintas para dos ``cajas delimitadoras'' pasan a ser el mismo
 jugador.
 
-\subsection{Análisis de deportes con múltiples camaras}
+\subsection{Análisis de deportes con múltiples cámaras}
 \label{sec:var-camaras}
 
 % SIFT Base
-\subsubsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
+%\subsubsection{Camera-based Observation of Football Games for Analyzing Multi-agent Activities}
 
 \citeauthor*{beetz-05} analizan, desde el punto de vista de la inteligencia
 artificial, el problema de detectar el movimiento de los jugadores dentro
@@ -1627,7 +1623,7 @@ En el caso de la pérdida de pelota, se utiliza un árbol de decisión más comp
 \subsection{Análisis de deportes con video televisado}
 \label{sec:tv-video}
 
-\subsubsection{\citetitle{LIU20061146}}
+%\subsubsection{\citetitle{LIU20061146}}
 
 En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
 jugadores y la pelota utilizando la transmisión televisada de un partido de
@@ -1688,7 +1684,7 @@ Para el cálculo de $K$ se necesitan $\alpha$ y $\beta$ que se calcula usando $P
 
 El algoritmo planteado para seguimiento de la pelota tiene 2 etapas.
 La primer etapa es de detección y utiliza un algoritmo basado en \textit{Viterbi}.
-La segunda etapa es de seguimiento y utiliza un filtro \textit{Kalman} (ver \cite{funk2003study}).
+La segunda etapa es de seguimiento y utiliza un filtro de \textit{Kalman} (ver \cite{funk2003study}).
 
 El algoritmo de la primer etapa, crea una imagen binaria, segmentando según la característica blanca de la pelota.
 Una vez segmentada, se eliminan los candidatos teniendo en cuenta las distintas características morfológicas de la pelota.
