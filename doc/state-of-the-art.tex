@@ -628,7 +628,7 @@ por el algoritmo KLT. Específicamente, se construye la matriz:
 píxeles $q$ en una ventana de $9x9$ centrada en $p$.\\
 Se define el grado de ``similaridad'' $\lambda[p]$ como el valor mínimo singular de $H[p]$.
 Solo los píxeles con $\lambda > 1$ son escogidos para utilizarlos en la
-propagación KLT. Esto coincide con los autores Tomasi y Karade (ver \cite{Tomasi91detectionand})
+propagación KLT. Esto coincide con los autores Tomasi y Karade (ver \cite{KLT})
 quienes afirman que los píxeles con mayor valor de $\lambda$ tienen más posibilidades
 de ser localizados por el algoritmo KLT.\\
 Los marcadores externos son escogidos aplicando una dilatación morfológica
@@ -642,7 +642,7 @@ a la máscara del objeto $0$
 El procedimiento \textit{trackMarkers} se utiliza para localizar los marcadores
 internos en el cuadro actual, que se corresponden con los puntos internos del objeto
 en el cuadro anterior. Utiliza el algoritmo de seguimiento KLT, descrito por Tomasi y
-Karade (ver \cite{Tomasi91detectionand}).
+Karade (ver \cite{KLT}).
 
 El algoritmo KLT recibe un punto $p$ en un cuadro $I^{t-1}$, una posición estimada
 $q_{0}$ en el próximo cuadro $I^{t}$, y busca un punto $q$ tal que los vecinos
