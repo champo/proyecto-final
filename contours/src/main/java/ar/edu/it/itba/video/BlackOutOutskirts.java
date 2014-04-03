@@ -2,13 +2,11 @@ package ar.edu.it.itba.video;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlackOutOutskirts implements FrameProvider {
+public class BlackOutOutskirts extends AbstractFrameProviderDecorator {
 
-	private final FrameProvider provider;
 	private final List<Point> points;
 	private boolean[][] isInside;
 	
@@ -19,23 +17,21 @@ public class BlackOutOutskirts implements FrameProvider {
 	private int width, height;
 
 	public BlackOutOutskirts(FrameProvider provider, List<Point> points) {
-		super();
-		this.provider = provider;
+		super(provider);
 		this.points = new ArrayList<Point>(points);
 	}
 
 	@Override
-	public BufferedImage nextFrame() {
-		BufferedImage frame = provider.nextFrame();
+	public void nextFrame() {
+		provider.nextFrame();
 		if (isInside == null) {
-			isInside = new boolean[frame.getWidth()][frame.getHeight()];
-			calculateInsidePoints(frame);
+			isInside = new boolean[provider.getWidth()][provider.getHeight()];
+			calculateInsidePoints();
 		}
-		return blackoutOutskirts(frame);
 	}
 
-	private void calculateInsidePoints(BufferedImage frame) {
-		boolean[][] borders = new boolean[frame.getWidth()][frame.getHeight()];
+	private void calculateInsidePoints() {
+		boolean[][] borders = new boolean[provider.getWidth()][provider.getHeight()];
 		Point prev = null;
 		points.add(points.get(0));
 		for (Point p : points) {
@@ -87,17 +83,21 @@ public class BlackOutOutskirts implements FrameProvider {
 		System.out.println(width + " - " + height);
 	}
 
-	private BufferedImage blackoutOutskirts(BufferedImage frame) {
-		BufferedImage cropped = new BufferedImage(width, height, frame.getType());
-		for (int i = minX; i <= maxX; i++) {
-			for (int j = minY; j < maxY; j++) {
-				if (!isInside[i][j]) {
-					cropped.setRGB(i-minX, j-minY, Color.BLACK.getRGB());
-				} else {
-					cropped.setRGB(i-minX, j-minY, frame.getRGB(i, j));
-				}
-			}
+	@Override
+	public int getHeight() {
+		return maxY - minX + 1;
+	}
+
+	@Override
+	public int getWidth() {
+		return maxX - minX + 1;
+	}
+
+	@Override
+	public int getRGB(int x, int y) {
+		if (isInside[x][y]) {
+			return provider.getRGB(x + minX, y + minY);
 		}
-		return cropped;
+		return Color.black.getRGB();
 	}
 }

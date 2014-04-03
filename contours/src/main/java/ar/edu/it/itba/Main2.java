@@ -4,15 +4,6 @@
  */
 package ar.edu.it.itba;
 
-import ar.edu.it.itba.HomeographyManager.Pair;
-import ar.edu.it.itba.config.ConfigRetrieval;
-import ar.edu.it.itba.config.SequenceSettings;
-import ar.edu.it.itba.processing.ActiveContour;
-import ar.edu.it.itba.processing.Contour;
-import ar.edu.it.itba.processing.Homography;
-import ar.edu.it.itba.video.FrameDecoder;
-import ar.edu.it.itba.video.FrameProvider;
-import ar.edu.it.itba.video.LensCorrection;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -29,7 +20,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.AbstractListModel;
+
+import ar.edu.it.itba.HomeographyManager.Pair;
+import ar.edu.it.itba.config.ConfigRetrieval;
+import ar.edu.it.itba.config.SequenceSettings;
+import ar.edu.it.itba.processing.ActiveContour;
+import ar.edu.it.itba.processing.Contour;
+import ar.edu.it.itba.processing.Homography;
+import ar.edu.it.itba.video.FrameDecoder;
+import ar.edu.it.itba.video.FrameProvider;
+import ar.edu.it.itba.video.LensCorrection;
 
 /**
  *
@@ -572,7 +574,8 @@ public class Main2 extends javax.swing.JFrame {
         }
         if (data != null) {
             currentSettings.setLensCorrection(data);
-            setupImageHomo(((LensCorrection) frameDecoder).setStrength(data));
+            ((LensCorrection) frameDecoder).setStrength(data);
+            setupImageHomo(getImage());
         }
     }//GEN-LAST:event_jButtonUpdateLensCorrectionActionPerformed
 
@@ -591,7 +594,8 @@ public class Main2 extends javax.swing.JFrame {
         jTabbedPane1.setSelectedIndex(2);
         
         imagePanel = new ImagePanel();
-        frame = frameDecoder.nextFrame();
+        frameDecoder.nextFrame();
+        frame = getImage();
         firstFrame = frame;
         Dimension frameDim = new Dimension(frame.getWidth(), frame.getHeight());
         imagePanel.setSize(frameDim);
@@ -660,7 +664,8 @@ public class Main2 extends javax.swing.JFrame {
         }
         
         imagePanel = new ImagePanel();
-        frame = frameDecoder.nextFrame();
+        frameDecoder.nextFrame();
+        frame = getImage();
         firstFrame = frame;
         Dimension frameDim = new Dimension(frame.getWidth(), frame.getHeight());
         imagePanel.setSize(frameDim);
@@ -682,7 +687,8 @@ public class Main2 extends javax.swing.JFrame {
                             homographyManager.setMapping(p.image, p.mapped);
                             jListPoints.updateUI();
                             // Force redraw
-                            setupImageHomo(((LensCorrection) frameDecoder).setStrength(currentSettings.getLensCorrection()));
+                            ((LensCorrection) frameDecoder).setStrength(currentSettings.getLensCorrection());
+                            setupImageHomo(getImage());
                         }
                     });
                 }
@@ -835,7 +841,8 @@ public class Main2 extends javax.swing.JFrame {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                frame = frameDecoder.nextFrame();
+                frameDecoder.nextFrame();
+                frame = getImage();
                 framesElapsed++;
                 if (firstFrame == null) {
                 	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
@@ -883,4 +890,9 @@ public class Main2 extends javax.swing.JFrame {
             }
         });
     }
+
+	private BufferedImage getImage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

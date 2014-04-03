@@ -1,9 +1,13 @@
 package ar.edu.it.itba.video;
 
-import java.awt.image.BufferedImage;
 
 public interface FrameProvider {
 
-	public abstract BufferedImage nextFrame();
+	public void nextFrame();
 
+	public int getWidth();
+	public int getHeight();
+	public int getRGB(int x, int y);
+
+	public int getType();
 }

@@ -128,8 +128,6 @@ public class ActiveContour {
 				markExpandedArea(frame, c);
 			}
 		}
-
-
 		final long diff = System.currentTimeMillis() - time;
 		return diff;
 	}
