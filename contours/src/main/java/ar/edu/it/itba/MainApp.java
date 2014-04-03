@@ -356,19 +356,30 @@ public class MainApp extends javax.swing.JFrame {
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
-        List<Point> points = new LinkedList<Point>();
-        points.add(new Point(630, 418));
-        points.add(new Point(275, 695));
-        points.add(new Point(1700, 720));
-        points.add(new Point(1335, 430));
+		List<Point> points = new LinkedList<Point>();
+		points.add(new Point(425, 40));
+		points.add(new Point(54, 321));
+		points.add(new Point(1518, 345));
+		points.add(new Point(1147, 52));
+		List<Point> firstPoints = new LinkedList<Point>();
+		firstPoints.add(new Point(200, 375));
+		firstPoints.add(new Point(200, 750));
+		firstPoints.add(new Point(1750, 750));
+		firstPoints.add(new Point(1750, 375));
+		homeographyManager.setMapping(new Point(370, -2), new Point(16, 5));
+		homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
+		homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
+		homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
 
-        frameDecoder = // new BackgroundDetection(
+        frameDecoder = new BackgroundDetection(
     			new BlackOutOutskirts(
 	        		new LensCorrection(
-	        			new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"),
-	        		2.35),
-	        	points)//,
-    		//60)
+	            		new BlackOutOutskirts(
+                               new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+                       , firstPoints)
+	        		, 1.91)
+	        	, points)
+    		, 10)
         ;
         /* Con Background Detection + Blackout
         frameDecoder = new BackgroundDetection(
@@ -439,6 +450,8 @@ public class MainApp extends javax.swing.JFrame {
                     BufferedImage image = imagePanel.getImage();
                     ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                     imagePanel.setImage(image);
+                } else {
+                	((BackgroundDetection) frameDecoder).printData(arg0.getPoint().x, arg0.getPoint().y);
                 }
             }
 
@@ -642,6 +655,7 @@ public class MainApp extends javax.swing.JFrame {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+            	long time = System.currentTimeMillis();
                 frame = frameDecoder.nextFrame();
                 framesElapsed++;
                 if (firstFrame == null) {
@@ -716,6 +730,8 @@ public class MainApp extends javax.swing.JFrame {
                 } else {
                     imagePanel.setImage(frame);
                 }
+                imagePanel.repaint();
+                System.out.println("Time difference: " + (System.currentTimeMillis() - time) + " ms");
             }
         });
     }

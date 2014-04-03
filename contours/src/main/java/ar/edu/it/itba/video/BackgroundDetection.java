@@ -8,24 +8,23 @@ public class BackgroundDetection implements FrameProvider {
 	// 3.0 falls about the 90th percentile
 	// 8.0 falls in the 95th percentile
 	// 20.0 falls in the 97.5th percentile
-	private static final double THRESHOLD_ENERGY = 3.0;
+	private static final double THRESHOLD_ENERGY = 25.0;
 	private static final double THRESHOLD_FIRST_PASS = 25;
-	private static final double BETA = 0.1;
+	private static final double BETA = 0.4;
 
 	private final FrameProvider provider;
 
 	private int wSize;
 	private int frameCount;
 
-	private double[][] bgModel;
-	private double[][] energy;
+	private double[][] cummEnergy;
+	private double[][] currentEnergy;
 
 	private boolean[][] empty;
 	private double[][] expected;
 	private double[][] std;
 
 	private double mean[][];
-	private double delta[][];
 	private double M2[][];
 
 	private boolean firstRound;
@@ -34,6 +33,15 @@ public class BackgroundDetection implements FrameProvider {
 	private static final double BIN_SIZE = 15;
 	private double[] histogram;
 	private int[] cases;
+	
+	private static final int MAX_HIST = 50;
+	private static final int MIN_STD = 10;
+	private static final int STDS_OUT = 4;
+
+	public void printData(int x, int y) {
+		System.out.println("Point " + x + ", " + y + ", empty = " + empty[x][y] + ", expected = " + expected[x][y] + ", std = " + std[x][y]);
+		System.out.println("Energy: " + cummEnergy[x][y] + ", mean = " + mean[x][y]);
+	}
 
 	public BackgroundDetection(final FrameProvider provider, final int wSize) {
 		super();
@@ -45,13 +53,13 @@ public class BackgroundDetection implements FrameProvider {
 	@Override
 	public BufferedImage nextFrame() {
 		BufferedImage frame = provider.nextFrame();
-		if (bgModel == null) {
+		if (expected == null) {
 			// Lazy init everything
 			initializeAll(frame);
 			setupBaseModel(frame);
 		}
-		analyzeFrame(frame);
 		frameCount++;
+		analyzeFrame(frame);
 		if (frameCount == wSize) {
 			calculateNewModel();
 			resetForNewWindow();
@@ -62,14 +70,15 @@ public class BackgroundDetection implements FrameProvider {
 
 	private void analyzeFrame(BufferedImage frame) {
 		// Update online variance values
-		int count = 0;
 		for (int i = 0; i < frame.getWidth(); i++) {
 			for (int j = 0; j < frame.getHeight(); j++) {
 				double intensity = getInstensity(frame.getRGB(i, j));
-				delta[i][j] = intensity - mean[i][j];
-				mean[i][j] = mean[i][j] + delta[i][j] / count++;
-				M2[i][j] += delta[i][j] * (intensity - mean[i][j]);
-				energy[i][j] += Math.pow(intensity - bgModel[i][j], 2);
+				double delta = intensity - mean[i][j];
+				mean[i][j] = mean[i][j] + delta / frameCount;
+				M2[i][j] += delta * (intensity - mean[i][j]);
+				double energy = Math.pow(intensity - expected[i][j], 2);
+				cummEnergy[i][j] += energy;
+				currentEnergy[i][j] = energy;
 			}
 		}
 	}
@@ -80,9 +89,10 @@ public class BackgroundDetection implements FrameProvider {
 		int green = (rgb >> 8) & 0xFF;
 		int blue= rgb & 0xFF;
 
-		// Testing using hue instead of intensity: uncomment this
-		// return getHueValue(red, green, blue);
-		return 0.30 * red + 0.59 * green + 0.11 * blue;
+		// WARNING: Altered formula to give red and blue more intensity.
+		return 0.69 * red + 0.31 * blue;
+		// Original is commented below.
+		// return 0.30 * red + 0.59 * green + 0.11 * blue;
 	}
 
 	private void setupBaseModel(BufferedImage frame) {
@@ -90,7 +100,7 @@ public class BackgroundDetection implements FrameProvider {
 		for (int i = 0; i < frame.getWidth(); i++) {
 			for (int j = 0; j < frame.getHeight(); j++) {
 				double intensity = getInstensity(frame.getRGB(i, j));
-				bgModel[i][j] = intensity;
+				expected[i][j] = intensity;
 			}
 		}
 	}
@@ -114,41 +124,45 @@ public class BackgroundDetection implements FrameProvider {
 		}
 		if (!firstRound) {
 			if (empty[i][j]) {
-				return Math.abs(intensity - expected[i][j]) > 2 * std[i][j];
+				return true;
 			} else {
-				return false;
+				boolean stdsOut = Math.abs(intensity - expected[i][j]) > STDS_OUT * std[i][j];
+				if (std[i][j] > MIN_STD) {
+					return stdsOut;
+				} else {
+					return currentEnergy[i][j] > THRESHOLD_ENERGY && stdsOut;
+				}
 			}
 		} else {
-			return Math.abs(intensity - bgModel[i][j]) > THRESHOLD_FIRST_PASS;
+			return Math.abs(intensity - expected[i][j]) > THRESHOLD_FIRST_PASS;
 		}
 	}
 
 	private void resetForNewWindow() {
 		cases = new int[5];
-		for (int i = 0; i < energy.length; i++) {
-			for (int j = 0; j < energy[i].length; j++) {
-				delta[i][j] = 0;
+		for (int i = 0; i < cummEnergy.length; i++) {
+			for (int j = 0; j < cummEnergy[i].length; j++) {
 				mean[i][j] = 0;
 				M2[i][j] = 0;
-				energy[i][j] = 0;
+				cummEnergy[i][j] = 0;
 			}
 		}
 		firstRound = false;
+		frameCount = 0;
 	}
 
 	private void initializeAll(BufferedImage frame) {
 
 		int width = frame.getWidth();
 		int height = frame.getHeight();
-		energy = new double[width][height];
+		cummEnergy = new double[width][height];
+		currentEnergy = new double[width][height];
 		empty = new boolean[width][height];
 		std = new double[width][height];
-		bgModel = new double[width][height];
 		cases = new int[5];
 
 		mean = new double[width][height];
 		expected = new double[width][height];
-		delta = new double[width][height];
 		M2 = new double[width][height];
 
 		for (int i = 0; i < width; i++) {
@@ -160,12 +174,14 @@ public class BackgroundDetection implements FrameProvider {
 
 	private void calculateNewModel() {
 
-		for (int i = 0; i < energy.length; i++) {
-			for (int j = 0; j < energy[i].length; j++) {
-				if (energy[i][j] > THRESHOLD_ENERGY * wSize) {
+		for (int i = 0; i < cummEnergy.length; i++) {
+			for (int j = 0; j < cummEnergy[i].length; j++) {
+				double currStd = Math.sqrt(M2[i][j]/(wSize - 1));
+				if (cummEnergy[i][j] > THRESHOLD_ENERGY * wSize) {
 					empty[i][j] = true;
+					expected[i][j] = mean[i][j];
+					std[i][j] = currStd;
 				} else {
-					double currStd = Math.sqrt(M2[i][j]/(wSize - 1));
 					if (firstRound || empty[i][j]) {
 						expected[i][j] = mean[i][j];
 						std[i][j] = currStd;
@@ -178,48 +194,5 @@ public class BackgroundDetection implements FrameProvider {
 				}
 			}
 		}
-	}
-
-	private static int getHueValue(int red, int green, int blue) {
-		float min;    //Min. value of RGB
-		float max;    //Max. value of RGB
-		float delMax; //Delta RGB value
-
-		final float r = red / 255.0f;
-		final float g = green / 255.0f;
-		final float b = blue / 255.0f;
-
-		if (r > g) {
-			min = g;
-			max = r;
-		} else {
-			min = r;
-			max = g;
-		}
-		if (b > max) {
-			max = b;
-		}
-		if (b < min) {
-			min = b;
-		}
-
-		delMax = max - min;
-
-		float H = 0;
-
-		if ( delMax == 0 ) {
-			H = 0;
-		} else {
-			if ( r == max ) {
-				H = (g - b) / delMax % 6;
-			} else if ( g == max ) {
-				H = 2 + (b - r) / delMax;
-			} else if ( b == max ) {
-				H = 4 +  (r - g) / delMax;
-			}
-
-			H *= 60;
-		}
-		return (int) (H * 255.0f / 360.0f);
 	}
 }

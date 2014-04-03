@@ -131,8 +131,6 @@ public class ActiveContour {
 
 
 		final long diff = System.currentTimeMillis() - time;
-		System.out.println("Time difference: " + diff + " ms");
-
 		return diff;
 	}
 
