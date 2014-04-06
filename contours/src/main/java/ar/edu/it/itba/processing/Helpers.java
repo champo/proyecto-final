@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.processing.color.ColorPoint.Type;
 
@@ -99,7 +100,18 @@ public final class Helpers {
 	}
 
 	public static double diffObject(final BufferedImage frame, final Contour c, final Point p, final ColorPoint color) {
-		return diffBackground(color, p, frame, c.getLastStdDev(), c.omega);
+		double diff = diffBackground(color, p, frame, c.getLastStdDev(), c.omega);
+		if (c.getState() == State.MISSING) {
+			return diff;
+		}
+
+		double distX = Math.abs(p.x - c.getLastCentroid().x);
+		double distY = Math.abs(p.y - c.getLastCentroid().y);
+
+		diff += distX < 6 ? 0 : Math.min(1, (distX - 6) / 10);
+		diff += distY < 10 ? 0 : Math.min(1, (distY - 10) / 20);
+
+		return Math.min(1, diff);
 	}
 
 	public static ColorPoint calculateStandardDeviation(final Type type, final Point center, final BufferedImage frame) {
@@ -177,22 +189,7 @@ public final class Helpers {
 		extra++;
 		result += pointStdDev.diff(stdDev);
 
-		// Coeficiente de varianza
-//		extra++;
-//		result += Math.abs(calculateVariationCoeficient(color.blue, pointStdDev.blue) - calculateVariationCoeficient(referenceColors[0].blue, stdDev.blue));
-//		result += Math.abs(calculateVariationCoeficient(color.red, pointStdDev.red) - calculateVariationCoeficient(referenceColors[0].red, stdDev.red));
-//		result += Math.abs(calculateVariationCoeficient(color.green, pointStdDev.green) - calculateVariationCoeficient(referenceColors[0].green, stdDev.green));
-
-
 		return result / ((referenceColors.length + extra) * MAX_PIXEL_VALUE);
-	}
-
-	private static int calculateVariationCoeficient(final int color, final int stdDev) {
-		if (stdDev == 0) {
-			return 255;
-		}
-
-		return Math.min(255, color / stdDev);
 	}
 
 	public static ColorPoint calculateBackgroundStandardDeviation(final Contour r, final BufferedImage frame) {
