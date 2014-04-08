@@ -22,6 +22,8 @@ import com.xuggle.mediatool.event.IWriteTrailerEvent;
 
 public class FrameDecoder implements FrameProvider {
 
+	private BufferedImage buffer;
+
 	private final class IMediaListenerImplementation implements IMediaListener {
 		@Override
 		public void onWriteTrailer(final IWriteTrailerEvent arg0) {
@@ -83,10 +85,25 @@ public class FrameDecoder implements FrameProvider {
 	}
 
 	@Override
-	public BufferedImage nextFrame() {
+	public void nextFrame() {
 		while (frameQueue.isEmpty() && reader.readPacket() == null);
-
-		return frameQueue.poll();
+		buffer = frameQueue.poll();
 	}
 
+	@Override
+	public int getHeight() {
+		return buffer.getHeight();
+	}
+	@Override
+	public int getWidth() {
+		return buffer.getWidth();
+	}
+	@Override
+	public int getRGB(int x, int y) {
+		return buffer.getRGB(x, y);
+	}
+	@Override
+	public int getType() {
+		return buffer.getType();
+	}
 }

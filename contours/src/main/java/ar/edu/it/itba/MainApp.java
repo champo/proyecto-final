@@ -121,7 +121,7 @@ public class MainApp extends javax.swing.JFrame {
         jLabel1.setText("Puntos identificados en la cancha");
 
         pointsList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = { };
             @Override
 			public int getSize() { return strings.length; }
             @Override
@@ -380,7 +380,7 @@ public class MainApp extends javax.swing.JFrame {
 	        		, 1.91)
 	        	, points)
     		, 10)
-        ;
+    ;
         /* Con Background Detection + Blackout
         frameDecoder = new BackgroundDetection(
     			new BlackOutOutskirts(
@@ -391,7 +391,8 @@ public class MainApp extends javax.swing.JFrame {
     		60)
         ;*/
         imagePanel = new ImagePanel();
-        BufferedImage frame = frameDecoder.nextFrame();
+        frameDecoder.nextFrame();
+        BufferedImage frame = buildImage();
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
@@ -617,7 +618,8 @@ public class MainApp extends javax.swing.JFrame {
         Dimension oldSize = imageContainerPanel.getPreferredSize();
 
         // Skip first three frames cause it jumps to much
-        BufferedImage firstImage = frameDecoder.nextFrame();
+        frameDecoder.nextFrame();
+        BufferedImage firstImage = buildImage();
         Dimension frameSize = new Dimension(firstImage.getWidth(), firstImage.getHeight());
         imagePanel.setPreferredSize(frameSize);
         imageContainerPanel.setPreferredSize(frameSize);
@@ -626,9 +628,9 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane2.setMaximumSize(oldSize);
         imageContainerPanel.revalidate();
 
-        for (int i = 0; i < 12; i++) {
-        	//frameDecoder.nextFrame();
-        }
+        // for (int i = 0; i < 8; i++) {
+        //	frameDecoder.nextFrame();
+        // }
         frameDecoder.nextFrame();
         pointsList.setModel(homeographyManager.getListModel());
 
@@ -644,7 +646,17 @@ public class MainApp extends javax.swing.JFrame {
         return this;
     }
 
-    protected BufferedImage getFrame() {
+    private BufferedImage buildImage() {
+    	BufferedImage image = new BufferedImage(frameDecoder.getWidth(), frameDecoder.getHeight(), frameDecoder.getType());
+    	for (int i = 0; i < frameDecoder.getWidth(); i++) {
+    		for (int j = 0; j < frameDecoder.getHeight(); j++) {
+    			image.setRGB(i, j, frameDecoder.getRGB(i,  j));
+    		}
+    	}
+		return image;
+	}
+
+	protected BufferedImage getFrame() {
     	return frame;
 	}
 
@@ -671,7 +683,8 @@ public class MainApp extends javax.swing.JFrame {
             @Override
             public void run() {
             	long time = System.currentTimeMillis();
-                frame = frameDecoder.nextFrame();
+            	frameDecoder.nextFrame();
+                frame = MainApp.this.buildImage();
                 framesElapsed++;
                 if (firstFrame == null) {
                 	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
@@ -744,7 +757,7 @@ public class MainApp extends javax.swing.JFrame {
                     imagePanel.setImage(frame);
                 }
                 imagePanel.repaint();
-                System.out.println("Time difference: " + (System.currentTimeMillis() - time) + " ms");
+                System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
             }
         });
     }
