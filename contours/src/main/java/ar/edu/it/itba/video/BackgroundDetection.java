@@ -12,7 +12,7 @@ public class BackgroundDetection implements FrameProvider {
 	private static final int MIN_STD = 10;
 	private static final int STDS_OUT = 4;
 	private static final int WINDOW_SIZE = 7;
-	private static final int WINDOW_THRESHOLD = 30;
+	private static final int WINDOW_THRESHOLD = 25;
 	private static final int WINDOW_HALF_SIZE = WINDOW_SIZE/2;
 
 	private final FrameProvider provider;

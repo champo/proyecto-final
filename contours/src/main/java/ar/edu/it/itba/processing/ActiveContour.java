@@ -27,7 +27,7 @@ public class ActiveContour {
 
 
 	private static final int MASK_RADIUS = 3;
-	protected static final int MAX_ITERATIONS = 400*400;
+	protected static final int MAX_ITERATIONS = 40*40;
 
 	private static double SIGMA = 0.7;
 	private static double[][] mask;
@@ -50,7 +50,7 @@ public class ActiveContour {
 
 	public ActiveContour(final BufferedImage frame, final Contour... c) {
 		contours = c;
-		// Calculating theta makes contours defien their internal points
+		// Calculating theta makes contours define their internal points
 		// it *must* happen before anything else
 		phi = new int[frame.getWidth()][frame.getHeight()];
 		theta = getTheta(c);
@@ -364,6 +364,9 @@ public class ActiveContour {
 
 	private void markInternalPoints(final PointMapping theta, final Contour r) {
 
+		if (r.isInitialized()) {
+			return;
+		}
 		final Set<Point> internalPoints = new HashSet<Point>();
 		final Set<Point> externalPoints = new HashSet<Point>();
 

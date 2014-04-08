@@ -451,7 +451,22 @@ public class MainApp extends javax.swing.JFrame {
                     ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                     imagePanel.setImage(image);
                 } else {
-                	((BackgroundDetection) frameDecoder).printData(arg0.getPoint().x, arg0.getPoint().y);
+                    Contour c;
+
+                    if (selectRectangle) {
+                    	c = Contour.aroundPoint(selected++, arg0.getPoint());
+                    } else {
+                    	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
+                    }
+                    c.setType(type);
+
+					contour.add(c);
+                    BufferedImage image = imagePanel.getImage();
+                    ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                    imagePanel.setImage(image);
+                    if (ac != null) {
+                        ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
+                    }
                 }
             }
 
@@ -686,9 +701,7 @@ public class MainApp extends javax.swing.JFrame {
                         phiPanel.setImage(phiColor);
                         phiPanel.repaint();
                 	 */
-
-                	BufferedImage coloredFrame = frame.getSubimage(0, 0, frame.getWidth(), frame.getHeight());
-                	ac.adapt(coloredFrame);
+                	ac.adapt(frame);
                 	int index = 0;
                 	if (homeography != null) {
                 		BufferedImage cancha = soccerFieldPanel.getImage();
@@ -698,15 +711,15 @@ public class MainApp extends javax.swing.JFrame {
             						Point inverseApply = homeography.inverseApply(i, j);
             						if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth() &&
             							inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
-            							getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
-            							imagePanel.setImage(getFrame());
+            							// getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+            							// imagePanel.setImage(getFrame());
             						}
                 				}
                 			}
                 		}
                 	}
                 	for (Contour c : contour) {
-                		ImageOperations.drawContourOnBuffer(coloredFrame, c);
+                		ImageOperations.drawContourOnBuffer(frame, c);
 
                 		if (homeography != null) {
                 			BufferedImage image = soccerFieldPanel.getImage();
@@ -726,7 +739,7 @@ public class MainApp extends javax.swing.JFrame {
                 			soccerFieldPanel.setImage(image);
                 		}
                 	}
-                	imagePanel.setImage(coloredFrame);
+                	imagePanel.setImage(frame);
                 } else {
                     imagePanel.setImage(frame);
                 }

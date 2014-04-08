@@ -24,6 +24,7 @@ public class Contour implements Iterable<Point> {
 
 	private Set<Point> internalPoints;
 
+	private boolean initialized = false;
 	private long accumulatedSize = 0;
 	private int mutationCount = 0;
 
@@ -143,8 +144,12 @@ public class Contour implements Iterable<Point> {
 
 	public void setInternalPoints(final Set<Point> internalPoints) {
 		this.internalPoints = internalPoints;
-
+		this.initialized = true;
 		lastCentroid = new Point(centroidX(), centroidY());
+	}
+
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 	public void addPoint(final Point p) {

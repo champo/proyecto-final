@@ -19,7 +19,6 @@ public final class Helpers {
 	public final static int BUCKETS = 32;
 	public final static double PONDER[] = new double[]{ 1, 0, 0 };
 
-
 	private Helpers() {
 	}
 
