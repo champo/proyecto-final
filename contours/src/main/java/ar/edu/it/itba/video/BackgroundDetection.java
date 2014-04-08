@@ -8,6 +8,13 @@ public class BackgroundDetection implements FrameProvider {
 	private static final double THRESHOLD_FIRST_PASS = 25.0;
 	private static final double BETA = 0.4;
 
+	private static final int MAX_HIST = 1000;
+	private static final int MIN_STD = 10;
+	private static final int STDS_OUT = 4;
+	private static final int WINDOW_SIZE = 7;
+	private static final int WINDOW_THRESHOLD = 30;
+	private static final int WINDOW_HALF_SIZE = WINDOW_SIZE/2;
+
 	private final FrameProvider provider;
 
 	private int wSize;
@@ -17,6 +24,7 @@ public class BackgroundDetection implements FrameProvider {
 	private double[][] currentEnergy;
 
 	private boolean[][] empty;
+	private boolean[][] isForeground;
 	private double[][] expected;
 	private double[][] std;
 
@@ -28,11 +36,7 @@ public class BackgroundDetection implements FrameProvider {
 	// For debugging purposes
 	private static final double BIN_SIZE = 15;
 	private double[] histogram;
-	private int[] cases;
-	
-	private static final int MAX_HIST = 1000;
-	private static final int MIN_STD = 10;
-	private static final int STDS_OUT = 4;
+	private int[] cases;	
 
 	public void printData(int x, int y) {
 		System.out.println("Point " + x + ", " + y + ", empty = " + empty[x][y] + ", expected = " + expected[x][y] + ", std = " + std[x][y]);
@@ -102,12 +106,45 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private BufferedImage blackoutBackground(BufferedImage frame) {
-
 		for (int i = 0; i < frame.getWidth(); i++) {
 			for (int j = 0; j < frame.getHeight(); j++) {
 				double intensity = getInstensity(frame.getRGB(i, j));
-				if (!isForeground(intensity, i, j)) {
+				isForeground[i][j] = isForeground(intensity, i, j);
+			}
+		}
+		// Moving WINDOW_SIZE x WINDOW_SIZE frame. If less than WINDOW_THRESHOLD out of them are
+		// considered foreground, then set frame then set frame to black
+		for (int i = 0; i < frame.getWidth(); i++) {
+			int count = 0;
+			// Start counting the first columns. Out of bounds are treated as background
+			for (int deltaI = -WINDOW_HALF_SIZE; deltaI <= WINDOW_HALF_SIZE; deltaI++) {
+				if (i + deltaI >= 0 && i + deltaI < frame.getWidth()) {
+					// Strictly less; to simplify counting in the next loop 
+					for (int deltaJ = 0; deltaJ < WINDOW_HALF_SIZE; deltaJ++) {
+						count += isForeground[i+deltaI][deltaJ] ? 1 : 0;
+					}
+				}
+			}
+			// Go through the whole row.
+			for (int j = 0; j < frame.getHeight(); j++) {
+				// Add the new column
+				if (j + WINDOW_HALF_SIZE < frame.getHeight()) {
+					for (int deltaI = -WINDOW_HALF_SIZE; deltaI <= WINDOW_HALF_SIZE; deltaI++) {
+						if (i+deltaI >= 0 && i + deltaI < frame.getWidth()) {
+							count += isForeground[i+deltaI][j+WINDOW_HALF_SIZE] ? 1 : 0;
+						}
+					}
+				}
+				if (count < WINDOW_THRESHOLD) {
 					frame.setRGB(i, j, 0);
+				}
+				// Remove the count for the leftmost column before incrementing j
+				if (j - WINDOW_HALF_SIZE >= 0) {
+					for (int deltaI = -WINDOW_HALF_SIZE; deltaI <= WINDOW_HALF_SIZE; deltaI++) {
+						if (i+deltaI >= 0 && i + deltaI < frame.getWidth()) {
+							count -= isForeground[i+deltaI][j-WINDOW_HALF_SIZE] ? 1 : 0;
+						}
+					}
 				}
 			}
 		}
@@ -141,6 +178,7 @@ public class BackgroundDetection implements FrameProvider {
 				mean[i][j] = 0;
 				M2[i][j] = 0;
 				cummEnergy[i][j] = 0;
+				isForeground[i][j] = false;
 			}
 		}
 		firstRound = false;
@@ -154,6 +192,7 @@ public class BackgroundDetection implements FrameProvider {
 		cummEnergy = new double[width][height];
 		currentEnergy = new double[width][height];
 		empty = new boolean[width][height];
+		isForeground = new boolean[width][height];
 		std = new double[width][height];
 		cases = new int[5];
 
