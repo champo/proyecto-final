@@ -85,17 +85,17 @@ public class BlackOutOutskirts extends AbstractFrameProviderDecorator {
 
 	@Override
 	public int getHeight() {
-		return maxY - minX + 1;
+		return height;
 	}
 
 	@Override
 	public int getWidth() {
-		return maxX - minX + 1;
+		return width;
 	}
 
 	@Override
 	public int getRGB(int x, int y) {
-		if (isInside[x][y]) {
+		if (isInside[x + minX][y + minY]) {
 			return provider.getRGB(x + minX, y + minY);
 		}
 		return Color.black.getRGB();

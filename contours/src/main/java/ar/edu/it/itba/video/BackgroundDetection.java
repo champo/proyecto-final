@@ -58,6 +58,7 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 		}
 		frameCount++;
 		analyzeFrame();
+		blackoutBackground();
 		if (frameCount == wSize) {
 			calculateNewModel();
 			resetForNewWindow();
@@ -146,7 +147,6 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 	}
 	@Override
 	public int getRGB(int x, int y) {
-		double intensity = getInstensity(provider.getRGB(x, y));
 		if (!finalForeground[x][y]) {
 			return 0; 
 		}
