@@ -4,12 +4,8 @@ import java.awt.image.BufferedImage;
 
 public class BackgroundDetection implements FrameProvider {
 
-	// 1.9 falls in the 80th percentile
-	// 3.0 falls about the 90th percentile
-	// 8.0 falls in the 95th percentile
-	// 20.0 falls in the 97.5th percentile
 	private static final double THRESHOLD_ENERGY = 25.0;
-	private static final double THRESHOLD_FIRST_PASS = 25;
+	private static final double THRESHOLD_FIRST_PASS = 25.0;
 	private static final double BETA = 0.4;
 
 	private final FrameProvider provider;
@@ -34,7 +30,7 @@ public class BackgroundDetection implements FrameProvider {
 	private double[] histogram;
 	private int[] cases;
 	
-	private static final int MAX_HIST = 50;
+	private static final int MAX_HIST = 1000;
 	private static final int MIN_STD = 10;
 	private static final int STDS_OUT = 4;
 
@@ -173,10 +169,13 @@ public class BackgroundDetection implements FrameProvider {
 	}
 
 	private void calculateNewModel() {
-
+		histogram = new double[MAX_HIST];
 		for (int i = 0; i < cummEnergy.length; i++) {
 			for (int j = 0; j < cummEnergy[i].length; j++) {
-				double currStd = Math.sqrt(M2[i][j]/(wSize - 1));
+				double currStd = Math.sqrt(M2[i][j] / (wSize - 1));
+				if (cummEnergy[i][j] / BIN_SIZE < MAX_HIST) {
+					histogram[(int) (cummEnergy[i][j] / BIN_SIZE)]++;
+				}
 				if (cummEnergy[i][j] > THRESHOLD_ENERGY * wSize) {
 					empty[i][j] = true;
 					expected[i][j] = mean[i][j];
@@ -187,11 +186,23 @@ public class BackgroundDetection implements FrameProvider {
 						std[i][j] = currStd;
 					} else {
 						// BETA is always < 0.5, so 1-BETA is bigger than BETA
-						expected[i][j] = BETA * expected[i][j] + (1-BETA) * mean[i][j];
-						std[i][j] = BETA * std[i][j] + (1-BETA) * currStd;
+						expected[i][j] = BETA * expected[i][j] + (1 - BETA)
+								* mean[i][j];
+						std[i][j] = BETA * std[i][j] + (1 - BETA) * currStd;
 					}
 					empty[i][j] = false;
 				}
+			}
+		}
+		int max = cummEnergy.length * cummEnergy[0].length;
+		System.out.println("Histogram for " + max + " is:");
+		double cummEnergy = 0;
+		for (int i = 0; i < MAX_HIST; i++) {
+			cummEnergy += histogram[i];
+			if (histogram[i] / max > 0.0001) {
+				System.out.println("Points with energy in range " + i
+						* BIN_SIZE / wSize + " to " + (i + 1) * BIN_SIZE / wSize + " = "
+						+ histogram[i] + "(" + 100 * histogram[i] / max + "%, cumm = " + cummEnergy / max * 100 + ")");
 			}
 		}
 	}
