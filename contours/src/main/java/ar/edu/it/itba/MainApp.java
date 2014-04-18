@@ -698,12 +698,6 @@ public class MainApp extends javax.swing.JFrame {
                 		}
                 	}
                 }
-                /* Ugly code that got commited to paint in green the right side of the image
-                for (int i = (int) (frame.getWidth() * 0.7); i < frame.getWidth(); i++) {
-            		for (int j = 0; j < frame.getHeight(); j++) {
-            			frame.setRGB(i, j, Color.GREEN.getRGB());
-            		}
-            	}*/
 
                 if (ac != null) {
                 	/*
