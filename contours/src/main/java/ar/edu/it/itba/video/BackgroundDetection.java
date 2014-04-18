@@ -14,7 +14,7 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 	private static final int WINDOW_THRESHOLD = 25;
 	private static final int WINDOW_HALF_SIZE = WINDOW_SIZE/2;
 
-	private int wSize;
+	private final int wSize;
 	private int frameCount;
 
 	private double[][] cummEnergy;
@@ -35,9 +35,8 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 	// For debugging purposes
 	private static final double BIN_SIZE = 15;
 	private double[] histogram;
-	private int[] cases;
 
-	public void printData(int x, int y) {
+	public void printData(final int x, final int y) {
 		System.out.println("Point " + x + ", " + y + ", empty = " + empty[x][y] + ", expected = " + expected[x][y] + ", std = " + std[x][y]);
 		System.out.println("Energy: " + cummEnergy[x][y] + ", mean = " + mean[x][y]);
 	}
@@ -81,10 +80,9 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 		}
 	}
 
-	private static double getInstensity(int rgb) {
+	private static double getInstensity(final int rgb) {
 
 		int red = (rgb >> 16) & 0xFF;
-		int green = (rgb >> 8) & 0xFF;
 		int blue= rgb & 0xFF;
 
 		// WARNING: Altered formula to give red and blue more intensity.
@@ -146,14 +144,14 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 		}
 	}
 	@Override
-	public int getRGB(int x, int y) {
+	public int getRGB(final int x, final int y) {
 		if (!finalForeground[x][y]) {
-			return 0; 
+			return 0;
 		}
 		return provider.getRGB(x, y);
 	}
 
-	private boolean isForeground(double intensity, int i, int j) {
+	private boolean isForeground(final double intensity, final int i, final int j) {
 		if (intensity == 0) {
 			return false;
 		}
@@ -174,7 +172,6 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 	}
 
 	private void resetForNewWindow() {
-		cases = new int[5];
 		for (int i = 0; i < cummEnergy.length; i++) {
 			for (int j = 0; j < cummEnergy[i].length; j++) {
 				mean[i][j] = 0;
@@ -197,8 +194,6 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 		isForeground = new boolean[width][height];
 		finalForeground = new boolean[width][height];
 		std = new double[width][height];
-		cases = new int[5];
-
 		mean = new double[width][height];
 		expected = new double[width][height];
 		M2 = new double[width][height];

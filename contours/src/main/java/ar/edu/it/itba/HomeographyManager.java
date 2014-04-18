@@ -26,18 +26,20 @@ import ar.edu.it.itba.processing.Homography;
 public class HomeographyManager {
 
     private final List<Pair> points = new ArrayList<Pair>();
-    private ListModel listModel;
+    private ListModel<Pair> listModel;
 
     public HomeographyManager() {
-        listModel = new AbstractListModel() {
+        listModel = new AbstractListModel<Pair>() {
 
-            @Override
+			private static final long serialVersionUID = 4973707810214568136L;
+
+			@Override
             public int getSize() {
                 return points.size();
             }
 
             @Override
-            public Object getElementAt(final int index) {
+            public Pair getElementAt(final int index) {
                 return points.get(index);
             }
         };
@@ -94,7 +96,7 @@ public class HomeographyManager {
 		return h;
     }
 
-    ListModel getListModel() {
+    ListModel<Pair> getListModel() {
         return listModel;
     }
 
@@ -120,7 +122,7 @@ public class HomeographyManager {
         }
     }
 
-	public Homography calculateIterativeHomegraphy(int n) {
+	public Homography calculateIterativeHomegraphy(final int n) {
 		Homography currentH = calculateHomography();
 		for (int i = 0; i < n; i++) {
 			Homography h_inverse = currentH.getInverse();

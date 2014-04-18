@@ -412,23 +412,7 @@ public class ActiveContour {
 		});
 	}
 
-	private boolean endCondition(final PointMapping F_d, final BufferedImage coloredFrame, final Contour r) {
-
-		// WARNING! FALTA CONSIDERAR PHI ACA
-		for (final Point p : r.getLout()) {
-			if (F_d.getValue(p) >= 0 && !isBorder(coloredFrame, p)) {
-				return false;
-			}
-		}
-		for (final Point p : r.getLin()) {
-			if (F_d.getValue(p) <= 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-    public int[][] getMapping() {
+	public int[][] getMapping() {
         return phi;
     }
 

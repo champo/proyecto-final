@@ -39,7 +39,9 @@ import ar.edu.it.itba.video.LensCorrection;
  */
 public class Main2 extends javax.swing.JFrame {
 
-    FrameProvider frameDecoder;
+	private static final long serialVersionUID = -2854544975893766668L;
+
+	FrameProvider frameDecoder;
     List<SequenceSettings> settings;
     SequenceSettings currentSettings;
     BufferedImage frame;
@@ -49,11 +51,11 @@ public class Main2 extends javax.swing.JFrame {
     boolean selectingPoint;
     private BufferedImage firstFrame;
     private ActiveContour ac;
-    private List<Contour> contour = new LinkedList<Contour>();
+    private final List<Contour> contour = new LinkedList<Contour>();
     private Homography homography;
     private int selected= 0;
     private FileOutputStream outBuffer;
-    
+
     public static Color phiColoring[] = new Color[] {
         new Color(0,0,0),
         new Color(255, 0, 0),
@@ -114,14 +116,16 @@ public class Main2 extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
+            @Override
+			public void componentResized(final java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
             }
         });
 
         jTabbedPane1.setEnabled(false);
         jTabbedPane1.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
+            @Override
+			public void componentResized(final java.awt.event.ComponentEvent evt) {
                 jTabbedPane1ComponentResized(evt);
             }
         });
@@ -130,11 +134,14 @@ public class Main2 extends javax.swing.JFrame {
 
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            @Override
+			public int getSize() { return strings.length; }
+            @Override
+			public Object getElementAt(final int i) { return strings[i]; }
         });
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+            @Override
+			public void valueChanged(final javax.swing.event.ListSelectionEvent evt) {
                 jList1ValueChanged(evt);
             }
         });
@@ -143,7 +150,8 @@ public class Main2 extends javax.swing.JFrame {
         jLabel2.setText("Or open a new video file:");
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jFileChooser1ActionPerformed(evt);
             }
         });
@@ -183,10 +191,12 @@ public class Main2 extends javax.swing.JFrame {
         jTabbedPane1.addTab("Video", jPanel1);
 
         jPanel2.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
+            @Override
+			public void componentResized(final java.awt.event.ComponentEvent evt) {
                 jPanel2ComponentResized(evt);
             }
-            public void componentShown(java.awt.event.ComponentEvent evt) {
+            @Override
+			public void componentShown(final java.awt.event.ComponentEvent evt) {
                 jPanel2ComponentShown(evt);
             }
         });
@@ -197,8 +207,10 @@ public class Main2 extends javax.swing.JFrame {
 
         jListPoints.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            @Override
+			public int getSize() { return strings.length; }
+            @Override
+			public Object getElementAt(final int i) { return strings[i]; }
         });
         jListPoints.setEnabled(false);
         jScrollPane2.setViewportView(jListPoints);
@@ -206,7 +218,8 @@ public class Main2 extends javax.swing.JFrame {
         newHomographyPointButton.setText("New Point");
         newHomographyPointButton.setEnabled(false);
         newHomographyPointButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 newHomographyPointButtonActionPerformed(evt);
             }
         });
@@ -220,14 +233,16 @@ public class Main2 extends javax.swing.JFrame {
 
         jFixFieldSize.setText("Fix Field Size");
         jFixFieldSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jFixFieldSizeActionPerformed(evt);
             }
         });
 
         jButton2.setText("Continue");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -235,12 +250,14 @@ public class Main2 extends javax.swing.JFrame {
         jLabelSelectPoint.setText("Select point in the field");
 
         jTextFieldWidth.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jTextFieldWidthActionPerformed(evt);
             }
         });
         jTextFieldWidth.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+            @Override
+			public void propertyChange(final java.beans.PropertyChangeEvent evt) {
                 jTextFieldWidthPropertyChange(evt);
             }
         });
@@ -250,19 +267,22 @@ public class Main2 extends javax.swing.JFrame {
         jLabel7.setText("Field depth");
 
         jTextFieldDepth.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jTextFieldDepthActionPerformed(evt);
             }
         });
         jTextFieldDepth.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+            @Override
+			public void propertyChange(final java.beans.PropertyChangeEvent evt) {
                 jTextFieldDepthPropertyChange(evt);
             }
         });
 
         jButtonUpdateLensCorrection.setText("Update");
         jButtonUpdateLensCorrection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButtonUpdateLensCorrectionActionPerformed(evt);
             }
         });
@@ -405,7 +425,8 @@ public class Main2 extends javax.swing.JFrame {
 
         jButton1.setText("Next Frame");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -480,7 +501,7 @@ public class Main2 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
+    private void jFileChooser1ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
 
         if (evt.getActionCommand().equals("CancelSelection")) {
             System.exit(0);
@@ -497,7 +518,7 @@ public class Main2 extends javax.swing.JFrame {
         loadVideo();
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 
-    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+    private void jList1ValueChanged(final javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
 
         currentSettings = settings.get(jList1.getSelectedIndex());
         homographyManager = new HomeographyManager();
@@ -507,8 +528,8 @@ public class Main2 extends javax.swing.JFrame {
         loadVideo();
     }//GEN-LAST:event_jList1ValueChanged
 
-    private void jFixFieldSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFixFieldSizeActionPerformed
-                                                                
+    private void jFixFieldSizeActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFixFieldSizeActionPerformed
+
         Double data;
         try {
             data = Double.valueOf(jTextFieldWidth.getText());
@@ -525,47 +546,47 @@ public class Main2 extends javax.swing.JFrame {
         tryEnableButtons();
     }//GEN-LAST:event_jFixFieldSizeActionPerformed
 
-    private void newHomographyPointButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newHomographyPointButtonActionPerformed
+    private void newHomographyPointButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newHomographyPointButtonActionPerformed
         jLabelSelectPoint.setVisible(true);
         selectingPoint = true;
     }//GEN-LAST:event_newHomographyPointButtonActionPerformed
 
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+    private void formComponentResized(final java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
 
         jTabbedPane1.setSize(getSize());
     }//GEN-LAST:event_formComponentResized
 
-    private void jTabbedPane1ComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane1ComponentResized
+    private void jTabbedPane1ComponentResized(final java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane1ComponentResized
 
         jTabbedPane1.getSelectedComponent().setSize(jTabbedPane1.getSize());
     }//GEN-LAST:event_jTabbedPane1ComponentResized
 
-    private void jTextFieldWidthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldWidthActionPerformed
+    private void jTextFieldWidthActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldWidthActionPerformed
     }//GEN-LAST:event_jTextFieldWidthActionPerformed
 
-    private void jPanel2ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel2ComponentShown
+    private void jPanel2ComponentShown(final java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel2ComponentShown
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel2ComponentShown
 
-    private void jPanel2ComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel2ComponentResized
+    private void jPanel2ComponentResized(final java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanel2ComponentResized
         jScrollPane3.setSize(getWidth() - 230, getHeight() - 60);
         homographySettingsPanel.setSize(230, getHeight());
     }//GEN-LAST:event_jPanel2ComponentResized
 
-    private void jTextFieldDepthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDepthActionPerformed
-                                                             
+    private void jTextFieldDepthActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDepthActionPerformed
+
 
     }//GEN-LAST:event_jTextFieldDepthActionPerformed
 
-    private void jTextFieldDepthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldDepthPropertyChange
+    private void jTextFieldDepthPropertyChange(final java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldDepthPropertyChange
 
     }//GEN-LAST:event_jTextFieldDepthPropertyChange
 
-    private void jTextFieldWidthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldWidthPropertyChange
+    private void jTextFieldWidthPropertyChange(final java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTextFieldWidthPropertyChange
 
     }//GEN-LAST:event_jTextFieldWidthPropertyChange
 
-    private void jButtonUpdateLensCorrectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateLensCorrectionActionPerformed
+    private void jButtonUpdateLensCorrectionActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateLensCorrectionActionPerformed
         Double data;
         try {
             data = Double.valueOf(jTextFieldCorrection.getText());
@@ -579,7 +600,7 @@ public class Main2 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonUpdateLensCorrectionActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         settings.add(currentSettings);
         try {
             FileOutputStream fso = new FileOutputStream("settings.txt");
@@ -592,7 +613,7 @@ public class Main2 extends javax.swing.JFrame {
             Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
         }
         jTabbedPane1.setSelectedIndex(2);
-        
+
         imagePanel = new ImagePanel();
         frameDecoder.nextFrame();
         frame = getImage();
@@ -606,9 +627,9 @@ public class Main2 extends javax.swing.JFrame {
         imagePanel.addMouseListener(new MouseListener() {
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(final MouseEvent e) {
                 if (framesElapsed == 1) {
-                    
+
                     contour.add(Contour.aroundPoint(selected++, e.getPoint()));
                     BufferedImage image = imagePanel.getImage();
                     ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
@@ -617,25 +638,25 @@ public class Main2 extends javax.swing.JFrame {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(final MouseEvent e) {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(final MouseEvent e) {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(final MouseEvent e) {
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(final MouseEvent e) {
             }
         });
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             loadNextFrame();
         } catch (IOException ex) {
@@ -650,19 +671,19 @@ public class Main2 extends javax.swing.JFrame {
             double value = data == null ? 0 : data;
             jTextFieldCorrection.setText(Double.toString(data));
         }
-        
+
         if (currentSettings.getFieldDepth() != null) {
             Double data = currentSettings.getFieldDepth();
             double value = data == null ? 0 : data;
             jTextFieldDepth.setText(Double.toString(data));
         }
-        
+
         if (currentSettings.getFieldWidth() != null) {
             Double data = currentSettings.getFieldWidth();
             double value = data == null ? 0 : data;
             jTextFieldWidth.setText(Double.toString(data));
         }
-        
+
         imagePanel = new ImagePanel();
         frameDecoder.nextFrame();
         frame = getImage();
@@ -676,14 +697,14 @@ public class Main2 extends javax.swing.JFrame {
         imagePanel.addMouseListener(new MouseListener() {
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(final MouseEvent e) {
                 if (selectingPoint) {
                     PointInFieldDialogue.showUp(Main2.this, e.getPoint(),
                             currentSettings.getFieldWidth().intValue(), currentSettings.getFieldDepth().intValue(),
                             new PointInFieldDialogue.PointInFieldListener() {
 
                         @Override
-                        public void getResult(Pair p) {
+                        public void getResult(final Pair p) {
                             homographyManager.setMapping(p.image, p.mapped);
                             jListPoints.updateUI();
                             // Force redraw
@@ -695,32 +716,32 @@ public class Main2 extends javax.swing.JFrame {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(final MouseEvent e) {
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(final MouseEvent e) {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(final MouseEvent e) {
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(final MouseEvent e) {
             }
         });
 
-        jListPoints.setModel(homographyManager.getListModel());                                                  
+        jListPoints.setModel(homographyManager.getListModel());
         jLabelSelectPoint.setVisible(false);
-        
+
         tryEnableButtons();
     }
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(final String args[]) {
         /* Set the Nimbus look and feel */
 
        final Main2 instance = new Main2();
@@ -738,7 +759,7 @@ public class Main2 extends javax.swing.JFrame {
             }
 
             @Override
-            public Object getElementAt(int index) {
+            public Object getElementAt(final int index) {
                 return instance.settings.get(index).getName() + "(" +
                         instance.settings.get(index).getPath() + ")";
             }
@@ -787,7 +808,7 @@ public class Main2 extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void tryEnableButtons() {
-        
+
         if (currentSettings.getFieldDepth() != null && currentSettings.getFieldWidth() != null) {
             jTextFieldDepth.setEnabled(false);
             jTextFieldWidth.setEnabled(false);
@@ -797,7 +818,7 @@ public class Main2 extends javax.swing.JFrame {
         }
     }
 
-    private void setupImageHomo(BufferedImage newImage) {
+    private void setupImageHomo(final BufferedImage newImage) {
         if (homographyManager.getListModel().getSize() > 3) {
             Homography homography = homographyManager.calculateHomography();
             // Draw field limits
@@ -818,7 +839,7 @@ public class Main2 extends javax.swing.JFrame {
                 if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())
                 if (inverseApply.y > 0 && inverseApply.y < newImage.getHeight())
                 newImage.setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
-                
+
                 // Middle of the field
                 inverseApply = homography.inverseApply((int) (i / currentSettings.getFieldWidth()), currentSettings.getFieldDepth().intValue() / 2);
                 if (inverseApply.x > 0 && inverseApply.x < newImage.getWidth())

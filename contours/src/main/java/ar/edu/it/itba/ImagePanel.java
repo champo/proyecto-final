@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
 
+	private static final long serialVersionUID = 8469535547978235554L;
+
 	private BufferedImage image;
 
     @Override
