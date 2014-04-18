@@ -196,8 +196,6 @@ consecutivos se obtiene el vector de cambios de los valores de píxeles $X = (x_
 Donde $B$ contiene los valores de la homografia $H$ de movimiento entre los cuadros.
 
 \subsubsection{Cálculo de los predictores}
-% TODO: Aclarar que es perturbar
-% TODO: Aclarar que el calculo de la homografia de la perturbacion es directa
 Para obtener la relación $A$ se utiliza un paso inicial de entrenamiento.
 Primero se determina la posición del objeto en un cuadro de manera supervisada.
 Una vez conocida la posición, se toman $n$ muestras aleatorias del valor de
@@ -413,7 +411,6 @@ reentrenar todas las funciones de distancia.
     \label{eq:learning-model-update-1}
     t_{label} = \left\{
                 \begin{array}{l l}
-                  % TODO: LA corrección dice que Tht_{D} no está definida
                     1, & D_{S^{+}}(t) \leq Tht_{D}\\
                     0, & D_{S^{+}}(t) >  Tht_{D}
                 \end{array} \right.
@@ -763,10 +760,8 @@ hacia todos los sumideros es igual a la mínima capacidad total de todo corte
 corte mínimo asociado se puede encontrar con el clásico algoritmo
 Ford Fulkerson (ver \cite{Cormen:2009:IAT:1614191}).
 
-% En comparación con la IFT, \textit{Graph-Cut} tiene 2 grandes desventajas: es
 En comparación con la IFT, \textit{Corte de Grafos} tiene 2 grandes desventajas:
 tiene un mayor costo computacional (IFT es $O(n)$ mientras que
-% el mejor algoritmo \textit{Graph-Cut} es $O(n^{2.5})$), y además tiende a
 el mejor algoritmo \textit{Corte de Grafos} es $O(n^{2.5})$), y además tiende a
 minimizar el número de aristas en el corte, en vez de sus capacidades. Esto
 último quiere decir que muestra una preferencia a segmentar basada en la
@@ -974,7 +969,6 @@ N_{a} < max(filas, columnas)$.
 
 \end{enumerate}
 
-%TODO Maybe poner footnote o algo sobre filtros Gaussianos? Apendice? (Seen by: Alvaneitor)
 En el segundo ciclo, la curva se suaviza utilizando un filtro Gaussiano, de tal
 forma que la fuerza de evolución es $F_{s}(x) = G \otimes \phi(x)$. Para aplicar $F_s$ se usan los mismos
 pasos que para $F_d$. El resultado final es análogo a modificar la curva de acuerdo
@@ -1131,9 +1125,7 @@ Como consecuencia, se tiene el siguiente sistema de ecuaciones lineales para res
 
 Con 4 puntos de correspondencias, el sistema es \textit{compatible determinado} y la única solución es el espacio nulo de $A$. Para más correspondencias,
 el sistema pasa a ser \textit{compatible indeterminado} y de las infinitas soluciones, se busca la de menor norma 2.
-%TODO maybe agregar alguna mini explicación de porque? (Seen by: Alvaneitor).
 
-% TODO: Apenas entiendo que garcha pasa despues de esto.
 \begin{equation}
     \argmin_{\norm{h}=1} \norm{Ah} = \argmin_{\norm{h}=1} h^{T}A^{T}Ah = \lambda_{min}
 \end{equation}
@@ -1165,7 +1157,6 @@ Con $\lambda_{i} = \lambda_{min}$, se alcanza un mínimo cuando todas las compon
 $h=Qy = q_{min}$, el autovector de $B$ correspondiente al mínimo autovalor.
 
 El problema se reduce entonces a hallar este autovector. Para ello, se recurre a la Descomposición en Valores Singulares
-%TODO footnote o referencia? (Seen by: alvaneitor)
 \begin{equation}
     A = U\Sigma V^{T}
 \end{equation}
@@ -1272,9 +1263,6 @@ tiene un alto valor de energía, se considera al punto un candidato a
 contener un objeto en movimiento y por lo tanto el valor de $B_F$ es
 indefinido.
 
-% TODO: @eordano: no deberia ser un B_F' que se calcula en base a B_F y E'?
-% queda confuso sino me pa
-% REPLY: Sounds better?
 Una vez que este primer $B_F$ contiene un modelo que identifica zonas en primer
 plano y en el fondo, para sucesivas ventanas se utiliza esa información y se la
 complementa con nuevas observaciones, utilizando un parámetro de actualización
@@ -1291,8 +1279,6 @@ ecuación \ref{eq:tanos-bf2}:
   \end{cases}
 \end{equation}
 
-% TODO: @eordano no me queda claro para que sirve B_F
-% REPLY:
 De esta manera, $B_F$ contiene ahora información para determinar si un punto
 pertenece al primer plano o es un punto del fondo o estático. Un punto en la
 siguiente ventana temporal pertenece al primer plano si $B_F(x, y) = \phi$ o
@@ -1307,7 +1293,6 @@ cuyo tamaño no supere un umbral (determinado experimentalmente con el
 objetivo de descartar sectores muy chicos) y se realiza un análisis de la
 morfología de los conjuntos conexos, para eliminar la sombra proyectada por los
 jugadores.
-% Leaving this as a reminder.(el artículo publicado no entra en detalles acerca de este proceso).
 
 \subsubsection{Clasificación de Jugadores y Árbitros}
 
@@ -1326,8 +1311,6 @@ y un valor de umbral denominado $th$ para generar las clases de objetos.
 Se realizan varias iteraciones, unificando clases de objetos si no difieren
 por más de $th$.
 
-% TODO: @eordano esto es una distancia? suena a una regla de actualizacion esto...
-% REPLY: yeap. Does this look better?
 Para clasificar a los objetos en su clase correspondiente se toma la clase con
 menor \textit{distancia Manhattan} al prototipo, y se actualiza la clase
 ganadora mediante la fórmula:
@@ -1359,7 +1342,6 @@ $x_{ti} = (p_i, v_i, d_i, l_i, c_i, s_i)$, donde:
 etiquetas si el cuadro está en estado de colisión.
 \end{itemize}
 
-%TODO tebex revisate esta primer oración que quedó medio sucia (más allá de la traduccion)
 Para cada nuevo cuadro, se actualiza la posición de la caja que contiene a
 los sectores candidatos analizando el movimiento de sectores dentro de la
 caja para actualizar la velocidad, posición y tamaño,
@@ -1406,8 +1388,6 @@ pelota, $R_{cm}$ es el radio de la pelota en centímetros, $T$ es la cantidad de
 cuadros por segundo, y $n$ la cantidad de cuadros desde que la pelota fue
 encontrada en la posición $\tilde{x},\tilde{y}$.
 
-% TODO: @eordano, que hacen con esa P?
-% REPLY
 En sucesivos cuadros, se utiliza esta información para evitar buscar la pelota
 en todo el campo de juego, y sólo se analizan los píxeles con alta probabilidad
 de contener la pelota (la probabilidad disminuye exponencialmente con la
@@ -1527,8 +1507,6 @@ cinco posibles uniformes (uno para cada equipo, uno para cada arquero, y los
 
 \subsubsection{Seguimiento multi-cámara}
 
-%TODO esta sección quizas podría tener un poco más de contenido. Pasa que el
-% paper es fucking- disgusting! No se entiende un soto. Tebex? (by:Alvanator)
 El módulo supervisor recibe los datos pre-procesados de los demás módulos.
 Se unifican los valores obtenidos
 de todos los módulos y se los asocia utilizando una matriz que es actualizada
@@ -1571,7 +1549,6 @@ y de esto, se toman las partes que cumplen con la representación por colores de
 Para evitar problemas de iluminación, cada cierto número de cuadros se re-aprende la clase de color
 que corresponde al verde del césped.
 
-% What??
 Para detectar las regiones de ínteres, se utilizan las clases de color para aislar potenciales regiones.
 A partir de estas, se utilizan las caracteristícas morfológicas de cada clase de objeto para eliminar regiones
 inválidas. Se asume que los jugadores siempre van a estar parados, y por lo tanto tienen regiones rectangulares.
@@ -1623,8 +1600,6 @@ En el caso de la pérdida de pelota, se utiliza un árbol de decisión más comp
 
 \subsection{Análisis de deportes con video televisado}
 \label{sec:tv-video}
-
-%\subsubsection{\citetitle{LIU20061146}}
 
 En \cite{LIU20061146} se plantea una técnica para obtener las posiciones de los
 jugadores y la pelota utilizando la transmisión televisada de un partido de
