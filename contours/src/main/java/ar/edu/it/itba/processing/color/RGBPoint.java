@@ -13,7 +13,7 @@ public class RGBPoint extends ColorPoint {
 		this.blue = blue;
 	}
 
-	public RGBPoint(final int red, final int blue, final int green) {
+	public RGBPoint(final int red, final int green, final int blue) {
 		super(red, green, blue);
 	}
 

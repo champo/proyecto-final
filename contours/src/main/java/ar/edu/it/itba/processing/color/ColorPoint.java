@@ -46,14 +46,14 @@ public class ColorPoint {
 		return Type.RGB;
 	}
 
-	public static ColorPoint build(final Type type, final int red, final int blue, final int green) {
+	public static ColorPoint build(final Type type, final int red, final int green, final int blue) {
 		switch (type) {
 		case HSI:
-			return new HSIPoint(red, blue, green);
+			return new HSIPoint(red, green, blue);
 		case HS:
-			return new HSPoint(red, blue, green);
+			return new HSPoint(red, green, blue);
 		case RGB:
-			return new RGBPoint(red, blue, green);
+			return new RGBPoint(red, green, blue);
 		default:
 			throw new IllegalArgumentException();
 		}

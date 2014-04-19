@@ -1,5 +1,6 @@
 package ar.edu.it.itba.processing;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public final class Helpers {
 	}
 
 	public static ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
-			final Contour contour) {
-		return new ColorPoint[] { getAverageBackgroundColor(frame, contour) };
+			final Contour contour, final Contour[] contours) {
+		return new ColorPoint[] { getAverageBackgroundColor(frame, contour, contours) };
 	}
 
 	public static boolean isBorder(final BufferedImage frame, final Point p) {
@@ -95,11 +96,16 @@ public final class Helpers {
 
 	public static Double prob(final BufferedImage frame, final Contour c, final Point p) {
 		ColorPoint color = ColorPoint.buildFromRGB(c.getType(), frame.getRGB(p.x, p.y));
-		return Math.log((1 - diffObject(frame, c, p, color)) -  Math.log(1 - diffBackground(color, p, frame, c.bgDeviation, c.omegaZero)));
+		return Math.log((1 - diffObject(frame, c, p, color)) -  Math.log(1 - backgroundDiff(color, p, frame, c.bgDeviation, c.omegaZero)));
 	}
 
 	public static double diffObject(final BufferedImage frame, final Contour c, final Point p, final ColorPoint color) {
-		double diff = diffBackground(color, p, frame, c.getLastStdDev(), c.omega);
+
+		if (color.red == 0 && color.green == 0 && color.blue == 0) {
+			return 1;
+		}
+
+		double diff = colorDiff(color, p, frame, c.getLastStdDev(), c.omega);
 		if (c.getState() == State.MISSING) {
 			return diff;
 		}
@@ -149,7 +155,7 @@ public final class Helpers {
 		blueDeviation = Math.sqrt(blueDeviation / (points - 1));
 		greenDeviation = Math.sqrt(greenDeviation / (points - 1));
 
-		return ColorPoint.build(type, (int) redDeviation, (int) blueDeviation, (int) greenDeviation);
+		return ColorPoint.build(type, (int) redDeviation, (int) greenDeviation, (int) blueDeviation);
 	}
 
 	public static ColorPoint calculateStandardDeviation(final Contour c, final BufferedImage frame) {
@@ -168,10 +174,20 @@ public final class Helpers {
 			points++;
 		}
 
-		return ColorPoint.build(c.getType(), (int) red / points, (int) blue / points, (int) green / points);
+		return ColorPoint.build(c.getType(), (int) red / points, (int) green / points, (int) blue / points);
 	}
 
-	public static double diffBackground(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
+	public static double backgroundDiff(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
+		if (color.red == 0 && color.green == 0 && color.blue == 0) {
+			return 0;
+		} else {
+			return colorDiff(color, p, frame, stdDev, referenceColors);
+		}
+
+	}
+
+	public static double colorDiff(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
+
 		double result = 0;
 		int i = 0;
 		int extra = 0;
@@ -191,27 +207,41 @@ public final class Helpers {
 		return result / ((referenceColors.length + extra) * MAX_PIXEL_VALUE);
 	}
 
-	public static ColorPoint calculateBackgroundStandardDeviation(final Contour r, final BufferedImage frame) {
-		int med_x = 0;
-		int med_y = 0;
-		for (final Point p : r.getLout()) {
-			med_x += p.x;
-			med_y += p.y;
-		}
-		med_x /= r.getLout().size();
-		med_y /= r.getLout().size();
+	public static ColorPoint calculateBackgroundStandardDeviation(final BufferedImage frame, final Contour r, final Contour[] contours) {
+
+
 		double red = 0;
 		double green = 0;
 		double blue = 0;
-		int sum = 0;
+		long sum = 0;
 
-		final int maxX = Math.min(frame.getWidth() -1, med_x + RADIUS_X);
-		final int maxY = Math.min(frame.getHeight() - 1, med_y + RADIUS_Y);
+		final int width = frame.getWidth();
+		final int height = frame.getHeight();
+		final int black = Color.black.getRGB();
 
-		for (int x = Math.max(0, med_x - RADIUS_X); x <= maxX; x++) {
-			for (int y = Math.max(0, med_y - RADIUS_Y); y <= maxY; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+
+				boolean skip = false;
 				final Point p = new Point(x, y);
-				if (!r.contains(x, y)) {
+
+				// Avoid border points
+				for (Point n : neighbors8(p, width, height)) {
+					if (black == frame.getRGB(n.x, n.y)) {
+						skip = true;
+						break;
+					}
+				}
+
+				// Skip anything inside a contour
+				for (Contour c : contours) {
+					if (c.contains(x, y)) {
+						skip = true;
+						break;
+					}
+				}
+
+				if (!skip) {
 					ColorPoint c = calculateStandardDeviation(r.getType(), p, frame);
 
 					red += c.red;
@@ -228,33 +258,40 @@ public final class Helpers {
 	}
 
 
-	public static ColorPoint getAverageBackgroundColor(final BufferedImage frame, final Contour r) {
-		int med_x = 0;
-		int med_y = 0;
-		for (final Point p : r.getLout()) {
-			med_x += p.x;
-			med_y += p.y;
-		}
-		med_x /= r.getLout().size();
-		med_y /= r.getLout().size();
+	public static ColorPoint getAverageBackgroundColor(final BufferedImage frame, final Contour r, final Contour[] contours) {
 		double red = 0;
 		double green = 0;
 		double blue = 0;
-		double sum = 0;
+		long sum = 0;
 
-		final int maxX = Math.min(frame.getWidth() -1, med_x + RADIUS_X);
-		final int maxY = Math.min(frame.getHeight() - 1, med_y + RADIUS_Y);
+		final int width = frame.getWidth();
+		final int height = frame.getHeight();
+		final int black = Color.black.getRGB();
 
-		for (int x = Math.max(0, med_x - RADIUS_X); x <= maxX; x++) {
-			for (int y = Math.max(0, med_y - RADIUS_Y); y <= maxY; y++) {
-				final Point p = new Point(x, y);
-				if (!r.contains(x, y)) {
-					final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(p.x, p.y));
-					final double distFactor = Math.abs(med_x - x)/RADIUS_X + Math.abs(med_y - y)*RADIUS_Y;
-					red += c.red * distFactor;
-					green += c.green * distFactor;
-					blue += c.blue * distFactor;
-					sum += distFactor;
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+
+				boolean skip = false;
+
+				// Avoid border points
+				if (black == frame.getRGB(x, y)) {
+					continue;
+				}
+
+				// Skip anything inside a contour
+				for (Contour c : contours) {
+					if (c.contains(x, y)) {
+						skip = true;
+						break;
+					}
+				}
+
+				if (!skip) {
+					final ColorPoint c = ColorPoint.buildFromRGB(r.getType(), frame.getRGB(x, y));
+					red += c.red;
+					green += c.green;
+					blue += c.blue;
+					sum += 1;
 				}
 			}
 		}

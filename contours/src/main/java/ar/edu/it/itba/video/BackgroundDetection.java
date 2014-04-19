@@ -32,6 +32,8 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 
 	private boolean firstRound;
 
+	private boolean firstFrame = true;
+
 	// For debugging purposes
 	private static final double BIN_SIZE = 15;
 	private double[] histogram;
@@ -62,6 +64,10 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 			calculateNewModel();
 			resetForNewWindow();
 			setupBaseModel();
+		}
+
+		if (frameCount > 5 && firstFrame) {
+			firstFrame = false;
 		}
 	}
 
@@ -145,7 +151,7 @@ public class BackgroundDetection extends AbstractFrameProviderDecorator {
 	}
 	@Override
 	public int getRGB(final int x, final int y) {
-		if (!finalForeground[x][y]) {
+		if (!firstFrame && !finalForeground[x][y]) {
 			return 0;
 		}
 		return provider.getRGB(x, y);

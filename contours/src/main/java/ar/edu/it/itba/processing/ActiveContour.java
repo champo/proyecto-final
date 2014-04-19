@@ -14,14 +14,18 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.PointMapping.Provider;
+import ar.edu.it.itba.processing.color.ColorPoint;
+import ar.edu.it.itba.processing.color.ColorPoint.Type;
 
 public class ActiveContour {
 
@@ -55,13 +59,29 @@ public class ActiveContour {
 		phi = new int[frame.getWidth()][frame.getHeight()];
 		theta = getTheta(c);
 
+		Map<Type, ColorPoint[]> omegaZero = new HashMap<>();
+		Map<Type, ColorPoint> bgDeviation = new HashMap<>();
+
 		for (int i = 0; i < c.length; i++) {
 			Contour contour = contours[i];
 
 			contour.omega = getCharacteristics(frame, contour);
-			contour.omegaZero = getBackgroundCharacteristics(frame, contour);
-			contour.bgDeviation = calculateBackgroundStandardDeviation(contour, frame);
 			contour.setLastStdDev(calculateStandardDeviation(contour, frame));
+
+			Type type = contour.getType();
+			if (omegaZero.containsKey(type)) {
+				contour.omegaZero = omegaZero.get(type);
+			} else {
+				contour.omegaZero = getBackgroundCharacteristics(frame, contour, c);
+				omegaZero.put(type, contour.omegaZero);
+			}
+
+			if (bgDeviation.containsKey(type)) {
+				 contour.bgDeviation = bgDeviation.get(type);
+			} else {
+				contour.bgDeviation = calculateBackgroundStandardDeviation(frame, contour, c);
+				bgDeviation.put(type, contour.bgDeviation);
+			}
 		}
 
 	}
