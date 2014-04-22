@@ -709,7 +709,7 @@ public class MainApp extends javax.swing.JFrame {
 
     private void loadNextFrame() {
 
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
             	long time = System.currentTimeMillis();
@@ -759,7 +759,7 @@ public class MainApp extends javax.swing.JFrame {
                 		ImageOperations.drawContourOnBuffer(frame, c);
 
                 		if (homeography != null) {
-                			BufferedImage image = soccerFieldPanel.getImage();
+											final BufferedImage image = soccerFieldPanel.getImage();
 
                 			Point mapped = homeography.apply(c.centroidX(), c.maxY());
                 			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
@@ -773,18 +773,37 @@ public class MainApp extends javax.swing.JFrame {
 							}
                 			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
 
-                			soccerFieldPanel.setImage(image);
+                			setSoccerFieldImage(image);
                 		}
                 	}
-                	imagePanel.setImage(frame);
+                	setImagePanelImage(frame);
                 } else {
-                    imagePanel.setImage(frame);
+                	setImagePanelImage(frame);
                 }
-                imagePanel.repaint();
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
             }
-        });
+        }).start();
     }
+
+
+	private void setImagePanelImage(final BufferedImage frame) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				imagePanel.setImage(frame);
+                imagePanel.repaint();
+			}
+		});
+	}
+
+	private void setSoccerFieldImage(final BufferedImage image) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				soccerFieldPanel.setImage(image);
+			}
+		});
+	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculateButton;
     private javax.swing.JButton deletePointButton;
