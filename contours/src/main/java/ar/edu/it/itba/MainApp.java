@@ -673,8 +673,35 @@ public class MainApp extends javax.swing.JFrame {
                 loadNextFrame();
             }
         });
-        videoControlPanel.setLayout(new GridLayout(1, 1));
+        videoControlPanel.setLayout(new GridLayout(2, 1));
         videoControlPanel.add(button);
+
+				Button button2 = new Button("Play");
+				button2.setSize(new Dimension(100, 10));
+				final Runnable runnable = new Runnable() {
+				@Override
+				public void run() {
+					while (true) {
+						loadNextFrame();
+						repaint();
+						try {
+						Thread.sleep(200L);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		final ActionListener actionListener = new ActionListener() {
+
+			@Override
+			public void actionPerformed(final ActionEvent arg0) {
+				new Thread(runnable).start();
+			}
+		};
+		button2.addActionListener(actionListener);
+		videoControlPanel.add(button2);
 
         pack();
         repaint();

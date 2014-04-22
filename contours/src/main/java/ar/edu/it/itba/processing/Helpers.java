@@ -13,6 +13,7 @@ import ar.edu.it.itba.processing.color.ColorPoint.Type;
 public final class Helpers {
 
 	private static final double MAX_PIXEL_VALUE = 256 * 3;
+	private static final int BLACK = 0;
 
 	// Define the radiud to find the colors for the objects to track
 	public final static int RADIUS_X = 20;
