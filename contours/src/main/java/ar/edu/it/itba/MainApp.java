@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +84,11 @@ public class MainApp extends javax.swing.JFrame {
     private HomeographyManager homeographyManager;
     private int selected = 1;
     int framesElapsed = 0;
+
+	// Multithread automatic playing
+	private boolean playing;
+	private Thread playThread;
+	private CountDownLatch busyLock;
 
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
@@ -676,20 +683,19 @@ public class MainApp extends javax.swing.JFrame {
         videoControlPanel.setLayout(new GridLayout(2, 1));
         videoControlPanel.add(button);
 
-				Button button2 = new Button("Play");
-				button2.setSize(new Dimension(100, 10));
-				final Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
+			final Button button2 = new Button("Play");
+			button2.setSize(new Dimension(100, 10));
+			final Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				try {
 					while (true) {
-						loadNextFrame();
+						busyLock = loadNextFrame();
+						waitForBusyLock();
 						repaint();
-						try {
-						Thread.sleep(200L);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+				} catch (InterruptedException e) {
+					return;
 				}
 			}
 		};
@@ -697,7 +703,18 @@ public class MainApp extends javax.swing.JFrame {
 
 			@Override
 			public void actionPerformed(final ActionEvent arg0) {
-				new Thread(runnable).start();
+				if (!playing) {
+					playThread = new Thread(runnable);
+					playThread.start();
+					playing = true;
+					button2.setLabel("Pause");
+				} else {
+					if (playThread != null) {
+						playThread.interrupt();
+						playing = false;
+						button2.setLabel("Play");
+					}
+				}
 			}
 		};
 		button2.addActionListener(actionListener);
@@ -706,9 +723,13 @@ public class MainApp extends javax.swing.JFrame {
         pack();
         repaint();
     }
+	private void waitForBusyLock() throws InterruptedException {
+		busyLock.await();
+	}
 
-    private void loadNextFrame() {
+    private CountDownLatch loadNextFrame() {
 
+			final CountDownLatch busyLock = new CountDownLatch(1);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -781,8 +802,10 @@ public class MainApp extends javax.swing.JFrame {
                 	setImagePanelImage(frame);
                 }
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
+                busyLock.countDown();
             }
         }).start();
+        return busyLock;
     }
 
 
