@@ -84,8 +84,8 @@ public class MainApp extends javax.swing.JFrame {
     private HomeographyManager homeographyManager;
     private int selected = 1;
     int framesElapsed = 0;
-
-	// Multithread automatic playing
+    
+    // Multithread automatic playing
 	private boolean playing;
 	private Thread playThread;
 	private CountDownLatch busyLock;
@@ -362,10 +362,10 @@ public class MainApp extends javax.swing.JFrame {
 
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 60);
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
-        //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4"), 60);
+        frameDecoder = new FrameDecoder("/Users/eordano/Desktop/A1.mp4");
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
-		List<Point> points = new LinkedList<Point>();
+		/*List<Point> points = new LinkedList<Point>();
 		points.add(new Point(425, 40));
 		points.add(new Point(54, 321));
 		points.add(new Point(1518, 345));
@@ -379,8 +379,28 @@ public class MainApp extends javax.swing.JFrame {
 		homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
 		homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
 		homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
-
-        frameDecoder = new BackgroundDetection(
+		frameDecoder = // new BackgroundDetection(
+			new BlackOutOutskirts(
+	    		new LensCorrection(
+	        		new BlackOutOutskirts(
+	                       // new FrameDecoder("/Users/eordano/Desktop/new.mkv")
+	                       new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+	               , firstPoints)
+	    		, 1.91)
+	    	, points)
+		//, 40)
+		;/*
+        /*frameDecoder = // new BackgroundDetection(
+				// new BlackOutOutskirts(
+			    		// new LensCorrection(
+			        		// new BlackOutOutskirts(
+                new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+			               // , firstPoints)
+			    		// , 1.91)
+			    	// , points)
+				//, 40)
+		;*/
+        /* frameDecoder = // new BackgroundDetection(
     			new BlackOutOutskirts(
 	        		new LensCorrection(
 	            		new BlackOutOutskirts(
@@ -388,8 +408,9 @@ public class MainApp extends javax.swing.JFrame {
                        , firstPoints)
 	        		, 1.91)
 	        	, points)
-    		, 10)
-    ;
+    		//, 40)
+        ;
+        */
         /* Con Background Detection + Blackout
         frameDecoder = new BackgroundDetection(
     			new BlackOutOutskirts(
@@ -455,6 +476,7 @@ public class MainApp extends javax.swing.JFrame {
                     	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
                     }
                     c.setType(type);
+                    c.printValues(imagePanel.getImage());
 
 					contour.add(c);
                     BufferedImage image = imagePanel.getImage();
@@ -723,13 +745,14 @@ public class MainApp extends javax.swing.JFrame {
         pack();
         repaint();
     }
+
 	private void waitForBusyLock() throws InterruptedException {
 		busyLock.await();
 	}
 
     private CountDownLatch loadNextFrame() {
 
-			final CountDownLatch busyLock = new CountDownLatch(1);
+    	final CountDownLatch busyLock = new CountDownLatch(1);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -780,7 +803,7 @@ public class MainApp extends javax.swing.JFrame {
                 		ImageOperations.drawContourOnBuffer(frame, c);
 
                 		if (homeography != null) {
-											final BufferedImage image = soccerFieldPanel.getImage();
+                			final BufferedImage image = soccerFieldPanel.getImage();
 
                 			Point mapped = homeography.apply(c.centroidX(), c.maxY());
                 			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {

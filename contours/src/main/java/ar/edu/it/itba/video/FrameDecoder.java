@@ -1,8 +1,11 @@
 package ar.edu.it.itba.video;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Semaphore;
+
+import javax.management.RuntimeErrorException;
 
 import com.xuggle.mediatool.IMediaListener;
 import com.xuggle.mediatool.IMediaReader;
@@ -22,6 +25,8 @@ import com.xuggle.mediatool.event.IWriteTrailerEvent;
 
 public class FrameDecoder implements FrameProvider {
 
+	private static final int BUFFER_MAX_SIZE = 4;
+	private static final int BUFFER_MIN_SIZE = 1;
 	private BufferedImage buffer;
 
 	private final class IMediaListenerImplementation implements IMediaListener {
@@ -76,17 +81,51 @@ public class FrameDecoder implements FrameProvider {
 	}
 
 	private final IMediaReader reader;
-	private final Queue<BufferedImage> frameQueue = new ArrayDeque<BufferedImage>();
+	private final Queue<BufferedImage> frameQueue = new ConcurrentLinkedDeque<BufferedImage>();
+	private final Semaphore semaphore = new Semaphore(BUFFER_MAX_SIZE);
 
 	public FrameDecoder(final String path) {
 		reader = ToolFactory.makeReader(path);
 		reader.addListener(new IMediaListenerImplementation());
 		reader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
+		while (frameQueue.size() < BUFFER_MAX_SIZE && reader.readPacket() == null);
+		initRetrieveThread();
+	}
+
+	public FrameDecoder(final String path, int skipFrames) {
+		reader = ToolFactory.makeReader(path);
+		reader.addListener(new IMediaListenerImplementation());
+		reader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
+		while (frameQueue.size() < BUFFER_MAX_SIZE && reader.readPacket() == null);	
+		for (int i = 0; i < skipFrames; i++) {
+			frameQueue.poll();
+		}
+		initRetrieveThread();
+	}
+
+	private void initRetrieveThread() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						semaphore.acquire();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						throw new RuntimeException(e);
+					}
+					while (frameQueue.size() < BUFFER_MAX_SIZE && reader.readPacket() == null);
+				}
+			}
+		}).start();
 	}
 
 	@Override
 	public void nextFrame() {
-		while (frameQueue.isEmpty() && reader.readPacket() == null);
+		if (frameQueue.size() < BUFFER_MIN_SIZE) {
+			semaphore.release();
+		}
+		while (frameQueue.isEmpty());
 		buffer = frameQueue.poll();
 	}
 

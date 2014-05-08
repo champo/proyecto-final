@@ -2,12 +2,14 @@ package ar.edu.it.itba.processing;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.processing.color.ColorPoint.Type;
+import ar.edu.it.itba.processing.color.HSPoint;
 
 public class Contour implements Iterable<Point> {
 
@@ -248,6 +250,14 @@ public class Contour implements Iterable<Point> {
 
 	public ColorPoint.Type getType() {
 		return type;
+	}
+
+	public void printValues(BufferedImage frame) {
+		for (Point p : points) {
+			ColorPoint point = ColorPoint.buildFromRGB(ColorPoint.Type.HSI, frame.getRGB(p.x, p.y));
+			// System.out.println("(" + point.red + ", " + point.green + ")");
+			System.out.println(point.red + ", " + point.green + "," + point.blue);
+		}
 	}
 }
 
