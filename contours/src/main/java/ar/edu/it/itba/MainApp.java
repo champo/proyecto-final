@@ -476,7 +476,7 @@ public class MainApp extends javax.swing.JFrame {
                     	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
                     }
                     c.setType(type);
-                    c.printValues(imagePanel.getImage());
+                    // c.printValues(imagePanel.getImage());
 
 					contour.add(c);
                     BufferedImage image = imagePanel.getImage();

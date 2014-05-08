@@ -1,5 +1,9 @@
 package ar.edu.it.itba.processing.color;
 
+import java.awt.Color;
+
+import ar.edu.it.itba.processing.color.ColorPoint.Type;
+
 
 public class ColorPoint {
 
@@ -57,5 +61,15 @@ public class ColorPoint {
 		default:
 			throw new IllegalArgumentException();
 		}
+	}
+
+	public static ColorPoint buildFromHSI(Type type, int hue, int saturation, int intensity) {
+		Color rgb = new Color(Color.HSBtoRGB(hue, saturation, intensity));
+		return ColorPoint.build(Type.RGB, rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+	}
+
+	@Override
+	public String toString() {
+		return "ColorPoint(" + getType().name() + ", " + red + ", " + blue + ", " + green + ")";
 	}
 }

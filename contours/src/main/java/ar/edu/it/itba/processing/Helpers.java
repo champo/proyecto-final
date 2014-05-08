@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import ar.edu.it.itba.processing.Contour.State;
@@ -13,19 +15,20 @@ import ar.edu.it.itba.processing.color.ColorPoint.Type;
 public final class Helpers {
 
 	private static final double MAX_PIXEL_VALUE = 256 * 3;
-	private static final int BLACK = 0;
+	private static final int HISTOGRAM_SIZE = 10;
+	private static final double FRACTION_HISTOGRAM = 0.2;
 
-	// Define the radiud to find the colors for the objects to track
+	// Define the radius to find the colors for the objects to track
 	public final static int RADIUS_X = 20;
 	public final static int RADIUS_Y = 30;
 	public final static int BUCKETS = 32;
-	public final static double PONDER[] = new double[]{ 1, 0, 0 };
 
 	private Helpers() {
 	}
 
 	public static ColorPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
-		return new ColorPoint[] { getAverageColor(frame, contour) };
+		// return new ColorPoint[] { getAverageColor(frame, contour) };
+		return getMostFrequentColors(frame, contour);
 	}
 
 	public static ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
@@ -189,14 +192,11 @@ public final class Helpers {
 
 	public static double colorDiff(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
 
-		double result = 0;
-		int i = 0;
+		double result = 255;
 		int extra = 0;
 
 		for (final ColorPoint referenceColor : referenceColors) {
-
-			result += color.diff(referenceColor) * PONDER[i];
-			i++;
+			result = Math.min(result, color.diff(referenceColor));
 		}
 
 		ColorPoint pointStdDev = calculateStandardDeviation(stdDev.getType(), p, frame);
@@ -320,4 +320,87 @@ public final class Helpers {
 		return ColorPoint.build(r.getType(), (int) avgRed, (int) avgGreen, (int) avgBlue);
 	}
 
+	private static ColorPoint[] getMostFrequentColors(BufferedImage frame, Contour r) {
+
+		double minHue = Double.MAX_VALUE;
+		double maxHue = Double.MIN_VALUE;
+		double minSaturation = Double.MAX_VALUE;
+		double maxSaturation = Double.MIN_VALUE;
+		double intensity = 0;
+		int points = 0;
+
+		int histogram[][] = new int[HISTOGRAM_SIZE][HISTOGRAM_SIZE];
+		for (final Point p : r) {
+			final ColorPoint c = ColorPoint.buildFromRGB(Type.HSI, frame.getRGB(p.x, p.y));
+			minHue = Math.min(minHue, c.red);
+			maxHue = Math.max(maxHue, c.red);
+			minSaturation = Math.min(minSaturation, c.green);
+			maxSaturation = Math.max(maxSaturation, c.green);
+			intensity += c.blue;
+			points++;
+		}
+		for (final Point p : r) {
+			final ColorPoint c = ColorPoint.buildFromRGB(Type.HSI, frame.getRGB(p.x, p.y));
+			int hue = (int) (HISTOGRAM_SIZE * (c.red - minHue) / (maxHue - minHue + 1));
+			int saturation = (int) (HISTOGRAM_SIZE * (c.green - minSaturation) / (maxSaturation - minSaturation + 1));
+			histogram[hue][saturation]++;
+		}
+
+		int bestHue = 0;
+		int bestSat = 0;
+		for (int i = 0; i < HISTOGRAM_SIZE; i++) {
+			for (int j = 0; j < HISTOGRAM_SIZE; j++) {
+				if (histogram[i][j] > histogram[bestHue][bestSat]) {
+					bestHue = i;
+					bestSat = j;
+				}
+			}
+		}
+
+		ColorPoint[] result = new ColorPoint[2];
+		result[0] = ColorPoint.buildFromHSI(Type.RGB,
+				(int) (bestHue * (maxHue - minHue) / HISTOGRAM_SIZE + minHue),
+				(int) (bestSat * (maxSaturation - minSaturation) / HISTOGRAM_SIZE + minSaturation),
+				(int) (intensity/points));
+
+		// BFS to delete neighbors too high
+		Deque<Point> queue = new LinkedList<>();
+		queue.add(new Point(bestHue, bestSat));
+		int bestValue = histogram[bestHue][bestSat];
+		while (!queue.isEmpty()) {
+			Point p = queue.poll();
+			histogram[p.x][p.y] = 0;
+			for (int dx = -1; dx <= 1; dx++) {
+				for (int dy = -1; dy <= 1; dy++) {
+					if (p.x + dx >= 0 && p.x + dx < HISTOGRAM_SIZE && p.y + dy >= 0 && p.y + dy < HISTOGRAM_SIZE) {
+						if (histogram[p.x + dx][p.y + dy] >= FRACTION_HISTOGRAM * bestValue) {
+							queue.push(new Point(p.x + dx, p.y + dy));
+						}
+					}
+				}
+			}
+		}
+		
+		int secondBestHue = 0;
+		int secondBestSat = 0;
+		for (int i = 0; i < HISTOGRAM_SIZE; i++) {
+			for (int j = 0; j < HISTOGRAM_SIZE; j++) {
+				if (histogram[i][j] > histogram[secondBestHue][secondBestSat]) {
+					secondBestHue = i;
+					secondBestSat = j;
+				}
+			}
+		}
+
+		if (histogram[secondBestHue][secondBestSat] == 0) {
+			return new ColorPoint[] { result[0] };
+		}
+		result[1] = ColorPoint.buildFromHSI(Type.RGB,
+				(int) (secondBestHue * (maxHue - minHue) / HISTOGRAM_SIZE + minHue),
+				(int) (secondBestSat * (maxSaturation - minSaturation) / HISTOGRAM_SIZE + minSaturation),
+				(int) (intensity/points));
+
+		System.out.println("Selected points: " + result[0].toString() + ", " + result[1].toString());
+		return result;
+	}
 }
