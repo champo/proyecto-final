@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,11 +31,11 @@ import javax.imageio.ImageIO;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import ar.edu.it.itba.metrics.HeatMap;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.processing.color.ColorPoint;
-import ar.edu.it.itba.video.BackgroundDetection;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
@@ -100,6 +99,8 @@ public class MainApp extends javax.swing.JFrame {
 	private Button shapeButton;
 	private Button typeButton;
 	protected ColorPoint.Type type = ColorPoint.Type.RGB;
+
+	protected HeatMap heatMap;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -560,6 +561,7 @@ public class MainApp extends javax.swing.JFrame {
 
                 ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
                 homeography = homeographyManager.calculateHomography();
+                heatMap = new HeatMap(soccerFieldPanel.getImage());
 //                homeography = homeographyManager.calculateIterativeHomegraphy(1);
                 addNextFrameButton();
 
@@ -815,11 +817,17 @@ public class MainApp extends javax.swing.JFrame {
 							} catch (IOException e) {
 								throw new RuntimeException(e);
 							}
-                			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
+//                			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
 
-                			setSoccerFieldImage(image);
+                			heatMap.addPoint(mapped);
+
+//                			setSoccerFieldImage(image);
                 		}
                 	}
+
+                	soccerFieldPanel.setImage(heatMap.getFrame());
+                	soccerFieldPanel.repaint();
+
                 	setImagePanelImage(frame);
                 } else {
                 	setImagePanelImage(frame);
