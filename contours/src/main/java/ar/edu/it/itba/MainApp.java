@@ -35,11 +35,13 @@ import ar.edu.it.itba.metrics.HeatMap;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
+import ar.edu.it.itba.processing.NamedContour;
 import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
+import javax.swing.AbstractListModel;
 
 /**
  *
@@ -77,7 +79,7 @@ public class MainApp extends javax.swing.JFrame {
     private BufferedImage firstFrame;
     private ActiveContour ac;
 
-    private final List<Contour> contour = new ArrayList<Contour>();
+    private final List<NamedContour> contour = new ArrayList<NamedContour>();
 
     private MouseListener mouseListener;
     private HomeographyManager homeographyManager;
@@ -92,15 +94,15 @@ public class MainApp extends javax.swing.JFrame {
     private boolean selectingFirst = true;
     private boolean selectingPoint = false;
     private Button startTrackingButton;
-	protected Homography homeography;
-	protected boolean mappingPoint;
-	private BufferedImage frame;
-	protected boolean selectRectangle = true;
-	private Button shapeButton;
-	private Button typeButton;
-	protected ColorPoint.Type type = ColorPoint.Type.RGB;
+    protected Homography homeography;
+    protected boolean mappingPoint;
+    private BufferedImage frame;
+    protected boolean selectRectangle = true;
+    private Button shapeButton;
+    private Button typeButton;
+    protected ColorPoint.Type type = ColorPoint.Type.RGB;
 
-	protected HeatMap heatMap;
+    protected HeatMap heatMap;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -112,13 +114,11 @@ public class MainApp extends javax.swing.JFrame {
     private void initComponents() {
 
         homeographyMappingPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        pointsList = new javax.swing.JList();
-        newPointButton = new javax.swing.JButton();
-        deletePointButton = new javax.swing.JButton();
-        calculateButton = new javax.swing.JButton();
-        mapButton = new javax.swing.JButton();
+        playerList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
         soccerFieldContainer = new javax.swing.JPanel();
         videoControlPanel = new javax.swing.JPanel();
@@ -128,49 +128,39 @@ public class MainApp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Puntos identificados en la cancha");
+        jLabel1.setText("Jugadores");
 
-        pointsList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { };
-            @Override
-			public int getSize() { return strings.length; }
-            @Override
-			public Object getElementAt(final int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(pointsList);
+        jButton1.setText("Ver Estadisticas");
 
-        newPointButton.setText("New");
-        newPointButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                newPointButtonActionPerformed(evt);
-            }
-        });
+        playerList.setToolTipText("");
+        jScrollPane1.setViewportView(playerList);
 
-        deletePointButton.setText("Delete");
-        deletePointButton.setEnabled(false);
-        deletePointButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                deletePointButtonActionPerformed(evt);
-            }
-        });
-
-        calculateButton.setText("Calculate");
-        calculateButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                calculateButtonActionPerformed(evt);
-            }
-        });
-
-        mapButton.setText("Map point");
-        mapButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                mapButtonActionPerformed(evt);
-            }
-        });
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jButton1)
+                            .add(jLabel1))
+                        .add(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 156, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton1)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         jScrollPane3.setMaximumSize(new java.awt.Dimension(403, 551));
         jScrollPane3.setPreferredSize(new java.awt.Dimension(403, 551));
@@ -183,7 +173,7 @@ public class MainApp extends javax.swing.JFrame {
         );
         soccerFieldContainerLayout.setVerticalGroup(
             soccerFieldContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 642, Short.MAX_VALUE)
+            .add(0, 733, Short.MAX_VALUE)
         );
 
         jScrollPane3.setViewportView(soccerFieldContainer);
@@ -192,22 +182,10 @@ public class MainApp extends javax.swing.JFrame {
         homeographyMappingPanel.setLayout(homeographyMappingPanelLayout);
         homeographyMappingPanelLayout.setHorizontalGroup(
             homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(homeographyMappingPanelLayout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, homeographyMappingPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1)
-                    .add(homeographyMappingPanelLayout.createSequentialGroup()
-                        .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, homeographyMappingPanelLayout.createSequentialGroup()
-                                .add(newPointButton)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(deletePointButton)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(calculateButton)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(mapButton)))
-                        .add(0, 0, Short.MAX_VALUE))
+                .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -215,17 +193,9 @@ public class MainApp extends javax.swing.JFrame {
             homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(homeographyMappingPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 163, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(homeographyMappingPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(newPointButton)
-                    .add(deletePointButton)
-                    .add(calculateButton)
-                    .add(mapButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -300,30 +270,10 @@ public class MainApp extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void deletePointButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePointButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deletePointButtonActionPerformed
-
-    private void newPointButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPointButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_newPointButtonActionPerformed
-
-    private void calculateButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateButtonActionPerformed
-        homeography = homeographyManager.calculateHomography();
-//        homeography = homeographyManager.calculateIterativeHomegraphy(1);
-        mapButton.setEnabled(homeography != null);
-    }//GEN-LAST:event_calculateButtonActionPerformed
-
-    private void mapButtonActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mapButtonActionPerformed
-        mappingPoint = true;
-    }//GEN-LAST:event_mapButtonActionPerformed
-
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
-
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -346,7 +296,6 @@ public class MainApp extends javax.swing.JFrame {
             this.currentImagePoint = null;
             this.currentMappedPoint = null;
             selectingPoint = false;
-            pointsList.updateUI();
         }
     }
     private void setCurrentSelectedImagePoint(final Point point) {
@@ -363,34 +312,34 @@ public class MainApp extends javax.swing.JFrame {
 
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 60);
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/home/acrespo/Dropbox/ati-2013/Independiente2b.mp4"), 60);
-        frameDecoder = new FrameDecoder("/Users/eordano/Desktop/A1.mp4");
+        //frameDecoder = new FrameDecoder("/Users/eordano/Desktop/A1.mp4");
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
-		/*List<Point> points = new LinkedList<Point>();
-		points.add(new Point(425, 40));
-		points.add(new Point(54, 321));
-		points.add(new Point(1518, 345));
-		points.add(new Point(1147, 52));
-		List<Point> firstPoints = new LinkedList<Point>();
-		firstPoints.add(new Point(200, 375));
-		firstPoints.add(new Point(200, 750));
-		firstPoints.add(new Point(1750, 750));
-		firstPoints.add(new Point(1750, 375));
-		homeographyManager.setMapping(new Point(370, -2), new Point(16, 5));
-		homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
-		homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
-		homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
-		frameDecoder = // new BackgroundDetection(
-			new BlackOutOutskirts(
-	    		new LensCorrection(
-	        		new BlackOutOutskirts(
-	                       // new FrameDecoder("/Users/eordano/Desktop/new.mkv")
-	                       new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-	               , firstPoints)
-	    		, 1.91)
-	    	, points)
-		//, 40)
-		;/*
+        List<Point> points = new LinkedList<Point>();
+        points.add(new Point(425, 40));
+        points.add(new Point(54, 321));
+        points.add(new Point(1518, 345));
+        points.add(new Point(1147, 52));
+        List<Point> firstPoints = new LinkedList<Point>();
+        firstPoints.add(new Point(200, 375));
+        firstPoints.add(new Point(200, 750));
+        firstPoints.add(new Point(1750, 750));
+        firstPoints.add(new Point(1750, 375));
+        homeographyManager.setMapping(new Point(370, -2), new Point(16, 5));
+        homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
+        homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
+        homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
+        frameDecoder = // new BackgroundDetection(
+                new BlackOutOutskirts(
+                new LensCorrection(
+                        new BlackOutOutskirts(
+                       // new FrameDecoder("/Users/eordano/Desktop/new.mkv")
+                       new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+               , firstPoints)
+                , 1.91)
+        , points)
+        //, 40)
+        ;/*
         /*frameDecoder = // new BackgroundDetection(
 				// new BlackOutOutskirts(
 			    		// new LensCorrection(
@@ -412,15 +361,15 @@ public class MainApp extends javax.swing.JFrame {
     		//, 40)
         ;
         */
-        /* Con Background Detection + Blackout
-        frameDecoder = new BackgroundDetection(
+        // Con Background Detection + Blackout
+         /*frameDecoder = new BackgroundDetection(
     			new BlackOutOutskirts(
 	        		new LensCorrection(
 	        			new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"),
 	        		2.35),
 	        	points),
     		60)
-        ;*/
+        ;// */
         imagePanel = new ImagePanel();
         frameDecoder.nextFrame();
         BufferedImage frame = buildImage();
@@ -431,6 +380,19 @@ public class MainApp extends javax.swing.JFrame {
         outFile.createNewFile();
         outBuffer = new FileOutputStream(outFile);
 
+        playerList.setModel(new AbstractListModel() {
+
+            @Override
+            public int getSize() {
+                return contour.size();
+            }
+
+            @Override
+            public Object getElementAt(int index) {
+                return contour.get(index).description();
+            }
+            
+        });
         mouseListener = new MouseListener() {
 
             @Override
@@ -451,56 +413,47 @@ public class MainApp extends javax.swing.JFrame {
 
             @Override
             public void mouseClicked(final MouseEvent arg0) {
-            	if (mappingPoint) {
-            		if (homeography != null) {
-            			Point mapped = homeography.apply(arg0.getPoint());
-            			BufferedImage image = soccerFieldPanel.getImage();
+                new SelectPlayer(MainApp.this, true, new PlayerSelectionListener(){
 
-            			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
-            				System.out.println("Skipping point out of bounds");
-            				return;
-            			}
+                    @Override
+                    public void selectedPlayer(String name, String position, String team) {
+                        
+                        if (selectingFirst) {
+                            NamedContour c;
 
-            			image.setRGB(mapped.x, mapped.y, Color.red.getRGB());
+                            if (selectRectangle) {
+                                c = NamedContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                            } else {
+                                c = NamedContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                            }
+                            c.setType(type);
+                            // c.printValues(imagePanel.getImage());
 
-            			soccerFieldPanel.setImage(image);
-            		}
-            		mappingPoint = false;
-            	} else if (selectingPoint) {
-                    setCurrentSelectedImagePoint(arg0.getPoint());
-                } else if (selectingFirst) {
-                    Contour c;
+                            contour.add(c);
+                            BufferedImage image = imagePanel.getImage();
+                            ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                            imagePanel.setImage(image);
+                        } else {
+                            NamedContour c;
 
-                    if (selectRectangle) {
-                    	c = Contour.aroundPoint(selected++, arg0.getPoint());
-                    } else {
-                    	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
+                            if (selectRectangle) {
+                                c = NamedContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                            } else {
+                                c = NamedContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                            }
+                            c.setType(type);
+
+                            contour.add(c);
+                            BufferedImage image = imagePanel.getImage();
+                            ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                            imagePanel.setImage(image);
+                            if (ac != null) {
+                                ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
+                            }
+                        }
+                        playerList.updateUI();
                     }
-                    c.setType(type);
-                    // c.printValues(imagePanel.getImage());
-
-					contour.add(c);
-                    BufferedImage image = imagePanel.getImage();
-                    ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                    imagePanel.setImage(image);
-                } else {
-                    Contour c;
-
-                    if (selectRectangle) {
-                    	c = Contour.aroundPoint(selected++, arg0.getPoint());
-                    } else {
-                    	c = Contour.squareAroundPoint(selected++, arg0.getPoint());
-                    }
-                    c.setType(type);
-
-					contour.add(c);
-                    BufferedImage image = imagePanel.getImage();
-                    ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                    imagePanel.setImage(image);
-                    if (ac != null) {
-                        ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
-                    }
-                }
+                }).setVisible(true);
             }
 
         };
@@ -573,27 +526,27 @@ public class MainApp extends javax.swing.JFrame {
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
 
-        BufferedImage soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
+        BufferedImage soccerField = ImageIO.read(new File("independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
+                @Override
+                public void mouseMoved(final MouseEvent arg0) {
+                    if (homeography != null) {
+                        Point inverseApply = homeography.inverseApply(arg0.getX(), arg0.getY());
+                        if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth()
+                                && inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
+                            getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                            imagePanel.setImage(getFrame());
+                        }
+                    }
+                }
 
-			@Override
-			public void mouseMoved(final MouseEvent arg0) {
-				if (homeography != null) {
-					Point inverseApply = homeography.inverseApply(arg0.getX(), arg0.getY());
-					if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth() &&
-						inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
-						getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
-						imagePanel.setImage(getFrame());
-					}
-				}
-			}
-
-			@Override
-			public void mouseDragged(final MouseEvent arg0) {
-			}
-		});
+                @Override
+                public void mouseDragged(final MouseEvent arg0) {
+                }
+            }
+        );
         soccerFieldPanel.addMouseListener(new MouseListener() {
 
             @Override
@@ -620,32 +573,7 @@ public class MainApp extends javax.swing.JFrame {
             }
 
         });
-
-        newPointButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                selectingPoint = true;
-            }
-        });
-        deletePointButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                homeographyManager.removeItem(pointsList.getSelectedIndex());
-                pointsList.updateUI();
-                deletePointButton.setEnabled(false);
-            }
-        });
-        pointsList.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                deletePointButton.setEnabled(true);
-            }
-        });
-
-        pack();
+        repaint();
         setVisible(true);
 
         Dimension oldSize = imageContainerPanel.getPreferredSize();
@@ -665,9 +593,6 @@ public class MainApp extends javax.swing.JFrame {
         //	frameDecoder.nextFrame();
         // }
         frameDecoder.nextFrame();
-
-        pointsList.setModel(homeographyManager.getListModel());
-
 
         Dimension oldSoccerSize = soccerFieldContainer.getPreferredSize();
         oldSoccerSize.height = soccerField.getHeight();
@@ -859,18 +784,16 @@ public class MainApp extends javax.swing.JFrame {
 		});
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton calculateButton;
-    private javax.swing.JButton deletePointButton;
     private javax.swing.JPanel homeographyMappingPanel;
     private javax.swing.JPanel imageContainerPanel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JButton mapButton;
-    private javax.swing.JButton newPointButton;
     private javax.swing.JPanel phiImagePanel;
-    private javax.swing.JList pointsList;
+    private javax.swing.JList playerList;
     private javax.swing.JPanel soccerFieldContainer;
     private javax.swing.JPanel videoControlPanel;
     // End of variables declaration//GEN-END:variables

@@ -95,7 +95,4 @@ public class HeatMap {
 
 		return frame;
 	}
-
-
-
 }
