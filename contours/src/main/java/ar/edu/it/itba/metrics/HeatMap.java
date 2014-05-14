@@ -22,17 +22,7 @@ public class HeatMap {
 
 	public HeatMap(final BufferedImage image) {
 		super();
-		this.image = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-
-		final int width = image.getWidth();
-		final int height = image.getHeight();
-
-
-		for (int i = 0; i <  width; i++) {
-			for (int j = 0; j < height; j++) {
-				this.image.setRGB(i, j, image.getRGB(i, j));
-			}
-		}
+		this.image = image;
 		this.heat = new float[image.getWidth()][image.getHeight()];
 	}
 

@@ -35,13 +35,14 @@ import ar.edu.it.itba.metrics.HeatMap;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
-import ar.edu.it.itba.processing.NamedContour;
+import ar.edu.it.itba.processing.PlayerContour;
 import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
 import javax.swing.AbstractListModel;
+import javax.swing.plaf.basic.BasicListUI;
 
 /**
  *
@@ -53,6 +54,7 @@ public class MainApp extends javax.swing.JFrame {
 
 	private Point currentImagePoint;
     private Point currentMappedPoint;
+    private BufferedImage soccerField;
 
     /**
      * Creates new form MainApp
@@ -79,7 +81,7 @@ public class MainApp extends javax.swing.JFrame {
     private BufferedImage firstFrame;
     private ActiveContour ac;
 
-    private final List<NamedContour> contour = new ArrayList<NamedContour>();
+    private final List<PlayerContour> contour = new ArrayList<PlayerContour>();
 
     private MouseListener mouseListener;
     private HomeographyManager homeographyManager;
@@ -131,6 +133,11 @@ public class MainApp extends javax.swing.JFrame {
         jLabel1.setText("Jugadores");
 
         jButton1.setText("Ver Estadisticas");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         playerList.setToolTipText("");
         jScrollPane1.setViewportView(playerList);
@@ -270,6 +277,14 @@ public class MainApp extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (playerList.isSelectionEmpty()) {
+            return;
+        }
+        PlayerContour c = contour.get(playerList.getSelectedIndex());
+        new PlayerStatsDialog(this, false, c).setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -307,7 +322,7 @@ public class MainApp extends javax.swing.JFrame {
         checkPair();
     }
 
-	private MainApp run() throws IOException {
+    private MainApp run() throws IOException {
         homeographyManager = new HomeographyManager();
 
         //frameDecoder = new BackgroundDetection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 60);
@@ -393,6 +408,21 @@ public class MainApp extends javax.swing.JFrame {
             }
             
         });
+        playerList.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int index = playerList.getSelectedIndex();
+                    if (index >= 0 && index < contour.size()) {
+                        
+                	soccerFieldPanel.setImage(contour.get(index).getHeatMap().getFrame());
+                	soccerFieldPanel.repaint();
+                    }
+                }
+            }
+            
+        });
         mouseListener = new MouseListener() {
 
             @Override
@@ -419,31 +449,33 @@ public class MainApp extends javax.swing.JFrame {
                     public void selectedPlayer(String name, String position, String team) {
                         
                         if (selectingFirst) {
-                            NamedContour c;
+                            PlayerContour c;
 
                             if (selectRectangle) {
-                                c = NamedContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                                c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
                             } else {
-                                c = NamedContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                                c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
                             }
                             c.setType(type);
                             // c.printValues(imagePanel.getImage());
 
                             contour.add(c);
+                            c.setHeatMap(new HeatMap(soccerField));
                             BufferedImage image = imagePanel.getImage();
                             ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                             imagePanel.setImage(image);
                         } else {
-                            NamedContour c;
+                            PlayerContour c;
 
                             if (selectRectangle) {
-                                c = NamedContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                                c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
                             } else {
-                                c = NamedContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                                c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
                             }
                             c.setType(type);
 
                             contour.add(c);
+                            c.setHeatMap(new HeatMap(soccerField));
                             BufferedImage image = imagePanel.getImage();
                             ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
                             imagePanel.setImage(image);
@@ -525,8 +557,7 @@ public class MainApp extends javax.swing.JFrame {
 
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-
-        BufferedImage soccerField = ImageIO.read(new File("independiente.png"));
+        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
@@ -712,7 +743,7 @@ public class MainApp extends javax.swing.JFrame {
                 	ac.adapt(frame);
                 	int index = 0;
                 	if (homeography != null) {
-                		BufferedImage cancha = soccerFieldPanel.getImage();
+                		BufferedImage cancha = soccerField;
                 		for (int i = 0; i < cancha.getWidth(); i++) {
                 			for (int j = 0; j < cancha.getHeight(); j++) {
                 				if (cancha.getRGB(i, j) == Color.black.getRGB()) {
@@ -730,7 +761,7 @@ public class MainApp extends javax.swing.JFrame {
                 		ImageOperations.drawContourOnBuffer(frame, c);
 
                 		if (homeography != null) {
-                			final BufferedImage image = soccerFieldPanel.getImage();
+                			final BufferedImage image = soccerField;
 
                 			Point mapped = homeography.apply(c.centroidX(), c.maxY());
                 			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
@@ -767,21 +798,21 @@ public class MainApp extends javax.swing.JFrame {
 
 	private void setImagePanelImage(final BufferedImage frame) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				imagePanel.setImage(frame);
-                imagePanel.repaint();
-			}
-		});
+		@Override
+                public void run() {
+                    imagePanel.setImage(frame);
+                    imagePanel.repaint();
+                }
+            });
 	}
 
 	private void setSoccerFieldImage(final BufferedImage image) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				soccerFieldPanel.setImage(image);
-			}
-		});
+                @Override
+                public void run() {
+                    soccerFieldPanel.setImage(image);
+                }
+            });
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel homeographyMappingPanel;

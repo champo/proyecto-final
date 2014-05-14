@@ -1,5 +1,6 @@
 package ar.edu.it.itba;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -28,4 +29,10 @@ public class ImagePanel extends JPanel {
 		this.image = image;
 		repaint();
 	}
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(image.getWidth(), image.getHeight());
+    }
+    
 }
