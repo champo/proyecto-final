@@ -29,6 +29,7 @@ import ar.edu.it.itba.config.SequenceSettings;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
 import ar.edu.it.itba.processing.Homography;
+import ar.edu.it.itba.processing.PlayerContour;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
@@ -902,6 +903,8 @@ public class Main2 extends javax.swing.JFrame {
                                     } catch (IOException ex) {
                                         Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
                                     }
+
+                                    ((PlayerContour) c).getHeatMap().addPoint(mapped);
                 		}
                 	}
                 	imagePanel.setImage(coloredFrame);

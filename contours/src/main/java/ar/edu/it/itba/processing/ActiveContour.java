@@ -154,14 +154,13 @@ public class ActiveContour {
 
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
-			} else {
-                            int speed = (int)(Math.sqrt(
-                                    Math.pow(c.centroidX() - prevX[i], 2)
-                                    + Math.pow (c.centroidY() - prevY[i], 2)
-                            ) * PROPORTION_FIELD);
-                            ((PlayerContour) c).addSpeedData(speed);
-                            ((PlayerContour) c).getHeatMap().addPoint(new Point(c.centroidX(), c.centroidY()));
-                        }
+			}
+
+            int speed = (int)(Math.sqrt(
+                    Math.pow(c.centroidX() - prevX[i], 2)
+                    + Math.pow (c.centroidY() - prevY[i], 2)
+            ) * PROPORTION_FIELD);
+            ((PlayerContour) c).addSpeedData(speed);
 		}
 		final long diff = System.currentTimeMillis() - time;
 		return diff;

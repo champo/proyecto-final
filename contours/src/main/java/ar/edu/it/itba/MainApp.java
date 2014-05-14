@@ -567,7 +567,7 @@ public class MainApp extends javax.swing.JFrame {
 
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-        soccerField = ImageIO.read(new File("independiente.png"));//"src/main/resources/independiente.png"));
+        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
@@ -787,6 +787,8 @@ public class MainApp extends javax.swing.JFrame {
 //                			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
 
                 			heatMap.addPoint(mapped);
+
+                            ((PlayerContour) c).getHeatMap().addPoint(mapped);
 
 //                			setSoccerFieldImage(image);
                 		}
