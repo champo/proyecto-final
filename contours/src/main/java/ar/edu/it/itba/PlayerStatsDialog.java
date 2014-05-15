@@ -28,13 +28,7 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
         positionLabel.setText(contour.position);
         teamLabel.setText(contour.team);
         averageSpeedLabel.setText("" + contour.getAverageSpeed() + " cm/s");
-        ImagePanel image = new ImagePanel();
-        BufferedImage bufferedImage = contour.getHeatMap().getFrame();
-        image.setImage(bufferedImage);
-        jHeatMap.add(image, CENTER_ALIGNMENT);
-        jHeatMap.setPreferredSize(image.getPreferredSize());
-        pack();
-        jHeatMap.repaint();
+        distanceLabel.setText(contour.distanceMoved() + " cm");
     }
 
     /**
@@ -51,12 +45,13 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jHeatMap = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         teamLabel = new javax.swing.JLabel();
         positionLabel = new javax.swing.JLabel();
         averageSpeedLabel = new javax.swing.JLabel();
         maximumSpeedLabel = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        distanceLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -75,17 +70,6 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
 
         jLabel5.setText("Velocidad promedio:");
 
-        org.jdesktop.layout.GroupLayout jHeatMapLayout = new org.jdesktop.layout.GroupLayout(jHeatMap);
-        jHeatMap.setLayout(jHeatMapLayout);
-        jHeatMapLayout.setHorizontalGroup(
-            jHeatMapLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
-        );
-        jHeatMapLayout.setVerticalGroup(
-            jHeatMapLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 347, Short.MAX_VALUE)
-        );
-
         nameLabel.setText("jLabel6");
 
         teamLabel.setText("teamLabel");
@@ -96,6 +80,10 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
 
         maximumSpeedLabel.setText("jLabel6");
 
+        jLabel6.setText("Distancia recorrida:");
+
+        distanceLabel.setText("jLabel6");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,23 +91,21 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jHeatMap, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(jLabel2)
-                            .add(jLabel3)
-                            .add(jLabel4)
-                            .add(jLabel5))
-                        .add(27, 27, 27)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(averageSpeedLabel)
-                            .add(maximumSpeedLabel)
-                            .add(positionLabel)
-                            .add(teamLabel)
-                            .add(nameLabel))
-                        .add(0, 391, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .add(jLabel1)
+                    .add(jLabel2)
+                    .add(jLabel3)
+                    .add(jLabel4)
+                    .add(jLabel5)
+                    .add(jLabel6))
+                .add(27, 27, 27)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(distanceLabel)
+                    .add(averageSpeedLabel)
+                    .add(maximumSpeedLabel)
+                    .add(positionLabel)
+                    .add(teamLabel)
+                    .add(nameLabel))
+                .addContainerGap(397, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -146,9 +132,11 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
                         .add(maximumSpeedLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(averageSpeedLabel)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jHeatMap, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel6)
+                    .add(distanceLabel))
+                .addContainerGap(343, Short.MAX_VALUE))
         );
 
         pack();
@@ -160,12 +148,13 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel averageSpeedLabel;
-    private javax.swing.JPanel jHeatMap;
+    private javax.swing.JLabel distanceLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel maximumSpeedLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JLabel positionLabel;

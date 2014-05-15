@@ -21,8 +21,15 @@ public class PlayerContour extends Contour {
     private int maxSpeed;
     private long sumSpeed;
     private int speedPoints;
-    private List<Long> lastSpeeds = new LinkedList<Long>();
+    private List<Point> lastPoints = new LinkedList<Point>();
     private HeatMap heatmap;
+    private final int SPEED_POINTS = 5;
+    private final int SCALE_MAP = 25;
+    private double distance = 0;
+
+    public double distanceMoved() {
+        return distance;
+    }
 
     public PlayerContour(int color, Rectangle rect) {
         super(color, rect);
@@ -57,19 +64,6 @@ public class PlayerContour extends Contour {
         return maxSpeed;
     }
 
-    public void addSpeedData(int speed) {
-        lastSpeeds.add((long) speed);
-        if (lastSpeeds.size() == SPEED_POINTS) {
-            maxSpeed = Math.max(maxSpeed, calculateAverageSpeed());
-            lastSpeeds.remove(0);
-        }
-        sumSpeed += speed;
-        speedPoints++;
-    }
-
-    private final int SPEED_POINTS = 5;
-    
-
     public static PlayerContour aroundPoint(String name, String position, String team, final int color, final Point point) {
             return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
     }
@@ -78,18 +72,34 @@ public class PlayerContour extends Contour {
             return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
     }
 
+    public void addHistoricalPoint(final Point p) {
+        getHeatMap().addPoint(p);
+        lastPoints.add(p);
+        if (lastPoints.size() > SPEED_POINTS) {
+            lastPoints.remove(0);
+        }
+        speedPoints += 1;
+        sumSpeed += getAverageSpeed();
+    }
+
     public Object description() {
         if (isInitialized()) {
-            return name + " (" + centroidX() + ", " + centroidY() + ")";
+            return name + " (" + centroidX() + ", " + centroidY() + "), Speed = " + calculateAverageSpeed() + " cm/s";
         }
         return name + "(" + team + ")";
     }
 
-    private int calculateAverageSpeed() {
-        long sum = 0;
-        for (long i : lastSpeeds) {
-            sum += i;
+    private double calculateAverageSpeed() {
+        if (lastPoints.size() < SPEED_POINTS) {
+            return 0;
         }
-        return (int) (sum / lastSpeeds.size());
+        Point last = lastPoints.get(lastPoints.size() - 1);
+        Point first = lastPoints.get(0);
+        double distant = Math.sqrt(
+            Math.pow(last.x - first.x, 2) +
+            Math.pow(last.y - first.y, 2)
+        );
+        distance += distant / SPEED_POINTS * SCALE_MAP;
+        return distant * SCALE_MAP;
     }
 }
