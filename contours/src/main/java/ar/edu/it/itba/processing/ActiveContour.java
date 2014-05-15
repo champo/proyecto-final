@@ -148,10 +148,9 @@ public class ActiveContour {
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
 			}
-
-		}
-		final long diff = System.currentTimeMillis() - time;
-		return diff;
+            }
+            final long diff = System.currentTimeMillis() - time;
+            return diff;
 	}
 
 	private void markExpandedArea(final BufferedImage frame, final Contour c) {
