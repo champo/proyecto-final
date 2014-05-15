@@ -27,8 +27,8 @@ public final class Helpers {
 	}
 
 	public static ColorPoint[] getCharacteristics(final BufferedImage frame, final Contour contour) {
-		// return new ColorPoint[] { getAverageColor(frame, contour) };
-		return getMostFrequentColors(frame, contour);
+		 return new ColorPoint[] { getAverageColor(frame, contour) };
+//		return getMostFrequentColors(frame, contour);
 	}
 
 	public static ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
@@ -320,7 +320,7 @@ public final class Helpers {
 		return ColorPoint.build(r.getType(), (int) avgRed, (int) avgGreen, (int) avgBlue);
 	}
 
-	private static ColorPoint[] getMostFrequentColors(BufferedImage frame, Contour r) {
+	private static ColorPoint[] getMostFrequentColors(final BufferedImage frame, final Contour r) {
 
 		double minHue = Double.MAX_VALUE;
 		double maxHue = Double.MIN_VALUE;
@@ -380,7 +380,7 @@ public final class Helpers {
 				}
 			}
 		}
-		
+
 		int secondBestHue = 0;
 		int secondBestSat = 0;
 		for (int i = 0; i < HISTOGRAM_SIZE; i++) {
