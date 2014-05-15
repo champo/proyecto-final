@@ -79,12 +79,12 @@ public class PlayerContour extends Contour {
             lastPoints.remove(0);
         }
         speedPoints += 1;
-        sumSpeed += getAverageSpeed();
+        sumSpeed += calculateAverageSpeed();
     }
 
     public Object description() {
         if (isInitialized()) {
-            return name + " (" + centroidX() + ", " + centroidY() + "), Speed = " + calculateAverageSpeed() + " cm/s";
+            return name + " (" + centroidX() + ", " + centroidY() + ")";
         }
         return name + "(" + team + ")";
     }
@@ -100,6 +100,7 @@ public class PlayerContour extends Contour {
             Math.pow(last.y - first.y, 2)
         );
         distance += distant / SPEED_POINTS * SCALE_MAP;
+        maxSpeed = (int) Math.max(maxSpeed, distant * SCALE_MAP);
         return distant * SCALE_MAP;
     }
 }
