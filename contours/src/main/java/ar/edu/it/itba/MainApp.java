@@ -448,7 +448,13 @@ public class MainApp extends javax.swing.JFrame {
                     } else {
                         rectangle = new Rectangle(arg0.getPoint().x - 3, arg0.getPoint().y - 3, 6, 6);
                     }
-                    ac.resetContourToRect(imagePanel.getImage(), contour.get(index), rectangle);
+
+                    BufferedImage image = imagePanel.getImage();
+                    ac.resetContourToRect(image, contour.get(index), rectangle);
+
+                    ImageOperations.drawContourOnBuffer(image, contour.get(index));
+                    imagePanel.setImage(image);
+
                     playerList.updateUI();
                 } else {
                     new SelectPlayer(MainApp.this, true, new PlayerSelectionListener(){

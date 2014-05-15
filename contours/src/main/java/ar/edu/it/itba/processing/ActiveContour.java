@@ -238,8 +238,8 @@ public class ActiveContour {
 
 		clearContour(c);
 
-		for (int x = Math.max(0, (int) r.getMinY()); x < maxX; x++) {
-			for (int y = Math.max(0, (int) r.getMaxY()); y < maxY; y++) {
+		for (int x = Math.max(0, (int) r.getMinX()); x < maxX; x++) {
+			for (int y = Math.max(0, (int) r.getMinY()); y < maxY; y++) {
 
 				if (phi[x][y] == 0) {
 					Point p = new Point(x, y);
