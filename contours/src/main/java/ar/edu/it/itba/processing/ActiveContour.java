@@ -157,11 +157,6 @@ public class ActiveContour {
 				markExpandedArea(frame, c);
 			}
 
-            int speed = (int)(Math.sqrt(
-                    Math.pow(c.centroidX() - prevX[i], 2)
-                    + Math.pow (c.centroidY() - prevY[i], 2)
-            ) * PROPORTION_FIELD);
-            ((PlayerContour) c).addSpeedData(speed);
 		}
 		final long diff = System.currentTimeMillis() - time;
 		return diff;

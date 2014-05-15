@@ -4,41 +4,45 @@
  */
 package ar.edu.it.itba.processing;
 
-import ar.edu.it.itba.metrics.HeatMap;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+
+import ar.edu.it.itba.metrics.HeatMap;
 
 /**
  *
  * @author eordano
  */
 public class PlayerContour extends Contour {
+
     public final String name;
     public final String position;
     public final String team;
-    private int maxSpeed;
-    private long sumSpeed;
+    private double maxSpeed;
+    private double sumSpeed;
     private int speedPoints;
-    private List<Long> lastSpeeds = new LinkedList<Long>();
+    private final List<Double> lastSpeeds = new LinkedList<Double>();
     private HeatMap heatmap;
 
-    public PlayerContour(int color, Rectangle rect) {
+    private final List<Point> lastPositions = new LinkedList<Point>();
+
+    public PlayerContour(final int color, final Rectangle rect) {
         super(color, rect);
         name = "NN";
         position = "0";
         team = "No team";
     }
 
-    public PlayerContour(String name, String position, String team, int color, Rectangle rect) {
+    public PlayerContour(final String name, final String position, final String team, final int color, final Rectangle rect) {
         super(color, rect);
         this.name = name;
         this.position = position;
         this.team = team;
     }
 
-    public void setHeatMap(HeatMap heatmap) {
+    public void setHeatMap(final HeatMap heatmap) {
         this.heatmap = heatmap;
     }
 
@@ -53,14 +57,31 @@ public class PlayerContour extends Contour {
         return (int) (sumSpeed / speedPoints);
     }
 
-    public int getMaxSpeed() {
+    public double getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void addSpeedData(int speed) {
-        lastSpeeds.add((long) speed);
+    public void addPosition(final Point p) {
+    	lastPositions.add(p);
+    	if (lastPositions.size() > SPEED_POINTS) {
+    		lastPositions.remove(0);
+    	}
+
+    	if (lastPositions.size() < 2) {
+    		return;
+    	}
+
+    	Point last = lastPositions.get(lastPositions.size() - 2);
+        double speed = p.distance(last);
+
+        addSpeedData(speed);
+    }
+
+    public void addSpeedData(final double speed) {
+        lastSpeeds.add(speed);
+        maxSpeed = Math.max(maxSpeed, speed);
+
         if (lastSpeeds.size() == SPEED_POINTS) {
-            maxSpeed = Math.max(maxSpeed, calculateAverageSpeed());
             lastSpeeds.remove(0);
         }
         sumSpeed += speed;
@@ -68,13 +89,13 @@ public class PlayerContour extends Contour {
     }
 
     private final int SPEED_POINTS = 5;
-    
 
-    public static PlayerContour aroundPoint(String name, String position, String team, final int color, final Point point) {
+
+    public static PlayerContour aroundPoint(final String name, final String position, final String team, final int color, final Point point) {
             return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
     }
 
-    public static PlayerContour squareAroundPoint(String name, String position, String team, final int color, final Point point) {
+    public static PlayerContour squareAroundPoint(final String name, final String position, final String team, final int color, final Point point) {
             return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
     }
 
@@ -83,13 +104,5 @@ public class PlayerContour extends Contour {
             return name + " (" + centroidX() + ", " + centroidY() + ")";
         }
         return name + "(" + team + ")";
-    }
-
-    private int calculateAverageSpeed() {
-        long sum = 0;
-        for (long i : lastSpeeds) {
-            sum += i;
-        }
-        return (int) (sum / lastSpeeds.size());
     }
 }

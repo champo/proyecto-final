@@ -779,7 +779,9 @@ public class MainApp extends javax.swing.JFrame {
 
                             heatMap.addPoint(mapped);
 
-                            ((PlayerContour) c).getHeatMap().addPoint(mapped);
+                            PlayerContour player = (PlayerContour) c;
+							player.addPoint(mapped);
+                            player.getHeatMap().addPoint(mapped);
 
 //                			setSoccerFieldImage(image);
                         }
