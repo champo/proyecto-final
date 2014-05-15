@@ -785,7 +785,9 @@ public class MainApp extends javax.swing.JFrame {
                         }
                     }
                     
-                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(playerList.getSelectedIndex()), Color.RED);
+                    if (!playerList.isSelectionEmpty()) {
+                        ImageOperations.paintContour(imagePanel.getImage(), contour.get(playerList.getSelectedIndex()), Color.RED);
+                    }
 
                     soccerFieldPanel.setImage(heatMap.getFrame());
                     soccerFieldPanel.repaint();
