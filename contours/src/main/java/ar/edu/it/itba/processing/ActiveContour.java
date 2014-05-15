@@ -11,6 +11,7 @@ import static ar.edu.it.itba.processing.Helpers.neighbors8;
 import static ar.edu.it.itba.processing.Helpers.prob;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -181,23 +182,27 @@ public class ActiveContour {
 
 		Set<Point> points = new HashSet<Point>();
 
-		int count = 0;
-
 		for (int x = Math.max(0, center.x - searchRadius); x < maxX; x++) {
 			for (int y = Math.max(0, center.y - searchRadius); y < maxY; y++) {
 
 				if (phi[x][y] == 0) {
-					phi[x][y] = c.color;
-					count++;
-
 					Point p = new Point(x, y);
 					points.add(p);
-					theta.set(p, -3);
 				}
 
 			}
 		}
-		System.out.println("Got count = " + count);
+
+		markContour(frame, c, points);
+
+	}
+
+	private void markContour(final BufferedImage frame, final Contour c, final Set<Point> points) {
+
+		for (Point p : points) {
+			phi[p.x][p.y] = c.color;
+			theta.set(p, -3);
+		}
 
 		Set<Point> lout = c.getLout();
 		Set<Point> lin = c.getLin();
@@ -236,7 +241,30 @@ public class ActiveContour {
 		for (Point point : lin) {
 			theta.set(point, -1);
 		}
+	}
 
+	public void resetContourToRect(final BufferedImage frame, final Contour c, final Rectangle r) {
+
+		int maxX = Math.min(frame.getWidth() - 1, (int) r.getMaxX());
+		int maxY = Math.min(frame.getHeight() - 1, (int) r.getMaxY());
+
+		Set<Point> points = new HashSet<Point>();
+
+		clearContour(c);
+
+		for (int x = Math.max(0, (int) r.getMinY()); x < maxX; x++) {
+			for (int y = Math.max(0, (int) r.getMaxY()); y < maxY; y++) {
+
+				if (phi[x][y] == 0) {
+					Point p = new Point(x, y);
+					points.add(p);
+				}
+
+			}
+		}
+
+		markContour(frame, c, points);
+		c.mutationFinished();
 	}
 
 	private void clearContour(final Contour c) {
