@@ -33,7 +33,6 @@ public class ActiveContour {
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 40*40;
-        private static final int PROPORTION_FIELD = 23; // Make 400 pixels be 90 meters
 
 	private static double SIGMA = 0.7;
 	private static double[][] mask;
@@ -95,13 +94,6 @@ public class ActiveContour {
 
 		final boolean[] done = new boolean[contours.length];
 		int completed = 0;
-
-                final int prevX[] = new int[contours.length];
-                final int prevY[] = new int[contours.length];
-                for (int j = 0; j < contours.length; j++) {
-                    prevX[j] = contours[j].centroidX();
-                    prevY[j] = contours[j].centroidY();
-                }
 
 		for (int i = 0; i < nMax; i++) {
 
