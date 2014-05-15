@@ -41,6 +41,9 @@ import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
+import java.awt.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.AbstractListModel;
 import javax.swing.plaf.basic.BasicListUI;
 
@@ -50,11 +53,12 @@ import javax.swing.plaf.basic.BasicListUI;
  */
 public class MainApp extends javax.swing.JFrame {
 
-	private static final long serialVersionUID = 5474244925067694842L;
+    private static final long serialVersionUID = 5474244925067694842L;
 
-	private Point currentImagePoint;
+    private Point currentImagePoint;
     private Point currentMappedPoint;
     private BufferedImage soccerField;
+    private boolean reselectingPlayer = false;
 
     /**
      * Creates new form MainApp
@@ -63,15 +67,6 @@ public class MainApp extends javax.swing.JFrame {
         initComponents();
     }
 
-    public static Color phiColoring[] = new Color[] {
-        new Color(0,0,0),
-        new Color(255, 0, 0),
-        new Color(255, 0, 255),
-        new Color(0, 255, 0),
-        new Color(0, 255, 255),
-        new Color(255, 255, 255),
-        new Color(128, 128, 128)
-    };
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
     private FrameProvider frameDecoder;
@@ -122,11 +117,8 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         playerList = new javax.swing.JList();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         soccerFieldContainer = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         videoControlPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         imageContainerPanel = new javax.swing.JPanel();
@@ -152,8 +144,6 @@ public class MainApp extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Mostrar Visitante");
-
         jScrollPane3.setMaximumSize(new java.awt.Dimension(403, 551));
         jScrollPane3.setPreferredSize(new java.awt.Dimension(403, 551));
 
@@ -170,10 +160,6 @@ public class MainApp extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(soccerFieldContainer);
 
-        jButton4.setText("Mostrar Local");
-
-        jButton5.setText("Ver Todos");
-
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -189,12 +175,6 @@ public class MainApp extends javax.swing.JFrame {
                                 .add(jButton1)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jButton2))
-                            .add(jPanel1Layout.createSequentialGroup()
-                                .add(jButton4)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton3)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton5))
                             .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 463, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(0, 6, Short.MAX_VALUE))))
         );
@@ -209,12 +189,7 @@ public class MainApp extends javax.swing.JFrame {
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton1)
                     .add(jButton2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButton3)
-                    .add(jButton4)
-                    .add(jButton5))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(41, 41, 41)
                 .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 302, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -298,7 +273,11 @@ public class MainApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        if (playerList.getSelectedIndex() != -1) {
+            jButton2.setText("Click in player on field");
+            jButton2.setEnabled(false);
+            reselectingPlayer = true;
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -428,13 +407,12 @@ public class MainApp extends javax.swing.JFrame {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int index = playerList.getSelectedIndex();
-                    if (index >= 0 && index < contour.size()) {
-                        
-                	soccerFieldPanel.setImage(contour.get(index).getHeatMap().getFrame());
-                	soccerFieldPanel.repaint();
-                    }
+                int index = playerList.getSelectedIndex();
+                if (index >= 0 && index < contour.size()) {
+                    soccerFieldPanel.setImage(contour.get(index).getHeatMap().getFrame());
+                    soccerFieldPanel.repaint();
+                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(index), Color.RED);
+                    imagePanel.repaint();
                 }
             }
             
@@ -459,49 +437,62 @@ public class MainApp extends javax.swing.JFrame {
 
             @Override
             public void mouseClicked(final MouseEvent arg0) {
-                new SelectPlayer(MainApp.this, true, new PlayerSelectionListener(){
-
-                    @Override
-                    public void selectedPlayer(String name, String position, String team) {
-                        
-                        if (selectingFirst) {
-                            PlayerContour c;
-
-                            if (selectRectangle) {
-                                c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
-                            } else {
-                                c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
-                            }
-                            c.setType(type);
-                            // c.printValues(imagePanel.getImage());
-
-                            contour.add(c);
-                            c.setHeatMap(new HeatMap(soccerField));
-                            BufferedImage image = imagePanel.getImage();
-                            ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                            imagePanel.setImage(image);
-                        } else {
-                            PlayerContour c;
-
-                            if (selectRectangle) {
-                                c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
-                            } else {
-                                c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
-                            }
-                            c.setType(type);
-
-                            contour.add(c);
-                            c.setHeatMap(new HeatMap(soccerField));
-                            BufferedImage image = imagePanel.getImage();
-                            ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                            imagePanel.setImage(image);
-                            if (ac != null) {
-                                ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
-                            }
-                        }
-                        playerList.updateUI();
+                if (reselectingPlayer) {
+                    int index = playerList.getSelectedIndex();
+                    jButton2.setEnabled(true);
+                    jButton2.setText("Corregir posición");
+                    reselectingPlayer = false;
+                    Rectangle rectangle;
+                    if (selectRectangle) {
+                        rectangle = new Rectangle(arg0.getPoint().x - 3, arg0.getPoint().y - 6, 6, 12);
+                    } else {
+                        rectangle = new Rectangle(arg0.getPoint().x - 3, arg0.getPoint().y - 3, 6, 6);
                     }
-                }).setVisible(true);
+                    ac.resetContourToRect(imagePanel.getImage(), contour.get(index), rectangle);
+                    playerList.updateUI();
+                } else {
+                    new SelectPlayer(MainApp.this, true, new PlayerSelectionListener(){
+
+                        @Override
+                        public void selectedPlayer(String name, String position, String team) {
+                            if (selectingFirst) {
+                                PlayerContour c;
+
+                                if (selectRectangle) {
+                                    c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                                } else {
+                                    c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                                }
+                                c.setType(type);
+                                // c.printValues(imagePanel.getImage());
+
+                                contour.add(c);
+                                c.setHeatMap(new HeatMap(soccerField));
+                                BufferedImage image = imagePanel.getImage();
+                                ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                                imagePanel.setImage(image);
+                            } else {
+                                PlayerContour c;
+                                if (selectRectangle) {
+                                    c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
+                                } else {
+                                    c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
+                                }
+                                c.setType(type);
+
+                                contour.add(c);
+                                c.setHeatMap(new HeatMap(soccerField));
+                                BufferedImage image = imagePanel.getImage();
+                                ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+                                imagePanel.setImage(image);
+                                if (ac != null) {
+                                    ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
+                                }
+                            }
+                            playerList.updateUI();
+                        }
+                    }).setVisible(true);
+                }
             }
 
         };
@@ -567,7 +558,7 @@ public class MainApp extends javax.swing.JFrame {
 
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
+        soccerField = ImageIO.read(new File("independiente.png")); // src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
@@ -740,66 +731,68 @@ public class MainApp extends javax.swing.JFrame {
                 }
 
                 if (ac != null) {
-                	/*
-                	BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
-                	int phiMapping[][] = ac.getMapping();
-                	for (int x = 0; x < frame.getWidth(); x++) {
-                            for (int y = 0; y < frame.getHeight(); y++) {
-                	        phiColor.setRGB(x, y, phiColoring[phiMapping[x][y]].getRGB());
-                	    }
-                	}
-                        phiPanel.setImage(phiColor);
-                        phiPanel.repaint();
-                	 */
-                	ac.adapt(frame);
-                	int index = 0;
-                	if (homeography != null) {
-                		BufferedImage cancha = soccerField;
-                		for (int i = 0; i < cancha.getWidth(); i++) {
-                			for (int j = 0; j < cancha.getHeight(); j++) {
-                				if (cancha.getRGB(i, j) == Color.black.getRGB()) {
-            						Point inverseApply = homeography.inverseApply(i, j);
-            						if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth() &&
-            							inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
-            							// getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
-            							// imagePanel.setImage(getFrame());
-            						}
-                				}
-                			}
-                		}
-                	}
-                	for (Contour c : contour) {
-                		ImageOperations.drawContourOnBuffer(frame, c);
+                    /*
+                     BufferedImage phiColor = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
+                     int phiMapping[][] = ac.getMapping();
+                     for (int x = 0; x < frame.getWidth(); x++) {
+                        for (int y = 0; y < frame.getHeight(); y++) {
+                            phiColor.setRGB(x, y, phiColoring[phiMapping[x][y]].getRGB());
+                        }
+                     }
+                     phiPanel.setImage(phiColor);
+                     phiPanel.repaint();
+                     */
+                    ac.adapt(frame);
+                    int index = 0;
+                    if (homeography != null) {
+                        BufferedImage cancha = soccerField;
+                        for (int i = 0; i < cancha.getWidth(); i++) {
+                            for (int j = 0; j < cancha.getHeight(); j++) {
+                                if (cancha.getRGB(i, j) == Color.black.getRGB()) {
+                                    Point inverseApply = homeography.inverseApply(i, j);
+                                    if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth()
+                                            && inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
+                                        // getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
+                                        // imagePanel.setImage(getFrame());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (Contour c : contour) {
+                        ImageOperations.drawContourOnBuffer(frame, c);
 
-                		if (homeography != null) {
-                			final BufferedImage image = soccerField;
+                        if (homeography != null) {
+                            final BufferedImage image = soccerField;
 
-                			Point mapped = homeography.apply(c.centroidX(), c.maxY());
-                			if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
-                				System.out.println("Skipping point out of bounds");
-                				continue;
-                			}
-                			try {
-								outBuffer.write(String.format("%d, %d, %d, %d\n", framesElapsed, index++, mapped.x, mapped.y).getBytes());
-							} catch (IOException e) {
-								throw new RuntimeException(e);
-							}
+                            Point mapped = homeography.apply(c.centroidX(), c.maxY());
+                            if (mapped.x < 0 || mapped.x >= image.getWidth() - 1 || mapped.y < 0 || mapped.y >= image.getHeight()) {
+                                System.out.println("Skipping point out of bounds");
+                                continue;
+                            }
+                            try {
+                                outBuffer.write(String.format("%d, %d, %d, %d\n", framesElapsed, index++, mapped.x, mapped.y).getBytes());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
 //                			image.setRGB(mapped.x, mapped.y, Color.cyan.getRGB());
 
-                			heatMap.addPoint(mapped);
+                            heatMap.addPoint(mapped);
 
                             ((PlayerContour) c).getHeatMap().addPoint(mapped);
 
 //                			setSoccerFieldImage(image);
-                		}
-                	}
+                        }
+                    }
+                    
+                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(playerList.getSelectedIndex()), Color.RED);
 
-                	soccerFieldPanel.setImage(heatMap.getFrame());
-                	soccerFieldPanel.repaint();
+                    soccerFieldPanel.setImage(heatMap.getFrame());
+                    soccerFieldPanel.repaint();
 
-                	setImagePanelImage(frame);
+                    setImagePanelImage(frame);
                 } else {
-                	setImagePanelImage(frame);
+                    setImagePanelImage(frame);
                 }
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
                 busyLock.countDown();
@@ -832,9 +825,6 @@ public class MainApp extends javax.swing.JFrame {
     private javax.swing.JPanel imageContainerPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
