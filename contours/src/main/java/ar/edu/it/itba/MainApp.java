@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -28,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -41,11 +43,6 @@ import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
 import ar.edu.it.itba.video.LensCorrection;
-import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.AbstractListModel;
-import javax.swing.plaf.basic.BasicListUI;
 
 /**
  *
@@ -82,7 +79,7 @@ public class MainApp extends javax.swing.JFrame {
     private HomeographyManager homeographyManager;
     private int selected = 1;
     int framesElapsed = 0;
-    
+
     // Multithread automatic playing
 	private boolean playing;
 	private Thread playThread;
@@ -100,6 +97,8 @@ public class MainApp extends javax.swing.JFrame {
     protected ColorPoint.Type type = ColorPoint.Type.RGB;
 
     protected HeatMap heatMap;
+
+	protected int selectedContour = -1;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -129,7 +128,8 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton1.setText("Ver Estadisticas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -139,7 +139,8 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton2.setText("Corregir posición");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -264,7 +265,7 @@ public class MainApp extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (playerList.isSelectionEmpty()) {
             return;
         }
@@ -272,7 +273,7 @@ public class MainApp extends javax.swing.JFrame {
         new PlayerStatsDialog(this, false, c).setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (playerList.getSelectedIndex() != -1) {
             jButton2.setText("Click in player on field");
             jButton2.setEnabled(false);
@@ -344,7 +345,7 @@ public class MainApp extends javax.swing.JFrame {
                 new LensCorrection(
                         new BlackOutOutskirts(
                        // new FrameDecoder("/Users/eordano/Desktop/new.mkv")
-                       new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+                       new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points)
@@ -398,24 +399,30 @@ public class MainApp extends javax.swing.JFrame {
             }
 
             @Override
-            public Object getElementAt(int index) {
+            public Object getElementAt(final int index) {
                 return contour.get(index).description();
             }
-            
+
         });
         playerList.addListSelectionListener(new ListSelectionListener() {
 
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int index = playerList.getSelectedIndex();
-                if (index >= 0 && index < contour.size()) {
-                    soccerFieldPanel.setImage(contour.get(index).getHeatMap().getFrame());
+            public void valueChanged(final ListSelectionEvent e) {
+
+            	if (selectedContour != -1) {
+                    ImageOperations.drawContourOnBuffer(imagePanel.getImage(), contour.get(selectedContour));
+                    imagePanel.repaint();
+            	}
+
+                selectedContour = playerList.getSelectedIndex();
+                if (selectedContour >= 0 && selectedContour < contour.size()) {
+                    soccerFieldPanel.setImage(contour.get(selectedContour).getHeatMap().getFrame());
                     soccerFieldPanel.repaint();
-                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(index), Color.RED);
+                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(selectedContour), Color.RED);
                     imagePanel.repaint();
                 }
             }
-            
+
         });
         mouseListener = new MouseListener() {
 
@@ -460,7 +467,7 @@ public class MainApp extends javax.swing.JFrame {
                     new SelectPlayer(MainApp.this, true, new PlayerSelectionListener(){
 
                         @Override
-                        public void selectedPlayer(String name, String position, String team) {
+                        public void selectedPlayer(final String name, final String position, final String team) {
                             if (selectingFirst) {
                                 PlayerContour c;
 
@@ -790,7 +797,7 @@ public class MainApp extends javax.swing.JFrame {
 //                			setSoccerFieldImage(image);
                         }
                     }
-                    
+
                     if (!playerList.isSelectionEmpty()) {
                         ImageOperations.paintContour(imagePanel.getImage(), contour.get(playerList.getSelectedIndex()), Color.RED);
                     }
