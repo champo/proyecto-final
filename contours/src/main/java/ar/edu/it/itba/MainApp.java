@@ -72,6 +72,7 @@ public class MainApp extends javax.swing.JFrame {
     private OutputStream outBuffer;
     private BufferedImage firstFrame;
     private ActiveContour ac;
+    private ActiveContour invertedTracker;
 
     private final List<PlayerContour> contour = new ArrayList<PlayerContour>();
 
@@ -558,7 +559,30 @@ public class MainApp extends javax.swing.JFrame {
                 videoControlPanel.remove(startTrackingButton);
                 startTrackingButton = null;
 
-                ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
+                List<Contour> team1 = new ArrayList<Contour>();
+                List<Contour> team2 = new ArrayList<Contour>();
+
+                for (PlayerContour c : contour) {
+					if ("2".equals(c.team)) {
+						team2.add(c);
+				 	} else {
+				 		team1.add(c);
+				 	}
+				}
+
+                ac = new ActiveContour(firstFrame, team1.toArray(new Contour[team1.size()]));
+                ac.setInvertedDetection(true);
+
+                invertedTracker = new ActiveContour(firstFrame, team2.toArray(new Contour[team2.size()]));
+                invertedTracker.setInvertedDetection(false);
+
+                for (Contour c : team2) {
+                	c.setLastStdDev(ColorPoint.buildFromRGB(ColorPoint.Type.RGB, 0));
+                	c.omega = new ColorPoint[] {
+                		ColorPoint.buildFromRGB(ColorPoint.Type.RGB, Color.CYAN.getRGB())
+                	};
+				}
+
                 homeography = homeographyManager.calculateHomography();
                 heatMap = new HeatMap(soccerFieldPanel.getImage());
 //                homeography = homeographyManager.calculateIterativeHomegraphy(1);
@@ -756,6 +780,8 @@ public class MainApp extends javax.swing.JFrame {
                      phiPanel.repaint();
                      */
                     ac.adapt(frame);
+                    invertedTracker.adapt(frame);
+
                     int index = 0;
                     if (homeography != null) {
                         BufferedImage cancha = soccerField;

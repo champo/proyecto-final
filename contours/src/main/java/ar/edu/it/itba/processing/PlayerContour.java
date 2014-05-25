@@ -4,24 +4,26 @@
  */
 package ar.edu.it.itba.processing;
 
-import ar.edu.it.itba.metrics.HeatMap;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+
+import ar.edu.it.itba.metrics.HeatMap;
 
 /**
  *
  * @author eordano
  */
 public class PlayerContour extends Contour {
+
     public final String name;
     public final String position;
     public final String team;
     private int maxSpeed;
     private long sumSpeed;
     private int speedPoints;
-    private List<Point> lastPoints = new LinkedList<Point>();
+    private final List<Point> lastPoints = new LinkedList<Point>();
     private HeatMap heatmap;
     private final int SPEED_POINTS = 5;
     private final int SCALE_MAP = 25;
@@ -83,10 +85,15 @@ public class PlayerContour extends Contour {
     }
 
     public Object description() {
-        if (isInitialized()) {
-            return name + " (" + centroidX() + ", " + centroidY() + ")";
-        }
-        return name + "(" + team + ")";
+    	return toString();
+    }
+
+    @Override
+    public String toString() {
+    	if (isInitialized()) {
+    		return name + "(" + team + ") @ (" + centroidX() + ", " + centroidY() + ")";
+    	}
+    	return name + "(" + team + ")";
     }
 
     private double calculateAverageSpeed() {

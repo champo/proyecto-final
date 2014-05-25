@@ -9,7 +9,6 @@ import java.util.Set;
 
 import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.processing.color.ColorPoint.Type;
-import ar.edu.it.itba.processing.color.HSPoint;
 
 public class Contour implements Iterable<Point> {
 
@@ -23,6 +22,8 @@ public class Contour implements Iterable<Point> {
 	private final Set<Point> points;
 	private final Set<Point> lin;
 	public final int color;
+
+	public int idx;
 
 	private Set<Point> internalPoints;
 

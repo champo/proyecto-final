@@ -54,9 +54,16 @@ public class ActiveContour {
 
 	private final PointMapping theta;
 	private final ColorPoint bgDeviation;
+	private boolean invertedDetection;
 
 	public ActiveContour(final BufferedImage frame, final Contour... c) {
 		contours = c;
+
+		for (int i = 0; i < c.length; i++) {
+			Contour contour = contours[i];
+			contour.idx = i + 1;
+		}
+
 		// Calculating theta makes contours define their internal points
 		// it *must* happen before anything else
 		phi = new int[frame.getWidth()][frame.getHeight()];
@@ -88,6 +95,10 @@ public class ActiveContour {
 		}
 
 		this.bgDeviation = calculateStandardDeviation(ColorPoint.Type.RGB, contours, frame);
+	}
+
+	public void setInvertedDetection(final boolean invertedDetection) {
+		this.invertedDetection = invertedDetection;
 	}
 
 	public float adapt(final BufferedImage frame) {
@@ -151,6 +162,12 @@ public class ActiveContour {
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
 			}
+		}
+
+
+		if (!invertedDetection) {
+			final long diff = System.currentTimeMillis() - time;
+			return diff;
 		}
 
 		final Contour c = contours[0];
@@ -218,7 +235,7 @@ public class ActiveContour {
 	private void markContour(final BufferedImage frame, final Contour c, final Set<Point> points) {
 
 		for (Point p : points) {
-			phi[p.x][p.y] = c.color;
+			phi[p.x][p.y] = c.idx;
 			theta.set(p, -3);
 		}
 
@@ -229,7 +246,7 @@ public class ActiveContour {
 			List<Point> neighbors = neighbors(p, frame.getWidth(), frame.getHeight());
 			int connected = 0;
 			for (Point point : neighbors) {
-				if (phi[point.x][point.y] == c.color) {
+				if (phi[point.x][point.y] == c.idx) {
 					connected++;
 				}
 			}
@@ -344,7 +361,7 @@ public class ActiveContour {
 				for (final Point n : neighbors(p, frame.getWidth(), frame.getHeight())) {
 					if (theta.getValue(n) == 3 && phi[n.x][n.y] == 0) {
 						lout.add(n);
-						phi[n.x][n.y] = r.color;
+						phi[n.x][n.y] = r.idx;
 						theta.set(n, 1);
 					}
 				}
@@ -450,14 +467,14 @@ public class ActiveContour {
 
 		for (final Point p : r.getLout()) {
 			externalPoints.add(p);
-            phi[p.x][p.y] = r.color;
+            phi[p.x][p.y] = r.idx;
 			theta.set(p, 1);
 		}
 		final Deque<Point> queue = new LinkedList<Point>();
 		for (final Point p : r.getLin()) {
 			internalPoints.add(p);
 			theta.set(p, -1);
-            phi[p.x][p.y] = r.color;
+            phi[p.x][p.y] = r.idx;
 			queue.push(p);
 		}
 		int iterations = 0;
@@ -469,7 +486,7 @@ public class ActiveContour {
 					internalPoints.add(n);
 					queue.push(n);
 					theta.set(n, -3);
-					phi[n.x][n.y] = r.color;
+					phi[n.x][n.y] = r.idx;
 				}
 			}
 		}
