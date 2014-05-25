@@ -5,8 +5,10 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import ar.edu.it.itba.processing.Contour.State;
 import ar.edu.it.itba.processing.color.ColorPoint;
@@ -138,6 +140,77 @@ public final class Helpers {
 			green += v.green;
 			blue += v.blue;
 			points++;
+		}
+
+		final double avgRed = red / points;
+		final double avgGreen = green / points;
+		final double avgBlue = blue / points;
+
+		double redDeviation = 0;
+		double blueDeviation = 0;
+		double greenDeviation = 0;
+
+		for (final Point p : pixels) {
+			final ColorPoint v = ColorPoint.buildFromRGB(type, frame.getRGB(p.x, p.y));
+			redDeviation += Math.pow(v.red - avgRed, 2);
+			greenDeviation += Math.pow(v.green - avgGreen, 2);
+			blueDeviation += Math.pow(v.blue - avgBlue, 2);
+		}
+
+		redDeviation = Math.sqrt(redDeviation / (points - 1));
+		blueDeviation = Math.sqrt(blueDeviation / (points - 1));
+		greenDeviation = Math.sqrt(greenDeviation / (points - 1));
+
+		return ColorPoint.build(type, (int) redDeviation, (int) greenDeviation, (int) blueDeviation);
+	}
+
+	public static ColorPoint calculateStandardDeviation(final Type type, final Contour[] contours, final BufferedImage frame) {
+
+
+		double red = 0;
+		double green = 0;
+		double blue = 0;
+		int points = 0;
+
+
+		final int width = frame.getWidth();
+		final int height = frame.getHeight();
+		final int black = Color.black.getRGB();
+
+		Set<Point> pixels = new HashSet<>();
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+
+				boolean skip = false;
+				final Point p = new Point(x, y);
+
+				// Avoid border points
+				for (Point n : neighbors8(p, width, height)) {
+					if (black == frame.getRGB(n.x, n.y)) {
+						skip = true;
+						break;
+					}
+				}
+
+				// Skip anything inside a contour
+				for (Contour c : contours) {
+					if (c.contains(x, y)) {
+						skip = true;
+						break;
+					}
+				}
+
+				if (!skip) {
+					final ColorPoint v = ColorPoint.buildFromRGB(type, frame.getRGB(p.x, p.y));
+					red += v.red;
+					green += v.green;
+					blue += v.blue;
+					points++;
+
+					pixels.add(p);
+				}
+			}
 		}
 
 		final double avgRed = red / points;

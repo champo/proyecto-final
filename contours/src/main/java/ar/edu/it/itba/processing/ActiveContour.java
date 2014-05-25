@@ -10,6 +10,7 @@ import static ar.edu.it.itba.processing.Helpers.neighbors;
 import static ar.edu.it.itba.processing.Helpers.neighbors8;
 import static ar.edu.it.itba.processing.Helpers.prob;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -52,6 +53,7 @@ public class ActiveContour {
 	private final int[][] phi;
 
 	private final PointMapping theta;
+	private final ColorPoint bgDeviation;
 
 	public ActiveContour(final BufferedImage frame, final Contour... c) {
 		contours = c;
@@ -85,6 +87,7 @@ public class ActiveContour {
 			}
 		}
 
+		this.bgDeviation = calculateStandardDeviation(ColorPoint.Type.RGB, contours, frame);
 	}
 
 	public float adapt(final BufferedImage frame) {
@@ -148,9 +151,38 @@ public class ActiveContour {
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
 			}
-            }
-            final long diff = System.currentTimeMillis() - time;
-            return diff;
+		}
+
+		final Contour c = contours[0];
+		final ColorPoint omegaZero = c.omegaZero[0];
+		final int black = Color.black.getRGB();
+		final int deviations = 3;
+
+		for (int i = 0; i < frame.getWidth(); i++) {
+			for (int j = 0; j < frame.getHeight(); j++) {
+
+				// This means it not a background pixel according to AC
+				if (phi[i][j] != 0 || frame.getRGB(i, j) == black) {
+					continue;
+				}
+
+				ColorPoint color = ColorPoint.buildFromRGB(omegaZero.getType(), frame.getRGB(i, j));
+
+				if (Math.abs(color.red - omegaZero.red) < deviations * bgDeviation.red &&
+						Math.abs(color.green - omegaZero.green) < deviations * bgDeviation.green &&
+						Math.abs(color.blue - omegaZero.blue) < deviations * bgDeviation.blue) {
+
+					// Here we confirm it's really a background pixel
+					continue;
+				}
+
+				// It's not background it seems, let's color it something ugly
+				frame.setRGB(i, j, Color.CYAN.getRGB());
+			}
+		}
+
+		final long diff = System.currentTimeMillis() - time;
+		return diff;
 	}
 
 	private void markExpandedArea(final BufferedImage frame, final Contour c) {
