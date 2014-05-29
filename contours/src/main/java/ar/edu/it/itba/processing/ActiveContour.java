@@ -32,8 +32,14 @@ import ar.edu.it.itba.processing.color.ColorPoint.Type;
 public class ActiveContour {
 
 
+	private static final int BLACK = Color.black.getRGB();
+	private static final int CYAN = Color.CYAN.getRGB();
+	private final int DEVIATIONS = 3;
+
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 40*40;
+	private static final ColorPoint whiteColorPoint = ColorPoint.buildFromRGB(ColorPoint.Type.RGB, Color.WHITE.getRGB());
+	private static final ColorPoint whiteDeviation = ColorPoint.build(ColorPoint.Type.RGB, 30, 30, 30);
 
 	private static double SIGMA = 0.7;
 	private static double[][] mask;
@@ -106,6 +112,23 @@ public class ActiveContour {
 		final long time = System.currentTimeMillis();
 		final int nMax = max(frame.getHeight(), frame.getWidth());
 
+		if (!invertedDetection) {
+			for (final Contour c : contours) {
+				for (Point point : c) {
+
+					if (frame.getRGB(point.x, point.y) != CYAN) {
+						continue;
+					}
+
+					for (Point i : neighbors(point, frame.getWidth(), frame.getHeight())) {
+						if (frame.getRGB(i.x, i.y) != BLACK) {
+							frame.setRGB(i.x, i.y, CYAN);
+						}
+					}
+				}
+			}
+		}
+
 		final boolean[] done = new boolean[contours.length];
 		int completed = 0;
 
@@ -172,34 +195,42 @@ public class ActiveContour {
 
 		final Contour c = contours[0];
 		final ColorPoint omegaZero = c.omegaZero[0];
-		final int black = Color.black.getRGB();
-		final int deviations = 3;
 
 		for (int i = 0; i < frame.getWidth(); i++) {
 			for (int j = 0; j < frame.getHeight(); j++) {
 
 				// This means it not a background pixel according to AC
-				if (phi[i][j] != 0 || frame.getRGB(i, j) == black) {
+				int rgb = frame.getRGB(i, j);
+				if (phi[i][j] != 0 || rgb == BLACK) {
 					continue;
 				}
 
-				ColorPoint color = ColorPoint.buildFromRGB(omegaZero.getType(), frame.getRGB(i, j));
+				ColorPoint color = ColorPoint.buildFromRGB(omegaZero.getType(), rgb);
 
-				if (Math.abs(color.red - omegaZero.red) < deviations * bgDeviation.red &&
-						Math.abs(color.green - omegaZero.green) < deviations * bgDeviation.green &&
-						Math.abs(color.blue - omegaZero.blue) < deviations * bgDeviation.blue) {
-
+				if (isLike(omegaZero, color, bgDeviation)) {
 					// Here we confirm it's really a background pixel
 					continue;
 				}
 
+				if (isLike(whiteColorPoint, color, whiteDeviation)) {
+					// Skip white lines
+					continue;
+				}
+
 				// It's not background it seems, let's color it something ugly
-				frame.setRGB(i, j, Color.CYAN.getRGB());
+				frame.setRGB(i, j, CYAN);
 			}
 		}
 
 		final long diff = System.currentTimeMillis() - time;
 		return diff;
+	}
+
+	private boolean isLike(final ColorPoint omegaZero, final ColorPoint color, final ColorPoint deviation) {
+
+		return Math.abs(color.red - omegaZero.red) < DEVIATIONS * deviation.red &&
+				Math.abs(color.green - omegaZero.green) < DEVIATIONS * deviation.green &&
+				Math.abs(color.blue - omegaZero.blue) < DEVIATIONS * deviation.blue;
 	}
 
 	private void markExpandedArea(final BufferedImage frame, final Contour c) {
