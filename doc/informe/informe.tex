@@ -136,7 +136,29 @@ toda la cancha en un solo cuadro. El algoritmo de seguimiento está basado en co
 con la restricción de tiempo real. Sin embargo, al utilizar una cámara la resolución adquiere un rol determinante,
 dificultando o impidiendo el uso de muchas de las técnicas de seguimiento.
 
+Problemas Encontrados
 
+Se encontraron numerosos problemas. A saber
+
+\begin{enumerate}
+    \item Convertir una imagen 3D en 2D: para simplificar el análisis fue necesario reducir la imagen tridimensional de la realidad, a
+        dos dimensiones. Esto permite observar fácilmente las posiciones relativas de los jugadores, y elimina gran cantidad de información
+        innecesaria (la de la tercera dimensión).
+    \item Distorción de la lente de cámara: al utilizar una única cámara para captar la cancha entera se corre el riesgo de tener distorción
+        en los puntos de la imagen más alejados al foco de la cámara. Esto introduce mucho error, por lo tanto se debe aplicar una corrección
+        (o utilizar mejores cámaras).
+    \item Oclusiones: en un partido es muy común que ocurren oclusiones entre los jugadores. El sistema debe poder tolerar la oclusión parcial o total
+        de los jugadores.
+    \item La pelota es muy pequeña: con una sola cámara, la cantidad de pixeles que representa la pelota es ínfima, resultando muy difícil seguirla
+        correctamente.
+    \item Equipos con camisetas de varios colores: esto representa un gran problema por varias razones. La primera es que la técnica de contornos activos
+        está atada a la selección de una o varias características del objeto a seguir. Como la característica más distintiva es el color, la técnica termina
+        basándose mayormente en ella. Pero para camisetas con más de un color, se vuelve absurdo la idea de encontrar un color característico,
+        dado que no existe. Por otro lado, dada la cantidad de pixeles que representan a un jugador, dado nuestra enfoque de única cámara, cualquier
+        tipo de análisis se torna más complejo cuando los pixeles son tienen todos las mismas características.
+    \item Definición de función característica para los objetos: relacionado con el punto anterior, establecer cuales son las características distintivas para
+        poder indentificar los objetos a través del método de contornos activos se vuelve el problema principal por resolver.
+\end{enumerate}
 
 
 
