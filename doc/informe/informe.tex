@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{comment}
 \usepackage[table]{xcolor}
 \usepackage[small,bf]{caption}
 \usepackage{float}
@@ -55,8 +56,8 @@
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
-\titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
-\titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
+% \titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
+% \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
 \def\customabstract{\vspace{.5em}
     {\small\center{\textbf{RESUMEN}} \\[0.5em] \relax%
@@ -102,11 +103,12 @@
 \maketitle
 \thispagestyle{fancy}
 
-
+\begin{comment}
 \begin{customabstract}
 \textbf{
 ABSTRACT
 } \end{customabstract}
+\end{comment}
 
 \section{Introducción}
 
@@ -125,7 +127,7 @@ realiza en tiempo real, con reducida supervisión humana, y a partir de una sola
 fuente de video, consistente en una cámara de alta resolución (HD) fija capaz
 de encuadrar todo el campo de juego.
 
-\subsubsection{Tiempo real}
+\subsection{Tiempo real}
 
 Realizar el seguimiento en tiempo real agrega restricciones fuertes al
 problema. Toda técnica tiene un costo de procesamiento, por lo tanto se debe
@@ -133,7 +135,7 @@ tener cautela al momento de seleccionar qué procesos de análisis de imágen
 pueden ser realizados en los aproximadamente 40 milisegundos que separan un
 cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
-\subsubsection{Supervisión}
+\subsection{Supervisión}
 
 El objetivo último es igualar y complementar la información sobre un partido
 que un operador (o grupo de operadores) podría obtener de un video. El estado
@@ -147,7 +149,7 @@ Se plantea que un supervisor seleccionará inicialmente las posiciones de los
 jugadores en la cancha, y corregirá detecciones incorrectas. Se desea que estas
 falsas detecciones sean minimizadas.
 
-\subsubsection{Sistema de Cámaras}
+\subsection{Sistema de Cámaras}
 
 Nuestro enfoque consta de un sistema de una única cámara fija, posicionada en
 la cancha de tal forma que pueda observar toda la cancha en un solo cuadro. Al
@@ -193,9 +195,11 @@ robustos, pero tienen severas restricciones que impiden que se utilicen para
 aplicaciones en tiempo real.
 
 % TODO: QUOTE NEEDED
-Nuestro enfoque consta en utilizar el algoritmo de contornos activos,
-el cual no utiliza ecuaciones diferenciales (haciéndolo apto para
-aplicaciones en tiempo real).
+Nuestra investigación utiliza el algoritmo de contornos activos, el cual no
+utiliza ecuaciones diferenciales (haciéndolo apto para aplicaciones en tiempo
+real) y además hace un análisis local de los objetos seguidos en la imágen, lo
+cual hace que el tiempo de análisis de un cuadro sea dependiente de la
+resolución de los jugadores e independiente de la resolución del video.
 
 \subsubsection{Modelo de datos de posiciones en tres dimensiones o dos
 dimensiones}
@@ -238,27 +242,34 @@ oclusiones entre varios jugadores serán muy numerosas, lo que agrega a la
 restricción de tiempo real mayor complejidad, ya que la resolución de
 oclusiones deberá ser muy eficiente en tiempo.
 
-\subsection{Contornos Activos}
+\subsubsection{Contornos Activos}
 
-* Definición de la función característica
-  * Selección de colores
-  * Textura de los jugadores
-* Solución de oclusiones
+% TODO: CITE
+El correcto funcionamiento del algoritmo de contornos activos [1] depende
+de una buena selección de la función característica, para poder distinguir
+claramente el color de un jugador respecto a otros objetos o el fondo.
 
-\begin{enumerate}
-    \item Equipos con camisetas de varios colores: esto representa un gran problema por varias razones. La primera es que la técnica de contornos activos
-        está atada a la selección de una o varias características del objeto a seguir. Como la característica más distintiva es el color, la técnica termina
-        basándose mayormente en ella. Pero para camisetas con más de un color, se vuelve absurdo la idea de encontrar un color característico,
-        dado que no existe. Por otro lado, dada la cantidad de pixels que representan a un jugador, dado nuestra enfoque de única cámara, cualquier
-        tipo de análisis se torna más complejo cuando los pixels son tienen todos las mismas características.
-    \item Definición de función característica para los objetos: relacionado con el punto anterior, establecer cuales son las características distintivas para
-        poder indentificar los objetos a través del método de contornos activos se vuelve el problema principal por resolver.
-\end{enumerate}
+Esto es un desafío grande debido principalmente a dos problemas:
+\begin{itemize}
+
+\item Selección de colores: si la cancha tiene un color muy similar a la
+  camiseta de un equipo, ¿cómo será posible distinguirlos? Se deben explorar
+  distintas alternativas, como podría ser utilizar otra codificación de color.
+
+\item Textura de los jugadores: esto representa un gran problema por varias
+  razones. La primera es que la técnica de contornos activos está atada a la
+  selección de una o varias características del objeto a seguir. Como la
+  característica más distintiva es el color, la técnica termina basándose
+  mayormente en ella. Pero para camisetas con más de un color, se vuelve
+  absurdo la idea de encontrar un color característico, dado que no existe. Por
+  otro lado, dada la cantidad de pixels que representan a un jugador, dado
+  nuestra enfoque de única cámara, cualquier tipo de análisis se torna más
+  complejo cuando los pixels son tienen todos las mismas características.
+
+\end{itemize}
 
 
-
-
-\begin{verbatim}
+\begin{comment}
 
 - Algoritmo de deteccion de fondo: cosas que no son la cancha en el video arruinan las mediciones
   => Poner en negro toda parte del video que no sea la cancha
@@ -295,7 +306,7 @@ oclusiones deberá ser muy eficiente en tiempo.
     => Homografía
     (Muy básico?)
 
-\end{verbatim}
+\end{comment}
 
 \end{document}
 
