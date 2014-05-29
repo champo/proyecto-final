@@ -111,30 +111,32 @@ ABSTRACT
 \part*{El problema}
 
 El problema en cuestión es el del seguimiento de objetos en una secuencia de imágenes, aplicado a partidos de futbol.
-La idea es poder detectar y seguir a los jugadores, obteniendo información útil para la toma de decisiones en tiempo real. 
+La idea es poder detectar y seguir a los jugadores, obteniendo información útil para el análisis en tiempo real.
 Esto puede servir para sacar estadísticas o datos de los jugadores, que podrían ser utilizados por los entrenadores en su trabajo.
-Una idea más ambiciosa es la posibilidad de detectar a un jugador en fuera de juego, analizar la existencia de gol en situaciones 
+Una idea más ambiciosa es la posibilidad de detectar a un jugador en fuera de juego, analizar la existencia de gol en situaciones
 dudosas, detectar salida de la pelota en forma precisa, entre otras.
 
 El problema tiene varias dificultades fundamentales. Una es la velocidad de los eventos que se desean analizar y la complejidad
 de las situaciones en la que los objetos pueden encontrarse (oclusión, choques, etc...). Tanto
-los jugadores como la pelota alcanzan velocidades muy altas, lo cual dificulta el análisis en tiempo real. Otra dificultad 
+los jugadores como la pelota alcanzan velocidades muy altas, lo cual dificulta el análisis en tiempo real. Otra dificultad
 reside en la elección del sistema de cámaras a utilizar para llevar a cabo la observación. Un sistema de múltiples cámaras se
 ve beneficiado por una mejor resolución y por lo tanto una mejor observación de los objetos, con la dificultad de necesitar un
 sistema distribuido de sincronización. Por otro lado, un sistema constituido por una única cámara no tiene la complejidad extra
-que implica la sincronización de la información las diferentes cámaras, pero sufre lógicamente la falta de resolución. Esta 
+que implica la sincronización de la información las diferentes cámaras, pero sufre lógicamente la falta de resolución. Esta
 limitación puede tornarse prohibitiva para algunas técnicas o algoritmos de seguimiento ya que algunos objetos (como por ejemplo
 la pelota) se observan solo como unos pocos pixeles, lo cual dificulta enormemente la tarea de segmentación y seguimiento.
 
-Un aspecto no menor del análisis es la restricción de tiempo real. Muchos autores han desarrollado algoritmos automáticos 
-de seguimiento de objetos en secuencias de imágenes. Todos ellos están basados en soluciones de ecuaciones diferenciales 
-en derivadas parciales y resultan muy robustos, además permiten cambios en la topología pero tienen serias limitaciones 
+Un aspecto no menor del análisis es la restricción de tiempo real. Muchos autores han desarrollado algoritmos automáticos
+de seguimiento de objetos en secuencias de imágenes. Todos ellos están basados en soluciones de ecuaciones diferenciales
+en derivadas parciales y resultan muy robustos, además permiten cambios en la topología pero tienen serias limitaciones
 en aplicaciones que requieran tiempo real.
 
-Nuestro enfoque consta de un sistema de una única cámara fija, posicionada en la cancha de tal forma que pueda observar 
-toda la cancha en un solo cuadro. El algoritmo de seguimiento está basado en contornos activos, lo que permite cumplir 
-con la restricción de tiempo real. Sin embargo, al utilizar una cámara la resolución adquiere un rol determinante, 
+Nuestro enfoque consta de un sistema de una única cámara fija, posicionada en la cancha de tal forma que pueda observar
+toda la cancha en un solo cuadro. El algoritmo de seguimiento está basado en contornos activos, sin utilizar ecuaciones diferenciales, lo que permite cumplir
+con la restricción de tiempo real. Sin embargo, al utilizar una cámara la resolución adquiere un rol determinante,
 dificultando o impidiendo el uso de muchas de las técnicas de seguimiento.
+
+
 
 
 
