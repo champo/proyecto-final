@@ -201,16 +201,18 @@ real) y además hace un análisis local de los objetos seguidos en la imágen, l
 cual hace que el tiempo de análisis de un cuadro sea dependiente de la
 resolución de los jugadores e independiente de la resolución del video.
 
-\subsubsection{Modelo de datos de posiciones en tres dimensiones o dos
-dimensiones}
+\subsubsection{Corregir la Perspectiva de la Cámara}
 
-Para simplificar el análisis planteamos un modelo de datos donde las posiciones
-de los jugadores no tienen una componente de altura. Si bien la cámara es una
-fuente de datos que trabaja en dos dimensiones, se corrige la inclinación del
-campo respecto al eje perpendicular a la lente asumiendo que tanto los
-jugadores como la pelota tienen nula componente en altura. Esto es una buena
-aproximación para los jugadores, pero podría eventualmente causar errores en la
-medición de la posición y velocidad de la pelota.
+La imagen capturada por la cámara es una representación en 2 dimensiones de
+la realidad. Nuestro modelo de datos representa cada jugador y a la pelota
+como un punto en un campo de dos dimensiones (es decir, descartamos el valor
+de altura de cada objeto seguido). Para esto, aplicamos una homografía para
+obtener las coordenadas de un punto de la imágen a coordenadas en el plano
+donde se encuentra la cancha.
+
+Ignorar el valor de altura de los objetos seguidos es una buena aproximación
+para los jugadores, pero podría eventualmente causar errores en la medición de
+la posición y velocidad de la pelota.
 
 \subsubsection{Distorsión de la lente}
 
