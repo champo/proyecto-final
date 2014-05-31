@@ -20,7 +20,7 @@
 \usepackage{times}
 \usepackage{titlesec}
 \usepackage{csquotes}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex,sorting=none]{biblatex}
 \usepackage{titling}
 % \usepackage{algorithmicx}
 \usepackage{algpseudocode}
@@ -193,7 +193,7 @@ consecutivos se obtiene el vector de cambios de los valores de píxeles $X = (x_
     B &=& (h_{1,1}, h_{1,2}, h_{1,3}, h_{2,1}, h_{2,2}, h_{2,3}, h_{3,1}, h_{3,2}, h_{3,3})
 \end{eqnarray*}
 
-Donde $B$ contiene los valores de la homografia $H$ de movimiento entre los cuadros.
+Donde $B$ contiene los valores de la homografía $H$ de movimiento entre los cuadros.
 
 \subsubsection{Cálculo de los predictores}
 Para obtener la relación $A$ se utiliza un paso inicial de entrenamiento.
@@ -1618,7 +1618,7 @@ Como la perspectiva de la cámara cambia cuadro a cuadro, ésta debe ser calcula
 Si en la imagen actual se encuentran 4 puntos conocidos (esquinas de la cancha o de las areas), la homografía puede ser calculada directamente.
 De no ser así, se estima considerando que la homografía del cuadro actual $H_t$ se puede
 relacionar con $H_{t-1}$ mediante un \textit{Global Motion Parameter} $P$.
-Este parámetro $P_{t-1,t}$ es una homografia que se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
+Este parámetro $P_{t-1,t}$ es una homografía que se calcula tomando una serie de puntos en la imagen y relacionando su posición entre el cuadro $t-1$ y $t$.
 Luego $ H_t = H_{t-1} P_{t-1,t}$. Se utiliza el método \textit{KLT} (ver \cite{KLT}) para encontrar los puntos de referencia a seguir para el cálculo de $P$.
 
 Para obtener la posición de la cámara se descompone la homografía en 2 matrices:
