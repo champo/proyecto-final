@@ -21,7 +21,7 @@
 \usepackage{times}
 \usepackage{titlesec}
 \usepackage{csquotes}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex,sorting=none]{biblatex}
 \usepackage{titling}
 % \usepackage{algorithmicx}
 \usepackage{algpseudocode}
@@ -115,14 +115,17 @@ ABSTRACT
 El seguimiento de jugadores en una secuencia de imágenes (video) es un caso
 particular del seguimiento de objetos, aplicado a partidos de fútbol. El
 objetivo es detectar y seguir la posición de los jugadores y la pelota a medida
-que se desarrolla el juego, obteniendo información de mayor nivel para
-distintos usos, como puede ser soporte informático para los árbitros
-(detección automática de pases, goles, o cuando un jugador está fuera de
-juego), datos útiles para el entrenamiento de los jugadores, obtener
-información acerca de las tácticas de un contricante, entre otros.
+que se desarrolla el juego, obteniendo información útil para
+distintas aplicaciones, como puede ser soporte informático para los árbitros
+(detección automática de pases, goles, posiciones adelantadas,
+etc...), adaptación del entrenamiento de los jugadores, análisis
+y estudio de las tácticas de un contricante, entre otros.
 
+%TODO: Maybe poner algo del estado del arte? Onda los tanos y el paper de suecia y otros que ya
+% atacaron el problema particular aplicado al futbol?
 % TODO: TIEMPO VERBAL EN ESTE PÁRRAFO
-Se asumen las siguientes restricciones: el seguimiento de jugadores se
+%Alvaman: fine by me
+En el presente trabajo, se asumen las siguientes restricciones: el seguimiento de jugadores se
 realiza en tiempo real, con reducida supervisión humana, y a partir de una sola
 fuente de video, consistente en una cámara de alta resolución (HD) fija capaz
 de encuadrar todo el campo de juego.
@@ -131,13 +134,13 @@ de encuadrar todo el campo de juego.
 
 Realizar el seguimiento en tiempo real agrega restricciones fuertes al
 problema. Toda técnica tiene un costo de procesamiento, por lo tanto se debe
-tener cautela al momento de seleccionar qué procesos de análisis de imágen
+tener cautela al momento de seleccionar qué procesos de análisis de imagen
 pueden ser realizados en los aproximadamente 40 milisegundos que separan un
 cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
 \subsection{Supervisión}
 
-El objetivo último es igualar y complementar la información sobre un partido
+El objetivo final es igualar y complementar la información sobre un partido
 que un operador (o grupo de operadores) podría obtener de un video. El estado
 del arte no llega a alcanzar este objetivo sin supervisión para la corrección
 de errores o establecer \textit{ground truths}, es decir, se requiere que un
@@ -145,15 +148,16 @@ humano intervenga para agregar información que permita o mejore el
 funcionamiento del sistema.
 
 % TODO: TIEMPO VERBAL
-Se plantea que un supervisor seleccionará inicialmente las posiciones de los
-jugadores en la cancha, y corregirá detecciones incorrectas. Se desea que estas
-falsas detecciones sean minimizadas.
+%Alvaman: fine by me
+En el presente trabajo, un supervisor seleccionará inicialmente las posiciones de los
+jugadores en la cancha, y corregirá eventuales detecciones incorrectas. Se desea minimizar
+estas falsas detecciones.
 
 \subsection{Sistema de Cámaras}
 
 Nuestro enfoque consta de un sistema de una única cámara fija, posicionada en
 la cancha de tal forma que pueda observar toda la cancha en un solo cuadro. Al
-utilizar una única cámara la resolución adquiere un rol determinante,
+utilizar una única cámara, la resolución adquiere un rol determinante,
 dificultando o impidiendo el uso de muchas de las técnicas de seguimiento.
 
 \subsection{Dificultades}
@@ -165,48 +169,50 @@ por lo tanto una mejor precisión al determinar la posición de objetos, pero
 requiere un sistema de sincronización que coordine la obtención de información.
 
 Por otro lado, un sistema constituído por una única cámara no tiene la
-complejidad extra que implica la sincronización de la información las
+complejidad extra que implica la sincronización de la información de las
 diferentes cámaras, pero sufre de una menor resolución y menor precisión.
 
 Esta reducción de resolución puede tornarse prohibitiva para algunas técnicas o
 algoritmos de seguimiento ya que algunos objetos (como por ejemplo la pelota)
-tendrán unos pocos pixels en cada imágen, lo cual dificulta enormemente la
+tendrán unos pocos pixels en cada imagen, lo cual dificulta enormemente la
 tarea de segmentación y seguimiento.
 
 \subsubsection{Real time}
 
 Al tener una resolución de \textit{1080p} (aproximadamente dos millones de
-pixels), el procesamiento de cada píxel debe tomar a lo sumo 20 nanosegundos.
+pixels por cuadro), el procesamiento de cada pixel debe tomar a lo sumo 20 nanosegundos.
 Para lidiar con esta restricción se puede utilizar información adicional de la
 que se disponga respecto al video con el objeto de evitar procesar pixels de
-poca utilidad para el seguimiento. Un ejemplo de esto es descartar pixels que
+poca o nula utilidad para el seguimiento. Un ejemplo de esto es descartar pixels que
 estén fuera de la cancha, ya que es probable que la cámara encuadre más que el
 campo de juego, abarcando las gradas, el público espectador, publicidades
 alrededor del campo de juego, entre otros.
 % TODO: Agregar algo acerca de técnicas y píxels vecinos que se vuelve
 % prohibitivo
+% No está kindof puesto en el parrafo anterior a este?
 
 Muchos autores han desarrollado algoritmos automáticos de seguimiento de
-objetos en secuencias de imágenes. Todos ellos están basados en soluciones de
+objetos en secuencias de imágenes\cite{IFTrace, alp, local-learning, MHT-2}.
+Todos ellos están basados en soluciones de
 ecuaciones diferenciales en derivadas parciales y resultan aceptablemente
 robustos, pero tienen severas restricciones que impiden que se utilicen para
 aplicaciones en tiempo real.
 
-% TODO: QUOTE NEEDED
-Nuestra investigación utiliza el algoritmo de contornos activos, el cual no
+Nuestra investigación utiliza el algoritmo de contornos activos\cite{fast-level-set}, el cual no
 utiliza ecuaciones diferenciales (haciéndolo apto para aplicaciones en tiempo
-real) y además hace un análisis local de los objetos seguidos en la imágen, lo
+real) y además hace un análisis local de los objetos seguidos en la imagen, lo
 cual hace que el tiempo de análisis de un cuadro sea dependiente de la
 resolución de los jugadores e independiente de la resolución del video.
 
 \subsubsection{Corregir la Perspectiva de la Cámara}
 
 La imagen capturada por la cámara es una representación en 2 dimensiones de
-la realidad. Nuestro modelo de datos representa cada jugador y a la pelota
-como un punto en un campo de dos dimensiones (es decir, descartamos el valor
-de altura de cada objeto seguido). Para esto, aplicamos una homografía para
-obtener las coordenadas de un punto de la imágen a coordenadas en el plano
-donde se encuentra la cancha.
+la realidad. Nuestro modelo de datos representa cada jugador y la pelota
+como un punto en un campo de dos dimensiones, es decir, se descarta el valor
+de la altura de cada objeto seguido, ya que no interesa esa información.
+Para esto, se aplica una homografía para convertir las coordenadas de un punto de
+la imagen a coordenadas en el plano donde se encuentra la cancha.
+%TODO would be awesome un dibujo de la transformación que hace la homografía.
 
 Ignorar el valor de altura de los objetos seguidos es una buena aproximación
 para los jugadores, pero podría eventualmente causar errores en la medición de
@@ -216,40 +222,41 @@ la posición y velocidad de la pelota.
 
 Al utilizar una única cámara para captar la cancha entera se corre el riesgo de
 tener distorción en los puntos de la imagen más alejados al foco de la cámara.
-Este es el llamado ``efecto de ojo de buey'' e introduce mucho error, por lo
+Este es el llamado ``efecto de ojo de buey'' e introduce mucho error, por ejemplo
+en la aplicación de la homografía, por lo
 tanto se debe aplicar una corrección. Una lente apropiada y bien calibrada
-puede reducir este error, pero nunca puede ser eliminado totalmente sólo con
-una mejor técnica de filmación.
+puede reducir este error, pero nunca puede ser eliminado totalmente. Sólo
+puede evitarse utilizando una mejor técnica de filmación.
 
 \subsubsection{Oclusiones entre jugadores}
 
-En un partido es muy común que ocurren oclusiones entre los jugadores. El
+En un partido es muy común que ocurran oclusiones entre los jugadores. El
 sistema debe poder tolerar la oclusión parcial o total de los jugadores.
-
 Esto puede llevar a situaciones muy difíciles de automatizar. Una situación
-difícilmente automatizable es cuando dos jugadores del mismo equipo (con
+difícilmente automatizable sucede cuando dos jugadores del mismo equipo (con
 vestimenta muy similar) se encuentren alineados con respecto a la cámara.
 Se pueden agregar reglas para intentar desambiguar, cuando los jugadores se
 separen, quién es quién, pero no hay una solución evidente.
 
 Por ejemplo, se puede utilizar información previa de cuadros anteriores para
-estimar la velocidad de cada uno y desambiguar quién es quién, pero esto
-será poco efectivo si los jugadores cambian de velocidad mientras uno ocluye
-al otro, o la velocidad era muy similar al momento de generar la oclusión.
+estimar la velocidad de cada uno y determinar quién es quién, pero esto
+es poco efectivo si los jugadores cambian de velocidad mientras uno ocluye
+al otro, o si la velocidad era muy similar al momento de generarse la oclusión.
 
 Otra situación problemática similar es una jugada de córner, donde las
-oclusiones entre varios jugadores serán muy numerosas, lo que agrega a la
+oclusiones entre varios jugadores son muy numerosas, lo que agrega a la
 restricción de tiempo real mayor complejidad, ya que la resolución de
-oclusiones deberá ser muy eficiente en tiempo.
+oclusiones debe ser muy eficiente en tiempo.
 
 \subsubsection{Contornos Activos}
 
 % TODO: CITE
-El correcto funcionamiento del algoritmo de contornos activos [1] depende
+% Volvemos a citar el paper de contornos activos no?
+El correcto funcionamiento del algoritmo de contornos activos\cite{fast-level-set} depende
 de una buena selección de la función característica, para poder distinguir
-claramente el color de un jugador respecto a otros objetos o el fondo.
+claramente a un jugador respecto a otros objetos o respecto del fondo.
 
-Esto es un desafío grande debido principalmente a dos problemas:
+Este es un desafío grande debido principalmente a dos problemas:
 \begin{itemize}
 
 \item Selección de colores: si la cancha tiene un color muy similar a la
@@ -261,13 +268,21 @@ Esto es un desafío grande debido principalmente a dos problemas:
   selección de una o varias características del objeto a seguir. Como la
   característica más distintiva es el color, la técnica termina basándose
   mayormente en ella. Pero para camisetas con más de un color, se vuelve
-  absurdo la idea de encontrar un color característico, dado que no existe. Por
-  otro lado, dada la cantidad de pixels que representan a un jugador, dado
+  absurda la idea de encontrar un color característico, dado que no existe. Por
+  otro lado, dada la escasa cantidad de pixels que representan a un jugador, debido a
   nuestro enfoque de única cámara, cualquier tipo de análisis se torna más
-  complejo cuando los pixels tienen todos las mismas características.
+  complejo cuando los pixels no tienen todos las mismas características o sus
+  características no están lo suficientemente definidas como para diferenciarlas
+  (ya sea de otros jugadores o del fondo).
 
 \end{itemize}
 
+%TODO aca mepa que pueden ir varias imagenes.
+% 1 de un tracking de de un jugador de remera blanca (podría ser PRE y POST, osea sin pintar y pintado)
+% 1 de un tracking de un jugador de boca (again PRE y POST)
+% 1 de la pelota? Para mostrar la cantidad infima de pixels?
+
+\printbibliography
 
 \begin{comment}
 
