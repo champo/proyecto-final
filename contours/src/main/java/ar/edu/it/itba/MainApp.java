@@ -70,7 +70,6 @@ public class MainApp extends javax.swing.JFrame {
 
     private File outFile;
     private OutputStream outBuffer;
-    private BufferedImage firstFrame;
     private ActiveContour ac;
     private ActiveContour invertedTracker;
 
@@ -345,8 +344,8 @@ public class MainApp extends javax.swing.JFrame {
                 new BlackOutOutskirts(
                 new LensCorrection(
                         new BlackOutOutskirts(
-                       // new FrameDecoder("/Users/eordano/Desktop/new.mkv")
-                       new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+                        //new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points)
@@ -391,6 +390,7 @@ public class MainApp extends javax.swing.JFrame {
         outFile = new File(outFilename);
         outFile.createNewFile();
         outBuffer = new FileOutputStream(outFile);
+
 
         playerList.setModel(new AbstractListModel() {
 
@@ -470,41 +470,16 @@ public class MainApp extends javax.swing.JFrame {
                         @Override
                         public void selectedPlayer(final String name, final String position, final String team) {
                             if (selectingFirst) {
-                                PlayerContour c;
-
-                                if (selectRectangle) {
-                                    c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
-                                } else {
-                                    c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
-                                }
-                                c.setType(type);
-                                // c.printValues(imagePanel.getImage());
-
-                                contour.add(c);
-                                c.setHeatMap(new HeatMap(soccerField));
-                                BufferedImage image = imagePanel.getImage();
-                                ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                                imagePanel.setImage(image);
+                                addPlayer(arg0.getPoint(), name, position, team);
                             } else {
-                                PlayerContour c;
-                                if (selectRectangle) {
-                                    c = PlayerContour.aroundPoint(name, position, team, selected++, arg0.getPoint());
-                                } else {
-                                    c = PlayerContour.squareAroundPoint(name, position, team, selected++, arg0.getPoint());
-                                }
-                                c.setType(type);
-
-                                contour.add(c);
-                                c.setHeatMap(new HeatMap(soccerField));
-                                BufferedImage image = imagePanel.getImage();
-                                ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
-                                imagePanel.setImage(image);
+                                BufferedImage image = addPlayer(arg0.getPoint(), name, position, team);
                                 if (ac != null) {
                                     ac = new ActiveContour(image, contour.toArray(new Contour[contour.size()]));
                                 }
                             }
                             playerList.updateUI();
                         }
+
                     }).setVisible(true);
                 }
             }
@@ -563,17 +538,17 @@ public class MainApp extends javax.swing.JFrame {
                 List<Contour> team2 = new ArrayList<Contour>();
 
                 for (PlayerContour c : contour) {
-					if ("2".equals(c.team)) {
+					if ("Visitante".equals(c.team)) {
 						team2.add(c);
 				 	} else {
 				 		team1.add(c);
 				 	}
 				}
 
-                ac = new ActiveContour(firstFrame, team1.toArray(new Contour[team1.size()]));
+                ac = new ActiveContour(MainApp.this.getFrame(), contour.toArray(new Contour[contour.size()]));
                 ac.setInvertedDetection(true);
 
-                invertedTracker = new ActiveContour(firstFrame, team2.toArray(new Contour[team2.size()]));
+                invertedTracker = new ActiveContour(MainApp.this.getFrame(), team2.toArray(new Contour[team2.size()]));
                 invertedTracker.setInvertedDetection(false);
 
                 for (Contour c : team2) {
@@ -671,9 +646,61 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane3.setPreferredSize(oldSoccerSize);
         jScrollPane3.setMaximumSize(oldSoccerSize);
 
-        loadNextFrame();
+        try {
+			loadNextFrame().await();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+        imagePanel.setImage(getFrame());
+
+        addPlayer(new Point(347,92), "Arquero", "1", "Local");
+        addPlayer(new Point(547,121), "Defensor 1", "2", "Local");
+        addPlayer(new Point(566,169), "Defensor 2", "3", "Local");
+        addPlayer(new Point(560,73), "Defensor 3", "4", "Local");
+        addPlayer(new Point(632,38), "Defensor 4", "5", "Local");
+        addPlayer(new Point(687,90), "Mediocampista 1", "6", "Local");
+        addPlayer(new Point(709,150), "Mediocampista 2", "7", "Local");
+        addPlayer(new Point(780,67), "Mediocampista 3", "8", "Local");
+        addPlayer(new Point(791,50), "Delantero 1", "9", "Local");
+        addPlayer(new Point(806,114), "Delantero 2", "10", "Local");
+        addPlayer(new Point(762,180), "Delantero 3", "11", "Local");
+        addPlayer(new Point(1078,88), "Arquero", "1", "Visitante");
+        addPlayer(new Point(974,146), "Defensor 1", "2", "Visitante");
+        addPlayer(new Point(913,78), "Defensor 2", "3", "Visitante");
+        addPlayer(new Point(863,45), "Defensor 3", "4", "Visitante");
+        addPlayer(new Point(891,211), "Defensor 4", "5", "Visitante");
+        addPlayer(new Point(775,148), "Mediocampista 1", "6", "Visitante");
+        addPlayer(new Point(789,102), "Mediocampista 2", "7", "Visitante");
+        addPlayer(new Point(690,36), "Mediocampista 3", "8", "Visitante");
+        addPlayer(new Point(629,79), "Delantero 1", "9", "Visitante");
+        addPlayer(new Point(568,75), "Delantero 2", "10", "Visitante");
+        addPlayer(new Point(558,122), "Delantero 3", "11", "Visitante");
+        addPlayer(new Point(673,100), "Arbitro", "-", "Arbitro");
+        addPlayer(new Point(1053,290), "Juez de línea", "-", "Arbitro");
+        playerList.updateUI();
         return this;
     }
+
+
+	private BufferedImage addPlayer(final Point point,
+			final String name, final String position,
+			final String team) {
+		PlayerContour c;
+		if (selectRectangle) {
+		    c = PlayerContour.aroundPoint(name, position, team, selected++, point);
+		} else {
+		    c = PlayerContour.squareAroundPoint(name, position, team, selected++, point);
+		}
+		c.setType(type);
+		// System.out.println("addPlayer(new Point(" + point.x + "," + point.y + "), \"" + name + "\", \"" + position + "\", \"" + team + "\");");
+
+		contour.add(c);
+		c.setHeatMap(new HeatMap(soccerField));
+		BufferedImage image = imagePanel.getImage();
+		ImageOperations.drawContourOnBuffer(image, contour.get(contour.size() - 1));
+		imagePanel.setImage(image);
+		return image;
+	}
 
     private BufferedImage buildImage() {
     	BufferedImage image = new BufferedImage(frameDecoder.getWidth(), frameDecoder.getHeight(), frameDecoder.getType());
@@ -757,15 +784,6 @@ public class MainApp extends javax.swing.JFrame {
             	frameDecoder.nextFrame();
                 frame = MainApp.this.buildImage();
                 framesElapsed++;
-                if (firstFrame == null) {
-                	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
-
-                	for (int i = 0; i < frame.getWidth(); i++) {
-                		for (int j = 0; j < frame.getHeight(); j++) {
-                			firstFrame.setRGB(i, j, frame.getRGB(i, j));
-                		}
-                	}
-                }
 
                 if (ac != null) {
                     /*
@@ -828,8 +846,10 @@ public class MainApp extends javax.swing.JFrame {
                         ImageOperations.paintContour(imagePanel.getImage(), contour.get(playerList.getSelectedIndex()), Color.RED);
                     }
 
-                    soccerFieldPanel.setImage(heatMap.getFrame());
-                    soccerFieldPanel.repaint();
+                    if (heatMap != null) {
+	                    soccerFieldPanel.setImage(heatMap.getFrame());
+	                    soccerFieldPanel.repaint();
+                    }
 
                     setImagePanelImage(frame);
                 } else {
