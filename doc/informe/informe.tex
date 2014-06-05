@@ -123,8 +123,7 @@ y estudio de las tácticas de un contricante, entre otros.
 
 %TODO: Maybe poner algo del estado del arte? Onda los tanos y el paper de suecia y otros que ya
 % atacaron el problema particular aplicado al futbol?
-% TODO: TIEMPO VERBAL EN ESTE PÁRRAFO
-%Alvaman: fine by me
+% Tebex: Mepa que el estado del arte se nombra después
 En el presente trabajo, se asumen las siguientes restricciones: el seguimiento de jugadores se
 realiza en tiempo real, con reducida supervisión humana, y a partir de una sola
 fuente de video, consistente en una cámara de alta resolución (HD) fija capaz
@@ -147,8 +146,6 @@ de errores o establecer \textit{ground truths}, es decir, se requiere que un
 humano intervenga para agregar información que permita o mejore el
 funcionamiento del sistema.
 
-% TODO: TIEMPO VERBAL
-%Alvaman: fine by me
 En el presente trabajo, un supervisor seleccionará inicialmente las posiciones de los
 jugadores en la cancha, y corregirá eventuales detecciones incorrectas. Se desea minimizar
 estas falsas detecciones.
@@ -174,8 +171,8 @@ diferentes cámaras, pero sufre de una menor resolución y menor precisión.
 
 Esta reducción de resolución puede tornarse prohibitiva para algunas técnicas o
 algoritmos de seguimiento ya que algunos objetos (como por ejemplo la pelota)
-tendrán unos pocos pixels en cada imagen, lo cual dificulta enormemente la
-tarea de segmentación y seguimiento.
+tendrán unos pocos pixels en cada imagen, lo cual dificulta la
+tarea de segmentación y seguimiento al contar con una imagen de peor calidad.
 
 \subsubsection{Real time}
 
@@ -187,9 +184,6 @@ poca o nula utilidad para el seguimiento. Un ejemplo de esto es descartar pixels
 estén fuera de la cancha, ya que es probable que la cámara encuadre más que el
 campo de juego, abarcando las gradas, el público espectador, publicidades
 alrededor del campo de juego, entre otros.
-% TODO: Agregar algo acerca de técnicas y píxels vecinos que se vuelve
-% prohibitivo
-% No está kindof puesto en el parrafo anterior a este?
 
 Muchos autores han desarrollado algoritmos automáticos de seguimiento de
 objetos en secuencias de imágenes\cite{IFTrace, alp, local-learning, MHT-2}.
@@ -250,11 +244,10 @@ oclusiones debe ser muy eficiente en tiempo.
 
 \subsubsection{Contornos Activos}
 
-% TODO: CITE
-% Volvemos a citar el paper de contornos activos no?
-El correcto funcionamiento del algoritmo de contornos activos\cite{fast-level-set} depende
-de una buena selección de la función característica, para poder distinguir
-claramente a un jugador respecto a otros objetos o respecto del fondo.
+El correcto funcionamiento del algoritmo de contornos
+activos\cite{fast-level-set} depende de una buena selección de la función
+característica, para poder distinguir claramente a un jugador respecto a otros
+objetos o respecto del fondo.
 
 Este es un desafío grande debido principalmente a dos problemas:
 \begin{itemize}
@@ -269,11 +262,11 @@ Este es un desafío grande debido principalmente a dos problemas:
   característica más distintiva es el color, la técnica termina basándose
   mayormente en ella. Pero para camisetas con más de un color, se vuelve
   absurda la idea de encontrar un color característico, dado que no existe. Por
-  otro lado, dada la escasa cantidad de pixels que representan a un jugador, debido a
-  nuestro enfoque de única cámara, cualquier tipo de análisis se torna más
-  complejo cuando los pixels no tienen todos las mismas características o sus
-  características no están lo suficientemente definidas como para diferenciarlas
-  (ya sea de otros jugadores o del fondo).
+  otro lado, dada la escasa cantidad de pixels que representan a un jugador,
+  debido a nuestro enfoque de única cámara, cualquier tipo de análisis se torna
+  más complejo cuando los pixels no tienen todos las mismas características o
+  sus características no están lo suficientemente definidas como para
+  diferenciarlas (ya sea de otros jugadores o del fondo).
 
 \end{itemize}
 
