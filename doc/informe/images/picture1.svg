@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   inkscape:export-filename="rayas.png"
+   inkscape:export-xdpi="718.75934"
+   inkscape:export-ydpi="718.75934"
+   sodipodi:docname="New document 1">
+  <defs
+     id="defs4">
+    <pattern
+       inkscape:stockid="Stripes 1:1"
+       id="Strips1_1"
+       patternTransform="translate(0,0) scale(10,10)"
+       height="1"
+       width="2"
+       patternUnits="userSpaceOnUse"
+       inkscape:collect="always">
+      <rect
+         id="rect4489"
+         height="2"
+         width="1"
+         y="-0.5"
+         x="0"
+         style="fill:black;stroke:none" />
+    </pattern>
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="138.06641"
+       height="9.6777344"
+       patternTransform="translate(327.9202,433.00473)"
+       id="pattern5325">
+      <text
+         inkscape:export-ydpi="300"
+         inkscape:export-xdpi="300"
+         inkscape:export-filename="/Users/eordano/rect2997.png"
+         sodipodi:linespacing="0%"
+         id="text5317"
+         y="7.5976562"
+         x="-0.55175781"
+         style="font-size:10px;font-style:normal;font-weight:normal;line-height:0%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           dx="0 0 0 0 0 0 0"
+           y="7.5976562"
+           x="-0.55175781"
+           id="tspan5319"
+           sodipodi:role="line">distinguidas entre sel fondo</tspan></text>
+    </pattern>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.8847266"
+     inkscape:cx="336.82821"
+     inkscape:cy="632.35193"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1320"
+     inkscape:window-height="945"
+     inkscape:window-x="4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect5265"
+       width="225.55684"
+       height="142.29761"
+       x="206.48291"
+       y="349.35144"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#00ff00;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path5339"
+       sodipodi:cx="302.69641"
+       sodipodi:cy="390.1972"
+       sodipodi:rx="27.324917"
+       sodipodi:ry="27.590208"
+       d="m 330.02133,390.1972 a 27.324917,27.590208 0 1 1 -54.64984,0 27.324917,27.590208 0 1 1 54.64984,0 z"
+       transform="translate(0.40825726,0)"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       transform="translate(0.42890486,-0.08105008)"
+       sodipodi:type="arc"
+       style="fill:url(#Strips1_1);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-opacity:1"
+       id="path5339-1"
+       sodipodi:cx="302.69641"
+       sodipodi:cy="390.1972"
+       sodipodi:rx="27.324917"
+       sodipodi:ry="27.590208"
+       d="m 330.02133,390.1972 a 27.324917,27.590208 0 1 1 -54.64984,0 27.324917,27.590208 0 1 1 54.64984,0 z"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5275"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:10px;line-height:0%;letter-spacing:0px;word-spacing:0px"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><flowRegion
+         id="flowRegion5277"><rect
+           id="rect5279"
+           width="161.2966"
+           height="51.996929"
+           x="324.71552"
+           y="433.17426"
+           style="font-size:10px" /></flowRegion><flowPara
+         id="flowPara5281"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5283"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:0%;letter-spacing:0px;word-spacing:0px"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><flowRegion
+         id="flowRegion5285"><rect
+           id="rect5287"
+           width="108.23851"
+           height="50.405186"
+           x="326.30728"
+           y="431.05191" /></flowRegion><flowPara
+         id="flowPara5289"></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:0%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="327.36844"
+       y="427.86844"
+       id="text5311"
+       sodipodi:linespacing="0%"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         x="327.36844"
+         y="427.86844"
+         id="tspan5315">El objeto a seguir debe &quot;distinguirse&quot; del</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:0%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="327.36844"
+       y="440.60236"
+       id="text5331"
+       sodipodi:linespacing="0%"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         id="tspan5333"
+         x="327.36844"
+         y="440.60236">contexto en base a una o mas caracteristicas.</tspan></text>
+    <path
+       sodipodi:type="arc"
+       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path5337"
+       sodipodi:cx="270.0657"
+       sodipodi:cy="411.15515"
+       sodipodi:rx="37.140663"
+       sodipodi:ry="34.222469"
+       d="m 307.20637,411.15515 a 37.140663,34.222469 0 1 1 -74.28133,0 37.140663,34.222469 0 1 1 74.28133,0 z"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#0000ff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path5341"
+       sodipodi:cx="259.18878"
+       sodipodi:cy="387.0137"
+       sodipodi:rx="38.997696"
+       sodipodi:ry="23.34556"
+       d="m 298.18648,387.0137 a 38.997696,23.34556 0 1 1 -77.99539,0 38.997696,23.34556 0 1 1 77.99539,0 z"
+       inkscape:export-filename="/Users/eordano/rect3000.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+  </g>
+</svg>
