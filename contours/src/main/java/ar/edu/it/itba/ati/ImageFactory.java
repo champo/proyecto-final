@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ar.edu.it.itba.ati.provider.ImageFromBuffer;
 import ar.edu.it.itba.ati.provider.NewImageFromFile;
 import ar.edu.it.itba.ati.provider.NewImageFromStream;
 import ar.edu.it.itba.ati.provider.NewImageWithEmptyBackground;
@@ -29,4 +30,7 @@ public class ImageFactory {
 				background.getRed(), background.getGreen(), background.getBlue()));
 	}
 
+	public static Operations fromBufferedImage(final BufferedImage image) {
+		return new Operations(new ImageFromBuffer(image));
+	}
 }

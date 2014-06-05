@@ -42,6 +42,7 @@ import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
+import ar.edu.it.itba.video.HoughLines;
 import ar.edu.it.itba.video.LensCorrection;
 
 /**
@@ -348,42 +349,15 @@ public class MainApp extends javax.swing.JFrame {
                         //new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
-        , points)
-        //, 40)
-        ;/*
-        /*frameDecoder = // new BackgroundDetection(
-				// new BlackOutOutskirts(
-			    		// new LensCorrection(
-			        		// new BlackOutOutskirts(
-                new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-			               // , firstPoints)
-			    		// , 1.91)
-			    	// , points)
-				//, 40)
-		;*/
-        /* frameDecoder = // new BackgroundDetection(
-    			new BlackOutOutskirts(
-	        		new LensCorrection(
-	            		new BlackOutOutskirts(
-                               new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-                       , firstPoints)
-	        		, 1.91)
-	        	, points)
-    		//, 40)
-        ;
-        */
-        // Con Background Detection + Blackout
-         /*frameDecoder = new BackgroundDetection(
-    			new BlackOutOutskirts(
-	        		new LensCorrection(
-	        			new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"),
-	        		2.35),
-	        	points),
-    		60)
-        ;// */
+        , points);
+
+        // First frame + Hough lines
         imagePanel = new ImagePanel();
         frameDecoder.nextFrame();
         BufferedImage frame = buildImage();
+
+        frameDecoder = new HoughLines(frameDecoder, frame);
+
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";

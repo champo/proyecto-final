@@ -122,4 +122,9 @@ public class Canvas implements Cloneable {
 	public Canvas clone() throws CloneNotSupportedException {
 		return (Canvas) super.clone();
 	}
+
+	public int calculateGrey(int i, int j) {
+		int offset = i + j * width;
+		return (int) ((red[offset] + green[offset] + blue[offset]) / 3);
+	}
 }

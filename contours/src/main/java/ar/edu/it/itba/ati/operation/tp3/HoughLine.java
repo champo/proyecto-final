@@ -82,8 +82,8 @@ public class HoughLine extends Operation {
 			}
 		}
 
-		final int threshold = (int) (lines.get(0).score * 0.2);
-		for (int line = 0; line < 25; line++) {
+		final int threshold = (int) (lines.get(0).score * 0.3);
+		for (int line = 0; line < 10; line++) {
 			final Line p = lines.get(line);
 			if (p.score < threshold) {
 				break;
