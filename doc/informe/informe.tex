@@ -139,6 +139,7 @@ cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
 \subsection{Supervisión}
 
+% TODO: BULLLLLSHITTTTTT los tanos no tenian 100% automatico?
 El objetivo final es igualar y complementar la información sobre un partido
 que un operador (o grupo de operadores) podría obtener de un video. El estado
 del arte no llega a alcanzar este objetivo sin supervisión para la corrección
@@ -206,6 +207,13 @@ como un punto en un campo de dos dimensiones, es decir, se descarta el valor
 de la altura de cada objeto seguido, ya que no interesa esa información.
 Para esto, se aplica una homografía para convertir las coordenadas de un punto de
 la imagen a coordenadas en el plano donde se encuentra la cancha.
+
+El calculo de una homografia involucra reconocer por lo menos 4 puntos de la cancha
+en la imagen. Esto puede hacerse de manera supervisada, se selecciona en la imagen 
+puntos y luego se dice a que punto de la cancha corresponden. O puede hacerse de
+manera automatica mediante un algoritmo de deteccion de lineas que permita
+comparar las lineas en la imagen con las que se encuentran en la cancha.
+
 %TODO would be awesome un dibujo de la transformación que hace la homografía.
 
 Ignorar el valor de altura de los objetos seguidos es una buena aproximación
