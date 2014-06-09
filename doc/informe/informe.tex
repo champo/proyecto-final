@@ -27,7 +27,7 @@
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{letltxmacro}
-
+\usepackage[margin=1cm]{caption}
 
 %%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
 \algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
@@ -209,7 +209,7 @@ Para esto, se aplica una homografía para convertir las coordenadas de un punto 
 la imagen a coordenadas en el plano donde se encuentra la cancha.
 
 El calculo de una homografia involucra reconocer por lo menos 4 puntos de la cancha
-en la imagen. Esto puede hacerse de manera supervisada, se selecciona en la imagen 
+en la imagen. Esto puede hacerse de manera supervisada, se selecciona en la imagen
 puntos y luego se dice a que punto de la cancha corresponden. O puede hacerse de
 manera automatica mediante un algoritmo de deteccion de lineas que permita
 comparar las lineas en la imagen con las que se encuentran en la cancha.
@@ -264,7 +264,7 @@ objetos o respecto del fondo.
     \begin{minipage}{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/rect2995.png}
-        \captionof{figure}{Camiseta de color lisa. El color de la camiseta es claramente distinguido del fondo.}
+        \captionof{figure}{Camiseta de color lisa. El color de la camiseta es claramente distinguible del fondo.}
         \label{fig:camiseta}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
