@@ -519,7 +519,7 @@ public class MainApp extends javax.swing.JFrame {
 				 	}
 				}
 
-                ac = new ActiveContour(MainApp.this.getFrame(), contour.toArray(new Contour[contour.size()]));
+                ac = new ActiveContour(MainApp.this.getFrame(), team1.toArray(new Contour[team1.size()]));
                 ac.setInvertedDetection(true);
 
                 invertedTracker = new ActiveContour(MainApp.this.getFrame(), team2.toArray(new Contour[team2.size()]));

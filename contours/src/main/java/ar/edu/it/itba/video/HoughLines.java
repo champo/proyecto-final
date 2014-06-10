@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 import ar.edu.it.itba.ati.Canvas;
 import ar.edu.it.itba.ati.operation.tp1.Contrast;
-import ar.edu.it.itba.ati.operation.tp3.HoughLine;
+import ar.edu.it.itba.ati.operation.tp3.TebexHough;
 import ar.edu.it.itba.ati.provider.ImageFromBuffer;
 
 public class HoughLines extends AbstractFrameProviderDecorator {
@@ -22,7 +22,7 @@ public class HoughLines extends AbstractFrameProviderDecorator {
 		Canvas canvas = new ImageFromBuffer(frame).getCanvas();
 		Canvas original = new ImageFromBuffer(frame).getCanvas();
 		new Contrast(127, 173, 56, 200).operate(canvas);
-		new HoughLine().operate(canvas);
+		new TebexHough().operate(canvas);
 		for (int i = 0; i < canvas.width; i++) {
 			for (int j = 0; j < canvas.height; j++) {
 				isLine[i][j] = canvas.getGrey(i, j) == 255 && original.calculateGrey(i, j) != 0;
