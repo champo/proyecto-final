@@ -101,6 +101,8 @@ public class MainApp extends javax.swing.JFrame {
 
 	protected int selectedContour = -1;
 
+	protected BufferedImage firstFrame;
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -345,8 +347,8 @@ public class MainApp extends javax.swing.JFrame {
                 new BlackOutOutskirts(
                 new LensCorrection(
                         new BlackOutOutskirts(
-                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-                        //new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+//                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points);
@@ -519,10 +521,10 @@ public class MainApp extends javax.swing.JFrame {
 				 	}
 				}
 
-                ac = new ActiveContour(MainApp.this.getFrame(), team1.toArray(new Contour[team1.size()]));
+                ac = new ActiveContour(firstFrame, team1.toArray(new Contour[team1.size()]));
                 ac.setInvertedDetection(true);
 
-                invertedTracker = new ActiveContour(MainApp.this.getFrame(), team2.toArray(new Contour[team2.size()]));
+                invertedTracker = new ActiveContour(firstFrame, team2.toArray(new Contour[team2.size()]));
                 invertedTracker.setInvertedDetection(false);
 
                 for (Contour c : team2) {
@@ -758,6 +760,16 @@ public class MainApp extends javax.swing.JFrame {
             	frameDecoder.nextFrame();
                 frame = MainApp.this.buildImage();
                 framesElapsed++;
+
+                if (firstFrame == null) {
+                	firstFrame = new BufferedImage(frame.getWidth(), frame.getHeight(), frame.getType());
+
+                	for (int i = 0; i < frame.getWidth(); i++) {
+                		for (int j = 0; j < frame.getHeight(); j++) {
+                			firstFrame.setRGB(i, j, frame.getRGB(i, j));
+                		}
+                	}
+                }
 
                 if (ac != null) {
                     /*
