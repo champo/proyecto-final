@@ -655,7 +655,7 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
         addPlayer(new Point(1081,308), "Defensor", "5", "Visitante");
         addPlayer(new Point(996,157), "Mediocampista", "6", "Visitante");
-        addPlayer(new Point(835,246), "Mediocampista", "7", "Visitante");
+        addPlayer(new Point(835,243), "Mediocampista", "7", "Visitante");
         addPlayer(new Point(730,371), "Mediocampista", "8", "Visitante");
         addPlayer(new Point(682,167), "Delantero", "9", "Visitante");
         addPlayer(new Point(546,295), "Delantero", "10", "Visitante");
