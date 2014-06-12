@@ -78,11 +78,11 @@ public class Contour implements Iterable<Point> {
 	}
 
 	public static Contour aroundPoint(final int color, final Point point) {
-		return new Contour(color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
+		return new Contour(color, new Rectangle(point.x - 8, point.y - 17, 16, 34));
 	}
 
 	public static Contour squareAroundPoint(final int color, final Point point) {
-		return new Contour(color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
+		return new Contour(color, new Rectangle(point.x - 8, point.y - 8, 16, 16));
 	}
 
 	public int minX() {

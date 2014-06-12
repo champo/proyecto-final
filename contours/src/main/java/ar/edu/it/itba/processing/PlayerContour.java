@@ -67,11 +67,11 @@ public class PlayerContour extends Contour {
     }
 
     public static PlayerContour aroundPoint(String name, String position, String team, final int color, final Point point) {
-            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
+            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 8, point.y - 17, 16, 34));
     }
 
     public static PlayerContour squareAroundPoint(String name, String position, String team, final int color, final Point point) {
-            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
+            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 8, point.y - 8, 16, 16));
     }
 
     public void addHistoricalPoint(final Point p) {

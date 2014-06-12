@@ -114,22 +114,20 @@ public class ActiveContour {
 		final long time = System.currentTimeMillis();
 		final int nMax = max(frame.getHeight(), frame.getWidth());
 
-		if (!invertedDetection) {
-			for (final Contour c : contours) {
-				for (Point point : c) {
+                for (final Contour c : contours) {
+                        for (Point point : c) {
 
-					if (frame.getRGB(point.x, point.y) != CYAN) {
-						continue;
-					}
+                                if (frame.getRGB(point.x, point.y) != CYAN) {
+                                        continue;
+                                }
 
-					for (Point i : neighbors(point, frame.getWidth(), frame.getHeight())) {
-						if (frame.getRGB(i.x, i.y) != BLACK) {
-							frame.setRGB(i.x, i.y, CYAN);
-						}
-					}
-				}
-			}
-		}
+                                for (Point i : neighbors(point, frame.getWidth(), frame.getHeight())) {
+                                        if (frame.getRGB(i.x, i.y) != BLACK) {
+                                                frame.setRGB(i.x, i.y, CYAN);
+                                        }
+                                }
+                        }
+                }
 
 		final boolean[] done = new boolean[contours.length];
 		int completed = 0;
@@ -192,43 +190,8 @@ public class ActiveContour {
                         }
 		}
 
-
-		if (!invertedDetection) {
-			final long diff = System.currentTimeMillis() - time;
-			return diff;
-		}
-
-		final Contour c = contours[0];
-		final ColorPoint omegaZero = c.omegaZero[0];
-
-		for (int i = 0; i < frame.getWidth(); i++) {
-			for (int j = 0; j < frame.getHeight(); j++) {
-
-				// This means it not a background pixel according to AC
-				int rgb = frame.getRGB(i, j);
-				if (phi[i][j] != 0 || rgb == BLACK) {
-					continue;
-				}
-
-				ColorPoint color = ColorPoint.buildFromRGB(omegaZero.getType(), rgb);
-
-				if (isLike(omegaZero, color, bgDeviation)) {
-					// Here we confirm it's really a background pixel
-					continue;
-				}
-
-				if (isLike(whiteColorPoint, color, whiteDeviation)) {
-					// Skip white lines
-					continue;
-				}
-
-				// It's not background it seems, let's color it something ugly
-				frame.setRGB(i, j, CYAN);
-			}
-		}
-
-		final long diff = System.currentTimeMillis() - time;
-		return diff;
+                final long diff = System.currentTimeMillis() - time;
+                return diff;
 	}
 
 	private boolean isLike(final ColorPoint omegaZero, final ColorPoint color, final ColorPoint deviation) {

@@ -368,12 +368,12 @@ public class MainApp extends javax.swing.JFrame {
         homeographyManager.setMapping(new Point(1091, 13), new Point(441,5)); //*/
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
                 //new BlackOutOutskirts(
-                new LensCorrection(
+                // new LensCorrection(
                 //        new BlackOutOutskirts(
-                        new FrameDecoder("/Users/eordano/Downloads/I2.mp4")
+                        new FrameDecoder("/Users/eordano/Desktop/A1.mp4")
 //                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                // , firstPoints)
-               , 1.70)
+               // , 1.70)
         //, points)
                 ;
 
@@ -390,8 +390,6 @@ public class MainApp extends javax.swing.JFrame {
         originalPanel.setImage(soccerField);
         originalPanel.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
         rendered.repaint();
-
-        frameDecoder = new HoughLines(frameDecoder, frame);
 
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
         outFile = new File(outFilename);
@@ -638,34 +636,6 @@ public class MainApp extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
         imagePanel.setImage(getFrame());
-        addPlayer(new Point(229,215), "Arquero", "1", "Local");
-        addPlayer(new Point(450,203), "Defensor 1", "2", "Local");
-        addPlayer(new Point(396,297), "Defensor 2", "3", "Local");
-        addPlayer(new Point(688,204), "Defensor 3", "4", "Local");
-        addPlayer(new Point(650,378), "Defensor 4", "5", "Local");
-        addPlayer(new Point(832,263), "Mediocampista", "6", "Local");
-        addPlayer(new Point(953,325), "Mediocampista", "7", "Local");
-        addPlayer(new Point(950,204), "Mediocampista", "8", "Local");
-        addPlayer(new Point(935,114), "Delantero", "9", "Local");
-        addPlayer(new Point(1144,139), "Delantero", "10", "Local");
-        addPlayer(new Point(1193,273), "Delantero", "11", "Local");
-        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
-        addPlayer(new Point(1187,289), "Defensor", "2", "Visitante");
-        addPlayer(new Point(1173,211), "Defensor", "3", "Visitante");
-        addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
-        addPlayer(new Point(1081,308), "Defensor", "5", "Visitante");
-        addPlayer(new Point(996,157), "Mediocampista", "6", "Visitante");
-        addPlayer(new Point(835,243), "Mediocampista", "7", "Visitante");
-        addPlayer(new Point(730,371), "Mediocampista", "8", "Visitante");
-        addPlayer(new Point(682,167), "Delantero", "9", "Visitante");
-        addPlayer(new Point(546,295), "Delantero", "10", "Visitante");
-        addPlayer(new Point(423,311), "Delantero", "11", "Visitante");
-        addPlayer(new Point(921,226), "Arbitro", "Arbitro", "Arbitro");
-        addPlayer(new Point(1388,489), "Juez de linea", "Arbitro", "Arbitro");
-
-        for (PlayerContour c : contour) {
-            ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
-        }
         playerList.updateUI();
         return this;
     }

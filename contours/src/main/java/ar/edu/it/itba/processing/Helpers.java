@@ -22,7 +22,7 @@ public final class Helpers {
 
 	// Define the radius to find the colors for the objects to track
 	public final static int RADIUS_X = 20;
-	public final static int RADIUS_Y = 30;
+	public final static int RADIUS_Y = 50;
 	public final static int BUCKETS = 32;
 
 	private Helpers() {
