@@ -888,13 +888,24 @@ public class MainApp extends javax.swing.JFrame {
                 }
                 originalPanel.setImage(original);
                 rendered.repaint();
+                writeDownInfo(frame, original);
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
                 busyLock.countDown();
             }
+
         }).start();
         return busyLock;
     }
 
+    private void writeDownInfo(BufferedImage processing, BufferedImage rendered) {
+        try {
+            File outputfile = new File("processing" + framesElapsed + ".png");
+            ImageIO.write(processing, "png", outputfile);
+            outputfile = new File("rendered" + framesElapsed + ".png");
+            ImageIO.write(rendered, "png", outputfile);
+        } catch (IOException e) {
+        }
+    }
 
 	private void setImagePanelImage(final BufferedImage frame) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
