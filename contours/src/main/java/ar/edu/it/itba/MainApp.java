@@ -355,29 +355,30 @@ public class MainApp extends javax.swing.JFrame {
         //frameDecoder = new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4");
         // frameDecoder = new LensCorrection(new FrameDecoder("/Users/jpcivile/Desktop/Boca1.mp4"), 1.6175);
         List<Point> points = new LinkedList<Point>();
-        points.add(new Point(425, 40));
-        points.add(new Point(54, 321));
-        points.add(new Point(1518, 345));
-        points.add(new Point(1147, 52));
-        List<Point> firstPoints = new LinkedList<Point>();
+        points.add(new Point(420, 75));
+        points.add(new Point(1505, 85));
+        points.add(new Point(1440, 321));
+        points.add(new Point(0, 268));
+        /* List<Point> firstPoints = new LinkedList<Point>();
         firstPoints.add(new Point(200, 375));
         firstPoints.add(new Point(200, 750));
         firstPoints.add(new Point(1750, 750));
         firstPoints.add(new Point(1750, 375));
+        /*/
         homeographyManager.setMapping(new Point(370, -2), new Point(16, 5));
         homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
         homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
-        homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
+        homeographyManager.setMapping(new Point(1091, 13), new Point(441,5)); //*/
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
-        		new BlackOutOutskirts(
+                //new BlackOutOutskirts(
                 new LensCorrection(
-                        new BlackOutOutskirts(
-                        // new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
-                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-               , firstPoints)
-                , 1.91)
-        , points);
-        ;
+                //        new BlackOutOutskirts(
+                        new FrameDecoder("/Users/eordano/Downloads/I2.mp4")
+//                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+               // , firstPoints)
+               , 1.70)
+        //, points)
+                ;
 
         // First frame + Hough lines
         imagePanel = new ImagePanel();
@@ -394,6 +395,8 @@ public class MainApp extends javax.swing.JFrame {
         originalPanel.setImage(soccerField);
         originalPanel.setSize(frame.getWidth(), frame.getHeight());
         rendered.repaint();
+
+        frameDecoder = new HoughLines(frameDecoder, frame);
 
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
         outFile = new File(outFilename);
@@ -427,7 +430,7 @@ public class MainApp extends javax.swing.JFrame {
                 if (selectedContour >= 0 && selectedContour < contour.size()) {
                     soccerFieldPanel.setImage(contour.get(selectedContour).getHeatMap().getFrame());
                     soccerFieldPanel.repaint();
-                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(selectedContour), Color.RED);
+                    ImageOperations.paintContour(imagePanel.getImage(), contour.get(selectedContour), Color.BLUE);
                     imagePanel.repaint();
                 }
             }
@@ -547,39 +550,12 @@ public class MainApp extends javax.swing.JFrame {
                 videoControlPanel.remove(startTrackingButton);
                 startTrackingButton = null;
 
-                List<Contour> team1 = new ArrayList<Contour>();
-                List<Contour> team2 = new ArrayList<Contour>();
-
-                for (PlayerContour c : contour) {
-					if (false && "Visitante".equals(c.team)) {
-						team2.add(c);
-				 	} else {
-				 		team1.add(c);
-				 	}
-				}
-
-
-                ac = new ActiveContour(firstFrame, team1.toArray(new Contour[team1.size()]));
-                ac.setInvertedDetection(true);
-
-                invertedTracker = new ActiveContour(firstFrame, team2.toArray(new Contour[team2.size()]));
-                invertedTracker.setInvertedDetection(false);
-
-                ColorPoint bgDeviation = Helpers.calculateStandardDeviation(ColorPoint.Type.RGB, contour.toArray(new Contour[contour.size()]), firstFrame);
-                ActiveContour.bgDeviation = bgDeviation;
-
-                for (Contour c : team2) {
-                	c.setLastStdDev(ColorPoint.buildFromRGB(ColorPoint.Type.RGB, 0));
-                	c.omega = new ColorPoint[] {
-                		ColorPoint.buildFromRGB(ColorPoint.Type.RGB, Color.CYAN.getRGB())
-                	};
-				}
+                ac = new ActiveContour(firstFrame, contour.toArray(new Contour[contour.size()]));
 
                 homeography = homeographyManager.calculateHomography();
                 heatMap = new HeatMap(soccerFieldPanel.getImage());
 //                homeography = homeographyManager.calculateIterativeHomegraphy(1);
                 addNextFrameButton();
-
             }
         });
         videoControlPanel.setLayout(new GridLayout(1, 1));
@@ -672,34 +648,34 @@ public class MainApp extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
         imagePanel.setImage(getFrame());
+        addPlayer(new Point(229,215), "Arquero", "1", "Local");
+        addPlayer(new Point(450,203), "Defensor 1", "2", "Local");
+        addPlayer(new Point(396,297), "Defensor 2", "3", "Local");
+        addPlayer(new Point(688,204), "Defensor 3", "4", "Local");
+        addPlayer(new Point(650,378), "Defensor 4", "5", "Local");
+        addPlayer(new Point(832,263), "Mediocampista", "6", "Local");
+        addPlayer(new Point(953,325), "Mediocampista", "7", "Local");
+        addPlayer(new Point(950,204), "Mediocampista", "8", "Local");
+        addPlayer(new Point(935,114), "Delantero", "9", "Local");
+        addPlayer(new Point(1144,139), "Delantero", "10", "Local");
+        addPlayer(new Point(1193,273), "Delantero", "11", "Local");
+        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
+        addPlayer(new Point(1187,289), "Defensor", "2", "Visitante");
+        addPlayer(new Point(1173,211), "Defensor", "3", "Visitante");
+        addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
+        addPlayer(new Point(1081,308), "Defensor", "5", "Visitante");
+        addPlayer(new Point(996,157), "Mediocampista", "6", "Visitante");
+        addPlayer(new Point(835,243), "Mediocampista", "7", "Visitante");
+        addPlayer(new Point(730,371), "Mediocampista", "8", "Visitante");
+        addPlayer(new Point(682,167), "Delantero", "9", "Visitante");
+        addPlayer(new Point(546,295), "Delantero", "10", "Visitante");
+        addPlayer(new Point(423,311), "Delantero", "11", "Visitante");
+        addPlayer(new Point(921,226), "Arbitro", "Arbitro", "Arbitro");
+        addPlayer(new Point(1388,489), "Juez de linea", "Arbitro", "Arbitro");
 
-        addPlayer(new Point(347,92), "Arquero", "1", "Local");
-        addPlayer(new Point(547,121), "Defensor 1", "2", "Local");
-        addPlayer(new Point(566,169), "Defensor 2", "3", "Local");
-        addPlayer(new Point(560,73), "Defensor 3", "4", "Local");
-        addPlayer(new Point(632,38), "Defensor 4", "5", "Local");
-        addPlayer(new Point(687,90), "Mediocampista 1", "6", "Local");
-        addPlayer(new Point(709,150), "Mediocampista 2", "7", "Local");
-        addPlayer(new Point(780,67), "Mediocampista 3", "8", "Local");
-        addPlayer(new Point(791,50), "Delantero 1", "9", "Local");
-        addPlayer(new Point(806,114), "Delantero 2", "10", "Local");
-        addPlayer(new Point(762,180), "Delantero 3", "11", "Local");
-        addPlayer(new Point(1078,88), "Arquero", "1", "Visitante");
-        addPlayer(new Point(974,146), "Defensor 1", "2", "Visitante");
-        addPlayer(new Point(913,78), "Defensor 2", "3", "Visitante");
-        addPlayer(new Point(863,45), "Defensor 3", "4", "Visitante");
-        addPlayer(new Point(891,211), "Defensor 4", "5", "Visitante");
-        addPlayer(new Point(775,148), "Mediocampista 1", "6", "Visitante");
-        addPlayer(new Point(789,102), "Mediocampista 2", "7", "Visitante");
-        addPlayer(new Point(690,36), "Mediocampista 3", "8", "Visitante");
-        addPlayer(new Point(629,79), "Delantero 1", "9", "Visitante");
-        addPlayer(new Point(568,75), "Delantero 2", "10", "Visitante");
-        addPlayer(new Point(558,122), "Delantero 3", "11", "Visitante");
-        addPlayer(new Point(673,100), "Arbitro", "-", "Arbitro");
-        addPlayer(new Point(1053,290), "Juez de línea", "-", "Arbitro");
-        for (PlayerContour c : contour) {
-//        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
-        }
+        // for (PlayerContour c : contour) {
+        //     ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
+        // }
         playerList.updateUI();
         return this;
     }
@@ -715,7 +691,7 @@ public class MainApp extends javax.swing.JFrame {
 		    c = PlayerContour.squareAroundPoint(name, position, team, selected++, point);
 		}
 		c.setType(type);
-		// System.out.println("addPlayer(new Point(" + point.x + "," + point.y + "), \"" + name + "\", \"" + position + "\", \"" + team + "\");");
+		System.out.println("addPlayer(new Point(" + point.x + "," + point.y + "), \"" + name + "\", \"" + position + "\", \"" + team + "\");");
 
 		contour.add(c);
 		c.setHeatMap(new HeatMap(soccerField));
@@ -841,24 +817,9 @@ public class MainApp extends javax.swing.JFrame {
                      phiPanel.repaint();
                      */
                     ac.adapt(frame);
-//                    invertedTracker.adapt(frame);
+                    // invertedTracker.adapt(frame);
 
                     int index = 0;
-                    if (homeography != null) {
-                        BufferedImage cancha = soccerField;
-                        for (int i = 0; i < cancha.getWidth(); i++) {
-                            for (int j = 0; j < cancha.getHeight(); j++) {
-                                if (cancha.getRGB(i, j) == Color.black.getRGB()) {
-                                    Point inverseApply = homeography.inverseApply(i, j);
-                                    if (inverseApply.x > 0 && inverseApply.x < getFrame().getWidth()
-                                            && inverseApply.y > 0 && inverseApply.y < getFrame().getHeight()) {
-                                        // getFrame().setRGB(inverseApply.x, inverseApply.y, Color.magenta.getRGB());
-                                        // imagePanel.setImage(getFrame());
-                                    }
-                                }
-                            }
-                        }
-                    }
                     for (PlayerContour c : contour) {
                         ImageOperations.drawRectangle(original, c.team, c.getLastCentroid());
                         ImageOperations.drawContourOnBuffer(frame, c);

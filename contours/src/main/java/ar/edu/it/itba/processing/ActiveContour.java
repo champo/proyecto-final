@@ -545,9 +545,7 @@ public class ActiveContour {
         return phi;
     }
 
-    private ColorPoint[] learn(final double ALPHA, final ColorPoint[] omega, final ColorPoint[] characteristics) {
-        return omega;
-        /*
+    private ColorPoint[] learn(double ALPHA, ColorPoint[] omega, ColorPoint[] characteristics) {
         ColorPoint[] newColour = new ColorPoint[omega.length];
         for (int i = 0; i < newColour.length; i++) {
             newColour[i] = ColorPoint.build(omega[0].getType(),
@@ -556,8 +554,8 @@ public class ActiveContour {
                     (int)((1-ALPHA) * omega[i].blue + ALPHA * characteristics[i].blue)
             );
         }
+        // return omega;
         return newColour;
-        */
     }
 
 }
