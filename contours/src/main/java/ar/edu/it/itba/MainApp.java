@@ -57,6 +57,7 @@ public class MainApp extends javax.swing.JFrame {
     private Point currentMappedPoint;
     private BufferedImage soccerField;
     private boolean reselectingPlayer = false;
+    private ImagePanel originalPanel;
 
     /**
      * Creates new form MainApp
@@ -68,6 +69,7 @@ public class MainApp extends javax.swing.JFrame {
     private ImagePanel imagePanel;
     private ImagePanel soccerFieldPanel;
     private FrameProvider frameDecoder;
+    private FrameProvider originalFrameDecoder;
 
     private File outFile;
     private OutputStream outBuffer;
@@ -124,6 +126,8 @@ public class MainApp extends javax.swing.JFrame {
         videoControlPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         imageContainerPanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        rendered = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -131,8 +135,7 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton1.setText("Ver Estadisticas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -142,8 +145,7 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton2.setText("Corregir posición");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -245,14 +247,29 @@ public class MainApp extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(imageContainerPanel);
 
+        org.jdesktop.layout.GroupLayout renderedLayout = new org.jdesktop.layout.GroupLayout(rendered);
+        rendered.setLayout(renderedLayout);
+        renderedLayout.setHorizontalGroup(
+            renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 903, Short.MAX_VALUE)
+        );
+        renderedLayout.setVerticalGroup(
+            renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 222, Short.MAX_VALUE)
+        );
+
+        jScrollPane4.setViewportView(rendered);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 907, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 907, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jScrollPane4))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 481, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -260,9 +277,14 @@ public class MainApp extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane4))
+                    .add(layout.createSequentialGroup()
+                        .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
@@ -343,12 +365,12 @@ public class MainApp extends javax.swing.JFrame {
         homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
         homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
         homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
-        frameDecoder = // new BackgroundDetection(
+        originalFrameDecoder = frameDecoder = // new BackgroundDetection(
                 new BlackOutOutskirts(
                 new LensCorrection(
                         new BlackOutOutskirts(
-//                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
-                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+//                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points);
@@ -362,11 +384,17 @@ public class MainApp extends javax.swing.JFrame {
 
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
+        
+        originalPanel = new ImagePanel();
+        rendered.add(originalPanel, CENTER_ALIGNMENT);
+        originalPanel.setImage(soccerField);
+        originalPanel.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        rendered.repaint();
+
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
         outFile = new File(outFilename);
         outFile.createNewFile();
         outBuffer = new FileOutputStream(outFile);
-
 
         playerList.setModel(new AbstractListModel() {
 
@@ -544,11 +572,14 @@ public class MainApp extends javax.swing.JFrame {
         videoControlPanel.setLayout(new GridLayout(1, 1));
         videoControlPanel.add(startTrackingButton);
 
+
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
+        soccerField = ImageIO.read(new File("independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
+
+
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
                 @Override
                 public void mouseMoved(final MouseEvent arg0) {
@@ -653,6 +684,9 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(558,122), "Delantero 3", "11", "Visitante");
         addPlayer(new Point(673,100), "Arbitro", "-", "Arbitro");
         addPlayer(new Point(1053,290), "Juez de línea", "-", "Arbitro");
+        for (PlayerContour c : contour) {
+        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
+        }
         playerList.updateUI();
         return this;
     }
@@ -679,14 +713,23 @@ public class MainApp extends javax.swing.JFrame {
 	}
 
     private BufferedImage buildImage() {
-    	BufferedImage image = new BufferedImage(frameDecoder.getWidth(), frameDecoder.getHeight(), frameDecoder.getType());
-    	for (int i = 0; i < frameDecoder.getWidth(); i++) {
-    		for (int j = 0; j < frameDecoder.getHeight(); j++) {
-    			image.setRGB(i, j, frameDecoder.getRGB(i,  j));
-    		}
-    	}
-		return image;
-	}
+        BufferedImage image = new BufferedImage(frameDecoder.getWidth(), frameDecoder.getHeight(), frameDecoder.getType());
+        for (int i = 0; i < frameDecoder.getWidth(); i++) {
+            for (int j = 0; j < frameDecoder.getHeight(); j++) {
+                image.setRGB(i, j, frameDecoder.getRGB(i, j));
+            }
+        }
+        return image;
+    }
+    private BufferedImage buildOriginalImage() {
+        BufferedImage image = new BufferedImage(frameDecoder.getWidth(), frameDecoder.getHeight(), frameDecoder.getType());
+        for (int i = 0; i < frameDecoder.getWidth(); i++) {
+            for (int j = 0; j < frameDecoder.getHeight(); j++) {
+                image.setRGB(i, j, originalFrameDecoder.getRGB(i, j));
+            }
+        }
+        return image;
+    }
 
 	protected BufferedImage getFrame() {
     	return frame;
@@ -770,6 +813,7 @@ public class MainApp extends javax.swing.JFrame {
                 		}
                 	}
                 }
+                BufferedImage original = MainApp.this.buildOriginalImage();
 
                 if (ac != null) {
                     /*
@@ -802,7 +846,8 @@ public class MainApp extends javax.swing.JFrame {
                             }
                         }
                     }
-                    for (Contour c : contour) {
+                    for (PlayerContour c : contour) {
+                        ImageOperations.drawRectangle(original, c.team, c.getLastCentroid());
                         ImageOperations.drawContourOnBuffer(frame, c);
 
                         if (homeography != null) {
@@ -841,6 +886,8 @@ public class MainApp extends javax.swing.JFrame {
                 } else {
                     setImagePanelImage(frame);
                 }
+                originalPanel.setImage(original);
+                rendered.repaint();
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
                 busyLock.countDown();
             }
@@ -877,7 +924,9 @@ public class MainApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JList playerList;
+    private javax.swing.JPanel rendered;
     private javax.swing.JPanel soccerFieldContainer;
     private javax.swing.JPanel videoControlPanel;
     // End of variables declaration//GEN-END:variables

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ImageOperations {
 
-    public static Color phiColoring[] = new Color[3 * 3 * 3];
+    /*public static Color phiColoring[] = new Color[3 * 3 * 3];
     static {
         int index = 0;
         int fraction = 255 / 3;
@@ -24,15 +24,16 @@ public class ImageOperations {
             }
         }
     };
-    /*public static Color phiColoring[] = new Color[] {
-        new Color(0,0,0),
+    */
+	public static Color phiColoring[] = new Color[] {
         new Color(255, 0, 0),
         new Color(255, 0, 255),
         new Color(0, 255, 0),
         new Color(0, 255, 255),
         new Color(255, 255, 255),
-        new Color(128, 128, 128)
-    };*/
+        new Color(128, 128, 128),
+        new Color(0,0,0)
+    };
     public static final Map<String, Color> teamColor = new HashMap<String, Color>();
 
     public static void drawContourOnBuffer(final BufferedImage image, final Contour c) {
@@ -53,6 +54,35 @@ public class ImageOperations {
             int x = p.x;
             int y = p.y;
             image.setRGB(x, y, color.getRGB());
+        }
+    }
+
+    static void drawRectangle(BufferedImage frame, String team, Point p) {
+        if (teamColor.get(team) == null) {
+            teamColor.put(team, phiColoring[teamColor.size()]);
+        }
+        Color color = teamColor.get(team);
+        for (int i = -7; i <= 7; i+=14) {
+            int x = p.x + i;
+            if (x >= 0 && x < frame.getWidth()) {
+                for (int j = -14; j <= 14; j++) {
+                    int y = p.y + j;
+                    if (y >= 0 && y < frame.getHeight()) {
+                        frame.setRGB(x, y, color.getRGB());
+                    }
+                }
+            }
+        }
+        for (int i = -7; i <= 7; i++) {
+            int x = p.x + i;
+            if (x >= 0 && x < frame.getWidth()) {
+                for (int j = -14; j <= 14; j+=28) {
+                    int y = p.y + j;
+                    if (y >= 0 && y < frame.getHeight()) {
+                        frame.setRGB(x, y, color.getRGB());
+                    }
+                }
+            }
         }
     }
 }

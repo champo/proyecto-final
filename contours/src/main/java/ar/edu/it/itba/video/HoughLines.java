@@ -1,6 +1,7 @@
 package ar.edu.it.itba.video;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import ar.edu.it.itba.ati.Canvas;
@@ -36,5 +37,17 @@ public class HoughLines extends AbstractFrameProviderDecorator {
 			return Color.black.getRGB();
 		}
 		return provider.getRGB(x, y);
+	}
+
+	public void clearAround(Point lastCentroid) {
+		for (int i = -10; i < 10; i++) {
+			if (lastCentroid.x + i >= 0 && lastCentroid.x + i < getWidth()) {
+				for (int j = -20; j < 20; j++) {
+					if (lastCentroid.y + j >= 0 && lastCentroid.y + j < getHeight()) {
+						isLine[lastCentroid.x + i][lastCentroid.y + j] = false;
+					}
+				}
+			}
+		}
 	}
 }

@@ -178,6 +178,21 @@ public class Contour implements Iterable<Point> {
 		}
 		return (int) (cumm/internalPoints.size());
 	}
+	public int averageY() {
+		double cumm = 0;
+		for (Point p : lin) {
+			cumm += p.y;
+		}
+		return (int) (cumm/lin.size());
+	}
+
+	public int averageX() {
+		double cumm = 0;
+		for (Point p : lin) {
+			cumm += p.x;
+		}
+		return (int) (cumm/lin.size());
+	}
 
 	public void mutationFinished() {
 

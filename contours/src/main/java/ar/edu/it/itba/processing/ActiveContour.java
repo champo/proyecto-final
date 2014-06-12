@@ -35,6 +35,8 @@ public class ActiveContour {
 	private static final int BLACK = Color.black.getRGB();
 	private static final int CYAN = Color.CYAN.getRGB();
 	private final int DEVIATIONS = 3;
+        
+	private final double ALPHA = 0.04;
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 40*40;
@@ -184,7 +186,10 @@ public class ActiveContour {
 
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
-			}
+			} else {
+                            
+                            c.omega = learn(ALPHA, c.omega, getCharacteristics(frame, c));
+                        }
 		}
 
 
@@ -542,6 +547,21 @@ public class ActiveContour {
 
 	public int[][] getMapping() {
         return phi;
+    }
+
+    private ColorPoint[] learn(double ALPHA, ColorPoint[] omega, ColorPoint[] characteristics) {
+        return omega;
+        /*
+        ColorPoint[] newColour = new ColorPoint[omega.length];
+        for (int i = 0; i < newColour.length; i++) {
+            newColour[i] = ColorPoint.build(omega[0].getType(),
+                    (int)((1-ALPHA) * omega[i].red + ALPHA * characteristics[i].red),
+                    (int)((1-ALPHA) * omega[i].green + ALPHA * characteristics[i].green),
+                    (int)((1-ALPHA) * omega[i].blue + ALPHA * characteristics[i].blue)
+            );
+        }
+        return newColour;
+        */
     }
 
 }
