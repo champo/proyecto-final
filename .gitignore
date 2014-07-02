@@ -19,3 +19,6 @@ target
 .classpath
 
 *-points.txt
+
+contours/rendered*.png
+contours/processing*.png
