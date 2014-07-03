@@ -554,11 +554,15 @@ public class MainApp extends javax.swing.JFrame {
 				 	}
 				}
 
+
                 ac = new ActiveContour(firstFrame, team1.toArray(new Contour[team1.size()]));
                 ac.setInvertedDetection(true);
 
                 invertedTracker = new ActiveContour(firstFrame, team2.toArray(new Contour[team2.size()]));
                 invertedTracker.setInvertedDetection(false);
+
+                ColorPoint bgDeviation = Helpers.calculateStandardDeviation(ColorPoint.Type.RGB, contour.toArray(new Contour[contour.size()]), firstFrame);
+                ActiveContour.bgDeviation = bgDeviation;
 
                 for (Contour c : team2) {
                 	c.setLastStdDev(ColorPoint.buildFromRGB(ColorPoint.Type.RGB, 0));

@@ -41,7 +41,7 @@ public class ActiveContour {
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 40 * 40;
 	private static final ColorPoint whiteColorPoint = ColorPoint.build(ColorPoint.Type.RGB, 130, 150, 90);
-	private static final ColorPoint whiteDeviation = ColorPoint.build(ColorPoint.Type.RGB, 10, 15, 12);
+	private static final ColorPoint whiteDeviation = ColorPoint.build(ColorPoint.Type.RGB, 10, 12, 12);
 
 	private static double SIGMA = 0.7;
 	private static double[][] mask;
@@ -57,11 +57,11 @@ public class ActiveContour {
 		}
 	}
 
-	private final Contour[] contours;
+	public final Contour[] contours;
 	private final int[][] phi;
 
 	private final PointMapping theta;
-	private final ColorPoint bgDeviation;
+	public static ColorPoint bgDeviation;
 	private boolean invertedDetection;
 
 	public ActiveContour(final BufferedImage frame, final Contour... c) {
@@ -102,7 +102,6 @@ public class ActiveContour {
 			}
 		}
 
-		this.bgDeviation = calculateStandardDeviation(ColorPoint.Type.RGB, contours, frame);
 	}
 
 	public void setInvertedDetection(final boolean invertedDetection) {
@@ -193,8 +192,7 @@ public class ActiveContour {
 
 
 		if (!invertedDetection) {
-			final long diff = System.currentTimeMillis() - time;
-			return diff;
+			return System.currentTimeMillis() - time;
 		}
 
 		final Contour c = contours[0];
@@ -226,8 +224,7 @@ public class ActiveContour {
 			}
 		}
 
-		final long diff = System.currentTimeMillis() - time;
-		return diff;
+		return System.currentTimeMillis() - time;
 	}
 
 	private boolean isLike(final ColorPoint omegaZero, final ColorPoint color, final ColorPoint deviation) {
