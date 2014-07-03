@@ -44,6 +44,7 @@ import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
+import ar.edu.it.itba.video.HoughLines;
 import ar.edu.it.itba.video.LensCorrection;
 
 /**
@@ -396,7 +397,7 @@ public class MainApp extends javax.swing.JFrame {
         originalPanel.setSize(frame.getWidth(), frame.getHeight());
         rendered.repaint();
 
-        frameDecoder = new HoughLines(frameDecoder, frame);
+        // frameDecoder = new HoughLines(frameDecoder, frame);
 
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
         outFile = new File(outFilename);
@@ -659,7 +660,7 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(935,114), "Delantero", "9", "Local");
         addPlayer(new Point(1144,139), "Delantero", "10", "Local");
         addPlayer(new Point(1193,273), "Delantero", "11", "Local");
-        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
+/*        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
         addPlayer(new Point(1187,289), "Defensor", "2", "Visitante");
         addPlayer(new Point(1173,211), "Defensor", "3", "Visitante");
         addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
@@ -672,10 +673,10 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(423,311), "Delantero", "11", "Visitante");
         addPlayer(new Point(921,226), "Arbitro", "Arbitro", "Arbitro");
         addPlayer(new Point(1388,489), "Juez de linea", "Arbitro", "Arbitro");
-
-        // for (PlayerContour c : contour) {
-        //     ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
-        // }
+*/
+        /*for (PlayerContour c : contour) {
+            ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
+        }*/
         playerList.updateUI();
         return this;
     }
