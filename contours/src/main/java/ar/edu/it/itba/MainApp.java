@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -461,9 +462,14 @@ public class MainApp extends javax.swing.JFrame {
                     }
 
                     BufferedImage image = imagePanel.getImage();
-                    ac.resetContourToRect(image, contour.get(index), rectangle);
+                    PlayerContour c = contour.get(index);
+					if (Arrays.asList(ac.contours).contains(c)) {
+						ac.resetContourToRect(image, c, rectangle);
+					} else {
+                    	invertedTracker.resetContourToRect(image, c, rectangle);
+                    }
 
-                    ImageOperations.drawContourOnBuffer(image, contour.get(index));
+                    ImageOperations.drawContourOnBuffer(image, c);
                     imagePanel.setImage(image);
 
                     playerList.updateUI();
