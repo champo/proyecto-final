@@ -148,8 +148,8 @@ humano intervenga para agregar información que permita o mejore el
 funcionamiento del sistema.
 
 En el presente trabajo, un supervisor seleccionará inicialmente las posiciones de los
-jugadores en la cancha, y corregirá eventuales detecciones incorrectas. Se desea minimizar
-estas falsas detecciones.
+jugadores en la cancha, y corregirá eventuales seguimientos incorrectos. Se desea minimizar
+estos errores.
 
 \subsection{Sistema de Cámaras}
 
@@ -174,6 +174,40 @@ Esta reducción de resolución puede tornarse prohibitiva para algunas técnicas
 algoritmos de seguimiento ya que algunos objetos (como por ejemplo la pelota)
 tendrán unos pocos pixels en cada imagen, lo cual dificulta la
 tarea de segmentación y seguimiento al contar con una imagen de peor calidad.
+Esto puede observarse en la imágenes de las figuras \ref{fig:barsa3} y \ref{fig:barsa4}.
+
+\begin{figure}
+    \centering
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-13-15PM.png}
+        \captionof{figure}{Desde este punto de vista, se puede observar al menos 3 fuertes
+        características (colores) en la camiseta del jugador, rojo, azul y amarillo.}
+        \label{fig:barsa1}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-20-09PM.png}
+        \captionof{figure}{En una imagen más cercana, con mayor resolución, sigue siendo
+        un caso complicado para la aplicación de contornos activos.}
+        \label{fig:barsa2}
+    \end{minipage}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-38PM.png}
+        \captionof{figure}{En la imagen se observa la falta resolución. Los bordes se tornan
+        difusos y cuesta diferenciar las características (colores).}
+        \label{fig:barsa3}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-52PM.png}
+        \captionof{figure}{La imagen muestra varias de las dificultades del problema. La
+        falta de resolución, la rapidez de los movimientos y el diminuto tamaño de uno de
+        los objetos de intetés: la pelota.}
+        \label{fig:barsa4}
+    \end{minipage}
+\end{figure}
 
 \subsubsection{Real time}
 
@@ -255,7 +289,12 @@ oclusiones debe ser muy eficiente en tiempo.
 El correcto funcionamiento del algoritmo de contornos
 activos\cite{fast-level-set} depende de una buena selección de la función
 característica, para poder distinguir claramente a un jugador respecto a otros
-objetos o respecto del fondo.
+objetos o respecto del fondo. En casos como el ilustrado por la figura
+\ref{fig:camiseta}, elegir una función característica resulta sencillo, ya que
+con elegir el color de la camiseta se asegura una buena descripción del contorno
+a seguir. Sin embargo, la imagen de la figura \ref{fig:camiseta-rayada} introduce
+uno de los problemas en la selección de la función característica. Se puede ver
+que no es sencillo encontrar el color que representa mejor al contorno en este caso.
 
 %TODO meter alguna referencia?
 %TODO que onda las otras imagenes?
@@ -287,7 +326,9 @@ Este es un desafío grande debido principalmente a dos problemas:
   selección de una o varias características del objeto a seguir. Como la
   característica más distintiva es el color, la técnica termina basándose
   mayormente en ella. Pero para camisetas con más de un color, se vuelve
-  absurda la idea de encontrar un color característico, dado que no existe. Por
+  absurda la idea de encontrar un color característico, dado que no existe.
+  Esta dificultad se ilustra en la imágenes de la figuras \ref{fig:barsa1} y
+  \ref{fig:barsa2}. Por
   otro lado, dada la escasa cantidad de pixels que representan a un jugador,
   debido a nuestro enfoque de única cámara, cualquier tipo de análisis se torna
   más complejo cuando los pixels no tienen todos las mismas características o
