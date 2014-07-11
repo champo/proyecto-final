@@ -101,17 +101,64 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 }
 
 \section{Introducción}
-\subsection{Objetivo}
-\subsection{Problemática}
+
+(Sacar pedazos de informe y de state-of-the-art }
+
 \section{Estado del arte}
+
+(Adaptar state-of-the-art.tex)
+
 \section{Descripción del problema}
+
+(Adaptar informe.tex)
+
 \section{Solución propuesta}
+
 \subsection{Ideas}
-\subsection{Desafíos encontrados}
-\subsection{Análisis de imágen de baja calidad}
+
+- Eliminación de fondo por varios métodos:
+
+  * Método de la energía
+  * Eliminación de lineas por Detector de borde + umbral + morfología
+  * Eliminación de colores de cancha por histograma de colores
+
+- Características
+
+  * Colores del jugador
+  * Aprendizaje
+  * Múltiples características
+  * Selección de máximos en histograma con bfs
+
+- Descriptores
+
+  * Champo?
+
 \subsection{Algoritmo final}
+
+- Eliminación de lineas por detector de borde + umbral + morfología
+- Múltiples características
+- Descriptores
+
+- Opcional para equipos difíciles de detectar: seguimiento por complemento
+  - eliminación de colores de cancha por histograma + ronda de contornos
+
+- Que lastima que no tuvimos 
+
 \section{Resultados}
+
+- Distintos videos en los que se probó
+  * Dificultad de cámara quieta
+- Un par de imagenes para mostrar
+- Medición de cantidad de pérdidas de jugadores
+
 \subsection{Comparación con IFTrace}
+
+- Podremos? NO PUDIMOS!
+
 \section{Conclusiones}
+
+- Mal material
+- Resultados aceptables
+- Lástima que no tenemos la pelota
 
 \end{document}
