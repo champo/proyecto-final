@@ -35,7 +35,7 @@ public class TebexHough extends Operation {
 		final int[][] deltas = new int[][] {
 				{0, 0}, {0, 1}, {1, 0}, {-1, 0}, {0, -1},
 				{1, 1}, {1, -1}, {-1, 1}, {-1, -1},
-				{0, 2}, {2, 0}, {-2, 0}, {0, -2}
+				//{0, 2}, {2, 0}, {-2, 0}, {0, -2}
 		};
 		double[] newArray = new double[original.size];
 		for (int i = 0; i < original.width; i++) {

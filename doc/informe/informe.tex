@@ -88,12 +88,12 @@
 \renewcommand{\headrulewidth}{0pt}
 \fancyhead{}
 \fancyfoot{}
-\lhead{\small No publicado}
+\lhead{\small } % No publicado
 \rhead{\small \thepage}
 \cfoot{\small Copyright \copyright 2013 ITBA}
 
 % Metadata
-\title{Análisis Automático en Tiempo Real de Jugadas en Partidos de Futbol}
+\title{Problemas para el Análisis Automático en Tiempo Real de Jugadas en Partidos de Futbol}
 \date{20 de Septiembre de 2013}
 \author{Civile, Juan Pablo \and Crespo, Álvaro \and Ordano, Esteban }
 
@@ -103,33 +103,30 @@
 \maketitle
 \thispagestyle{fancy}
 
-\begin{comment}
 \begin{customabstract}
 \textbf{
-ABSTRACT
-} \end{customabstract}
-\end{comment}
-
-\section{Introducción}
-
 El seguimiento de jugadores en una secuencia de imágenes (video) es un caso
 particular del seguimiento de objetos, aplicado a partidos de fútbol. El
 objetivo es detectar y seguir la posición de los jugadores y la pelota a medida
-que se desarrolla el juego, obteniendo información útil para
-distintas aplicaciones, como puede ser soporte informático para los árbitros
-(detección automática de pases, goles, posiciones adelantadas,
-etc...), adaptación del entrenamiento de los jugadores, análisis
-y estudio de las tácticas de un contricante, entre otros.
+que se desarrolla el juego, obteniendo información útil para distintas
+aplicaciones, como puede ser soporte informático para los árbitros (detección
+automática de pases, goles, posiciones adelantadas, etc...), adaptación del
+entrenamiento de los jugadores, análisis y estudio de las tácticas de un
+contricante, entre otros.
 
-%TODO: Maybe poner algo del estado del arte? Onda los tanos y el paper de suecia y otros que ya
-% atacaron el problema particular aplicado al futbol?
-% Tebex: Mepa que el estado del arte se nombra después
-En el presente trabajo, se asumen las siguientes restricciones: el seguimiento de jugadores se
-realiza en tiempo real, con reducida supervisión humana, y a partir de una sola
-fuente de video, consistente en una cámara de alta resolución (HD) fija capaz
-de encuadrar todo el campo de juego.
+En el presente trabajo, se analizan las dificultades de realizar el seguimiento
+de jugadores en tiempo real con reducida o nula colaboración humana a partir de
+una sola fuente de video que consiste en una cámara de alta resolución (HD)
+fija capaz de encuadrar todo el campo de juego.
 
-\subsection{Tiempo real}
+} \end{customabstract}
+
+\subsection{Análisis en Tiempo Real}
+
+Se planteó la meta de que el algoritmo pueda realizar el seguimiento en tiempo
+real, aprovechando que contornos activos, la técnica utilizada para obtener la
+posición de los jugadores es lo suficientemente eficiente para funcionar en
+tiempo real.
 
 Realizar el seguimiento en tiempo real agrega restricciones fuertes al
 problema. Toda técnica tiene un costo de procesamiento, por lo tanto se debe
@@ -137,19 +134,23 @@ tener cautela al momento de seleccionar qué procesos de análisis de imagen
 pueden ser realizados en los aproximadamente 40 milisegundos que separan un
 cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
-\subsection{Supervisión}
+\subsection{Supervisión Humana}
 
 % TODO: BULLLLLSHITTTTTT los tanos no tenian 100% automatico?
-El objetivo final es igualar y complementar la información sobre un partido
-que un operador (o grupo de operadores) podría obtener de un video. El estado
-del arte no llega a alcanzar este objetivo sin supervisión para la corrección
-de errores o establecer \textit{ground truths}, es decir, se requiere que un
-humano intervenga para agregar información que permita o mejore el
-funcionamiento del sistema.
+% Esteban says: No, los tanos tenían fallas en su algoritmo aunque creo
+% que era solo con el seguimiento de la pelota. 80% accuracy
 
-En el presente trabajo, un supervisor seleccionará inicialmente las posiciones de los
-jugadores en la cancha, y corregirá eventuales seguimientos incorrectos. Se desea minimizar
-estos errores.
+% Ahí leí de nuevo y si lo tienen resuelto, sorry.
+
+Respecto a la supervición necesaria, el objetivo que se planteó es igualar y
+complementar la información sobre un partido que un operador (o grupo de
+operadores) podría obtener de un video.
+
+En el presente trabajo, un supervisor seleccionará inicialmente las posiciones
+de los jugadores en la cancha. El algoritmo de contornos activos será
+ejecutado para obtener la posición de cada jugador para los cuadros siguientes.
+El supervisor corregirá eventuales incorrectas actualizaciones de contornos
+activos. Se desea minimizar estas falsas detecciones.
 
 \subsection{Sistema de Cámaras}
 
@@ -172,66 +173,52 @@ diferentes cámaras, pero sufre de una menor resolución y menor precisión.
 
 Esta reducción de resolución puede tornarse prohibitiva para algunas técnicas o
 algoritmos de seguimiento ya que algunos objetos (como por ejemplo la pelota)
-tendrán unos pocos pixels en cada imagen, lo cual dificulta la
-tarea de segmentación y seguimiento al contar con una imagen de peor calidad.
-Esto puede observarse en la imágenes de las figuras \ref{fig:barsa3} y \ref{fig:barsa4}.
+tendrán unos pocos pixels en cada imagen, lo cual dificulta la tarea de
+segmentación y seguimiento al contar con una imagen de peor calidad.  Esto
+puede observarse en la imágenes de las figuras \ref{fig:barsa3} y
+\ref{fig:barsa4}.
 
 \begin{figure}
-    \centering
-    \begin{minipage}{.5\textwidth}
-        \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-13-15PM.png}
-        \captionof{figure}{Desde este punto de vista, se puede observar al menos 3 fuertes
-        características (colores) en la camiseta del jugador, rojo, azul y amarillo.}
-        \label{fig:barsa1}
-    \end{minipage}%
-    \begin{minipage}{.5\textwidth}
-        \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-20-09PM.png}
-        \captionof{figure}{En una imagen más cercana, con mayor resolución, sigue siendo
-        un caso complicado para la aplicación de contornos activos.}
-        \label{fig:barsa2}
-    \end{minipage}
     \begin{minipage}{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-38PM.png}
-        \captionof{figure}{En la imagen se observa la falta resolución. Los bordes se tornan
-        difusos y cuesta diferenciar las características (colores).}
+        \captionof{figure}{En la imagen se observa la falta de resolución. Los
+        bordes y los colores se tornan difusos.}
         \label{fig:barsa3}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-52PM.png}
-        \captionof{figure}{La imagen muestra varias de las dificultades del problema. La
-        falta de resolución, la rapidez de los movimientos y el diminuto tamaño de uno de
-        los objetos de intetés: la pelota.}
+        \captionof{figure}{La imagen muestra varias de las dificultades del
+          problema. La falta de resolución, la rapidez de los movimientos y el
+          diminuto tamaño de uno de los objetos de intetés: la pelota.  }
         \label{fig:barsa4}
     \end{minipage}
 \end{figure}
 
-\subsubsection{Real time}
+\subsubsection{Complejidad del Análisis en Tiempo Real}
 
 Al tener una resolución de \textit{1080p} (aproximadamente dos millones de
-pixels por cuadro), el procesamiento de cada pixel debe tomar a lo sumo 20 nanosegundos.
-Para lidiar con esta restricción se puede utilizar información adicional de la
-que se disponga respecto al video con el objeto de evitar procesar pixels de
-poca o nula utilidad para el seguimiento. Un ejemplo de esto es descartar pixels que
-estén fuera de la cancha, ya que es probable que la cámara encuadre más que el
-campo de juego, abarcando las gradas, el público espectador, publicidades
-alrededor del campo de juego, entre otros.
+pixels por cuadro), el procesamiento de cada pixel debe tomar a lo sumo 20
+nanosegundos.  Para lidiar con esta restricción se puede utilizar información
+adicional de la que se disponga respecto al video con el objeto de evitar
+procesar pixels de poca o nula utilidad para el seguimiento. Un ejemplo de esto
+es descartar pixels que estén fuera de la cancha, ya que es probable que la
+cámara encuadre más que el campo de juego, abarcando las gradas, el público
+espectador, publicidades alrededor del campo de juego, entre otros.
 
 Muchos autores han desarrollado algoritmos automáticos de seguimiento de
 objetos en secuencias de imágenes\cite{IFTrace, alp, local-learning, MHT-2}.
-Todos ellos están basados en soluciones de
-ecuaciones diferenciales en derivadas parciales y resultan aceptablemente
-robustos, pero tienen severas restricciones que impiden que se utilicen para
-aplicaciones en tiempo real.
+Todos ellos están basados en soluciones de ecuaciones diferenciales en
+derivadas parciales y resultan aceptablemente robustos, pero tienen severas
+restricciones que impiden que se utilicen para aplicaciones en tiempo real.
 
-Nuestra investigación utiliza el algoritmo de contornos activos\cite{fast-level-set}, el cual no
-utiliza ecuaciones diferenciales (haciéndolo apto para aplicaciones en tiempo
-real) y además hace un análisis local de los objetos seguidos en la imagen, lo
-cual hace que el tiempo de análisis de un cuadro sea dependiente de la
-resolución de los jugadores e independiente de la resolución del video.
+Nuestra investigación utiliza el algoritmo de contornos
+activos\cite{fast-level-set}, el cual no utiliza ecuaciones diferenciales
+(haciéndolo apto para aplicaciones en tiempo real) y además hace un análisis
+local () de los objetos seguidos en la imagen, lo cual hace que el tiempo de
+análisis de un cuadro sea dependiente de la resolución de los jugadores e
+independiente de la resolución del video.
 
 \subsubsection{Corregir la Perspectiva de la Cámara}
 
@@ -336,6 +323,23 @@ Este es un desafío grande debido principalmente a dos problemas:
   diferenciarlas (ya sea de otros jugadores o del fondo).
 
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-13-15PM.png}
+        \captionof{figure}{Desde este punto de vista, se puede observar al menos 3 fuertes
+        características (colores) en la camiseta del jugador, rojo, azul y amarillo.}
+        \label{fig:barsa1}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-20-09PM.png}
+        \captionof{figure}{Incluso con mayor resolución, las distintas características (como ser los colores azul, amarillo, y rojo) dificultan el seguimiento con contornos activos.}
+        \label{fig:barsa2}
+    \end{minipage}
+\end{figure}
 
 %TODO aca mepa que pueden ir varias imagenes.
 % 1 de un tracking de de un jugador de remera blanca (podría ser PRE y POST, osea sin pintar y pintado)

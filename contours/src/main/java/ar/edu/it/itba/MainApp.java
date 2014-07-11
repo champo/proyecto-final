@@ -43,6 +43,7 @@ import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
+import ar.edu.it.itba.video.HoughLines;
 import ar.edu.it.itba.video.LensCorrection;
 
 /**
@@ -380,7 +381,7 @@ public class MainApp extends javax.swing.JFrame {
         frameDecoder.nextFrame();
         BufferedImage frame = buildImage();
 
-//        frameDecoder = new HoughLines(frameDecoder, frame);
+        frameDecoder = new HoughLines(frameDecoder, frame);
 
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
@@ -584,7 +585,7 @@ public class MainApp extends javax.swing.JFrame {
 
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-        soccerField = ImageIO.read(new File("independiente.png"));
+        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
 
@@ -693,9 +694,9 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(558,122), "Delantero 3", "11", "Visitante");
         addPlayer(new Point(673,100), "Arbitro", "-", "Arbitro");
         addPlayer(new Point(1053,290), "Juez de línea", "-", "Arbitro");
-//        for (PlayerContour c : contour) {
-//        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
-//        }
+        for (PlayerContour c : contour) {
+        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
+        }
         playerList.updateUI();
         return this;
     }
