@@ -52,6 +52,7 @@
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \addbibresource{references}
+\addbibresource{../references}
 \DeclareFieldFormat[inbook]{citetitle}{#1}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
@@ -165,6 +166,27 @@ dificultando o impidiendo el uso de muchas de las técnicas de seguimiento.
 
 \subsection{Dificultades}
 
+\subsubsection{Corregir la Perspectiva de la Cámara}
+
+La imagen capturada por la cámara es una representación en 2 dimensiones de
+la realidad. Nuestro modelo de datos representa cada jugador y la pelota
+como un punto en un campo de dos dimensiones, es decir, se descarta el valor
+de la altura de cada objeto seguido, ya que no interesa esa información.
+Para esto, se aplica una homografía para convertir las coordenadas de un punto de
+la imagen a coordenadas en el plano donde se encuentra la cancha.
+
+El calculo de una homografia involucra reconocer por lo menos 4 puntos de la cancha
+en la imagen (\cite{homography-estimation}). Esto puede hacerse de manera supervisada, se selecciona en la imagen
+puntos y luego se dice a que punto de la cancha corresponden. O puede hacerse de
+manera automática mediante un algoritmo de deteccion de líneas que permita
+comparar las líneas en la imagen con las que se encuentran en la cancha.
+
+%TODO would be awesome un dibujo de la transformación que hace la homografía.
+
+Ignorar el valor de altura de los objetos seguidos es una buena aproximación
+para los jugadores, pero podría eventualmente causar errores en la medición de
+la posición y velocidad de la pelota (\cite{Liu20061146}).
+
 \subsubsection{Sistema de cámaras}
 
 Un sistema de múltiples cámaras se ve beneficiado por una mejor resolución y
@@ -223,27 +245,6 @@ activos\cite{fast-level-set}, el cual no utiliza ecuaciones diferenciales
 local () de los objetos seguidos en la imagen, lo cual hace que el tiempo de
 análisis de un cuadro sea dependiente de la resolución de los jugadores e
 independiente de la resolución del video.
-
-\subsubsection{Corregir la Perspectiva de la Cámara}
-
-La imagen capturada por la cámara es una representación en 2 dimensiones de
-la realidad. Nuestro modelo de datos representa cada jugador y la pelota
-como un punto en un campo de dos dimensiones, es decir, se descarta el valor
-de la altura de cada objeto seguido, ya que no interesa esa información.
-Para esto, se aplica una homografía para convertir las coordenadas de un punto de
-la imagen a coordenadas en el plano donde se encuentra la cancha.
-
-El calculo de una homografia involucra reconocer por lo menos 4 puntos de la cancha
-en la imagen. Esto puede hacerse de manera supervisada, se selecciona en la imagen
-puntos y luego se dice a que punto de la cancha corresponden. O puede hacerse de
-manera automatica mediante un algoritmo de deteccion de lineas que permita
-comparar las lineas en la imagen con las que se encuentran en la cancha.
-
-%TODO would be awesome un dibujo de la transformación que hace la homografía.
-
-Ignorar el valor de altura de los objetos seguidos es una buena aproximación
-para los jugadores, pero podría eventualmente causar errores en la medición de
-la posición y velocidad de la pelota.
 
 \subsubsection{Distorsión de la lente}
 
