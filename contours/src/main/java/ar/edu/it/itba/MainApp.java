@@ -37,6 +37,7 @@ import javax.swing.event.ListSelectionListener;
 import ar.edu.it.itba.metrics.HeatMap;
 import ar.edu.it.itba.processing.ActiveContour;
 import ar.edu.it.itba.processing.Contour;
+import ar.edu.it.itba.processing.Helpers;
 import ar.edu.it.itba.processing.Homography;
 import ar.edu.it.itba.processing.PlayerContour;
 import ar.edu.it.itba.processing.color.ColorPoint;
@@ -367,14 +368,16 @@ public class MainApp extends javax.swing.JFrame {
         homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
         homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
-                new BlackOutOutskirts(
-                new LensCorrection(
-                        new BlackOutOutskirts(
-                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
+                //new LensCorrection(
+                  //      new BlackOutOutskirts(
+                        new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
 //                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+        /*
                , firstPoints)
                 , 1.91)
         , points);
+        */
+        ;
 
         // First frame + Hough lines
         imagePanel = new ImagePanel();

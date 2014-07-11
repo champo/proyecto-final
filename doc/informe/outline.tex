@@ -102,7 +102,7 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 
 \section{Introducción}
 
-(Sacar pedazos de informe y de state-of-the-art }
+(Sacar pedazos de informe y de state-of-the-art)
 
 \section{Estado del arte}
 
@@ -111,16 +111,20 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 \section{Descripción del problema}
 
 (Adaptar informe.tex)
+  * Dificultad de cámara en movimiento
 
 \section{Solución propuesta}
 
-\subsection{Ideas}
+Introducción a que presentamos en esta sección
 
-- Eliminación de fondo por varios métodos:
+\subsection{Eliminación de fondo por varios métodos}
+Problemas y soluciones (tal vez como subsubsection)
 
   * Método de la energía
   * Eliminación de lineas por Detector de borde + umbral + morfología
   * Eliminación de colores de cancha por histograma de colores
+
+\subsection{Contornos activos}
 
 - Características
 
@@ -131,34 +135,36 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 
 - Descriptores
 
-  * Champo?
-
 \subsection{Algoritmo final}
 
 - Eliminación de lineas por detector de borde + umbral + morfología
 - Múltiples características
 - Descriptores
+- Imágenes de cómo resolvemos algunos casos extremos
 
 - Opcional para equipos difíciles de detectar: seguimiento por complemento
   - eliminación de colores de cancha por histograma + ronda de contornos
 
-- Que lastima que no tuvimos 
+- Que lastima que no tuvimos trackeo de pelota porque hubiese dado mejores datos
 
 \section{Resultados}
 
-- Distintos videos en los que se probó
-  * Dificultad de cámara quieta
-- Un par de imagenes para mostrar
-- Medición de cantidad de pérdidas de jugadores
+Introducción (pequeña) -- esta sección presenta ... (todo lo siguiente) y también evaluamos el método de acuerdo a las métricas ...
 
-\subsection{Comparación con IFTrace}
+\subsection{Aplicación}
+  - Videos: inputs, como funciona, como lo informa, outputs
+  - Distintos videos en los que se probó
+  - Imagenes (todas las que se pueda)
+  - Heatmap de jugadores
+  - Heatmap por equipo
 
-- Podremos? NO PUDIMOS!
+\subsection{Evaluación del método}
+  - Medición de cantidad de pérdidas de jugadores
+  - Medición de velocidad de jugadores
 
 \section{Conclusiones}
 
-- Mal material
+- Mal material, imposible agarrar la pelota y difícil los jugadores
 - Resultados aceptables
-- Lástima que no tenemos la pelota
 
 \end{document}
