@@ -150,73 +150,13 @@ Como se organiza esta parte
 
 \input{parts/problems}
 
-\section{Solución propuesta}
+\input{parts/solution}
 
-\ref{sec:tracking}
-En esta sección describimos las distintas tecnicas aplicadas. Primero describimos algoritmos para
-ignorar los elementos del fondo de la imagen en \ref{sec:background-elimination}. Luego, explicamos
-como utilizamos el algoritmo contornos activos\cite{fast-level-set} y las modificaciónes necesarias
-en \ref{sec:ac}. Finalmente, detallamos la integración final entre las distintas tecnicas, que es
-la que analizamos en la siguiente seccion \ref{sec:resultados}.
+\input{parts/results}
 
-\subsection{Eliminación de fondo por varios métodos}
-\label{sec:background-elimination}
-Problemas y soluciones (tal vez como subsubsection)
-
-  * Método de la energía
-  * Eliminación de lineas por Detector de borde + umbral + morfología
-  * Eliminación de colores de cancha por histograma de colores
-
-\subsection{Contornos activos}
-\label{sec:ac}
-
-- Características
-
-  * Colores del jugador
-  * Aprendizaje
-  * Múltiples características
-  * Selección de máximos en histograma con bfs
-
-- Descriptores
-
-\subsection{Algoritmo final}
-\label{sec:alg-final}
-% Que onda esta seccion? Me parece medio tirada de los pelos la idea
-
-- Eliminación de lineas por detector de borde + umbral + morfología
-- Múltiples características
-- Descriptores
-- Imágenes de cómo resolvemos algunos casos extremos
-
-- Opcional para equipos difíciles de detectar: seguimiento por complemento
-  - eliminación de colores de cancha por histograma + ronda de contornos
-
-- Que lastima que no tuvimos trackeo de pelota porque hubiese dado mejores datos
-
-\section{Resultados}
-\label{sec:resultados}
-
-Introducción (pequeña) -- esta sección presenta ... (todo lo siguiente) y también evaluamos el método de acuerdo a las métricas ...
-
-\subsection{Aplicación}
-  - Videos: inputs, como funciona, como lo informa, outputs
-  - Distintos videos en los que se probó
-  - Imagenes (todas las que se pueda)
-  - Heatmap de jugadores
-  - Heatmap por equipo
-
-\subsection{Evaluación del método}
-  - Medición de cantidad de pérdidas de jugadores
-  - Medición de velocidad de jugadores
-
-\section{Conclusiones}
-
-- Mal material, imposible agarrar la pelota y difícil los jugadores
-- Resultados aceptables
+\input{parts/conclusion}
 
 \printbibliography
-
-
 
 \begin{comment}
 
