@@ -5,6 +5,7 @@
 *-blx.bib
 *.bcf
 *.run.xml
+doc/*.out
 
 *.backup
 .*.sw[a-z]

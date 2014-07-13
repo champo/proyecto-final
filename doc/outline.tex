@@ -28,6 +28,25 @@
 \usepackage{algorithm}
 \usepackage{letltxmacro}
 \usepackage[margin=1cm]{caption}
+\usepackage{chngcntr}
+
+%%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
+\algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
+% LEAVES BLANK LINE AT END \algblockdefx[FOREACH]{ForEach}{EndFor}{\textbf{for each }}{}
+\algdef{SxnE}[FOR]{For}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
+\algdef{SxnE}[WHILE]{While}{EndWhile}[1]{\algorithmicwhile\ #1\ \algorithmicdo}
+\algdef{SxnE}[IF]{If}{EndIf}[1]{\algorithmicif\ #1\ \algorithmicthen}
+\algdef{cxnE}{IF}{Else}{EndIf}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\algnewcommand\algorithmicauxiliary{\textbf{Auxiliary:}}
+\algnewcommand\Auxiliary{\item[\algorithmicauxiliary]}
+
+\DefineBibliographyStrings{spanish}{andothers = {et\addabbrvspace al\adddot}}
+\renewbibmacro{in:}{}
+
+\floatname{algorithm}{Algoritmo}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \addbibresource{references}
@@ -71,6 +90,19 @@
 \rhead{\small \thepage}
 \cfoot{\small Copyright \copyright 2013 ITBA}
 
+% Next 4 lines allow for parts with independet sections counters
+% and correct referencing between parts
+
+\counterwithin*{section}{part}
+
+\makeatletter
+
+\def\p@section{\thepart.}
+\def\p@subsection{\thepart.}
+\def\p@subsubsection{\thepart.}
+
+\makeatother
+
 % Metadata
 \title{Problemas para el Análisis Automático en Tiempo Real de Jugadas en Partidos de Futbol}
 \date{20 de Septiembre de 2013}
@@ -104,20 +136,31 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 
 (Sacar pedazos de informe y de state-of-the-art)
 
-\section{Estado del arte}
+\newpage
 
-(Adaptar state-of-the-art.tex)
+\part{Estado del arte}
 
-\section{Descripción del problema}
+\input{parts/state-of-the-art}
 
-(Adaptar informe.tex)
-  * Dificultad de cámara en movimiento
+\newpage
+
+\part{Nombre para esto?}
+
+Como se organiza esta parte
+
+\input{parts/problems}
 
 \section{Solución propuesta}
 
-Introducción a que presentamos en esta sección
+\ref{sec:tracking}
+En esta sección describimos las distintas tecnicas aplicadas. Primero describimos algoritmos para
+ignorar los elementos del fondo de la imagen en \ref{sec:background-elimination}. Luego, explicamos
+como utilizamos el algoritmo contornos activos\cite{fast-level-set} y las modificaciónes necesarias
+en \ref{sec:ac}. Finalmente, detallamos la integración final entre las distintas tecnicas, que es
+la que analizamos en la siguiente seccion \ref{sec:resultados}.
 
 \subsection{Eliminación de fondo por varios métodos}
+\label{sec:background-elimination}
 Problemas y soluciones (tal vez como subsubsection)
 
   * Método de la energía
@@ -125,6 +168,7 @@ Problemas y soluciones (tal vez como subsubsection)
   * Eliminación de colores de cancha por histograma de colores
 
 \subsection{Contornos activos}
+\label{sec:ac}
 
 - Características
 
@@ -136,6 +180,8 @@ Problemas y soluciones (tal vez como subsubsection)
 - Descriptores
 
 \subsection{Algoritmo final}
+\label{sec:alg-final}
+% Que onda esta seccion? Me parece medio tirada de los pelos la idea
 
 - Eliminación de lineas por detector de borde + umbral + morfología
 - Múltiples características
@@ -148,6 +194,7 @@ Problemas y soluciones (tal vez como subsubsection)
 - Que lastima que no tuvimos trackeo de pelota porque hubiese dado mejores datos
 
 \section{Resultados}
+\label{sec:resultados}
 
 Introducción (pequeña) -- esta sección presenta ... (todo lo siguiente) y también evaluamos el método de acuerdo a las métricas ...
 
@@ -166,5 +213,48 @@ Introducción (pequeña) -- esta sección presenta ... (todo lo siguiente) y tam
 
 - Mal material, imposible agarrar la pelota y difícil los jugadores
 - Resultados aceptables
+
+\printbibliography
+
+
+
+\begin{comment}
+
+- Algoritmo de deteccion de fondo: cosas que no son la cancha en el video arruinan las mediciones
+  => Poner en negro toda parte del video que no sea la cancha
+
+- Funcion de feature de contornos activos
+  + Tomar promedio de color del contorno inicial no soporta camisetas rayadas
+  + Tampoco aguanta camisetas con mucha iluminacion
+  => Busqueda de nuevos features
+    - sigma
+    - coeficiente de variacion: ???
+    - distintos color-spaces: algunos color spaces funcionan mejor para un tipo de camiseta que otro. seria necesario tener varios features distintos y saber seleccionar el mejor
+
+- Distorcion de la lente introduce error en la homografia
+  => Algoritmos de correcion de la lente
+     - El factor de correcion es distinto para cada video
+     - Es dificil de calcular programaticamente
+
+- Jugadores distantes se borronean mucho
+  => ???
+
+- La pelota es muy chica
+  => ???
+
+- Cuando un jugador marca a otro, suele recorrer mucha distancia oculto o semi oculto
+  => ???
+
+- Además de distorción de la lente, la RESOLUCION: al agarrar TODA la cancha en una toma los jugadores MUY chicos, y la pelota más
+    => ???
+
+- Las canchas tienen diferentes medidas (varían en un cierto rango). Esto afecta a la homografía
+    => Adaptar la homografía a las dimensiones de cada cancha.
+
+- Como relacionar posiciones relativas de los jugadores teniendo una vista 3D con perspectiva
+    => Homografía
+    (Muy básico?)
+
+\end{comment}
 
 \end{document}
