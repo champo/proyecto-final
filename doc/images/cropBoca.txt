@@ -1,0 +1,2 @@
+convert boca_00014.png -crop 200x200+720+440 cropped_boca_00014.png
+convert boca_00017.png -crop 200x200+60+120 cropped_boca_00017.png
