@@ -7,7 +7,6 @@ de los objetos a seguir. Es capaz de recuperarse de errores menores y permite el
 a la vez.
 
 \begin{figure}[H]
-    \label{fig:happy-occluded-iftrace}
     \centering
     \begin{tabular}{cccc}
         \subfloat{\includegraphics[width = 1.5in]{./images/happy_occluded_00001.png}} &
@@ -15,7 +14,9 @@ a la vez.
         \subfloat{\includegraphics[width = 1.5in]{./images/happy_occluded_00005.png}} &
         \subfloat{\includegraphics[width = 1.5in]{./images/happy_occluded_00008.png}}
     \end{tabular}
-    \caption{IFTrace funcionando en una secuencia de cuadros de video sintético.}
+    %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
+    \caption{IFTrace funcionando en una secuencia de cuadros de video sintético.
+    \label{fig:happy-occluded-iftrace}}
 \end{figure}
 
 Un algoritmo de este tipo podría proporcionar una buena solución a nuestro problema. Como se puede ver en la figura
@@ -25,18 +26,45 @@ el algoritmo no logra seguirlo correctamente por más de unos pocos cuadros, cay
 puede sacarlo. Este tipo de correción supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
-    \label{fig:boca-iftrace}
     \centering
     \begin{tabular}{cccc}
-        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00009}} &
-        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00012}} &
-        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00014}} &
-        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00017}}
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00009.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00012.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00014.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00017.png}}
     \end{tabular}
-    \caption{Seguimiento de un jugador en un video real utilizando IFTrace.}
+    %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
+    \caption{Seguimiento de un jugador en un video real utilizando IFTrace.
+    \label{fig:boca-iftrace}}
 \end{figure}
 
-%TODO Meter aca 4 cuadros mostrando como nuestro algoritmo funciona. Deberian ser los mismos.
+%TODO Meter aca 4 cuadros mostrando como nuestro algoritmo funciona en el happy_occluded. Faltaria el sintetico nomass.
+\begin{figure}[H]
+    %% TODO poner las imagenes correspondientes a happy-occluded con nuestro algoritmo
+    \centering
+    \begin{tabular}{cccc}
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00009.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00012.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00014.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_boca_00017.png}}
+    \end{tabular}
+    %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
+    \caption{Nuestro algoritmo en funcionamiento en un video sintético.
+    \label{fig:happy-occluded-activeContour}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{cccc}
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_rendered002.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_rendered007.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_rendered012.png}} &
+        \subfloat{\includegraphics[width = 1.5in]{./images/cropped_rendered017.png}}
+    \end{tabular}
+    %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
+    \caption{Seguimiento de los jugadores en un video real mediante nuestro algoritmo.
+    \label{fig:boca-activeContour}}
+\end{figure}
 
 Como se puede observar en las figuras \ref{fig:happy-occluded-activeContour} y \ref{fig:boca-activeContour}, nuestro algoritmo
 sigue con exito a los objetos de interés.
