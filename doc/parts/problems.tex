@@ -55,8 +55,6 @@ puntos y luego se dice a que punto de la cancha corresponden. O puede hacerse de
 manera automática mediante un algoritmo de deteccion de líneas que permita
 comparar las líneas en la imagen con las que se encuentran en la cancha.
 
-%TODO would be awesome un dibujo de la transformación que hace la homografía.
-
 Ignorar el valor de altura de los objetos seguidos es una buena aproximación
 para los jugadores, pero podría eventualmente causar errores en la medición de
 la posición y velocidad de la pelota (\cite{Liu20061146}).
@@ -79,16 +77,16 @@ puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
 \ref{fig:barsa4}.
 
 \begin{figure}[H]
-    \begin{minipage}{.5\textwidth}
+    \begin{minipage}[t]{.5\textwidth}
         \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-38PM.png}
+        \includegraphics[width=.4\linewidth]{./images/resize_barcelona2.png}
         \captionof{figure}{En la imagen se observa la falta de resolución. Los
         bordes y los colores se tornan difusos.}
         \label{fig:barsa3}
     \end{minipage}%
-    \begin{minipage}{.5\textwidth}
+    \begin{minipage}[t]{.5\textwidth}
         \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-15-52PM.png}
+        \includegraphics[width=.4\linewidth]{./images/resize_barcelona3.png}
         \captionof{figure}{La imagen muestra varias de las dificultades del
           problema. La falta de resolución, la rapidez de los movimientos y el
           diminuto tamaño de uno de los objetos de intetés: la pelota.  }
@@ -167,13 +165,13 @@ con una misma caracteristica.
 %TODO que onda las otras imagenes?
 \begin{figure}[H]
     \centering
-    \begin{minipage}{.5\textwidth}
+    \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/rect2995.png}
         \captionof{figure}{Camiseta de color lisa. El color de la camiseta es claramente distinguible del fondo.}
         \label{fig:camiseta}
     \end{minipage}%
-    \begin{minipage}{.5\textwidth}
+    \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/rect2996.png}
         \captionof{figure}{Camiseta de 2 colores rayada. Las franjas de la camiseta con claramente distinguibles entre sí y el fondo.}
@@ -206,14 +204,14 @@ Este es un desafío grande debido principalmente a dos problemas:
     \centering
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-13-15PM.png}
+        \includegraphics[width=.4\linewidth]{./images/resize_barcelona1.png}
         \captionof{figure}{Desde este punto de vista, se puede observar al menos 3 fuertes
         características (colores) en la camiseta del jugador, rojo, azul y amarillo.}
         \label{fig:barsa1}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=.4\linewidth]{./images/ScreenShot2014-06-11at8-20-09PM.png}
+        \includegraphics[width=.4\linewidth]{./images/resize_barcelona4.png}
         \captionof{figure}{Incluso con mayor resolución, las distintas características (como ser los colores azul, amarillo, y rojo) dificultan el seguimiento con contornos activos.}
         \label{fig:barsa2}
     \end{minipage}
