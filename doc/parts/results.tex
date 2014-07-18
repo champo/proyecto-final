@@ -27,11 +27,11 @@ De manera opcional, en cada cuadro se guarda en disco duro una copia del estado 
 Se utilizaron principalmente dos videos, uno correspondiente a un partido entre los equipos argentinos de los clubes Boca Juniors e Independiente; y un segundo video en el cual se enfrentan los equipos Independiente y San Lorenzo. Se detalla a continuación las características de las imágenes extraídas de esos videos.
 
 \begin{itemize}
-  \item \textbf{Boca vs Independiente:} 
+  \item \textbf{Boca vs Independiente:}
   \item \textbf{Independiente vs San Lorenzo:}
 \end{itemize}
 
-Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los cuales la cámara se encuentra relativamente estática y se analizó la correctitud del seguimiento en estos casos, contando con mayor resolución pero sin poder efectuar exitosamente la eliminación de fondo o la correlación a un plano bidimencional por homografía % [ TODO: ESTO ESTÁ ESCRITO CON LA ** ] 
+Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los cuales la cámara se encuentra relativamente estática y se analizó la correctitud del seguimiento en estos casos, contando con mayor resolución pero sin poder efectuar exitosamente la eliminación de fondo o la correlación a un plano bidimencional por homografía % [ TODO: ESTO ESTÁ ESCRITO CON LA ** ]
 
 \begin{itemize}
   \item \textbf{Manchester City vs Barcelona:}
@@ -40,5 +40,9 @@ Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los
 \end{itemize}
 
 \subsection{Evaluación del método}
-  - Medición de cantidad de pérdidas de jugadores
-  - Medición de velocidad de jugadores
+
+Se evaluó cualitativamente por un operador que los contornos de los jugadores según el algoritmo modificado de contornos activos no correspondían a los jugadores, como es el caso de trabajos citados en el estado del arte (ver \cite{tanos}). Se atribuye esto a la baja calidad de los videos que se pudieron obtener, y la poca capacidad de procesamiento en comparación. (TODO: Completar esto justificando mejor).
+
+Dado esto, se procedió a evaluar cuántas veces sucedía esta discrepancia por unidad de tiempo. Esta métrica, resumida como la cantidad de errores del algoritmo por cada cien cuadros, se intentó minimizar durante el estudio de las variantes de la aplicación.
+
+Otra métrica que se buscó minimizar es el tiempo de demora por cuadro procesado, hasta intentar alcanzar una velocidad de $24$ cuadros por segundo (equivalente a $42$ milisegundos por cuadro), la velocidad de los videos utilizados.
