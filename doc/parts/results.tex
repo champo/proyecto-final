@@ -14,7 +14,7 @@ La aplicación implementada incorpora una interfaz gráfica utilizada tanto para
 Para comenzar la ejecución, el algoritmo requiere que el operador identifique la posición de los jugadores en la imagen inicial de la secuencia. % [ TODO: Completar con chamuyo ]
 
 Un paso adicional es el de determinar puntos a utilizar para el cálculo de la homografía. Los datos necesarios son al menos cuatro parejas de puntos. De estas parejas, el primer punto es una coordenada la imagen en perspectiva y el otro punto es la coordenada
-en un plano bidimencional. Con cuatro de estas relaciones, se puede calcular la matriz que resuelva la homografía para cualquier otro punto. % [ TODO: esto no queda claro ]
+en un plano bidimensional. Con cuatro de estas relaciones, se puede calcular la matriz que resuelve la homografía para cualquier otro punto. % [ TODO: esto no queda claro ]
 
 Una vez que el programa tiene estos datos, el algoritmo de contornos activos puede comenzar a correr. Existen dos modos, uno que avanza sólo ante la indicación del operador (mecánica ``cuadro por cuadro'') y otro modo que avanza automáticamente cada vez que se computa un cuadro (mecánica ``tiempo real''). % [ TODO: algo de amor a este párrafo ]
 
