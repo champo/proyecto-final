@@ -114,31 +114,46 @@
 \maketitle
 \thispagestyle{fancy}
 
-
-\customabstract{
-Las técnicas de seguimiento de objetos en videos tienen numerosas aplicaciones
-en las actividades cotidianas. En el ámbito deportivo pueden ser útiles para
-soportar (o hasta reemplazar) las decisiones de los jueces o árbitros del
-juego, permitir a los deportistas mejorar su juego mediante el análisis de sus
-movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre
-otras aplicaciones.
-
-Se analiza en la primer parte de este trabajo el estado del arte respecto a
-técnicas aplicables al problema de seguimiento de múltiples jugadores de fútbol
-mediante el uso de una o varias cámaras de video, así como las bases teóricas
-para estos métodos, características, limitaciones de cada uno, y la
-factibilidad de conocer el estado del juego completo en cada instante de
-tiempo.
-
-Se plantea el uso de una de estas técnicas, \textit{contornos activos}, para
-el seguimiento en tiempo real de los jugadores en base a una filmación
-con una cámara fija abarcando todo el campo de juego. Se plantean mejoras
-al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
-}
-
 \section{Introducción}
 
-(Sacar pedazos de informe y de state-of-the-art)
+Las técnicas de reconocimiento y seguimiento de objetos en video tienen numerosas aplicaciones
+en las actividades cotidianas. El seguimiento de objetos se utiliza para mejorar la comprensión de ciertos conjuntos de datos de video de
+aplicaciones médicas y de seguridad; para aumentar la productividad al reducir la cantidad de mano de obra que es necesaria para completar una tarea
+y par dar lugar a la interacción natural con máquinas. Algunas de la aplicaciones específicas son:
+
+\begin{itemize}
+    \item Vigilancia remota: vigilancia automática para seguridad, vida asistida e inteligencia de negocio.
+    \item Industria cinematográfica y televisiva: post-producción y captura de movimiento.
+    \item Aplicaciones médicas e investigación biológica: ayuda en el diagnóstico y en cirugías.
+    \item Teleconferencia: seguimiento de caras y de ojos para mejorar eficacia de la interacción.
+    \item Juegos interactivos: captura de movimiento y gestos para proporcionar nuevas formas de interacción entre el hombre y la computadora.
+    \item Instalaciones de arte y espectáculos: interacción gracias a la captura de movimiento, creación de nuevas acciones o reacciones al entorno.
+\end{itemize}
+
+En el ámbito deportivo el seguimiento de objetos puede resultar útil para validar (o hasta reemplazar) las decisiones de los jueces o árbitros del
+juego, permitir a los deportistas que se desenvuelven en compentencias de alto rendimiento mejorar su juego mediante el análisis de sus
+movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre otras aplicaciones.
+El problema en cuestión es el del seguimiento de jugadores de fútbol en un partido, utilizando una única cámara de posición fija, capaz de
+observar todo el campo de juego, e intentado cumplir con la restricción de tiempo-real. Se plantea el uso de una de las técnicas de seguimiento existentes,
+\textit{contornos activos}, para el seguimiento en tiempo real de los jugadores. Se definen algunas mejoras
+al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
+%% TODO acá como que termino siendo super repetitivo pero está parte me queda re cortaaaa. HELP!!!
+Este trabajo presenta un nuevo enfoque para realizar el seguimiento de los jugadores, basado en el algoritmo de \textit{contornos activos},
+y los resultados obtenidos a partir de él.
+
+%% TODO champo como redactamos la parte de "En tal sección se habla de X, en tal de Y". Digo por lo de las 2 partes que tenemos. Tipo, esto está bien???
+%% En el texto aparecerían como Sección II.1, Sección II.2, etc...
+El trabajo se divide en dos partes: en la primera se presenta el estado del arte respecto a
+técnicas aplicables al problema de seguimiento de múltiples jugadores de fútbol
+mediante el uso de una o varias cámaras de video, así como las bases teóricas
+para estos métodos, características y limitaciones de cada uno, y la
+factibilidad de conocer el estado del juego completo en cada instante de
+tiempo; en la segunda se detallan las diferentes secciones
+del presente trabajo. En la segunda parte, la Sección \ref{sec:problems} se realiza la descripción detallada del problema, en la Sección
+\ref{sec:solution} se describen las mejoras y novdedades implementadas, en la Sección \ref{sec:results} se presentan los resultados obtenidos y en
+la Sección \ref{sec:iftrace} se realiza un comparación con el famoso algorimo de seguimiento de objetos IFTrace. Finalmente, en la Sección
+\ref{sec:conclusion} se detallan las conclusiones del trabajo.
+
 
 \newpage
 
@@ -148,7 +163,8 @@ al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
 
 \newpage
 
-\part{Nombre para esto?}
+%% TODO find a name for this. Les gusta este?
+\part{Desarrollo del trabajo}
 
 Como se organiza esta parte
 
@@ -164,6 +180,7 @@ Como se organiza esta parte
 
 \printbibliography
 
+%% TODO get rid of this before final deadline
 \begin{comment}
 
 - Algoritmo de deteccion de fondo: cosas que no son la cancha en el video arruinan las mediciones
