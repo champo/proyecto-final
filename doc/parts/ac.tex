@@ -1,6 +1,14 @@
 \chapter{Descripcción del metodo}
 
+En este capitulo se describe el metodo de seguimiento seleccionado para este trabajo.
+Primero, en la sección \ref{sec:ac} se explica el algoritmo utilizado \emph{Contornos Activos},
+y en la sección \ref{sec:impl} su implementación. Luego, en la sección \ref{sec:eleccion}
+se justifica la elección del algoritmo. Finalmente, en la sección \ref{sec:ac-problemas}
+se analiza las limitaciónes del algoritmo para esta aplicación.
+
+
 \section{Contornos Activos}
+\label{sec:ac}
 
 La segmentación basada en contornos activos se basa en definir una región en base a su contorno.
 El contorno o borde de una región $\Omega_i$ se representa por una curva paramétrica dada por:
@@ -47,6 +55,7 @@ Existe otra formulación del problema de evolución de curvas, que consiste en
 representar la curva como el nivel cero de una superficie $\phi$ (ver \cite{Osher88}).
 
 \section{Implementación Numérica}
+\label{sec:impl}
 
 Se toma de referencia la implementación segun \citeauthor{fast-level-set} (ver \cite{fast-level-set}).
 En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
@@ -143,14 +152,12 @@ ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el num
     \end{array}
 \end{equation}
 
-%% TODO revisar esto. Movi la sección de COntornos Activos del estado del arte acá arriba pero no se
-%% si queda bien así como está. Esta section antes era subsubsection, y la deje abajo de
-%% la subsección de contornos activos porque habla de particularidades del algoritmo de contornos activos
-%% y me pareció que no daba ponerlo antes de describir y detallar contornos activos. De todas formas
-%% hay que chequear la distribución en sections y subsubsections para que tenga una secuencia logica
-%% que creo que ahora no la tiene :s.
+\section{Elección}
+\label{sec:eleccion}
 
-\section{Algoritmo utilizado}
+
+\section{Limitaciones}
+\label{sec:ac-problemas}
 
 El correcto funcionamiento del algoritmo de contornos
 activos\cite{fast-level-set} depende de una buena selección de la función
