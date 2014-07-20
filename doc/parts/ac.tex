@@ -155,6 +155,17 @@ ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el num
 \section{Elección}
 \label{sec:eleccion}
 
+Se elegio el algoritmo \emph{Contornos Activos} por varios motivos:
+\begin{itemize}
+\item No depende de disponer de bloques de $n x n$ pixeles para su correcto funcionamiento. Una de 
+las principales restricciones de este trabajo es utilizar una sola camara para obtener el video, y 
+como se explica en la sección \ref{sub-sec:camaras} un jugador esta formado por un numero muy limitado de pixeles, dificultando el uso de algoritmos que no tengan esta caracteristica.
+
+\item Su tiempo de ejecución no depende del tamaño del cuadro, sino de los jugadores. Esto hace que sea muy rapido de ejecutar por cuadro, posibilitando el análisis en tiempo real.
+
+\item Se cuenta con metodos de manejo de oclusiones para \emph{Contornos Activos}\cite{paper-juliana}.
+
+\end{itemize}
 
 \section{Limitaciones}
 \label{sec:ac-problemas}
