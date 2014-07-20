@@ -1,11 +1,11 @@
-\section{Descripción del problema}
+\chapter{Descripción del problema}
 \label{sec:problems}
 
 %%TODO acá falta un descripción general del problema de un par de parrafos, lo que
 %% tenemos abajo son las dificultades y problemas particulares pero nunca introducimos
 %% el problema en esta sección.
 
-\subsection{Análisis en Tiempo Real}
+\section{Análisis en Tiempo Real}
 
 Se planteó la meta de que el algoritmo pueda realizar el seguimiento en tiempo
 real, aprovechando que contornos activos, la técnica utilizada para obtener la
@@ -18,7 +18,7 @@ tener cautela al momento de seleccionar qué procesos de análisis de imagen
 pueden ser realizados en los aproximadamente 40 milisegundos que separan un
 cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
-\subsection{Supervisión Humana}
+\section{Supervisión Humana}
 
 % TODO: BULLLLLSHITTTTTT los tanos no tenian 100% automatico?
 % Esteban says: No, los tanos tenían fallas en su algoritmo aunque creo
@@ -36,16 +36,16 @@ ejecutado para obtener la posición de cada jugador para los cuadros siguientes.
 El supervisor corregirá eventuales incorrectas actualizaciones de contornos
 activos. Se desea minimizar estas falsas detecciones.
 
-\subsection{Sistema de Cámaras}
+\section{Sistema de Cámaras}
 
 Nuestro enfoque consta de un sistema de una única cámara fija, posicionada en
 la cancha de tal forma que pueda observar toda la cancha en un solo cuadro. Al
 utilizar una única cámara, la resolución adquiere un rol determinante,
 dificultando o impidiendo el uso de muchas de las técnicas de seguimiento.
 
-\subsection{Dificultades}
+\section{Dificultades}
 
-\subsubsection{Corregir la Perspectiva de la Cámara}
+\subsection{Corregir la Perspectiva de la Cámara}
 
 La imagen capturada por la cámara es una representación en 2 dimensiones de
 la realidad. Nuestro modelo de datos representa cada jugador y la pelota
@@ -64,7 +64,7 @@ Ignorar el valor de altura de los objetos seguidos es una buena aproximación
 para los jugadores, pero podría eventualmente causar errores en la medición de
 la posición y velocidad de la pelota (\cite{Liu20061146}).
 
-\subsubsection{Sistema de cámaras}
+\subsection{Sistema de cámaras}
 
 Un sistema de múltiples cámaras se ve beneficiado por una mejor resolución y
 por lo tanto una mejor precisión al determinar la posición de objetos, pero
@@ -99,7 +99,7 @@ puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
     \end{minipage}
 \end{figure}
 
-\subsubsection{Complejidad del Análisis en Tiempo Real}
+\subsection{Complejidad del Análisis en Tiempo Real}
 
 Al tener una resolución de \textit{1080p} (aproximadamente dos millones de
 pixels por cuadro), el procesamiento de cada pixel debe tomar a lo sumo 20
@@ -123,7 +123,7 @@ local de los objetos seguidos en la imagen, lo cual hace que el tiempo de
 análisis de un cuadro sea dependiente de la resolución de los jugadores e
 independiente de la resolución del video.
 
-\subsubsection{Distorsión de la lente}
+\subsection{Distorsión de la lente}
 
 Al utilizar una única cámara para captar la cancha entera se corre el riesgo de
 tener distorción en los puntos de la imagen más alejados al foco de la cámara.
@@ -133,7 +133,7 @@ tanto se debe aplicar una corrección. Una lente apropiada y bien calibrada
 puede reducir este error, pero nunca puede ser eliminado totalmente. Sólo
 puede evitarse utilizando una mejor técnica de filmación.
 
-\subsubsection{Oclusiones entre jugadores}
+\subsection{Oclusiones entre jugadores}
 
 En un partido es muy común que ocurran oclusiones entre los jugadores. El
 sistema debe poder tolerar la oclusión parcial o total de los jugadores.
@@ -153,7 +153,7 @@ oclusiones entre varios jugadores son muy numerosas, lo que agrega a la
 restricción de tiempo real mayor complejidad, ya que la resolución de
 oclusiones debe ser muy eficiente en tiempo.
 
-\subsection{Contornos Activos}
+\section{Contornos Activos}
 
 La segmentación basada en contornos activos se basa en definir una región en base a su contorno.
 El contorno o borde de una región $\Omega_i$ se representa por una curva paramétrica dada por:
@@ -199,7 +199,7 @@ suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 Existe otra formulación del problema de evolución de curvas, que consiste en
 representar la curva como el nivel cero de una superficie $\phi$ (ver \cite{Osher88}).
 
-\subsection{Implementación Numérica}
+\section{Implementación Numérica}
 
 Se toma de referencia la implementación segun \citeauthor{fast-level-set} (ver \cite{fast-level-set}).
 En la implementación, el borde de un contorno $C_m$ se representa usando dos conjuntos de píxeles
@@ -297,13 +297,13 @@ ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el num
 \end{equation}
 
 %% TODO revisar esto. Movi la sección de COntornos Activos del estado del arte acá arriba pero no se
-%% si queda bien así como está. Esta subsection antes era subsubsection, y la deje abajo de
+%% si queda bien así como está. Esta section antes era subsubsection, y la deje abajo de
 %% la subsección de contornos activos porque habla de particularidades del algoritmo de contornos activos
 %% y me pareció que no daba ponerlo antes de describir y detallar contornos activos. De todas formas
-%% hay que chequear la distribución en subsections y subsubsections para que tenga una secuencia logica
+%% hay que chequear la distribución en sections y subsubsections para que tenga una secuencia logica
 %% que creo que ahora no la tiene :s.
 
-\subsection{Algoritmo utilizado}
+\section{Algoritmo utilizado}
 
 El correcto funcionamiento del algoritmo de contornos
 activos\cite{fast-level-set} depende de una buena selección de la función
