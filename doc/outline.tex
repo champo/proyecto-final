@@ -28,7 +28,7 @@
 \usepackage{algorithm}
 \usepackage{letltxmacro}
 \usepackage[margin=1cm]{caption}
-\usepackage{chngcntr}
+\usepackage{setspace}
 
 %%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
 \algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
@@ -58,7 +58,7 @@
 % \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
 \def\customabstract{\vspace{.5em}
-    {\small\center{\textbf{RESUMEN}} \\[0.5em] \relax%
+    {\Large\center{\textbf{RESUMEN}} \\[0.5em] \relax%
     }}
 \def\endkeywords{\par}
 
@@ -103,6 +103,30 @@
 \pagestyle{fancy}
 \maketitle
 \thispagestyle{fancy}
+
+\begin{customabstract}
+\begin{doublespace}
+El seguimiento de jugadores en una secuencia de imágenes (video) es un caso
+particular del seguimiento de objetos, aplicado a partidos de fútbol. El
+objetivo es detectar y seguir la posición de los jugadores y la pelota a medida
+que se desarrolla el juego, obteniendo información útil para distintas
+aplicaciones, como puede ser soporte informático para los árbitros (detección
+automática de pases, goles, posiciones adelantadas, etc...), adaptación del
+entrenamiento de los jugadores, análisis y estudio de las tácticas de un
+contricante, entre otros.
+
+En el presente trabajo, se analizan las dificultades de realizar el seguimiento
+de jugadores en tiempo real con reducida o nula colaboración humana a partir de
+una sola fuente de video que consiste en una cámara de alta resolución (HD)
+fija capaz de encuadrar todo el campo de juego. 
+
+En base al analisis de dificultades, se selecciona una tecnica de seguimiento,
+y se detalla un algoritmo construido sobre esta para la tarea especifica de 
+detección y seguimiento de jugadores en futbol. Finalmente, se presentan 
+resultados de aplicar este algoritmo, y que información podria proveer para el
+analisis automatico de jugadas.
+\end{doublespace}
+\end{customabstract}
 
 \tableofcontents
 

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-pdflatex outline.tex
-bibtex outline
-pdflatex outline.tex
+if [[ $# -eq 0 ]]; then
+    pdflatex outline.tex
+    bibtex outline
+    pdflatex outline.tex
+fi
+
 pdflatex outline.tex
