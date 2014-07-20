@@ -93,16 +93,6 @@
 % Next 4 lines allow for parts with independet sections counters
 % and correct referencing between parts
 
-\counterwithin*{section}{part}
-
-\makeatletter
-
-\def\p@section{\thepart.}
-\def\p@subsection{\thepart.}
-\def\p@subsubsection{\thepart.}
-
-\makeatother
-
 % Metadata
 \title{Análisis Automático de Jugadas en Partidos de Fútbol}
 \date{1 de agosto de 2014}
@@ -113,6 +103,8 @@
 \pagestyle{fancy}
 \maketitle
 \thispagestyle{fancy}
+
+\tableofcontents
 
 \chapter{Introducción}
 
