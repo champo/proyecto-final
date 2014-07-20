@@ -108,30 +108,31 @@
 
 \chapter{Introducción}
 
-Las técnicas de reconocimiento y seguimiento de objetos en video tienen numerosas aplicaciones
-en las actividades cotidianas. El seguimiento de objetos se utiliza para mejorar la comprensión de ciertos conjuntos de datos de video de
-aplicaciones médicas y de seguridad; para aumentar la productividad al reducir la cantidad de mano de obra que es necesaria para completar una tarea
-y par dar lugar a la interacción natural con máquinas. Algunas de la aplicaciones específicas son:
+Dentro del campo de análisis y tratamiento de imágenes un problema que se
+estudia es el del reconocimiento y seguimiento de objetos en secuencias de
+imágenes. Identificar correctamente un objeto en un video es útil para un
+amplio rango de aplicaciones, desde aplicaciones médicas (dónde se ofrece
+soporte para diagnósticos y cirugías) hasta la industria cinematográfica
+(captura de movimiento, \textit{post-producción}), pasando por vigilancia con
+cámaras. 
 
-\begin{itemize}
-    \item Vigilancia remota: vigilancia automática para seguridad, vida asistida e inteligencia de negocio.
-    \item Industria cinematográfica y televisiva: post-producción y captura de movimiento.
-    \item Aplicaciones médicas e investigación biológica: ayuda en el diagnóstico y en cirugías.
-    \item Teleconferencia: seguimiento de caras y de ojos para mejorar eficacia de la interacción.
-    \item Juegos interactivos: captura de movimiento y gestos para proporcionar nuevas formas de interacción entre el hombre y la computadora.
-    \item Instalaciones de arte y espectáculos: interacción gracias a la captura de movimiento, creación de nuevas acciones o reacciones al entorno.
-\end{itemize}
+En el ámbito deportivo se encuentran muchas aplicaciones para el seguimiento de
+objetos. Puede resultar útil para validar o reemplazar las decisiones de los
+jueces o árbitros del partido, permitir a deportistas de alto rendimiento
+analizar y mejorar sus movimientos, ayudar a los entrenadores a decidir
+estrategias y evaluar a los deportistas, otorgar estadísticas a fanáticos del
+juego, entre otras aplicaciones.
 
-En el ámbito deportivo el seguimiento de objetos puede resultar útil para validar (o hasta reemplazar) las decisiones de los jueces o árbitros del
-juego, permitir a los deportistas que se desenvuelven en compentencias de alto rendimiento mejorar su juego mediante el análisis de sus
-movimientos, otorgar estadísticas y métricas a los fanáticos del deporte, entre otras aplicaciones.
-El problema en cuestión es el del seguimiento de jugadores de fútbol en un partido, utilizando una única cámara de posición fija, capaz de
-observar todo el campo de juego, e intentado cumplir con la restricción de tiempo-real. Se plantea el uso de una de las técnicas de seguimiento existentes,
-\textit{contornos activos}, para el seguimiento en tiempo real de los jugadores. Se definen algunas mejoras
-al algoritmo específicas a los fines del seguimiento de jugadores de fútbol.
-%% TODO acá como que termino siendo super repetitivo pero está parte me queda re cortaaaa. HELP!!!
-Este trabajo presenta un nuevo enfoque para realizar el seguimiento de los jugadores, basado en el algoritmo de \textit{contornos activos},
-y los resultados obtenidos a partir de él.
+En este trabajo se estudia el problema de realizar el seguimiento de todos los
+jugadores de un partido de fútbol, utilizando una única cámara, con su posición
+fija y que abarca todo el campo de juego. Se busca que el seguimiento sea en
+tiempo real, es decir, que el procesamiento sea lo suficientemente rápido para
+que se vean los resultados mientras se ejecuta el video.
+
+Se plantea el uso de una técnica de seguimiento existente, \textit{contornos
+activos}, para el seguimiento en tiempo real de los jugadores con una única
+computadora. Se investigaron alternativas para mejorar el seguimiento
+específicas a las características de un video de fútbol.
 
 %% TODO champo como redactamos la parte de "En tal sección se habla de X, en tal de Y". Digo por lo de las 2 partes que tenemos. Tipo, esto está bien???
 %% En el texto aparecerían como Sección II.1, Sección II.2, etc...
