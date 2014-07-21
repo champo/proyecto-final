@@ -161,23 +161,23 @@ computadora. Se investigaron alternativas para mejorar el seguimiento
 específicas a las características de un video de fútbol.
 
 % TODO: Usar refs en vez de texto
-En el capítulo 1 se describe el estado del arte actual en el área de
+En el \ref{chap-state} se describe el estado del arte actual en el área de
 seguimiento de objetos, y en particular se examinan soluciones aplicadas al
-fútbol. En el capítulo 2 se detalla el problema a solucionar y se discuten
-dificultades del seguimiento automático. El contenido del capítulo 3 describe
-la solución planteada, estrategias que otorgaron mejores resultados, así como
-variaciones que fueron implementadas y posteriormente descartadas por no
-mejorar los resultados. En el capítulo 4 se presentan los resultados obtenidos
-al ejecutar el algoritmo en videos filmados en partidos de fútbol profesional
-de clubes argentinos, y se compara la performance con un algoritmo de
-seguimiento genérico y no optimizado para seguimiento de jugadores de fútbol.
+fútbol. En el \ref{chap-problems} se detalla el problema a solucionar y se
+discuten dificultades del seguimiento automático. En el \ref{chap-ac} se resume
+el funcionamiento y el márco teórico del algoritmo de seguimiento por contornos
+activos. El contenido de \ref{chap-solution} describe la solución planteada,
+estrategias que otorgaron mejores resultados, así como variaciones que fueron
+implementadas y posteriormente descartadas por no mejorar los resultados.  En
+el \ref{chap-results} se presentan los resultados obtenidos al ejecutar el
+algoritmo en videos filmados en partidos de fútbol profesional de clubes
+argentinos, y se compara la performance con un algoritmo de seguimiento
+genérico y no optimizado para seguimiento de jugadores de fútbol.
 % TODO: No me gusta nada esta oración que sigue
-Para finalizar, en el capítulo 5 se discuten las conclusiones alcanzadas y
-posibles futuros trabajos basados en esta solución.
+Para finalizar, en el \ref{chap-conclusion} se discuten las conclusiones
+alcanzadas y posibles futuros trabajos basados en esta solución.
 
 \newpage
-
-\chapter{Estado del arte}
 
 \input{parts/state-of-the-art}
 
@@ -185,13 +185,19 @@ posibles futuros trabajos basados en esta solución.
 
 \input{parts/problems}
 
+\newpage
+
 \input{parts/ac}
+
+\newpage
 
 \input{parts/solution}
 
+\newpage
+
 \input{parts/results}
 
-\input{parts/iftrace}
+\newpage
 
 \input{parts/conclusion}
 
