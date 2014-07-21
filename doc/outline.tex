@@ -147,30 +147,33 @@ analizar y mejorar sus movimientos, ayudar a los entrenadores a decidir
 estrategias y evaluar a los deportistas, otorgar estadísticas a fanáticos del
 juego, entre otras aplicaciones.
 
+% TODO: Meter humo acá
 En este trabajo se estudia el problema de realizar el seguimiento de todos los
 jugadores de un partido de fútbol, utilizando una única cámara, con su posición
 fija y que abarca todo el campo de juego. Se busca que el seguimiento sea en
 tiempo real, es decir, que el procesamiento sea lo suficientemente rápido para
 que se vean los resultados mientras se ejecuta el video.
 
+% TODO: Meter humo acá
 Se plantea el uso de una técnica de seguimiento existente, \textit{contornos
 activos}, para el seguimiento en tiempo real de los jugadores con una única
 computadora. Se investigaron alternativas para mejorar el seguimiento
 específicas a las características de un video de fútbol.
 
-%% TODO champo como redactamos la parte de "En tal sección se habla de X, en tal de Y". Digo por lo de las 2 partes que tenemos. Tipo, esto está bien???
-%% En el texto aparecerían como Sección II.1, Sección II.2, etc...
-El trabajo se divide en dos partes: en la primera se presenta el estado del arte respecto a
-técnicas aplicables al problema de seguimiento de múltiples jugadores de fútbol
-mediante el uso de una o varias cámaras de video, así como las bases teóricas
-para estos métodos, características y limitaciones de cada uno, y la
-factibilidad de conocer el estado del juego completo en cada instante de
-tiempo; en la segunda se detallan las diferentes secciones
-del presente trabajo. En la segunda parte, la Sección \ref{sec:problems} se realiza la descripción detallada del problema, en la Sección
-\ref{sec:solution} se describen las mejoras y novdedades implementadas, en la Sección \ref{sec:results} se presentan los resultados obtenidos y en
-la Sección \ref{sec:iftrace} se realiza un comparación con el famoso algorimo de seguimiento de objetos IFTrace. Finalmente, en la Sección
-\ref{sec:conclusion} se detallan las conclusiones del trabajo.
-
+% TODO: Usar refs en vez de texto
+En el capítulo 1 se describe el estado del arte actual en el área de
+seguimiento de objetos, y en particular se examinan soluciones aplicadas al
+fútbol. En el capítulo 2 se detalla el problema a solucionar y se discuten
+dificultades del seguimiento automático. El contenido del capítulo 3 describe
+la solución planteada, estrategias que otorgaron mejores resultados, así como
+variaciones que fueron implementadas y posteriormente descartadas por no
+mejorar los resultados. En el capítulo 4 se presentan los resultados obtenidos
+al ejecutar el algoritmo en videos filmados en partidos de fútbol profesional
+de clubes argentinos, y se compara la performance con un algoritmo de
+seguimiento genérico y no optimizado para seguimiento de jugadores de fútbol.
+% TODO: No me gusta nada esta oración que sigue
+Para finalizar, en el capítulo 5 se discuten las conclusiones alcanzadas y
+posibles futuros trabajos basados en esta solución.
 
 \newpage
 
