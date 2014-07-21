@@ -118,13 +118,13 @@ contricante, entre otros.
 En el presente trabajo, se analizan las dificultades de realizar el seguimiento
 de jugadores en tiempo real con reducida o nula colaboración humana a partir de
 una sola fuente de video que consiste en una cámara de alta resolución (HD)
-fija capaz de encuadrar todo el campo de juego. 
+fija capaz de encuadrar todo el campo de juego.
 
-En base al analisis de dificultades, se selecciona una tecnica de seguimiento,
-y se detalla un algoritmo construido sobre esta para la tarea especifica de 
-detección y seguimiento de jugadores en futbol. Finalmente, se presentan 
-resultados de aplicar este algoritmo, y que información podria proveer para el
-analisis automatico de jugadas.
+En base al análisis de dificultades, se selecciona una técnica de seguimiento,
+y se detalla un algoritmo construido sobre ésta para la tarea específica de
+detección y seguimiento de jugadores en fútbol. Finalmente, se presentan los
+resultados de aplicar este algoritmo, y qué información podría se proveer
+para el análisis automático de jugadas.
 \end{doublespace}
 \end{customabstract}
 
@@ -132,15 +132,18 @@ analisis automatico de jugadas.
 
 \chapter{Introducción}
 
-Dentro del campo de análisis y tratamiento de imágenes un problema que se
+Dentro del campo del análisis y tratamiento de imágenes un problema que se
 estudia es el del reconocimiento y seguimiento de objetos en secuencias de
 imágenes. Identificar correctamente un objeto en un video es útil para un
 amplio rango de aplicaciones, desde aplicaciones médicas (dónde se ofrece
 soporte para diagnósticos y cirugías) hasta la industria cinematográfica
-(captura de movimiento, \textit{post-producción}), pasando por vigilancia con
-cámaras. 
+(captura de movimiento, \textit{post-producción}), pasando por vigilancia
+automática con cámaras y juegos interactivos. También tiene un gran
+influencia en el reconocimiento de caras y el seguimiento de ojos, técnicas
+que actualmente son muy utilizadas y estudiadas, y que tienen una gran
+potencialidad para ser implementadas en nuevos campos.
 
-En el ámbito deportivo se encuentran muchas aplicaciones para el seguimiento de
+En el ámbito deportivo existen muchas aplicaciones para el seguimiento de
 objetos. Puede resultar útil para validar o reemplazar las decisiones de los
 jueces o árbitros del partido, permitir a deportistas de alto rendimiento
 analizar y mejorar sus movimientos, ayudar a los entrenadores a decidir
@@ -149,9 +152,9 @@ juego, entre otras aplicaciones.
 
 En este trabajo se estudia el problema de realizar el seguimiento de todos los
 jugadores de un partido de fútbol, utilizando una única cámara, con su posición
-fija y que abarca todo el campo de juego. Se busca que el seguimiento sea en
+fija y cuyo campo visual abarca todo el campo de juego. Se busca que el seguimiento sea en
 tiempo real, es decir, que el procesamiento sea lo suficientemente rápido para
-que se vean los resultados mientras se ejecuta el video. En base a la posición
+que se vean los resultados mientras se ejecuta el video. Teniendo en cuenta la posición
 a través del tiempo, se puede informar la velocidad de un jugador en un
 determinado momento, distancia recorrida, zonas más frecuentadas por el
 jugador, entre otros.
