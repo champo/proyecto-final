@@ -147,20 +147,25 @@ analizar y mejorar sus movimientos, ayudar a los entrenadores a decidir
 estrategias y evaluar a los deportistas, otorgar estadísticas a fanáticos del
 juego, entre otras aplicaciones.
 
-% TODO: Meter humo acá
 En este trabajo se estudia el problema de realizar el seguimiento de todos los
 jugadores de un partido de fútbol, utilizando una única cámara, con su posición
 fija y que abarca todo el campo de juego. Se busca que el seguimiento sea en
 tiempo real, es decir, que el procesamiento sea lo suficientemente rápido para
-que se vean los resultados mientras se ejecuta el video.
+que se vean los resultados mientras se ejecuta el video. En base a la posición
+a través del tiempo, se puede informar la velocidad de un jugador en un
+determinado momento, distancia recorrida, zonas más frecuentadas por el
+jugador, entre otros.
 
-% TODO: Meter humo acá
 Se plantea el uso de una técnica de seguimiento existente, \textit{contornos
 activos}, para el seguimiento en tiempo real de los jugadores con una única
-computadora. Se investigaron alternativas para mejorar el seguimiento
-específicas a las características de un video de fútbol.
+computadora. Esta técnica determina el contorno de un objeto dentro del video y
+a medida que el objeto se mueve el contorno se adapta tomando decisiones
+basadas los valores \textit{RGB} de las imágenes. Se investigaron alternativas
+para mejorar el seguimiento específicas a las características de un video de
+fútbol, como ser la morfología de los objetos a seguir (por ejemplo, se acota
+con un rectángulo más alto que ancho el tamaño máximo del contorno de un
+jugador) entre otros.
 
-% TODO: Usar refs en vez de texto
 En el \ref{chap-state} se describe el estado del arte actual en el área de
 seguimiento de objetos, y en particular se examinan soluciones aplicadas al
 fútbol. En el \ref{chap-problems} se detalla el problema a solucionar y se
