@@ -1,28 +1,59 @@
 \chapter{Solución propuesta}
-\label{sec:solution}
+\label{chap-solution}
 
-En esta sección describimos las distintas tecnicas aplicadas. Primero describimos algoritmos para
-ignorar los elementos del fondo de la imagen en \ref{sec:background-elimination}. Luego, explicamos
-como utilizamos el algoritmo contornos activos\cite{fast-level-set} y las modificaciónes necesarias
-en \ref{sec:ac-extension}. Finalmente, detallamos la integración final entre las distintas tecnicas, que es
-la que analizamos en la siguiente seccion \ref{sec:results}.
+En esta sección se describen las técnicas aplicadas para lograr el seguimiento
+de los jugadores. Primero se detallan algoritmos utilizados para ignorar los
+elementos del fondo de la imagen en la sección
+\ref{sec:background-elimination}, y luego como fue utilizado el algoritmo
+contornos activos (ver \cite{fast-level-set}) y las modificaciones que se le
+hicieron en la sección \ref{sec:ac-extension}. Finalmente, en la sección
+\ref{sec:alg-final} se detalla la integración final entre las distintas
+técnicas, que es analizada en el siguiente capítulo.
 
-\section{Eliminación de fondo por varios métodos}
+\section{Eliminación de fondo}
+
 \label{sec:background-elimination}
-Problemas y soluciones (tal vez como subsection)
+% TODO: REEMPLAZAR PLANTEA por mejor palabra
+Se planteó que el análisis por contornos activos se beneficia de un análisis
+previo que detecte e informe a la actualización del contorno sobre sectores de
+los cuadros del video que sin duda no corresponden a las siluetas de los
+objetos de interés para el seguimiento.
+
+Con ese fin, se analizan distintos métodos para extraer información adicional
+de la imágen y detectar con el objetivo de ignorar sectores de la imágen que
+no correspondan a jugadores con total certeza.
 
 \subsection{Tribuna y publicidades}
-% Simplemente como ponemos en negro para que no interfiera
 
-\subsection{Energia}
-  * Método de la energía
+La técnica más simple de eliminación de sectores es una técnica de
+\textit{crop} que muestra como negro todo sector de la imágen ajeno a un
+cuadrilátero que bordea la cancha.
+
+% TODO: IMÁGENES Crop\_Antes y Crop\_Despues
+
+\subsection{Energía}
+
+Se implementó el método de eliminación de fondo descripto en
+\cite{papers-tanos}, para eliminación de sectores que corresponden al
+verde del pasto de la cancha o líneas pintadas sobre el mismo basado
+en una medición de la variación del color de cada píxel.
+
+% TODO: Imágenes de cómo funciona
 
 \subsection{Eliminación de lineas}
-  * Eliminación de lineas por Detector de borde + umbral + morfología
+
+Basado en la detección de líneas de Hough, se desarrolló un método similar que
+detecta los tramos pintados de blanco en el césped de la cancha. El mismo
+funciona aplicando un detector de bordes (se probaron resultados utilizando
+tanto el método de Roberts como el de Canny), umbralizando el resultado, y
+haciendo un análisis morfológico de las componentes conexas obtenidas luego de
+la umbralización.
+
+Respecto a la detección de líneas de Hough, este método tiene la ventaja de que
+% TODO
 
 \subsection{Eliminación del pasto}
   * Eliminación de colores de cancha por histograma de colores
-
 
 \section{Contornos activos}
 \label{sec:ac-extension}

@@ -58,9 +58,9 @@
 % \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
 \def\customabstract{\vspace{.5em}
-    {\Large\center{\textbf{RESUMEN}} \\[0.5em] \relax%
+    {\Large\center{\textbf{RESUMEN}} \\[0.5em] \relax
     }}
-\def\endkeywords{\par}
+\def\endcustomabstract{\par}
 
 \def\keywords{\vspace{.5em}
     {\textit{Palabras clave: }
@@ -68,7 +68,7 @@
 \def\endkeywords{\par}
 
 % TITLE Configuration
-\setlength{\droptitle}{-30pt}
+% \setlength{\droptitle}{-25pt}
 \pretitle{\begin{center}\Huge\begin{rmfamily}}
 \posttitle{\par\end{rmfamily}\end{center}\vskip 0.5em}
 \preauthor{\begin{center}
@@ -81,8 +81,8 @@
 \postdate{\par\end{center}}
 
 % Headers
-\addtolength{\voffset}{-40pt}
-\addtolength{\textheight}{80pt}
+% \addtolength{\voffset}{-40pt}
+% \addtolength{\textheight}{80pt}
 \renewcommand{\headrulewidth}{0pt}
 \fancyhead{}
 \fancyfoot{}
@@ -102,8 +102,8 @@
 \begin{document}
 \pagestyle{fancy}
 \maketitle
-\thispagestyle{fancy}
 
+\addvspace{3em}
 \begin{customabstract}
 \begin{doublespace}
 El seguimiento de jugadores en una secuencia de imágenes (video) es un caso
@@ -130,7 +130,8 @@ para el análisis automático de jugadas.
 
 \tableofcontents
 
-\chapter{Introducción}
+\chapter*{Introducción}
+\addcontentsline{toc}{chapter}{Introducción}
 
 Dentro del campo del análisis y tratamiento de imágenes un problema que se
 estudia es el del reconocimiento y seguimiento de objetos en secuencias de
@@ -169,21 +170,20 @@ fútbol, como ser la morfología de los objetos a seguir (por ejemplo, se acota
 con un rectángulo más alto que ancho el tamaño máximo del contorno de un
 jugador) entre otros.
 
-En el \ref{chap-state} se describe el estado del arte actual en el área de
-seguimiento de objetos, y en particular se examinan soluciones aplicadas al
-fútbol. En el \ref{chap-problems} se detalla el problema a solucionar y se
-discuten dificultades del seguimiento automático. En el \ref{chap-ac} se resume
-el funcionamiento y el márco teórico del algoritmo de seguimiento por contornos
-activos. El contenido de \ref{chap-solution} describe la solución planteada,
-estrategias que otorgaron mejores resultados, así como variaciones que fueron
-implementadas y posteriormente descartadas por no mejorar los resultados.  En
-el \ref{chap-results} se presentan los resultados obtenidos al ejecutar el
-algoritmo en videos filmados en partidos de fútbol profesional de clubes
-argentinos, y se compara la performance con un algoritmo de seguimiento
-genérico y no optimizado para seguimiento de jugadores de fútbol.
-% TODO: No me gusta nada esta oración que sigue
-Para finalizar, en el \ref{chap-conclusion} se discuten las conclusiones
-alcanzadas y posibles futuros trabajos basados en esta solución.
+En el capítulo \ref{chap-state} se describe el estado del arte actual en el
+área de seguimiento de objetos, y en particular se examinan soluciones
+aplicadas al fútbol. En el capítulo \ref{chap-problems} se detalla el problema
+a solucionar y se discuten dificultades del seguimiento automático. En el
+capítulo \ref{chap-ac} se resume el funcionamiento y el márco teórico del
+algoritmo de seguimiento por contornos activos. El contenido del capítulo
+\ref{chap-solution} describe la solución planteada, estrategias que otorgaron
+mejores resultados, así como variaciones que fueron implementadas y
+posteriormente descartadas por no mejorar los resultados. El capítulo
+\ref{chap-results} muestra los resultados obtenidos al ejecutar el algoritmo en
+videos filmados en partidos de fútbol profesional de clubes argentinos, y
+compara la performance con un algoritmo de seguimiento que no fue optimizado
+para seguimiento de jugadores de fútbol. Para finalizar, en el capítulo
+\ref{chap-conclusion} se presentan las conclusiones del trabajo.
 
 \newpage
 
