@@ -1,10 +1,10 @@
 \chapter{Descripcción del metodo}
 
-En este capitulo se describe el metodo de seguimiento seleccionado para este trabajo.
-Primero, en la sección \ref{sec:ac} se explica el algoritmo utilizado \emph{Contornos Activos},
-y en la sección \ref{sec:impl} su implementación. Luego, en la sección \ref{sec:eleccion}
-se justifica la elección del algoritmo. Finalmente, en la sección \ref{sec:ac-problemas}
-se analiza las limitaciónes del algoritmo para esta aplicación.
+En este capítulo se describe el método de seguimiento seleccionado para este trabajo.
+Primero, en la Sección \ref{sec:ac} se explica el algoritmo utilizado \emph{Contornos Activos},
+y en la Sección \ref{sec:impl} su implementación. Luego, en la Sección \ref{sec:eleccion}
+se justifica la elección del algoritmo. Finalmente, en la Sección \ref{sec:ac-problemas}
+se analiza las limitaciones del algoritmo para esta aplicación.
 
 
 \section{Contornos Activos}
@@ -157,8 +157,8 @@ ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el num
 
 Se elegio el algoritmo \emph{Contornos Activos} por varios motivos:
 \begin{itemize}
-\item No depende de disponer de bloques de $n x n$ pixeles para su correcto funcionamiento. Una de 
-las principales restricciones de este trabajo es utilizar una sola camara para obtener el video, y 
+\item No depende de disponer de bloques de $n x n$ pixeles para su correcto funcionamiento. Una de
+las principales restricciones de este trabajo es utilizar una sola camara para obtener el video, y
 como se explica en la sección \ref{sub-sec:camaras} un jugador esta formado por un numero muy limitado de pixeles, dificultando el uso de algoritmos que no tengan esta caracteristica.
 
 \item Su tiempo de ejecución no depende del tamaño del cuadro, sino de los jugadores. Esto hace que sea muy rapido de ejecutar por cuadro, posibilitando el análisis en tiempo real.
