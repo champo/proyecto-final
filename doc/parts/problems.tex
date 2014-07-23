@@ -4,31 +4,25 @@
 Este trabajo busca ofrecer una solución para obtener de manera semisupervisada
 información sobre del estado del juego de fútbol en tiempo real. Esto involucra
 conocer la posición de cada jugador para cada cuadro del video, la pelota,
-puntaje actual, etcétera. Se acotó el problema a la determinación de la
+puntaje actual, etcétera. Se acota el problema a la determinación de la
 posición de los jugadores únicamente.
-
-%% TODO: Ojo, a partir de acá hablamos en pasado. Deberíamos ser consistentes,
-%% por como arrancamos en el resuemen, la intro y por lo que dice la mina
-%% deberiamos usar el presente o eso de "se plantea, se define, etc..."
-
 
 % TODO: Les copa este párrafo? Eliminarlo sino
 Soluciones más avanzadas podrían otorgar información de mayor nivel,
-conociendo datos como la posición de la pelota. El objetivo inicial del trabajo
-era determinar automáticamente posiciones de jugadores fuera de juego, lo cual
+conociendo datos como la posición de la pelota. Por ejemplo, se pueden
+determinar automáticamente posiciones de jugadores fuera de juego, lo cual
 requiere, al menos, determinar tres cosas: la posición de cada jugador (y a qué
 equipo pertenece), la posición de la pelota, y detección de cuándo un jugador
 realiza un pase. Este último punto requiere un análisis de alto nivel que es
-descripto en \cite{paper-tanos} y se discute en el Capítulo \ref{chap-solucion}
+descripto en \cite{paper-tanos} y se discuten en el Capítulo \ref{chap-solucion}
 las dificultades encontradas para replicar estos resultados.
-
 
 \section{Análisis en Tiempo Real}
 
 Se plantea que el algoritmo debe poder realizar el seguimiento en tiempo
-real, aprovechando que contornos activos, la técnica utilizada para obtener la
-posición de los jugadores, es lo suficientemente eficiente para funcionar en
-tiempo real.
+real, tomando ventaja de que contornos activos (la técnica utilizada para
+obtener la posición de los jugadores) es lo suficientemente eficiente para
+funcionar en tiempo real.
 
 Realizar el seguimiento en tiempo real agrega restricciones fuertes al
 problema. Toda técnica tiene un costo de procesamiento, por lo tanto se debe
@@ -135,22 +129,21 @@ Todos ellos están basados en soluciones de ecuaciones diferenciales en
 derivadas parciales y resultan aceptablemente robustos, pero tienen severas
 restricciones que impiden que se utilicen para aplicaciones en tiempo real.
 
-Nuestra investigación utiliza el algoritmo de contornos
-activos\cite{fast-level-set}, el cual no utiliza ecuaciones diferenciales
-(haciéndolo apto para aplicaciones en tiempo real) y además hace un análisis
-local de los objetos seguidos en la imagen, lo cual hace que el tiempo de
-análisis de un cuadro sea dependiente de la resolución de los jugadores e
-independiente de la resolución del video.
+Se utiliza el algoritmo de contornos activos\cite{fast-level-set}, el cual no
+utiliza ecuaciones diferenciales (haciéndolo apto para aplicaciones en tiempo
+real) y además hace un análisis local de los objetos seguidos en la imagen, lo
+cual hace que el tiempo de análisis de un cuadro sea dependiente de la
+resolución de los jugadores e independiente de la resolución del video.
 
 \subsection{Distorsión de la lente}
 
 Al utilizar una única cámara para captar la cancha entera se corre el riesgo de
 tener distorción en los puntos de la imagen más alejados al foco de la cámara.
-Este es el llamado ``efecto de ojo de buey'' e introduce mucho error, por ejemplo
-en la aplicación de la homografía, por lo
-tanto se debe aplicar una corrección. Una lente apropiada y bien calibrada
-puede reducir este error, pero nunca puede ser eliminado totalmente. Sólo
-puede evitarse utilizando una mejor técnica de filmación.
+Este es el llamado ``efecto de ojo de buey'' e introduce mucho error, por
+ejemplo en la aplicación de la homografía, por lo tanto se debe aplicar una
+corrección. Una lente apropiada y bien calibrada puede reducir este error, pero
+nunca puede ser eliminado totalmente. Sólo puede evitarse utilizando una mejor
+técnica de filmación.
 
 \subsection{Oclusiones entre jugadores}
 
