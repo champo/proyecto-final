@@ -3,7 +3,7 @@
 
 Esta Sección presenta un análisis de los resultados obtenidos de la ejecución del algoritmo sobre distintos videos. A lo largo de est Sección se refiere al algoritmo como a la modificación que se le hizo a \textit{contornos activos} y que fue descripta en el Capítulo \ref{chap-solucion}. Las palabras \textit{aplicación} y \textit{programa} serán utilizadas indistintamente para referirse al programa que implementa dicho algoritmo, junto con una interfaz de usuario para el operador. Se refiere a la\textit{implementación} como a la parte del programa que implementa el algoritmo.
 
-Se presentan los resultados obtenidos de la ejecución del programa, junto con métricas utilizadas para evaluar la performance de la implementación. 
+Se presentan los resultados obtenidos de la ejecución del programa, junto con métricas utilizadas para evaluar la performance de la implementación.
 
 \section{Aplicación}
 
@@ -27,8 +27,8 @@ De manera opcional, en cada cuadro se guarda en disco duro una copia del estado 
 Se utilizaron principalmente dos videos, uno correspondiente a un partido entre los equipos argentinos de los clubes Boca Juniors e Independiente; y un segundo video en el cual se enfrentan los equipos Independiente y San Lorenzo. Se detalla a continuación las características de las imágenes extraídas de esos videos.
 
 \begin{itemize}
-  \item \textbf{Boca vs Independiente:}
-  \item \textbf{Independiente vs San Lorenzo:}
+  \item \textbf{Boca vs Independiente:} El video cuenta con una resolución de \textit{1080p} (1920 pixels de ancho y 1080 de alto). La cancha se muestra en su totalidad, y se puede observar la totalidad de las gradas del lado opuesto y cielo por encima de ellas. Luego de descartar esas regiones del video, la resolución pasa a ser de 1459 píxels de ancho por 304 de alto. % TODO: No está terminado, falta describir jugadores y eso
+  \item \textbf{Independiente vs San Lorenzo:} También filmado en resolución de \textit{1080p}, las esquinas del campo de juego quedan fuera del campo visual. Luego de descartar las gradas, la resolución final del video es de 1920 pixels de ancho y 540 de alto. % TODO: No está terminado, describir jugadores
 \end{itemize}
 
 Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los cuales la cámara se encuentra relativamente estática y se analizó la correctitud del seguimiento en estos casos, contando con mayor resolución pero sin poder efectuar exitosamente la eliminación de fondo o la correlación a un plano bidimencional por homografía % [ TODO: ESTO ESTÁ ESCRITO CON LA ** ]
