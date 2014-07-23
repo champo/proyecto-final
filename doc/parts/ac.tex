@@ -1,11 +1,11 @@
-\chapter{Descripcción del método}
+\chapter{Descripción del método}
 \label{chap-ac}
 
-En este capítulo se describe el método de seguimiento seleccionado para este trabajo.
+En este Capítulo se describe el método de seguimiento seleccionado para este trabajo.
 Primero, en la Sección \ref{sec:ac} se explica el algoritmo utilizado \emph{Contornos Activos},
 y en la Sección \ref{sec:impl} su implementación. Luego, en la Sección \ref{sec:eleccion}
 se justifica la elección del algoritmo. Finalmente, en la Sección \ref{sec:ac-problemas}
-se analiza las limitaciones del algoritmo para esta aplicación.
+se analizan las limitaciones del algoritmo para esta aplicación.
 
 
 \section{Contornos Activos}
@@ -156,15 +156,21 @@ ecuaciones \ref{eq:active-contours-stoppingCondition} o cuando se alcanza el num
 \section{Elección}
 \label{sec:eleccion}
 
-Se elegio el algoritmo \emph{Contornos Activos} por varios motivos:
+Se escogió el algoritmo \emph{Contornos Activos} por varios motivos:
 \begin{itemize}
-\item No depende de disponer de bloques de $n x n$ pixeles para su correcto funcionamiento. Una de
-las principales restricciones de este trabajo es utilizar una sola camara para obtener el video, y
-como se explica en la sección \ref{sub-sec:camaras} un jugador esta formado por un numero muy limitado de pixeles, dificultando el uso de algoritmos que no tengan esta caracteristica.
+    \item No depende de disponer de bloques de $n x n$ píxeles para su
+        correcto funcionamiento. Una de las principales restricciones de este
+        trabajo es utilizar una sola cámara para obtener el video, y, como se
+        explica en la Sección \ref{sub-sec:camaras}, un jugador está formado
+        por un número muy limitado de píxeles, dificultando el uso de
+        algoritmos que no tengan esta característica.
 
-\item Su tiempo de ejecución no depende del tamaño del cuadro, sino de los jugadores. Esto hace que sea muy rapido de ejecutar por cuadro, posibilitando el análisis en tiempo real.
+    \item Su tiempo de ejecución no depende del tamaño del cuadro, sino del
+        de los jugadores. Esto hace que el tiempo de procesamiento de un cuadro
+        sea muy pequeño, posibilitando el análisis en tiempo real.
 
-\item Se cuenta con metodos de manejo de oclusiones para \emph{Contornos Activos}\cite{paper-juliana}.
+    \item Se cuenta con métodos de manejo de oclusiones para
+        \emph{Contornos Activos}\cite{paper-juliana}.
 
 \end{itemize}
 
@@ -174,13 +180,13 @@ como se explica en la sección \ref{sub-sec:camaras} un jugador esta formado por
 El correcto funcionamiento del algoritmo de contornos
 activos\cite{fast-level-set} depende de una buena selección de la función
 característica, para poder distinguir claramente a un jugador respecto a otros
-objetos o respecto del fondo. En casos como el ilustrado por la figura
+objetos o respecto del fondo. En casos como el ilustrado por la Figura
 \ref{fig:camiseta}, elegir una función característica resulta sencillo, ya que
 con elegir el color de la camiseta se asegura una buena descripción del contorno
-a seguir. Sin embargo, la imagen de la figura \ref{fig:camiseta-rayada} introduce
-uno de los problemas en la selección de la función característica. Se puede ver que
-las diferencias entre ambos colores del objeto hacen dificil identificarlos a ambos
-con una misma caracteristica.
+a seguir. Sin embargo, la imagen de la Figura \ref{fig:camiseta-rayada} introduce
+uno de los problemas en la selección de esta función. Se puede ver que
+las diferencias entre ambos colores del objeto hacen difícil identificarlos a ambos
+con una misma característica.
 
 \begin{figure}[H]
     \centering
