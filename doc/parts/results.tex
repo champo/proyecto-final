@@ -1,29 +1,24 @@
 \chapter{Resultados}
 \label{chap-results}
 
-Esta Sección presenta un análisis de los resultados obtenidos de la ejecución
-del algoritmo sobre distintos videos. A lo largo de est Sección se refiere al
-algoritmo como a la modificación que se le hizo a \textit{contornos activos} y
-que fue descripta en el Capítulo \ref{chap-solucion}. Las palabras
-\textit{implamentación} y \textit{programa} serán utilizadas indistintamente
-para referirse al programa que implementa dicho algoritmo, junto con una
-interfaz de usuario para el operador.
+Esta Sección presenta un análisis de los resultados obtenidos de la ejecución del algoritmo sobre distintos videos. A lo largo de est Sección se refiere al algoritmo como a la modificación que se le hizo a \textit{contornos activos} y que fue descripta en el Capítulo \ref{chap-solucion}. Las palabras \textit{aplicación} y \textit{programa} serán utilizadas indistintamente para referirse al programa que implementa dicho algoritmo, junto con una interfaz de usuario para el operador. Se refiere a la\textit{implementación} como a la parte del programa que implementa el algoritmo.
 
-Se presentan los resultados obtenidos de la ejecición del programa, junto con
-métricas utilizadas para evaluar la performance de la implementación. 
+Se presentan los resultados obtenidos de la ejecución del programa, junto con métricas utilizadas para evaluar la performance de la implementación. 
 
 \section{Aplicación}
 
-La aplicación implementada incorpora una interfaz gráfica utilizada tanto para dar instrucciones como para recibir información acerca del partido y del funcionamiento del algoritmo. La misma cuenta con una interfaz donde se muestra a los jugadores, una lista de jugadores siendo seguidos, un mapa de calor de espacios ocupados por los jugadores, y una imágen que permite al operador evaluar el correcto funcionamiento del algoritmo.
+El programa incorpora una interfaz gráfica utilizada tanto para dar instrucciones como para recibir información acerca del partido y del funcionamiento del algoritmo. La misma cuenta con una sección donde se muestra una lista de jugadores siendo seguidos, otra donde se puede visualizar el video original con un recuadro en cada jugador seguido, un mapa de calor de espacios ocupados por los jugadores, y una imágen que permite al operador evaluar el correcto funcionamiento del algoritmo.
 
-Para comenzar la ejecución, el algoritmo requiere que el operador identifique la posición de los jugadores en la imagen inicial de la secuencia. % [ TODO: Completar con chamuyo ]
+Para comenzar la ejecución, la implementación requiere que el operador identifique la posición de los jugadores en la imagen inicial de la secuencia. En este paso, también debe agregar información acerca del número de camiseta que viste, el equipo, y nombre del jugador.
 
-Un paso adicional es el de determinar puntos a utilizar para el cálculo de la homografía. Los datos necesarios son al menos cuatro parejas de puntos. De estas parejas, el primer punto es una coordenada la imagen en perspectiva y el otro punto es la coordenada
-en un plano bidimensional. Con cuatro de estas relaciones, se puede calcular la matriz que resuelve la homografía para cualquier otro punto. % [ TODO: esto no queda claro ]
+Un paso adicional que debe ejecutar el operador es determinar puntos a utilizar para el cálculo de la homografía.
 
-Una vez que el programa tiene estos datos, el algoritmo de contornos activos puede comenzar a correr. Existen dos modos, uno que avanza sólo ante la indicación del operador (mecánica ``cuadro por cuadro'') y otro modo que avanza automáticamente cada vez que se computa un cuadro (mecánica ``tiempo real''). % [ TODO: algo de amor a este párrafo ]
+% TODO: Esto no se entiende, y no lo explicamos antes????
+Los datos necesarios son al menos cuatro parejas de puntos. De estas parejas, el primer punto es una coordenada la imagen en perspectiva y el otro punto es la coordenada en un plano bidimensional. Con cuatro de estas relaciones, se puede calcular la matriz que resuelve la homografía para cualquier otro punto.  
 
-Cada cuadro, una ventana muestra las posiciones actualizadas de los jugadores. El usuario puede seleccionar un jugador en particular y ver en detalle información sobre su posición, velocidad promedio, actual, y máxima desde el comienzo del seguimiento, y un mapa de calor que muestra con colores próximos al rojo los lugares más visitados por el jugador. Además, en un archivo se escribe la posición de cada jugador por cada frame.
+Una vez que el programa tiene estos datos, el algoritmo de contornos activos puede comenzar a correr. Existen dos modos, uno que avanza sólo ante la indicación del operador (mecánica ``cuadro por cuadro'') y otro modo que avanza automáticamente cada vez que se computa un cuadro (mecánica ``tiempo real'').  % [ TODO: algo de amor a este párrafo ]
+
+Para cada cuadro, una ventana muestra las posiciones actualizadas de los jugadores. El usuario puede seleccionar un jugador en particular y ver en detalle información sobre su posición, velocidad promedio, actual, y máxima desde el comienzo del seguimiento, y un mapa de calor que muestra con colores próximos al rojo los lugares más visitados por el jugador. Además, en un archivo se escribe la posición de cada jugador en cada momento.
 
 De manera opcional, en cada cuadro se guarda en disco duro una copia del estado actual del seguimiento para referencia futura.
 
