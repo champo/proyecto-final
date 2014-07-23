@@ -6,15 +6,19 @@
 \section{Comparación con IFTrace}
 \label{sec:iftrace}
 
-El algoritmo de seguimiento IFTrace, propuesto por \citeauthor*{IFTrace}, es un algoritmo robusto que soporta
-cambios de iluminación y forma, oclusiones y se centra en hallar características representativas de la textura
-de los objetos a seguir. Es capaz de recuperarse de errores menores y permite el seguimiento de múltiples objetos
-a la vez.
+El algoritmo de seguimiento IFTrace, propuesto por \citeauthor*{IFTrace}, es un
+algoritmo robusto que soporta cambios de iluminación y forma, oclusiones y se
+centra en hallar características representativas de la textura de los objetos a
+seguir. Es capaz de recuperarse de errores menores y permite el seguimiento de
+múltiples objetos a la vez.
 
-Un algoritmo de este tipo podría proporcionar una solución al problema. Para comprobarlo, se llevaron a cabo algunas pruebas
-utilizando un video sintético creado para este fin, y un video real de un partido de fútbol. En las Figuras \ref{fig:sample-happy-occluded}
-y \ref{fig:sample-boca} pueden observarse los primeros cuadros de cada video. Pueden apreciarse a simple vista las marcadas diferencias
-entre ambos videos, como por ejemplo la resolución de la imagen y el tamaño y la complejidad de los objetos de inteŕes.
+Un algoritmo de este tipo podría proporcionar una solución al problema. Para
+comprobarlo, se llevaron a cabo algunas pruebas utilizando un video sintético
+creado para este fin, y un video real de un partido de fútbol. En las Figuras
+\ref{fig:sample-happy-occluded} y \ref{fig:sample-boca} pueden observarse los
+primeros cuadros de cada video. Pueden apreciarse a simple vista las marcadas
+diferencias entre ambos videos, como por ejemplo la resolución de la imagen y
+el tamaño y la complejidad de los objetos de inteŕes.
 
 \begin{figure}[H]
     \centering
@@ -30,12 +34,13 @@ entre ambos videos, como por ejemplo la resolución de la imagen y el tamaño y 
     \label{fig:sample-boca}
 \end{figure}
 
-Como se puede ver en la Figura
-\ref{fig:happy-occluded-iftrace}, IFTrace logra un correcto seguimiento de múltiples objetos en el video sintético.
-También puede observarse, en la Figura \ref{fig:boca-iftrace}, como sigue correctamente a un jugador en el video real.
-Sin embargo, el seguimiento sólo es exitoso durante unos pocos cuadros, ya que, en el cuadro 17, el algoritmo cae en un error del
-cual sólo una corrección manual
-puede sacarlo. Este tipo de correción semi-supervisada no está contemplada en el algoritmo de IFTrace.
+Como se puede ver en la Figura \ref{fig:happy-occluded-iftrace}, IFTrace logra
+un correcto seguimiento de múltiples objetos en el video sintético.  También
+puede observarse, en la Figura \ref{fig:boca-iftrace}, como sigue correctamente
+a un jugador en el video real.  Sin embargo, el seguimiento sólo es exitoso
+durante unos pocos cuadros, ya que, en el cuadro 17, el algoritmo cae en un
+error del cual sólo una corrección manual puede sacarlo. Este tipo de correción
+semi-supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
     \centering
@@ -47,7 +52,8 @@ puede sacarlo. Este tipo de correción semi-supervisada no está contemplada en 
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{IFTrace funcionando en una secuencia de cuadros de video sintético.
-    \label{fig:happy-occluded-iftrace}}
+    \label{fig:happy-occluded-iftrace}
+    }
 \end{figure}
 
 \begin{figure}[H]
@@ -60,7 +66,8 @@ puede sacarlo. Este tipo de correción semi-supervisada no está contemplada en 
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{Seguimiento de un jugador en un video real utilizando IFTrace.
-    \label{fig:boca-iftrace}}
+    \label{fig:boca-iftrace}
+    }
 \end{figure}
 
 \begin{figure}[H]
@@ -73,7 +80,8 @@ puede sacarlo. Este tipo de correción semi-supervisada no está contemplada en 
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{Nuestro algoritmo en funcionamiento en un video sintético.
-    \label{fig:happy-occluded-activeContour}}
+    \label{fig:happy-occluded-activeContour}
+    }
 \end{figure}
 
 \begin{figure}[H]
@@ -85,26 +93,32 @@ puede sacarlo. Este tipo de correción semi-supervisada no está contemplada en 
         \subfloat[Cuadro 17]{\includegraphics[width = 1.5in]{./images/cropped_rendered017.png}}
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
-    \caption{Seguimiento de los jugadores en un video real mediante nuestro algoritmo.
-    \label{fig:boca-activeContour}}
+    \caption{Seguimiento de los jugadores en un video real mediante el algoritmo de contornos activos modificados.
+    \label{fig:boca-activeContour}
+    }
 \end{figure}
 
-Como se puede observar en la Figura \ref{fig:happy-occluded-activeContour}, nuestro algoritmo logra seguir con éxito a los objetos
-de interés en el video sintético. Además, también se obtiene un resultado positivo en el video real en la situación en que IFTrace
-pierde al jugador, como puede observarse en la Figura \ref{fig:boca-activeContour}.
+Como se puede observar en la Figura \ref{fig:happy-occluded-activeContour},
+el algoritmo de contornos activos modificado logra seguir con éxito a los
+objetos de interés en el video sintético. Además, también se obtiene un
+resultado positivo en el video real en la situación en que IFTrace pierde al
+jugador, como puede observarse en la Figura \ref{fig:boca-activeContour}.
 
 \subsection{Evaluación de comportamiento}
 
-Otro punto importante de comparación entre los dos algoritmos es su tiempo de ejecución, es decir el tiempo que tarda en llevar a cabo su trabajo.
-De acuerdo a las mediciones realizadas con un video real de un partido de fútbol, siguiendo a un solo jugador, el tiempo promedio que
-tarda IFTrace por cuadro es 6.962 segundos, mientras que nuestro algoritmo tiene un tiempo promedio de 0.712 segundos. Se puede observar que
+Otro punto importante de comparación entre los dos algoritmos es su tiempo de
+ejecución, es decir el tiempo que tarda en llevar a cabo su trabajo.  De
+acuerdo a las mediciones realizadas con un video real de un partido de fútbol,
+siguiendo a un solo jugador, el tiempo promedio que tarda IFTrace por cuadro es
+6.962 segundos, mientras que nuestro algoritmo tiene un tiempo promedio de
+0.712 segundos. Se puede observar que se encuentra un orden magnitud por debajo
+de IFTrace.
 %% 6.9628571428571435 si quieren los decimales
 %% TODO verificar nuestro numero!!!
-se encuentra un orden magnitud por debajo de IFTrace.
 
-Cabe destacar que ambos algoritmos podrían verse beneficiados por numerosas optimizaciones, como por ejemplo la programación
-en GPU y la reducción de operaciones de I/O, \textit{Input/Output}, como lo son las escrituras a disco. Sin embargo, por razones de
-practicidad se tomaron estas mediciones con versiones estándar de ambos algoritmos.
+Cabe destacar que ambos algoritmos podrían verse beneficiados de ciertas
+optimizaciones, como ser por ejemplo la programación en GPU y la reducción de
+operaciones de \textit{Input/Output} al almacenamiento secundario (disco duro).
 
 % TODO Esto creo que probablemente terminemos sacandolo right? Que métrica podemos meter?!?!
 % - Comparación de nuestros resultados vs los de ellos (Métrica: cantidad de jugadores perdidos por frame -- o si se nos ocurre una mejor ambas o esa)
