@@ -76,6 +76,8 @@
 \begin{tabular}[t]{c}}
 \postauthor{\end{tabular}\normalsize
     \\[1em] Instituto Tecnológico de Buenos Aires
+    \\[1em] Proyecto Final Ingeniería en Informática
+    \\[1em] Director: Juliana Gambini
 \par\end{center}}
 \predate{\begin{center}\small}
 \postdate{\par\end{center}}
@@ -106,24 +108,27 @@
 \addvspace{3em}
 \begin{customabstract}
 \begin{doublespace}
-El seguimiento de jugadores en una secuencia de imágenes (video) es un caso
-particular del seguimiento de objetos, aplicado a partidos de fútbol. El
-objetivo es detectar y seguir la posición de los jugadores y la pelota a medida
+El seguimiento de objetos en una secuencia de imágenes (video) puede ser
+aplicado eventos deportivos. En esta aplicación el objetivo es detectar y
+seguir la posición de los jugadores y la pelota a medida
 que se desarrolla el juego, obteniendo información útil para distintas
-aplicaciones, como puede ser soporte informático para los árbitros (detección
-automática de pases, goles, posiciones adelantadas, etc...), adaptación del
-entrenamiento de los jugadores, análisis y estudio de las tácticas de un
-contricante, entre otros.
+aplicaciones, como puede ser brindar soporte informático para los árbitros
+(detección automática de pases, goles, posiciones adelantadas, etc...),
+colaborar con el cuerpo técnico en el entrenamiento de los jugadores,
+el análisis y el estudio de las tácticas de un contricante, entre otros.
 
-En el presente trabajo, se analizan las dificultades de realizar el seguimiento
+En el presente trabajo se propone un método de seguimiento de jugadores que
+puede utilizarse para cumplir algunos de los objetivos del problema,
+se analizan las dificultades de realizar el seguimiento
 de jugadores en tiempo real con reducida o nula colaboración humana a partir de
 una sola fuente de video que consiste en una cámara de alta resolución (HD)
 fija capaz de encuadrar todo el campo de juego.
 
-En base al análisis de dificultades, se selecciona una técnica de seguimiento,
+En base al análisis de dificultades, se selecciona una técnica de seguimiento
 y se detalla un algoritmo construido sobre ésta para la tarea específica de
-detección y seguimiento de jugadores en fútbol. Finalmente, se presentan los
-resultados de aplicar este algoritmo, y qué información podría se proveer
+detección y seguimiento de jugadores en partidos de fútbol. Se presentan los
+resultados de aplicar este algoritmo, se comparan con otro método existente
+en la literatura y se explicita qué información se podría proveer
 para el análisis automático de jugadas.
 \end{doublespace}
 \end{customabstract}
@@ -139,7 +144,7 @@ imágenes. Identificar correctamente un objeto en un video es útil para un
 amplio rango de aplicaciones, desde aplicaciones médicas (dónde se ofrece
 soporte para diagnósticos y cirugías) hasta la industria cinematográfica
 (captura de movimiento, \textit{post-producción}), pasando por vigilancia
-automática con cámaras y juegos interactivos. También tiene un gran
+automática con cámaras y juegos interactivos. También tiene una gran
 influencia en el reconocimiento de caras y el seguimiento de ojos, técnicas
 que actualmente son muy utilizadas y estudiadas, y que tienen una gran
 potencialidad para ser implementadas en nuevos campos.
@@ -151,6 +156,19 @@ analizar y mejorar sus movimientos, ayudar a los entrenadores a decidir
 estrategias y evaluar a los deportistas, otorgar estadísticas a fanáticos del
 juego, entre otras aplicaciones.
 
+El seguimiento de objetos en video consiste en detectar objetos de interés en
+el primer cuadro de un video y seguirlo a lo largo de toda la secuencia de
+imágenes. Existen varios tipos de métodos que se pueden utilizar para llevar
+a cabo esta tarea, los cuales se diferencian en la forma en que representan
+a los objetos a seguir o en la manera en que localizan a cada objeto en una
+imagen de la secuencia. Por ejemplo, existen métodos de seguimiento que
+representan a los objetos de interés por marcas en la imagen y realizan el
+seguimiento de las mismas, asociando las marcas entre dos cuadros consecutivos.
+El método utilizado en este trabajo representa los objetos de interés por
+medio de curvas que representan los contornos de los objetos a seguir y
+realiza el seguimiento modificando estas curvas cuadro a cuadro,
+intercambiando puntos entre dos listas de píxeles vecinos.
+
 En este trabajo se estudia el problema de realizar el seguimiento de todos los
 jugadores de un partido de fútbol, utilizando una única cámara, con su posición
 fija y cuyo campo visual abarca todo el campo de juego. Se busca que el seguimiento sea en
@@ -160,29 +178,33 @@ a través del tiempo, se puede informar la velocidad de un jugador en un
 determinado momento, distancia recorrida, zonas más frecuentadas por el
 jugador, entre otros.
 
-Se plantea el uso de una técnica de seguimiento existente, \textit{contornos
-activos}, para el seguimiento en tiempo real de los jugadores con una única
-computadora. Esta técnica determina el contorno de un objeto dentro del video y
-a medida que el objeto se mueve el contorno se adapta tomando decisiones
-basadas los valores \textit{RGB} de las imágenes. Se investigaron alternativas
-para mejorar el seguimiento específicas a las características de un video de
-fútbol, como ser la morfología de los objetos a seguir (por ejemplo, se acota
-con un rectángulo más alto que ancho el tamaño máximo del contorno de un
-jugador) entre otros.
+Se plantea el uso de una técnica de seguimiento existente, basada en
+\textit{contornos activos}, para el seguimiento en tiempo real de los
+jugadores con una única computadora. Esta técnica determina el contorno de
+un objeto dentro del video y a medida que el objeto se mueve el contorno se
+adapta tomando decisiones basadas en los valores \textit{RGB} de los píxeles
+de los objetos de interés y de sus alrededores.
+Se investigan alternativas para mejorar el seguimiento específicas a las
+características de un video de fútbol, como ser la morfología de los objetos
+a seguir (por ejemplo, se acota con un rectángulo más alto que ancho el
+tamaño máximo del contorno de un jugador), entre otros.
 
-En el capítulo \ref{chap-state} se describe el estado del arte actual en el
-área de seguimiento de objetos, y en particular se examinan soluciones
-aplicadas al fútbol. En el capítulo \ref{chap-problems} se detalla el problema
-a solucionar y se discuten dificultades del seguimiento automático. En el
-capítulo \ref{chap-ac} se resume el funcionamiento y el márco teórico del
-algoritmo de seguimiento por contornos activos. El contenido del capítulo
+El trabajo se encuentra compuesto de la siguiente manera: En el Capítulo
+\ref{chap-state} se describe el estado del arte actual en el área de
+seguimiento de objetos, y en particular se examinan soluciones aplicadas al
+análisis automático de eventos deportivos. En el Capítulo
+\ref{chap-problems} se detalla el problema a solucionar y se discuten las
+dificultades del seguimiento automático. En el Capítulo \ref{chap-ac} se
+resume el márco teórico y el funcionamiento del algoritmo de seguimiento
+utilizado. El contenido del Capítulo
 \ref{chap-solution} describe la solución planteada, estrategias que otorgaron
 mejores resultados, así como variaciones que fueron implementadas y
-posteriormente descartadas por no mejorar los resultados. El capítulo
+posteriormente descartadas por no mejorar los resultados. El Capítulo
 \ref{chap-results} muestra los resultados obtenidos al ejecutar el algoritmo en
 videos filmados en partidos de fútbol profesional de clubes argentinos, y
-compara la performance con un algoritmo de seguimiento que no fue optimizado
-para seguimiento de jugadores de fútbol. Para finalizar, en el capítulo
+ofrece una comparación de la performance de la solución propuesta con otro
+algoritmo de seguimiento existente que no fue optimizado
+para seguimiento de jugadores de fútbol. Para finalizar, en el Capítulo
 \ref{chap-conclusion} se presentan las conclusiones del trabajo.
 
 \newpage
