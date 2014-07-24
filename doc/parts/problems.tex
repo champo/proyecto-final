@@ -1,7 +1,7 @@
 \chapter{Descripción del Problema}
 \label{chap-problems}
 
-Este trabajo busca ofrecer una solución para obtener de manera semisupervisada
+Este trabajo busca ofrecer una solución para obtener de manera semi-supervisada
 información sobre del estado del juego de fútbol en tiempo real. Esto involucra
 conocer la posición de cada jugador para cada cuadro del video, la pelota,
 puntaje actual, etcétera. Se acota el problema a la determinación de la
@@ -40,8 +40,7 @@ En el presente trabajo, un supervisor selecciona inicialmente las posiciones
 de los jugadores en la cancha. El algoritmo de contornos activos es luego
 ejecutado para obtener la posición de cada jugador para los cuadros siguientes.
 El supervisor debe corregir eventuales incorrectas actualizaciones de contornos
-activos. Es deseable que estas falsas detecciones sean mínimas, hasta el punto
-en que sean nulas.
+activos. Es deseable que estas falsas detecciones sean mínimas o inexistentes.
 
 \section{Sistema de Cámaras}
 
@@ -64,7 +63,7 @@ valor de la altura de cada objeto seguido, ya que no interesa esa información.
 Para esto, se aplica una homografía para convertir las coordenadas de un punto
 de la imagen a coordenadas en el plano donde se encuentra la cancha.
 
-El calculo de una homografía involucra reconocer por lo menos 4 puntos de la
+El cálculo de una homografía involucra reconocer por lo menos 4 puntos de la
 cancha en la imagen (ver \cite{homography-estimation}). Esto puede hacerse de
 manera supervisada, seleccionando en la imagen proveniente del video distintos
 puntos y luego correspondiéndolos con su posición en la cancha en dos
