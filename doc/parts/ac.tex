@@ -28,13 +28,13 @@ región. Se la denomina \textit{región de fondo}.
 
 Se declara una función de probabilidad $p$ que permite saber que tan probable
 es que un píxel forme parte de una dada región. Para esto, es necesaria una
-función $v$ que dado un píxel, devuelve un vector $v(x)$ de características,
-por ejemplo los valores RGB del pixel. Esto permite calcular $p(v(x) \vert
+función $v$ que dado un píxel devuelve un vector $v(x)$ de características,
+por ejemplo los valores RGB del píxel. Esto permite calcular $p(v(x) \vert
 \Omega_i)$, la probabilidad de que un píxel $x$ forme parte de una región
 $\Omega_i$. Estas funciones dependen de la secuencia particular a ser
 analizada, por lo que varían dependiendo del caso de estudio. Como ejemplo, se
 toman los valores RGB como vector de características y $p(v(x) \vert \Omega_i)
-= \| v(x) - v_i \| $, donde $v_i$ es el valor promedio RGB de todo pixel en la
+= \| v(x) - v_i \| $, donde $v_i$ es el valor promedio RGB de todo píxel en la
 región $\Omega_i$.
 
 Se define la función de energía de los contornos:
@@ -109,7 +109,7 @@ Los conjuntos $L_{in}$ y $L_{out}$ se definen como
     L_{out} = \{ x \mbox{ es un píxel } \vert \mbox{    } \phi(x) > 0 \mbox{ y } \exists y \in N_{4}(x) \mbox{ de modo que } \phi(y) < 0 \}
 \end{equation}
 
-donde $N_{4}(x) = \{ y \mbox{ es un pixel } \vert \mbox{   } |x-y| = 1 \}$, son
+donde $N_{4}(x) = \{ y \mbox{ es un píxel } \vert \mbox{   } |x-y| = 1 \}$, son
 los píxeles vecinos del píxel $x$.
 
 El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
@@ -232,7 +232,7 @@ Este es un desafío grande debido principalmente a dos problemas:
   para camisetas con más de un color, se vuelve absurda la idea de encontrar un
   color característico, dado que no existe. Esta dificultad se ilustra en la
   imágenes de las figuras \ref{fig:barsa1} y \ref{fig:barsa2}. Por otro lado,
-  dada la escasa cantidad de pixels que representan a un jugador, debido a
+  dada la escasa cantidad de píxeles que representan a un jugador, debido a
   nuestro enfoque de única cámara, cualquier tipo de análisis se torna complejo
   cuando sus características no están lo suficientemente definidas como para
   diferenciarlas (ya sea de otros jugadores o del fondo).
@@ -262,5 +262,5 @@ Este es un desafío grande debido principalmente a dos problemas:
 %TODO aca mepa que pueden ir varias imagenes.
 % 1 de un tracking de de un jugador de remera blanca (podría ser PRE y POST, osea sin pintar y pintado)
 % 1 de un tracking de un jugador de boca (again PRE y POST)
-% 1 de la pelota? Para mostrar la cantidad infima de pixels?
+% 1 de la pelota? Para mostrar la cantidad infima de píxeles?
 
