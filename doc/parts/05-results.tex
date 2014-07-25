@@ -37,10 +37,10 @@ relaciones, se puede calcular la matriz que resuelve la homografía para
 cualquier otro punto.
 
 Una vez que el programa tiene estos datos, el algoritmo puede comenzar a
-correr. Existen dos modos, uno que avanza sólo ante la indicación del operador
-(en una mecánica de estilo ``cuadro por cuadro'') y otro modo que avanza
-automáticamente cada vez que se computa un cuadro (``tiempo real'').
-% [ TODO: algo de amor a este párrafo ]
+su ejecución. Existen dos modos: se puede avanzar un cuadro sólo ante la
+indicación del operador (en una mecánica de tipo ``cuadro por cuadro'') y en
+otro modo se puede avanzar automáticamente cada vez que se computa un cuadro
+(``tiempo real'').
 
 Para cada cuadro, una ventana muestra las posiciones actualizadas de los
 jugadores. El usuario puede seleccionar un jugador en particular y ver en
@@ -80,9 +80,11 @@ videos.
 
   \item \textbf{Independiente vs. San Lorenzo:} También filmado en resolución de
     \textit{1080p}, las esquinas del campo de juego quedan fuera del campo
-    visual. Luego de descartar las gradas, la resolución final del video es de
-    1920 píxeles de ancho y 540 de alto. La Figura \ref{fig:independ-figura}
-    muestra un cuadro del video procesado.
+    visual. El video recibido ya fue editado y el alto de un cuadro es menor al
+    alto de un video en resolución \textit{1080p}. Luego de descartar las
+    gradas, la resolución final del video es de 1920 píxeles de ancho y 540 de
+    alto. La Figura \ref{fig:independ-figura} muestra un cuadro del video
+    procesado.
 
     Los jugadores de ambos equipos, al utilizar los valores RGB de cada píxel,
     contrastan contra el césped y el algoritmo de contornos activos funciona
@@ -130,16 +132,34 @@ recalculada con nuevos datos.
 
 \begin{itemize}
   \item \textbf{Manchester City vs Barcelona:}
+
   \item \textbf{Real Madrid vs Borussia Dortmound:}
+
   \item \textbf{Argentina vs Suiza:}
+
 \end{itemize}
 
 \section{Evaluación del método}
 
-Se evaluó cualitativamente por un operador que los contornos de los jugadores según el algoritmo modificado de contornos activos no correspondían a los jugadores, como es el caso de trabajos citados en el estado del arte (ver \cite{papers-tanos}). Se atribuye esto a la baja calidad de los videos que se pudieron obtener, y la poca capacidad de procesamiento en comparación. (TODO: Completar esto justificando mejor).
+Se evaluó cualitativamente por un operador que los contornos de los jugadores
+según el algoritmo modificado de contornos activos no correspondían a los
+jugadores, como es el caso de trabajos citados en el estado del arte (ver
+\cite{papers-tanos}). Se atribuye esto a la baja calidad de los videos que se
+pudieron obtener, y la poca capacidad de procesamiento en comparación.
+% TODO: Completar esto justificando mejor -^
 
-Dado esto, se procedió a evaluar cuántas veces sucedía esta discrepancia por unidad de tiempo. Esta métrica, resumida como la cantidad de errores del algoritmo por cada cien cuadros, se intentó minimizar durante el estudio de las variantes de la aplicación.
+Dado esto, se procedió a evaluar cuántas veces sucedía esta discrepancia por
+unidad de tiempo. Esta métrica, resumida como la cantidad de errores del
+algoritmo por cada cien cuadros, se intentó minimizar durante el estudio de las
+variantes de la aplicación.
 
-Otra métrica que se buscó minimizar es el tiempo de demora por cuadro procesado, hasta intentar alcanzar una velocidad de $24$ cuadros por segundo (equivalente a $42$ milisegundos por cuadro), la velocidad de los videos utilizados.
+Otra métrica que se buscó minimizar es el tiempo de demora por cuadro
+procesado, hasta intentar alcanzar una velocidad de $24$ cuadros por segundo
+(equivalente a $42$ milisegundos por cuadro), la velocidad de los videos
+utilizados.
+
+\subsection{Velocidad de Ejecución}
+
+\subsection{Correctitud}
 
 \input{parts/05.1-iftrace}
