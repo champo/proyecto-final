@@ -35,9 +35,9 @@ el tamaño y la complejidad de los objetos de inteŕes.
 \end{figure}
 
 Como se puede ver en la Figura \ref{fig:happy-occluded-iftrace}, IFTrace logra
-un correcto seguimiento de múltiples objetos en el video sintético.  También
+un correcto seguimiento de múltiples objetos en el video sintético. También
 puede observarse, en la Figura \ref{fig:boca-iftrace}, como sigue correctamente
-a un jugador en el video real.  Sin embargo, el seguimiento sólo es exitoso
+a un jugador en el video real. Sin embargo, el seguimiento sólo es exitoso
 durante unos pocos cuadros, ya que, en el cuadro 17, el algoritmo cae en un
 error del cual sólo una corrección manual puede sacarlo. Este tipo de correción
 semi-supervisada no está contemplada en el algoritmo de IFTrace.
@@ -79,7 +79,7 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
         \subfloat[Cuadro 12]{\includegraphics[width = 1.5in]{./images/cropped_processing25.png}}
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
-    \caption{Nuestro algoritmo en funcionamiento en un video sintético.
+    \caption{El algoritmo de contornos activos modificado en funcionamiento en un video sintético.
     \label{fig:happy-occluded-activeContour}
     }
 \end{figure}
@@ -93,16 +93,16 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
         \subfloat[Cuadro 17]{\includegraphics[width = 1.5in]{./images/cropped_rendered017.png}}
     \end{tabular}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
-    \caption{Seguimiento de los jugadores en un video real mediante la solución propuesta en este trabajo.
+    \caption{Seguimiento de los jugadores en un video real mediante el algoritmo de contornos activos modificado.
     \label{fig:boca-activeContour}
     }
 \end{figure}
 
-Como se puede observar en la Figura \ref{fig:happy-occluded-activeContour},
-el algoritmo propuesto logra seguir con éxito a los
-objetos de interés en el video sintético. Además, también se obtiene un
-resultado positivo en el video real en la situación en que IFTrace pierde al
-jugador, como puede observarse en la Figura \ref{fig:boca-activeContour}.
+Como se puede observar en la Figura \ref{fig:happy-occluded-activeContour}, el
+algoritmo propuesto en este trabajo logra seguir con éxito a los objetos de
+interés en el video sintético. Además, también se obtiene un resultado positivo
+en el video real en la situación en que IFTrace pierde al jugador, como puede
+observarse en la Figura \ref{fig:boca-activeContour}.
 
 \subsection{Evaluación de comportamiento}
 
@@ -110,9 +110,9 @@ Otro punto importante de comparación entre los dos algoritmos es su tiempo de
 ejecución, es decir el tiempo que tarda en llevar a cabo su trabajo.  De
 acuerdo a las mediciones realizadas con un video real de un partido de fútbol,
 siguiendo a un solo jugador, el tiempo promedio que tarda IFTrace por cuadro es
-6.962 segundos, mientras que nuestro algoritmo tiene un tiempo promedio de
-0.712 segundos. Se puede observar que se encuentra un orden magnitud por debajo
-de IFTrace.
+6.962 segundos, mientras que el algoritmo implementado tiene un tiempo promedio
+de 0.712 segundos. Se puede observar que se encuentra un orden magnitud por
+debajo de IFTrace, incluso antes de realizar optimizaciones.
 %% 6.9628571428571435 si quieren los decimales
 %% TODO verificar nuestro numero!!!
 
