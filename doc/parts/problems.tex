@@ -4,8 +4,8 @@
 Este trabajo busca ofrecer una solución para obtener de manera semi-supervisada
 información sobre del estado del juego de fútbol en tiempo real. Esto involucra
 conocer la posición de cada jugador para cada cuadro del video, la pelota,
-puntaje actual, etcétera. Se acota el problema a la determinación de la
-posición de los jugadores únicamente.
+puntaje actual, entre otros. Para el trabajo actual, se acota el problema a la
+determinación de la posición de los jugadores únicamente.
 
 % TODO: Les copa este párrafo? Eliminarlo sino
 Soluciones más avanzadas podrían otorgar información de mayor nivel,
@@ -14,7 +14,7 @@ determinar automáticamente posiciones de jugadores fuera de juego, lo cual
 requiere, al menos, determinar tres cosas: la posición de cada jugador (y a qué
 equipo pertenece), la posición de la pelota, y detección de cuándo un jugador
 realiza un pase. Este último punto requiere un análisis de alto nivel que es
-descripto en \cite{papers-tanos} y se discute en el Capítulo \ref{chap-solution}
+descripto en \cite{papers-tanos}. Se discuten en el Capítulo \ref{chap-solution}
 las dificultades encontradas para replicar estos resultados.
 
 \section{Análisis en Tiempo Real}
@@ -52,7 +52,9 @@ técnicas de seguimiento.
 
 \section{Dificultades}
 
-% TODO: Describir esta sección
+Bajo las suposiciones mencionadas, esta Sección describe los problemas que
+deben ser solucionados para obtener datos precisos respecto a la posición
+de los jugadores.
 
 \subsection{Corrección de la Perspectiva de la Cámara}
 
@@ -98,16 +100,16 @@ puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
         \centering
         \includegraphics[width=.4\linewidth]{./images/resize_barcelona2.png}
         \captionof{figure}{En la imagen se observa la falta de resolución. Los
-        bordes se ven difusos.}
-        \label{fig:barsa3}
+        bordes se ven difusos.
+        \label{fig:barsa3}}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/resize_barcelona3.png}
         \captionof{figure}{La imagen muestra varias de las dificultades del
           problema: la baja resolución y el
-          diminuto tamaño de la pelota con respecto al jugador.  }
-        \label{fig:barsa4}
+          diminuto tamaño de la pelota con respecto al jugador.
+        \label{fig:barsa4}}
     \end{minipage}
 \end{figure}
 
@@ -117,9 +119,9 @@ Al tener una resolución de \textit{1080p} (aproximadamente dos millones de
 píxeles por cuadro), el procesamiento de cada píxel debe tomar a lo sumo 20
 nanosegundos.  Para lidiar con esta restricción se puede utilizar información
 adicional de la que se disponga respecto al video con el objeto de evitar
-procesar píxeles de poca o nula utilidad para el seguimiento. Un ejemplo de esto
-es descartar píxeles que estén fuera de la cancha, ya que es probable que la
-cámara encuadre más que el campo de juego, abarcando las gradas, el público
+procesar píxeles de poca o nula utilidad para el seguimiento. Un ejemplo de
+esto es descartar píxeles que estén fuera de la cancha, ya que es probable que
+la cámara encuadre más que el campo de juego, abarcando las gradas, el público
 espectador, publicidades alrededor del campo de juego, entre otros.
 
 Muchos autores han desarrollado algoritmos automáticos de seguimiento de
@@ -147,17 +149,17 @@ técnica de filmación.
 \subsection{Oclusiones entre jugadores}
 
 En un partido es muy común que ocurran oclusiones entre los jugadores. El
-sistema debe poder tolerar la oclusión parcial o total de los jugadores.
-Esto puede llevar a situaciones muy difíciles de automatizar. Una situación
+sistema debe poder tolerar la oclusión parcial o total de los jugadores.  Esto
+puede llevar a situaciones muy difíciles de automatizar. Una situación
 difícilmente automatizable sucede cuando dos jugadores del mismo equipo (con
-vestimenta muy similar) se encuentren alineados con respecto a la cámara.
-Se pueden agregar reglas para intentar que el método no se confunda, cuando
-los jugadores se separen, quién es quién, pero no hay una solución evidente.
+vestimenta muy similar) se encuentren alineados con respecto a la cámara.  Se
+pueden agregar reglas para intentar que el método no se confunda, cuando los
+jugadores se separen, quién es quién, pero no hay una solución evidente.
 
-Por ejemplo, se puede utilizar información de cuadros anteriores para
-estimar la velocidad de cada uno y estimar sus nuevas posiciones, pero esto
-es poco efectivo si los jugadores cambian de velocidad mientras uno ocluye
-al otro, o si la velocidad era muy similar al momento de generarse la oclusión.
+Por ejemplo, se puede utilizar información de cuadros anteriores para estimar
+la velocidad de cada uno y estimar sus nuevas posiciones, pero esto es poco
+efectivo si los jugadores cambian de velocidad mientras uno ocluye al otro, o
+si la velocidad era muy similar al momento de generarse la oclusión.
 
 Otra situación problemática similar es una jugada de córner, donde las
 oclusiones entre varios jugadores son muy numerosas, lo que agrega a la
