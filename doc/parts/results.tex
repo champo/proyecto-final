@@ -34,7 +34,7 @@ cuatro parejas de puntos, como explicado en la sección \ref{sec:homography}. De
 estas parejas, el primer punto es una coordenada de la imagen en perspectiva y
 el otro punto es la coordenada en un plano bidimensional. Con cuatro de estas
 relaciones, se puede calcular la matriz que resuelve la homografía para
-cualquier otro punto.  
+cualquier otro punto.
 
 Una vez que el programa tiene estos datos, el algoritmo puede comenzar a
 correr. Existen dos modos, uno que avanza sólo ante la indicación del operador
@@ -62,12 +62,12 @@ videos.
 
 \begin{itemize}
 
-  \item \textbf{Boca vs Independiente:} El video cuenta con una resolución de
+  \item \textbf{Boca vs. Independiente:} El video cuenta con una resolución de
     \textit{1080p} (1920 píxeles de ancho y 1080 de alto). La cancha se muestra
     en su totalidad, y se puede observar la totalidad de las gradas del lado
     opuesto y cielo por encima de ellas. Luego de descartar esas regiones del
     video, la resolución pasa a ser de 1459 píxeles de ancho por 304 de alto.
-    Se puede apreciar en la Figura \ref{boca-figura} un cuadro del video, luego
+    Se puede apreciar en la Figura \ref{fig:boca-figura} un cuadro del video, luego
     de extracción de las gradas y corrección del efecto de curvatura de la
     lente.
 
@@ -76,16 +76,57 @@ videos.
     amarillo, también contrasta respecto al fondo. Los jugadores de Boca, por
     otro lado, son difíciles de identificar a la distancia y son confundidos
     con el color del césped de la cancha, como se ilustra en las Figuras
-    \ref{boca-dificil-1} y \ref{boca-dificil-2}.
+    \ref{fig:boca-dificil-1} y \ref{fig:boca-dificil-2}.
 
-  \item \textbf{Independiente vs San Lorenzo:} También filmado en resolución de
+  \item \textbf{Independiente vs. San Lorenzo:} También filmado en resolución de
     \textit{1080p}, las esquinas del campo de juego quedan fuera del campo
     visual. Luego de descartar las gradas, la resolución final del video es de
-    1920 píxeles de ancho y 540 de alto.
+    1920 píxeles de ancho y 540 de alto. La Figura \ref{fig:independ-figura}
+    muestra un cuadro del video procesado.
+
+    Los jugadores de ambos equipos, al utilizar los valores RGB de cada píxel,
+    contrastan contra el césped y el algoritmo de contornos activos funciona
+    correctamente al analizarlo cualitativamente.
 
 \end{itemize}
 
-Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los cuales la cámara se encuentra relativamente estática y se analizó la correctitud del seguimiento en estos casos, contando con mayor resolución pero sin poder efectuar exitosamente la eliminación de fondo o la correlación a un plano bidimencional por homografía % [ TODO: ESTO ESTÁ ESCRITO CON LA ** ]
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./images/boca-figura.png}
+  \caption{Un cuadro del video de un partido entre Boca e Independiente.}
+  \label{fig:boca-figura}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./images/independ-figura.png}
+  \caption{Muestra de un cuadro de un partido en que Independiente enfrenta al club San Lorenzo.}
+  \label{fig:independ-figura}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/boca-dificil1.png}
+        \label{fig:boca-dificil1}
+    \end{minipage}%
+    \begin{minipage}[t]{.5\textwidth}
+        \centering
+        \includegraphics[width=.4\linewidth]{./images/boca-dificil2.png}
+        \label{fig:boca-difícil2}
+    \end{minipage}
+    \caption{Se muestra un acercamiento a dos jugadores en el video de Boca vs.
+             Independiente. Un observador puede notar que los contornos de los
+         jugadores son difíciles de delimitar.}
+
+\end{figure}
+
+Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los
+cuales la cámara se encuentra relativamente estática y se analizó la
+correctitud del seguimiento en estos casos, contando con mayor resolución pero
+sin poder efectuar exitosamente la eliminación de fondo o la aplicación de una
+homografía para determinar las posiciones correctamente, ya que cada cuadro
+donde la cámara cambia su orientación, la matriz de la homografía debería ser
+recalculada con nuevos datos.
 
 \begin{itemize}
   \item \textbf{Manchester City vs Barcelona:}
