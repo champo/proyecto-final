@@ -27,6 +27,7 @@ de la imágen y detectar con el objetivo de ignorar sectores de la imágen que
 no correspondan a jugadores con total certeza.
 
 \subsection{Tribuna y publicidades}
+\label{subsec:crop-tribunas}
 
 La técnica más simple de eliminación de sectores es una técnica de
 \textit{crop} que muestra como negro todo sector de la imágen ajeno a un
@@ -70,24 +71,51 @@ a que detecta todo tipo de forma que sea demasiado larga o ancha como para
 ser un jugador (por ejemplo, el círculo central y medios círculos en las
 áreas alrededor de los arcos).
 
-\subsection{Eliminación del pasto}
-  * Eliminación de colores de cancha por histograma de colores
+\subsection{Eliminación del césped}
+
+Para la eliminación del césped del campo de juego se requiere caracterizarlo
+de alguna forma. Para esto, se realiza un simple muestreo de los colores de
+la imagen recortada, es decir la imagen resultante luego aplicar la técnica
+de \textit{crop}, detallada en \ref{subsec:crop-tribunas}. A partir de este
+muestreo, se construye un histograma de colores y se determina como color del
+césped al color con mayor frecuencia. En realidad, debido a pequeñas
+fluctuaciones por cambios de iluminación y resolución, se toman un rango de
+valores alrededor del color con mayor frecuencia.
 
 \section{Contornos activos}
 \label{sec:ac-extension}
 
-- Características
+Como se explica en Sección \ref{sec:ac-problemas}, cuando los objetos de
+interés son complejos, la utilización del color promedio como única
+característica distintiva no alcanza. Es por esto que varias de las mejoras
+planteadas al algoritmo de Contornos Activos giran en torno a la selección de
+características para representar a los objetos de interés.
 
-  * Colores del jugador
-  * Aprendizaje
-  * Múltiples características
-  * Selección de máximos en histograma con bfs
 
-- Descriptores
+Si bien el color promedio resulta insuficiente para caracterizar correctamente
+al objeto, puede utilizarse en complemento con otras características. La más
+intuitiva es la utilización de la varianza de color en el objeto de interés.
+
+
+Además de estos indicadores estadísticos, se pueden utilizar varias valores
+para caracterizar el objeto, en lugar de utilizar un solo valor como puede ser
+el color promedio o la varianza. Para esto, por ejemplo, puede realizarse un
+histograma de colores y seleccionar los picos más altos del histograma como
+colores representativos del objeto.
+
+% TODO dejo esto porque claramente le falta a los párrafos de arriba.
+%- Características
+%  * Colores del jugador
+%  * Aprendizaje
+%  * Múltiples características
+%  * Selección de máximos en histograma con bfs
+%- Descriptores
 
 \section{Algoritmo final}
 \label{sec:alg-final}
 % Que onda esta seccion? Me parece medio tirada de los pelos la idea
+% Alvaman: Si no se bien que onda. Si no se repite mucho no quedaría mal
+% pero hay que hacerlo cortito y al pie.
 
 - Eliminación de lineas por detector de borde + umbral + morfología
 - Múltiples características
