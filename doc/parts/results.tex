@@ -1,34 +1,88 @@
 \chapter{Resultados}
 \label{chap-results}
 
-Esta Sección presenta un análisis de los resultados obtenidos de la ejecución del algoritmo sobre distintos videos. A lo largo de esta Sección se refiere al algoritmo como a la modificación que se le hizo a \textit{contornos activos} y que fue descripta en el Capítulo \ref{chap-solution}. Las palabras \textit{aplicación} y \textit{programa} serán utilizadas indistintamente para referirse al programa que implementa dicho algoritmo, junto con una interfaz de usuario para el operador. Se refiere a la\textit{implementación} como a la parte del programa que implementa el algoritmo.
+Esta Sección presenta un análisis de los resultados obtenidos de la ejecución
+del algoritmo sobre distintos videos. A lo largo de esta Sección se refiere al
+\textit{algoritmo} como a la versión modificada de contornos activos que fue
+descripta en el Capítulo \ref{chap-solution}. Las palabras \textit{aplicación}
+y \textit{programa} serán utilizadas indistintamente para referirse al programa
+que implementa dicho algoritmo, junto con una interfaz de usuario para el
+operador. Se refiere a la\textit{implementación} como a la parte del programa
+que implementa el algoritmo.
 
-Se presentan los resultados obtenidos de la ejecución del programa, junto con métricas utilizadas para evaluar la performance de la implementación.
+Se presentan los resultados obtenidos de la ejecución del programa, junto con
+métricas utilizadas para evaluar la performance de la implementación.
 
 \section{Aplicación}
 
-El programa incorpora una interfaz gráfica utilizada tanto para dar instrucciones como para recibir información acerca del partido y del funcionamiento del algoritmo. La misma cuenta con una sección donde se muestra una lista de jugadores siendo seguidos, otra donde se puede visualizar el video original con un recuadro en cada jugador seguido, un mapa de calor de espacios ocupados por los jugadores, y una imágen que permite al operador evaluar el correcto funcionamiento del algoritmo.
+El programa incorpora una interfaz gráfica utilizada tanto para dar
+instrucciones como para recibir información acerca del partido y del
+funcionamiento del algoritmo. La misma cuenta con una sección donde se muestra
+una lista de jugadores siendo seguidos, una donde se puede visualizar el video
+original con un recuadro en cada jugador seguido, un mapa de calor que muestra
+las posiciones más frecuentes, y una imágen que permite al operador evaluar
+cualitativamente el correcto funcionamiento del algoritmo.
 
-Para comenzar la ejecución, la implementación requiere que el operador identifique la posición de los jugadores en la imagen inicial de la secuencia. En este paso, también debe agregar información acerca del número de camiseta que viste, el equipo, y nombre del jugador.
+Para comenzar la ejecución del algoritmo, el programa requiere que el operador
+identifique la posición de los jugadores en la imagen inicial de la secuencia.
+En este paso, también debe agregar información acerca del número de camiseta
+que viste, el equipo, y nombre del jugador.
 
-Un paso adicional que debe ejecutar el operador es determinar los puntos a utilizar para el cálculo de la homografía.
+Un paso adicional que debe ejecutar el operador es determinar los puntos a
+utilizar para el cálculo de la homografía. Los datos necesarios para ello son
+cuatro parejas de puntos, como explicado en la sección \ref{sec:homography}. De
+estas parejas, el primer punto es una coordenada de la imagen en perspectiva y
+el otro punto es la coordenada en un plano bidimensional. Con cuatro de estas
+relaciones, se puede calcular la matriz que resuelve la homografía para
+cualquier otro punto.  
 
-% TODO: Esto no se entiende, y no lo explicamos antes????
-Los datos necesarios son al menos cuatro parejas de puntos, como explicado en la sección \ref{sec:homography}. De estas parejas, el primer punto es una coordenada la imagen en perspectiva y el otro punto es la coordenada en un plano bidimensional. Con cuatro de estas relaciones, se puede calcular la matriz que resuelve la homografía para cualquier otro punto.  
+Una vez que el programa tiene estos datos, el algoritmo puede comenzar a
+correr. Existen dos modos, uno que avanza sólo ante la indicación del operador
+(en una mecánica de estilo ``cuadro por cuadro'') y otro modo que avanza
+automáticamente cada vez que se computa un cuadro (``tiempo real'').
+% [ TODO: algo de amor a este párrafo ]
 
-Una vez que el programa tiene estos datos, el algoritmo de contornos activos puede comenzar a correr. Existen dos modos, uno que avanza sólo ante la indicación del operador (mecánica ``cuadro por cuadro'') y otro modo que avanza automáticamente cada vez que se computa un cuadro (mecánica ``tiempo real'').  % [ TODO: algo de amor a este párrafo ]
+Para cada cuadro, una ventana muestra las posiciones actualizadas de los
+jugadores. El usuario puede seleccionar un jugador en particular y ver en
+detalle información sobre su posición, velocidad promedio, actual, y máxima
+desde el comienzo del seguimiento, y un mapa de calor que muestra con colores
+próximos al rojo los lugares más visitados por el jugador. Además, en un
+archivo se guarda la posición de cada jugador para cada momento.
 
-Para cada cuadro, una ventana muestra las posiciones actualizadas de los jugadores. El usuario puede seleccionar un jugador en particular y ver en detalle información sobre su posición, velocidad promedio, actual, y máxima desde el comienzo del seguimiento, y un mapa de calor que muestra con colores próximos al rojo los lugares más visitados por el jugador. Además, en un archivo se guarda la posición de cada jugador para cada momento.
-
-De manera opcional, en cada cuadro se guarda en disco duro una copia del estado actual del seguimiento para referencia futura.
+De manera opcional, en cada cuadro se guarda en disco duro una copia del estado
+actual del seguimiento para referencia futura.
 
 \section{Material utilizado}
 
-Se utilizaron principalmente dos videos, uno correspondiente a un partido entre los equipos argentinos de los clubes Boca Juniors e Independiente; y un segundo video en el cual se enfrentan los equipos Independiente y San Lorenzo. Se detalla a continuación las características de las imágenes extraídas de esos videos.
+Se utilizaron principalmente dos videos, uno correspondiente a un partido entre
+los equipos argentinos de los clubes Boca Juniors e Independiente; y un segundo
+video en el cual se enfrentan los equipos Independiente y San Lorenzo. Se
+detalla a continuación las características de las imágenes extraídas de esos
+videos.
 
 \begin{itemize}
-  \item \textbf{Boca vs Independiente:} El video cuenta con una resolución de \textit{1080p} (1920 píxeles de ancho y 1080 de alto). La cancha se muestra en su totalidad, y se puede observar la totalidad de las gradas del lado opuesto y cielo por encima de ellas. Luego de descartar esas regiones del video, la resolución pasa a ser de 1459 píxeles de ancho por 304 de alto. % TODO: No está terminado, falta describir jugadores y eso
-  \item \textbf{Independiente vs San Lorenzo:} También filmado en resolución de \textit{1080p}, las esquinas del campo de juego quedan fuera del campo visual. Luego de descartar las gradas, la resolución final del video es de 1920 píxeles de ancho y 540 de alto. % TODO: No está terminado, describir jugadores
+
+  \item \textbf{Boca vs Independiente:} El video cuenta con una resolución de
+    \textit{1080p} (1920 píxeles de ancho y 1080 de alto). La cancha se muestra
+    en su totalidad, y se puede observar la totalidad de las gradas del lado
+    opuesto y cielo por encima de ellas. Luego de descartar esas regiones del
+    video, la resolución pasa a ser de 1459 píxeles de ancho por 304 de alto.
+    Se puede apreciar en la Figura \ref{boca-figura} un cuadro del video, luego
+    de extracción de las gradas y corrección del efecto de curvatura de la
+    lente.
+
+    Los jugadores de Independiente usan remera y shorts de color blanco,
+    fácilmente identificables respecto al fondo de color verdoso. El referí, de
+    amarillo, también contrasta respecto al fondo. Los jugadores de Boca, por
+    otro lado, son difíciles de identificar a la distancia y son confundidos
+    con el color del césped de la cancha, como se ilustra en las Figuras
+    \ref{boca-dificil-1} y \ref{boca-dificil-2}.
+
+  \item \textbf{Independiente vs San Lorenzo:} También filmado en resolución de
+    \textit{1080p}, las esquinas del campo de juego quedan fuera del campo
+    visual. Luego de descartar las gradas, la resolución final del video es de
+    1920 píxeles de ancho y 540 de alto.
+
 \end{itemize}
 
 Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los cuales la cámara se encuentra relativamente estática y se analizó la correctitud del seguimiento en estos casos, contando con mayor resolución pero sin poder efectuar exitosamente la eliminación de fondo o la correlación a un plano bidimencional por homografía % [ TODO: ESTO ESTÁ ESCRITO CON LA ** ]
