@@ -275,7 +275,64 @@ Se toma un valor de $\alpha$ del orden de $10^{-2}$, es decir, se toma el $1\%$
 de $\hat{\mathbf{v}}$. Esto evita la posibilidad de que se memorize cambios
 no deseados, como lo podria ser una oclusion parcial, antes de su correción.
 
-\subsection{Funcion de probabilidad}
+\subsection{Función de probabilidad}
 
-% TODO: Contar sobre como tenemos 2, una para fondo y otra para objeto
-% TODO: Definir ambas
+Si bien la función de probabilidad sugerida en la Seccion \ref{sec:ac} se puede
+aplicar en este caso, se modifico para tener en cuenta la morfologia de los objetos
+a seguir. 
+
+Con la restricción de camara, podemos saber que siempre la imagen de un dado
+jugador va a estar contenida en un rectangulo. Tambien se puede calcular las
+dimensiones maximas posibles de ese rectangulo. Se puede entonces limitar el tamaño
+del contorno, reduciendo la posibilidad de que el contorno intente seguir objetos
+de caracteristicas parecidas al jugador. En el caso de querer evaluar si un punto
+pertenece al fondo o no, esta caracteristica no es deseable y por lo tanto este
+trabajo cuenta con dos funciones, la sugerida anteriormente $f$ para el fondo
+y una $f_j$ para los jugadores. Se definen de la siguiente manera:
+
+\begin{eqnarray*}
+    f(p) &=& 1 - \frac{\|\| v(p) - v_i \|\|}{255 * 6} \\
+    f_j(p) &=& 1 - \min(1, f(p) + \text{distance\_weight}(p_x, p_y, \omega_i))
+\end{eqnarray*}
+
+Donde $v_i$ es el valor caracteristico para el contorno $\omega_i$ contra el que se
+evalua el punto $p$. Y la rutina distance\_weight se define en el Algoritmo
+\ref{alg:distance-weight}, donde $maxX$ y $maxY$ son el semi-ancho y semi-altura maxima del
+rectangulo, respectivamente.
+
+\begin{algorithm}
+    \caption{distance\_weight}
+    \label{alg:distance-weight}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $(x, y)$, Contorno $\omega$
+
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} Un numero
+    \State
+
+    \State $centroid_x \gets 0$
+    \State $centroid_y \gets 0$
+    \For{$p \in \omega$}
+        \State $centroid_x \gets centroid_x + p_x$
+        \State $centroid_y \gets centroid_y + p_y$
+    \EndFor
+
+    \State $centroid_x \gets \frac{centroid_x}{\#\omega}$
+    \State $centroid_y \gets \frac{centroid_y}{\#\omega}$
+
+    
+    \State $res \gets 0$
+    \State $dist_x \gets \|p_x - centroid_x\|$
+    \State $dist_y \gets \|p_y - centroid_y\|$
+
+    \If{$dist_x > max_x$}
+        \State $res \gets res + \min(1, \frac{dist_x - max_x}{max_x})$
+    \EndIf
+
+    \If{$dist_y > max_y$}
+        \State $res \gets res + \min(1, \frac{dist_y - max_y}{max_y})$
+    \EndIf
+
+    \State \Return $res$
+    \end{algorithmic}
+\end{algorithm}
+    
