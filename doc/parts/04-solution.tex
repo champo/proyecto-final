@@ -2,13 +2,11 @@
 \label{chap-solution}
 
 En esta Sección se describen las técnicas aplicadas para lograr el seguimiento
-de los jugadores. Primero se detallan algoritmos utilizados para ignorar los
-elementos del fondo de la imagen en la Sección
-\ref{sec:background-elimination}, y luego como fue utilizado el algoritmo
-contornos activos (ver \cite{fast-level-set}) y las modificaciones que se le
-hicieron en la Sección \ref{sec:ac-extension}. Finalmente, en la Sección
-\ref{sec:alg-final} se detalla la integración final entre las distintas
-técnicas, que es analizada en el siguiente Capítulo.
+de los jugadores. En primer lugar, se detallan algoritmos utilizados para
+ignorar los elementos del fondo de la imagen en la Sección
+\ref{sec:background-elimination}. Luego, se detalla cómo fue utilizado el
+algoritmo contornos activos (ver \cite{fast-level-set}) y las modificaciones
+que se le hicieron en la Sección \ref{sec:ac-extension}.
 
 \section{Eliminación de fondo}
 
@@ -59,6 +57,8 @@ del video generaba muchos falsos negativos, sobre todo \textit{glitches}
 alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
 mayor valor de energía del que realmente tendrían.
 
+% TODO (eordano) completar
+
 \subsection{Eliminación de Líneas}
 
 Basado en la detección de líneas de Hough, se desarrolló un método similar que
@@ -91,11 +91,12 @@ valores alrededor del color con mayor frecuencia.
 Como se explica en Sección \ref{sec:ac-problemas}, cuando los objetos de
 interés son complejos, la utilización del color promedio como única
 característica distintiva no alcanza. Es por esto que varias de las mejoras
-planteadas al algoritmo de Contornos Activos giran en torno a la selección de
+planteadas al algoritmo de contornos activos giran en torno a la selección de
 características para representar a los objetos de interés. Esta Sección
 describe cambios que se han incorporado para hacer el algoritmo más efectivo
 ante un video correspondiente a un partido de fútbol.
 
+% TODO: Revisar esto, me parece muy subjetivo y fruta. "INTUITIVA"...
 Si bien el color promedio resulta insuficiente para caracterizar correctamente
 al objeto, puede utilizarse en complemento con otras características. La más
 intuitiva es la utilización de la varianza de color en el objeto de interés.
@@ -135,7 +136,19 @@ principal, y las características para este jugador son tomadas de este valor.
 
 \subsubsection{Aprendizaje de valores}
 
-Se realiza un aprendizaje simple para cada característica
+Se realiza un aprendizaje simple para las características de cada contorno. En
+cada cuadro, siendo las características de un contorno dado un vector
+$\mathbf{v}$, se calcula el promedio de los valores de las características para
+todos los píxeles pertenecientes al contorno y se lo denomina
+$\hat{\mathbf{v}}$. A continuación se actualiza $\mathbf{v}$ y se lo reemplaza
+por un nuevo valor $\mathbf{v_n}$ calculado de acuerdo a:
+
+\[
+  \mathbf{v_n} = \(1-\alpha\)\mathbf{v} + \alpha \hat{\mathbf{v}}
+\]
+
+Se toma un valor de $\alpha$ del orden de $10^-2$, lo cual acota el cambio por
+cuadro considerablemente. % TODO: Podemos hacer esto menos subjetivo?
 
 \subsection{Descriptores}
-% TODO: Champo me cansé de escuchar que es esto y no tengo idea de a que se refiere
+% TODO: Champo
