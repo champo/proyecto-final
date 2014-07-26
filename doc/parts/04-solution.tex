@@ -55,11 +55,33 @@ medición de la variación del color de cada píxel (energía).
 Este no resultó ser un método apropiado debido a que el sistema de codificación
 del video generaba muchos falsos negativos, sobre todo \textit{glitches}
 alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
-mayor valor de energía del que realmente tendrían.
+mayor valor de energía del que realmente tendrían. En la Figura \ref{fig:tanos-fondo-sin}
+se muestra un recorte del primer cuadro del video de un partido entre Boca e Independiente.
+En las figuras \ref{fig:tanos-fondo} y \ref{fig:tanos-fondo-broken} se muestra el
+resultado de aplicar este algoritmo en ese mismo recorte. Se puede ver que en el cuadro
+\#27 detecta muy bien el fondo, pero en el siguiente cuadro cambios en la imagen
+hacen que descarte de manera erronea ciertas partes del fondo.
 
 % TODO: el arquero se lo morfa
-% TODO: screens
-% TODO (eordano) completar
+\begin{figure}[H]
+  \centering
+    \begin{minipage}[t]{.45\textwidth}
+      \includegraphics[width=\linewidth]{./images/tanos-fondo-f1.png}
+      \caption{Recorte del cuadro \#1 del video de un partido entre Boca e Independiente
+      \label{fig:tanos-fondo-sin}}
+    \end{minipage}
+    \begin{minipage}[t]{.45\textwidth}
+      \includegraphics[width=\linewidth]{./images/tanos-fondo-f27.png}
+      \caption{Recorte del cuadro \#27 del video, con el fondo segun el algoritmo en azul.
+      \label{fig:tanos-fondo}}
+    \end{minipage}
+    \begin{minipage}[t]{.45\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{./images/tanos-fondo-f28.png}
+      \caption{Recorte del cuadro \#28 del video, con el fondo segun el algoritmo en azul.
+      \label{fig:tanos-fondo-broken}}
+    \end{minipage}
+\end{figure}
 
 \subsection{Eliminación de Líneas}
 
@@ -88,8 +110,8 @@ la umbralización.
 \end{figure}
 
 \subsection{Eliminación del césped}
+\label{sec:cesped}
 
-% TODO: Champo review esto
 Para la eliminación del césped del campo de juego se requiere caracterizarlo
 de alguna forma. Para esto, se realiza un analisis de los colores de
 la imagen recortada, es decir la imagen resultante luego aplicar la técnica
@@ -113,10 +135,9 @@ características para representar a los objetos de interés. Esta Sección
 describe cambios que se han incorporado para hacer el algoritmo más efectivo
 ante un video correspondiente a un partido de fútbol.
 
-% TODO: Revisar esto, me parece muy subjetivo y fruta. "INTUITIVA"...
 Si bien el color promedio resulta insuficiente para caracterizar correctamente
-al objeto, puede utilizarse en complemento con otras características. La más
-intuitiva es la utilización de la varianza de color en el objeto de interés.
+al objeto, puede utilizarse en complemento con otras características. Una opción
+es la utilización de la varianza de color en el objeto de interés.
 
 Además de estos indicadores estadísticos, se pueden utilizar varias valores
 para caracterizar el objeto, en lugar de utilizar un solo valor como puede ser
@@ -138,7 +159,7 @@ valores de RGB de cada píxel. A continuación se detallan alternativas:
 
   \item \textbf{Desviación Estándar}: Se tomaron seis características para cada
     píxel: color (RGB o HSL) y desviación estándar de ese píxel respecto a los
-    demás píxeles en una ventana de 5 píxeles alrededor del mismo.
+    demás píxeles en una ventana de 3x3 píxeles alrededor del mismo.
 
 \end{itemize}
 
@@ -147,10 +168,14 @@ valores de RGB de cada píxel. A continuación se detallan alternativas:
 Las características de un jugador son seleccionadas en base a los valores
 encontrados inicialmente dentro de un cuadrado de un ancho y alto especificado
 por el operador, que depende del video siendo analizado. Entre los píxeles
-abarcados por el área de ese cuadrado, se realiza un histograma en tres
-dimensiones (cada dimensión corresponde a los valores de rojo, verde, y azul
-respectivamente). Se toma el valor máximo de ese histograma como el color
-principal, y las características para este jugador son tomadas de este valor.
+abarcados por el área de ese cuadrado, se calcula el promedio y desvio estandard
+de todos ellos. La caracteristica del jugador queda entonces definida por el
+vector $v = (r_a, g_a, b_a, r_{dev}, g_{dev}, b_{dev})$, donde los primeros
+tres valores representan el promedio de los componentes \textit{RGB} y los ultimos
+tres el desvio standard de los componentes \textit{RGB}.
+
+El vector de caracteristicas del fondo tiene la misma forma, y se construye
+utilizando los valores calculados en la Sección \ref{sec:cesped}.
 
 \subsubsection{Aprendizaje de valores}
 
@@ -165,8 +190,7 @@ por un nuevo valor $\mathbf{v_n}$ calculado de acuerdo a:
   \mathbf{v_n} = \left(1-\alpha\right)\mathbf{v} + \alpha \hat{\mathbf{v}}
 \]
 
-Se toma un valor de $\alpha$ del orden de $10^{-2}$, lo cual acota el cambio por
-cuadro considerablemente. % TODO: Podemos hacer esto menos subjetivo?
+Se toma un valor de $\alpha$ del orden de $10^{-2}$, es decir, se toma el $1\%$
+de $\hat{\mathbf{v}}$. Esto evita la posibilidad de que se memorize cambios
+no deseados, como lo podria ser una oclusion parcial, antes de su correción.
 
-\subsection{Descriptores}
-% TODO: Champo
