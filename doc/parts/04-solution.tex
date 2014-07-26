@@ -126,10 +126,10 @@ la imagen recortada, es decir la imagen resultante luego aplicar la técnica
 de \textit{recorte}, detallada en \ref{subsec:crop-tribunas}, una vez seleccionados
 los contornos iniciales de los jugadores. Sobre este cuadro, se calcula el valor
 promedio y desvio estandard de todo pixel que no forme parte de los jugadores o
-un elemento ya conocido del fondo (por ejemplo, las lineas). 
+un elemento ya conocido del fondo (por ejemplo, las lineas).
 
 Con este valor, se considera parte del césped cualquier punto que no tenga las
-caracteristicas de un jugador (segun definidas en la Sección \ref{sec:caracteristicas}),
+caracteristicas de un jugador (segun definidas en la sección \ref{sec:caracteristicas}),
 y se encuentre a menos de 3 desvios del color promedio calculado.
 
 \section{Contornos activos}
@@ -158,32 +158,111 @@ colores representativos del objeto.
 
 Se estudiaron varias posibilidades para la selección de características que
 determinaran los contornos de los jugadores respecto al color de fondo.
-Finalmente, se optó por utilizar tres características, correspondientes a los
-valores de RGB de cada píxel. A continuación se detallan alternativas:
+A continuación se detallan alternativas exploradas:
 \begin{itemize}
-  \item \textbf{Valores HSL}: Se tomaron, en vez de los valores de rojo, verde
-    y azul, los valores de \textit{hue}, \textit{saturation} y
-    \textit{lightning}.
-
-  \item \textbf{Desviación Estándar}: Se tomaron seis características para cada
-    píxel: color (RGB o HSL) y desviación estándar de ese píxel respecto a los
-    demás píxeles en una ventana de 3x3 píxeles alrededor del mismo.
-
+  \item \textbf{Valores RGB}
+  \item \textbf{Desviación Estándar}
 \end{itemize}
 
-\subsubsection{Selección de características}
+Los valores \textit{RGB} representan el valor promedio de las 3
+componentes que forman un pixel. El algoritmo
+para su calculo se detalla en \ref{alg:carac-rgb}. 
 
-Las características de un jugador son seleccionadas en base a los valores
-encontrados inicialmente dentro de un cuadrado de un ancho y alto especificado
-por el operador, que depende del video siendo analizado. Entre los píxeles
-abarcados por el área de ese cuadrado, se calcula el promedio y desvio estandard
-de todos ellos. La caracteristica del jugador queda entonces definida por el
-vector $v = (r_a, g_a, b_a, r_{dev}, g_{dev}, b_{dev})$, donde los primeros
-tres valores representan el promedio de los componentes \textit{RGB} y los ultimos
-tres el desvio standard de los componentes \textit{RGB}.
+\begin{algorithm}
+    \caption{PromedioRGB}
+    \label{alg:carac-rgb}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro c, Contorno $\omega$
 
-El vector de caracteristicas del fondo tiene la misma forma, y se construye
-utilizando los valores calculados en la Sección \ref{sec:cesped}.
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_a, g_a, b_a)$
+    \State
+
+    \State $count \gets 0$
+    \State $r_{sum} \gets 0$
+    \State $g_{sum} \gets 0$
+    \State $b_{sum} \gets 0$
+    \For{$(x, y) \in \omega$}
+        \State $count \gets count + 1$
+        \State $(r, g, b) \gets c_{x, y}$
+        \State $r_{sum} \gets r + r_{sum}$
+        \State $g_{sum} \gets g + g_{sum}$
+        \State $b_{sum} \gets b + b_{sum}$
+    \EndFor
+
+    \State \Return $ (\frac{r_{sum}}{count}, \frac{g_{sum}}{count}, \frac{b_{sum}}{count}) $
+    \end{algorithmic}
+\end{algorithm}
+
+
+La desviación estándar se calcula de la manera descripta en el Algoritmo \ref{alg:desvio}, 
+donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-local}.
+
+\begin{algorithm}
+    \caption{Caracteristica Desviación Estándar}
+    \label{alg:desvio}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro c, Contornos $\omega_1 \dots \omega_n$
+
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_{dev}, g_{dev}, b_{dev})$
+    \State
+
+    \State $\Omega \gets \cap \omega_1 \dots \omega_n$
+    \State $count \gets 0$
+    \State $r_{sum} \gets 0$
+    \State $g_{sum} \gets 0$
+    \State $b_{sum} \gets 0$
+    \For{$(x, y) \in c$}
+
+        \If{$(x, y) \not\in  \Omega$}
+            \State $count \gets count + 1$
+            \State $(r_{dev}, g_{dev}, b_{dev}) \gets $ DesvioLocal($(x, y), c$)
+            \State $r_{sum} \gets r_{dev} + r_{sum}$
+            \State $g_{sum} \gets g_{dev} + g_{sum}$
+            \State $b_{sum} \gets b_{dev} + b_{sum}$
+        \EndIf
+    \EndFor
+
+    \State \Return $ (\frac{r_{sum}}{count}, \frac{g_{sum}}{count}, \frac{b_{sum}}{count}) $
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{DesvioLocal}
+    \label{alg:desvio-local}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $(x, y)$, Cuadro c, 
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_{dev}, g_{dev}, b_{dev})$
+    \State
+
+    \State $r_{avg} \gets 0$
+    \State $g_{avg} \gets 0$
+    \State $b_{avg} \gets 0$
+    \For{$(i, j)$ 8-conectado a $(x, y)$}
+        \State $(r, g, b) \gets c_{x, y}$
+        \State $r_{avg} \gets r + r_{avg}$
+        \State $g_{avg} \gets g + g_{avg}$
+        \State $b_{avg} \gets b + b_{avg}$
+    \EndFor
+
+    \State $(r_{avg}, g_{avg}, b_{avg}) \gets (\frac{r_{sum}}{count}, \frac{g_{sum}}{count}, \frac{b_{sum}}{count}) $
+
+    \State $r_{dev} \gets 0$
+    \State $g_{dev} \gets 0$
+    \State $b_{dev} \gets 0$
+    \For{$(i, j)$ 8-conectado a $(x, y)$}
+        \State $(r, g, b) \gets c_{x, y}$
+        \State $r_{dev} \gets r_{dev} + (r - r_{avg})^2$
+        \State $g_{dev} \gets g_{dev} + (g - g_{avg})^2$
+        \State $b_{dev} \gets b_{dev} + (b - b_{avg})^2$
+    \EndFor
+
+    \State \Return $ (\sqrt{\frac{r_{dev}}{8}}, \sqrt{\frac{g_{dev}}{8}}, \sqrt{\frac{b_{dev}}{8}}) $
+
+    \end{algorithmic}
+\end{algorithm}
+
+Se opto por construir el vector de características de cada contorno utilizando
+el promedio \textit{RGB} y su desviación estándar.
 
 \subsubsection{Aprendizaje de valores}
 
