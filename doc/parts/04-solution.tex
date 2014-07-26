@@ -25,7 +25,7 @@ métodos evaluados.
 \label{subsec:crop-tribunas}
 
 La técnica más simple de eliminación de sectores es una técnica de
-\textit{crop} que elimina de la imágen todo píxel ajeno a un polígono
+\textit{recorte} que elimina de la imágen todo píxel ajeno a un polígono
 (como puede ser un cuadrilátero) que bordea la cancha. En las Figuras
 \ref{fig:crop-antes} y \ref{fig:crop-despues} se muestra el resultado
 de aplicar esta técnica a uno de los videos utilizados en el trabajo.
@@ -40,7 +40,7 @@ de aplicar esta técnica a uno de los videos utilizados en el trabajo.
     \begin{minipage}[t]{.45\textwidth}
       \centering
       \includegraphics[width=\linewidth]{./images/Crop_Despues.png}
-      \caption{El mismo cuadro, luego de aplicarle la operación \textit{Crop}.
+      \caption{El mismo cuadro, luego de aplicarle la operación \textit{recorte}.
       \label{fig:crop-despues}}
     \end{minipage}
 \end{figure}
@@ -57,10 +57,20 @@ del video generaba muchos falsos negativos, sobre todo \textit{glitches}
 alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
 mayor valor de energía del que realmente tendrían.
 
+% TODO: el arquero se lo morfa
+% TODO: screens
 % TODO (eordano) completar
 
 \subsection{Eliminación de Líneas}
 
+Se encontro que las lineas blancas que delimitan la cancha y sus distintas partes
+presentan un problema para el seguimiento de los equipos con camisetas blancas o de
+colores claros. Para evitar que el algoritmo de contornos activos considere que las
+lineas son parte de un jugador, como en la figura \ref{fig:confusion-linea}.
+
+% TODO: Tebex, esto no parece coincidir co nel codigo...
+% TODO: esta bien que digas que probamos, pero no decis cual es el posta
+% TODO: Decis "analisis morfologico" es muuuuy poco explicativo
 Basado en la detección de líneas de Hough, se desarrolló un método similar que
 detecta los tramos pintados de blanco en el césped de la cancha. El mismo
 funciona aplicando un detector de bordes (se probaron resultados utilizando
@@ -68,22 +78,29 @@ tanto el método de Roberts como el de Canny), umbralizando el resultado, y
 haciendo un análisis morfológico de las componentes conexas obtenidas luego de
 la umbralización.
 
-Respecto a la detección de líneas de Hough, este método es preferible debido
-a que detecta todo tipo de forma que sea demasiado larga o ancha como para
-ser un jugador (por ejemplo, el círculo central y medios círculos en las
-áreas alrededor de los arcos).
+\begin{figure}[H]
+  \centering
+    \begin{minipage}[t]{.45\textwidth}
+      \includegraphics[width=\linewidth]{./images/confusion-linea.png}
+      \caption{Se muestra como el contorno incluye parte de la linea
+      \label{fig:confusion-linea}}
+    \end{minipage}
+\end{figure}
 
 \subsection{Eliminación del césped}
 
 % TODO: Champo review esto
 Para la eliminación del césped del campo de juego se requiere caracterizarlo
-de alguna forma. Para esto, se realiza un simple muestreo de los colores de
+de alguna forma. Para esto, se realiza un analisis de los colores de
 la imagen recortada, es decir la imagen resultante luego aplicar la técnica
-de \textit{crop}, detallada en \ref{subsec:crop-tribunas}. A partir de este
-muestreo, se construye un histograma de colores y se determina como color del
-césped al color con mayor frecuencia. En realidad, debido a pequeñas
-fluctuaciones por cambios de iluminación y resolución, se toman un rango de
-valores alrededor del color con mayor frecuencia.
+de \textit{recorte}, detallada en \ref{subsec:crop-tribunas}, una vez seleccionados
+los contornos iniciales de los jugadores. Sobre este cuadro, se calcula el valor
+promedio y desvio estandard de todo pixel que no forme parte de los jugadores o
+un elemento ya conocido del fondo (por ejemplo, las lineas). 
+
+Con este valor, se considera parte del césped cualquier punto que no tenga las
+caracteristicas de un jugador (segun definidas en la sección \ref{sec:caracteristicas}),
+y se encuentre a menos de 3 desvios del color promedio calculado.
 
 \section{Contornos activos}
 \label{sec:ac-extension}
@@ -108,6 +125,7 @@ histograma de colores y seleccionar los picos más altos del histograma como
 colores representativos del objeto.
 
 \subsection{Características}
+\label{sec:caracteristicas}
 
 Se estudiaron varias posibilidades para la selección de características que
 determinaran los contornos de los jugadores respecto al color de fondo.

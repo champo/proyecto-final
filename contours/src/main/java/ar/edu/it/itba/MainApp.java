@@ -44,7 +44,6 @@ import ar.edu.it.itba.processing.color.ColorPoint;
 import ar.edu.it.itba.video.BlackOutOutskirts;
 import ar.edu.it.itba.video.FrameDecoder;
 import ar.edu.it.itba.video.FrameProvider;
-import ar.edu.it.itba.video.HoughLines;
 import ar.edu.it.itba.video.LensCorrection;
 
 /**
@@ -137,7 +136,8 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton1.setText("Ver Estadisticas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -147,7 +147,8 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton2.setText("Corregir posición");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            @Override
+			public void actionPerformed(final java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -368,15 +369,14 @@ public class MainApp extends javax.swing.JFrame {
         homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
         homeographyManager.setMapping(new Point(1091, 13), new Point(441,5));
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
-                //new LensCorrection(
-                  //      new BlackOutOutskirts(
-                        new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
-//                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
-        /*
+        		new BlackOutOutskirts(
+                new LensCorrection(
+                        new BlackOutOutskirts(
+//                        new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
+                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points);
-        */
         ;
 
         // First frame + Hough lines
@@ -384,7 +384,7 @@ public class MainApp extends javax.swing.JFrame {
         frameDecoder.nextFrame();
         BufferedImage frame = buildImage();
 
-        frameDecoder = new HoughLines(frameDecoder, frame);
+//        frameDecoder = new HoughLines(frameDecoder, frame);
 
         imagePanel.setSize(frame.getWidth(), frame.getHeight());
         imageContainerPanel.add(imagePanel, CENTER_ALIGNMENT);
@@ -551,7 +551,7 @@ public class MainApp extends javax.swing.JFrame {
                 List<Contour> team2 = new ArrayList<Contour>();
 
                 for (PlayerContour c : contour) {
-					if ("Visitante".equals(c.team)) {
+					if (false && "Visitante".equals(c.team)) {
 						team2.add(c);
 				 	} else {
 				 		team1.add(c);
@@ -698,7 +698,7 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(673,100), "Arbitro", "-", "Arbitro");
         addPlayer(new Point(1053,290), "Juez de línea", "-", "Arbitro");
         for (PlayerContour c : contour) {
-        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
+//        	((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
         }
         playerList.updateUI();
         return this;
@@ -841,7 +841,7 @@ public class MainApp extends javax.swing.JFrame {
                      phiPanel.repaint();
                      */
                     ac.adapt(frame);
-                    invertedTracker.adapt(frame);
+//                    invertedTracker.adapt(frame);
 
                     int index = 0;
                     if (homeography != null) {
@@ -880,7 +880,7 @@ public class MainApp extends javax.swing.JFrame {
 
                             heatMap.addPoint(mapped);
 
-                            ((PlayerContour) c).addHistoricalPoint(mapped);
+                            c.addHistoricalPoint(mapped);
 
 //                			setSoccerFieldImage(image);
                         }
@@ -910,7 +910,7 @@ public class MainApp extends javax.swing.JFrame {
         return busyLock;
     }
 
-    private void writeDownInfo(BufferedImage processing, BufferedImage rendered) {
+    private void writeDownInfo(final BufferedImage processing, final BufferedImage rendered) {
         try {
             File outputfile = new File("processing" + framesElapsed + ".png");
             ImageIO.write(processing, "png", outputfile);

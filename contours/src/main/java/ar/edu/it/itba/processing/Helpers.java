@@ -110,7 +110,7 @@ public final class Helpers {
 		}
 
 		double diff = colorDiff(color, p, frame, c.getLastStdDev(), c.omega);
-		if (c.getState() == State.MISSING) {
+		if (true || c.getState() == State.MISSING) {
 			return diff;
 		}
 

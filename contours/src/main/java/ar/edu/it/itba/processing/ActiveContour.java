@@ -113,7 +113,7 @@ public class ActiveContour {
 		final long time = System.currentTimeMillis();
 		final int nMax = max(frame.getHeight(), frame.getWidth());
 
-		if (!invertedDetection) {
+		if (false && !invertedDetection) {
 			for (final Contour c : contours) {
 				for (Point point : c) {
 
@@ -186,12 +186,12 @@ public class ActiveContour {
 			if (c.getState() == State.MISSING) {
 				markExpandedArea(frame, c);
 			} else {
-				c.omega = learn(ALPHA, c.omega, getCharacteristics(frame, c));
+//				c.omega = learn(ALPHA, c.omega, getCharacteristics(frame, c));
 			}
 		}
 
 
-		if (!invertedDetection) {
+		if (true || !invertedDetection) {
 			return System.currentTimeMillis() - time;
 		}
 
@@ -545,7 +545,7 @@ public class ActiveContour {
         return phi;
     }
 
-    private ColorPoint[] learn(double ALPHA, ColorPoint[] omega, ColorPoint[] characteristics) {
+    private ColorPoint[] learn(final double ALPHA, final ColorPoint[] omega, final ColorPoint[] characteristics) {
         return omega;
         /*
         ColorPoint[] newColour = new ColorPoint[omega.length];
