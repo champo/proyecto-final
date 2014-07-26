@@ -135,6 +135,14 @@ y se encuentre a menos de 3 desvios del color promedio calculado.
 \section{Contornos activos}
 \label{sec:ac-extension}
 
+Contornos Activos requiere para su implementación que se definan dos funciones
+claves. Una es la función de probabilidad $p$ y la otra la función caracteristica
+$v$ (Ver Sección \ref{sec:ac}). En esta sección se describe la elección de ambas
+funciones para este trabajo.
+
+\subsection{Características}
+\label{sec:caracteristicas}
+
 Como se explica en Sección \ref{sec:ac-problemas}, cuando los objetos de
 interés son complejos, la utilización del color promedio como única
 característica distintiva no alcanza. Es por esto que varias de las mejoras
@@ -145,56 +153,8 @@ ante un video correspondiente a un partido de fútbol.
 
 Si bien el color promedio resulta insuficiente para caracterizar correctamente
 al objeto, puede utilizarse en complemento con otras características. Una opción
-es la utilización de la varianza de color en el objeto de interés.
-
-Además de estos indicadores estadísticos, se pueden utilizar varias valores
-para caracterizar el objeto, en lugar de utilizar un solo valor como puede ser
-el color promedio o la varianza. Para esto, por ejemplo, puede realizarse un
-histograma de colores y seleccionar los picos más altos del histograma como
-colores representativos del objeto.
-
-\subsection{Características}
-\label{sec:caracteristicas}
-
-Se estudiaron varias posibilidades para la selección de características que
-determinaran los contornos de los jugadores respecto al color de fondo.
-A continuación se detallan alternativas exploradas:
-\begin{itemize}
-  \item \textbf{Valores RGB}
-  \item \textbf{Desviación Estándar}
-\end{itemize}
-
-Los valores \textit{RGB} representan el valor promedio de las 3
-componentes que forman un pixel. El algoritmo
-para su calculo se detalla en \ref{alg:carac-rgb}. 
-
-\begin{algorithm}
-    \caption{PromedioRGB}
-    \label{alg:carac-rgb}
-    \begin{algorithmic}
-    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro c, Contorno $\omega$
-
-    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_a, g_a, b_a)$
-    \State
-
-    \State $count \gets 0$
-    \State $r_{sum} \gets 0$
-    \State $g_{sum} \gets 0$
-    \State $b_{sum} \gets 0$
-    \For{$(x, y) \in \omega$}
-        \State $count \gets count + 1$
-        \State $(r, g, b) \gets c_{x, y}$
-        \State $r_{sum} \gets r + r_{sum}$
-        \State $g_{sum} \gets g + g_{sum}$
-        \State $b_{sum} \gets b + b_{sum}$
-    \EndFor
-
-    \State \Return $ (\frac{r_{sum}}{count}, \frac{g_{sum}}{count}, \frac{b_{sum}}{count}) $
-    \end{algorithmic}
-\end{algorithm}
-
-
-La desviación estándar se calcula de la manera descripta en el Algoritmo \ref{alg:desvio}, 
+es la utilización de la desviación estándard de color en el objeto de interés.
+Esta se calcula de la manera descripta en el Algoritmo \ref{alg:desvio}, 
 donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-local}.
 
 \begin{algorithm}
@@ -211,11 +171,11 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
     \State $r_{sum} \gets 0$
     \State $g_{sum} \gets 0$
     \State $b_{sum} \gets 0$
-    \For{$(x, y) \in c$}
+    \For{$p \in c$}
 
-        \If{$(x, y) \not\in  \Omega$}
+        \If{$p \not\in  \Omega$}
             \State $count \gets count + 1$
-            \State $(r_{dev}, g_{dev}, b_{dev}) \gets $ DesvioLocal($(x, y), c$)
+            \State $(r_{dev}, g_{dev}, b_{dev}) \gets $ DesvioLocal($p, c$)
             \State $r_{sum} \gets r_{dev} + r_{sum}$
             \State $g_{sum} \gets g_{dev} + g_{sum}$
             \State $b_{sum} \gets b_{dev} + b_{sum}$
@@ -230,15 +190,15 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
     \caption{DesvioLocal}
     \label{alg:desvio-local}
     \begin{algorithmic}
-    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $(x, y)$, Cuadro c, 
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $p$, Cuadro c, 
     \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_{dev}, g_{dev}, b_{dev})$
     \State
 
     \State $r_{avg} \gets 0$
     \State $g_{avg} \gets 0$
     \State $b_{avg} \gets 0$
-    \For{$(i, j)$ 8-conectado a $(x, y)$}
-        \State $(r, g, b) \gets c_{x, y}$
+    \For{$p'$ 8-conectado a $p$}
+        \State $(r, g, b) \gets c_{p'}$
         \State $r_{avg} \gets r + r_{avg}$
         \State $g_{avg} \gets g + g_{avg}$
         \State $b_{avg} \gets b + b_{avg}$
@@ -249,8 +209,8 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
     \State $r_{dev} \gets 0$
     \State $g_{dev} \gets 0$
     \State $b_{dev} \gets 0$
-    \For{$(i, j)$ 8-conectado a $(x, y)$}
-        \State $(r, g, b) \gets c_{x, y}$
+    \For{$p'$ 8-conectado a $p$}
+        \State $(r, g, b) \gets c_{p'}$
         \State $r_{dev} \gets r_{dev} + (r - r_{avg})^2$
         \State $g_{dev} \gets g_{dev} + (g - g_{avg})^2$
         \State $b_{dev} \gets b_{dev} + (b - b_{avg})^2$
@@ -261,8 +221,42 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
     \end{algorithmic}
 \end{algorithm}
 
-Se opto por construir el vector de características de cada contorno utilizando
-el promedio \textit{RGB} y su desviación estándar.
+Entonces la función $v$ queda defininida como:
+
+\begin{eqnarray*}
+    (r, g, b) &=&  c_{x} \\ 
+    (r_{dev}, g_{dev}, b_{dev}) &=& \text{DesvioLocal}(x, c) \\
+    v(x) &=& (r, g, b, r_{dev}, g_{dev}, b_{dev})
+    %v(p) = (r_{avg}, g_{avg}, b_{avg}, r_{dev}, g_{dev}, b_{dev})
+\end{eqnarray*}
+
+Y para cada contorno se define su vector caracteristico $v_i$ como el resultado de aplicar
+los algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
+
+\begin{algorithm}
+    \caption{PromedioRGB}
+    \label{alg:carac-rgb}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro c, Contorno $\omega$
+
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_a, g_a, b_a)$
+    \State
+
+    \State $count \gets 0$
+    \State $r_{sum} \gets 0$
+    \State $g_{sum} \gets 0$
+    \State $b_{sum} \gets 0$
+    \For{$p \in \omega$}
+        \State $count \gets count + 1$
+        \State $(r, g, b) \gets c_{p}$
+        \State $r_{sum} \gets r + r_{sum}$
+        \State $g_{sum} \gets g + g_{sum}$
+        \State $b_{sum} \gets b + b_{sum}$
+    \EndFor
+
+    \State \Return $ (\frac{r_{sum}}{count}, \frac{g_{sum}}{count}, \frac{b_{sum}}{count}) $
+    \end{algorithmic}
+\end{algorithm}
 
 \subsubsection{Aprendizaje de valores}
 
@@ -281,3 +275,7 @@ Se toma un valor de $\alpha$ del orden de $10^{-2}$, es decir, se toma el $1\%$
 de $\hat{\mathbf{v}}$. Esto evita la posibilidad de que se memorize cambios
 no deseados, como lo podria ser una oclusion parcial, antes de su correción.
 
+\subsection{Funcion de probabilidad}
+
+% TODO: Contar sobre como tenemos 2, una para fondo y otra para objeto
+% TODO: Definir ambas
