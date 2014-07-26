@@ -17,15 +17,15 @@ los cuadros del video que sin duda no corresponden a las siluetas de los
 objetos de interés para el seguimiento.
 
 Con ese fin, se analizaron distintos métodos para extraer información adicional
-de la imágen y detectar con el objetivo de ignorar sectores de la imágen que no
-correspondan a jugadores con total certeza. A continuación se describen los
-métodos evaluados.
+de la imagen y detectar e ignorar sectores de la imagen que, con total certeza,
+no correspondan a jugadores. A continuación se describen los métodos
+evaluados.
 
 \subsection{Tribuna y publicidades}
 \label{subsec:crop-tribunas}
 
 La técnica más simple de eliminación de sectores es una técnica de
-\textit{recorte} que elimina de la imágen todo píxel ajeno a un polígono
+\textit{recorte} que elimina de la imagen todo píxel ajeno a un polígono
 (como puede ser un cuadrilátero) que bordea la cancha. En las Figuras
 \ref{fig:crop-antes} y \ref{fig:crop-despues} se muestra el resultado
 de aplicar esta técnica a uno de los videos utilizados en el trabajo.
@@ -34,7 +34,7 @@ de aplicar esta técnica a uno de los videos utilizados en el trabajo.
   \centering
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/Crop_Antes.png}
-      \caption{Un cuadro del video de un partido entre Boca e Independiente.
+      \caption{Un cuadro del video del partido entre Boca e Independiente.
       \label{fig:crop-antes}}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
@@ -48,55 +48,57 @@ de aplicar esta técnica a uno de los videos utilizados en el trabajo.
 \subsection{Substracción de Fondo por Valor de Energía}
 
 Se implementó el método de eliminación de fondo descripto en
-\cite{papers-tanos}, para eliminación de sectores que corresponden al
-verde del césped de la cancha o líneas pintadas sobre el mismo basado en una
-medición de la variación del color de cada píxel (energía).
+\cite{papers-tanos} para eliminación de sectores que corresponden al verde del
+césped de la cancha o las líneas blancas pintadas sobre el mismo, basado en una
+medición de la variación del color de cada píxel (a la cual se refiere como
+energía).
 
 Este no resultó ser un método apropiado debido a que el sistema de codificación
-del video generaba muchos falsos negativos, sobre todo \textit{glitches}
+del video genera muchos falsos negativos, sobre todo \textit{glitches}
 alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
-mayor valor de energía del que realmente tendrían. En la Figura \ref{fig:tanos-fondo-sin}
-se muestra un recorte del primer cuadro del video de un partido entre Boca e Independiente.
-En las figuras \ref{fig:tanos-fondo} y \ref{fig:tanos-fondo-broken} se muestra el
-resultado de aplicar este algoritmo en ese mismo recorte. Se puede ver que en el cuadro
-\#27 detecta muy bien el fondo, pero en el siguiente cuadro cambios en la imagen
-hacen que descarte de manera erronea ciertas partes del fondo.
+mayor valor de energía del que realmente tenían. En la Figura
+\ref{fig:tanos-fondo-sin} se muestra un recorte del primer cuadro del video de
+un partido entre Boca e Independiente. En las figuras \ref{fig:tanos-fondo} y
+\ref{fig:tanos-fondo-broken} se muestra el resultado de aplicar este algoritmo
+en ese mismo recorte. Se puede ver que en el cuadro \#27 detecta muy bien el
+fondo, pero en el siguiente cuadro cambios en la imagen hacen que descarte de
+manera errónea ciertas partes del fondo.
 
 \begin{figure}[H]
   \centering
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/tanos-fondo-f1.png}
-      \caption{Recorte del cuadro \#1 del video de un partido entre Boca e Independiente
+      \caption{Recorte del cuadro \#1 del video del partido entre Boca e Independiente
       \label{fig:tanos-fondo-sin}}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/tanos-fondo-f27.png}
-      \caption{Recorte del cuadro \#27 del video, con el fondo segun el algoritmo en azul.
+      \caption{Recorte del cuadro \#27 del video, con el fondo según el algoritmo en azul.
       \label{fig:tanos-fondo}}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
       \centering
       \includegraphics[width=\linewidth]{./images/tanos-fondo-f28.png}
-      \caption{Recorte del cuadro \#28 del video, con el fondo segun el algoritmo en azul.
+      \caption{Recorte del cuadro \#28 del video, con el fondo según el algoritmo en azul.
       \label{fig:tanos-fondo-broken}}
     \end{minipage}
 \end{figure}
 
-Otro problema encontrado con este algoritmo es que al basarse en cambios de color
-puede considerar que un jugador que se encuentra estatico durante varios cuadros
-es parte de fondo. Si bien los jugadores suelen estar en movimiendo durante el 
+Otro problema encontrado con este algoritmo es que, al basarse en cambios de color,
+puede considerar que un jugador que se encuentra estático durante varios cuadros
+es parte de fondo. Si bien los jugadores suelen estar en movimiendo durante el
 partido, esto no es tan cierto en el caso del arquero.
 
-Por los motivos detallados, abandonamos el uso de este algoritmo en favor de las
-tecnicas descriptas en la proximas secciones, \ref{sec:lineas} y \ref{sec:cesped}.
+Por los motivos detallados, se descartó el uso de este algoritmo en favor de las
+técnicas descriptas en la próximas Secciones, \ref{sec:lineas} y \ref{sec:cesped}.
 
 \subsection{Eliminación de Líneas}
 \label{sec:lineas}
 
-Se encontro que las lineas blancas que delimitan la cancha y sus distintas partes
+Se encontró que las líneas blancas que delimitan la cancha y sus distintas partes
 presentan un problema para el seguimiento de los equipos con camisetas blancas o de
 colores claros. Para evitar que el algoritmo de contornos activos considere que las
-lineas son parte de un jugador, como en la figura \ref{fig:confusion-linea}.
+líneas son parte de un jugador, como en la figura \ref{fig:confusion-linea}.
 
 % TODO: Tebex, esto no parece coincidir co nel codigo...
 % TODO: esta bien que digas que probamos, pero no decis cual es el posta
@@ -112,7 +114,7 @@ la umbralización.
   \centering
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/confusion-linea.png}
-      \caption{Resultado de aplicar el algoritmo sin eliminación de lineas
+      \caption{Resultado de aplicar el algoritmo sin eliminación de líneas
       \label{fig:confusion-linea}}
     \end{minipage}
 \end{figure}
@@ -120,45 +122,45 @@ la umbralización.
 \subsection{Eliminación del césped}
 \label{sec:cesped}
 
-Para la eliminación del césped del campo de juego se requiere caracterizarlo
-de alguna forma. Para esto, se realiza un analisis de los colores de
-la imagen recortada, es decir la imagen resultante luego aplicar la técnica
-de \textit{recorte}, detallada en \ref{subsec:crop-tribunas}, una vez seleccionados
-los contornos iniciales de los jugadores. Sobre este cuadro, se calcula el valor
-promedio y desvio estandard de todo pixel que no forme parte de los jugadores o
-un elemento ya conocido del fondo (por ejemplo, las lineas).
+Para la eliminación del césped del campo de juego se requiere caracterizarlo de
+alguna forma. Para esto, se realiza un análisis de los colores de la imagen
+recortada, es decir la imagen resultante luego aplicar la técnica de
+\textit{recorte}, detallada en \ref{subsec:crop-tribunas}, una vez
+seleccionados los contornos iniciales de los jugadores. Sobre este cuadro, se
+calcula el valor promedio y desvío estándar de todo píxel que no forme parte de
+los jugadores o un elemento ya conocido del fondo (por ejemplo, las líneas).
 
 Con este valor, se considera parte del césped cualquier punto que no tenga las
-caracteristicas de un jugador (segun definidas en la sección \ref{sec:caracteristicas}),
-y se encuentre a menos de 3 desvios del color promedio calculado.
+características de un jugador (según definidas en la Sección
+\ref{sec:caracteristicas}), y se encuentre a menos de $3$ desvíos del color
+promedio calculado.
 
-\section{Contornos activos}
-\label{sec:ac-extension}
+\section{Contornos activos} \label{sec:ac-extension}
 
-Contornos Activos requiere para su implementación que se definan dos funciones
-claves. Una es la función de probabilidad $p$ y la otra la función caracteristica
-$v$ (Ver Sección \ref{sec:ac}). En esta sección se describe la elección de ambas
-funciones para este trabajo.
+\textit{Contornos Activos} requiere para su implementación que se definan dos
+funciones fundamentales. Una es la función de probabilidad $p$ y la otra la
+función característica $v$ (ver Sección \ref{sec:ac}). En esta Sección se
+describe la elección de ambas funciones para este trabajo.
 
 \subsection{Características}
 \label{sec:caracteristicas}
 
-Como se explica en Sección \ref{sec:ac-problemas}, cuando los objetos de
+Como se explica en la Sección \ref{sec:ac-problemas}, cuando los objetos de
 interés son complejos, la utilización del color promedio como única
 característica distintiva no alcanza. Es por esto que varias de las mejoras
 planteadas al algoritmo de contornos activos giran en torno a la selección de
-características para representar a los objetos de interés. Esta Sección
-describe cambios que se han incorporado para hacer el algoritmo más efectivo
-ante un video correspondiente a un partido de fútbol.
+características para representar a los objetos de interés. A continuación, se
+describen los cambios que se han incorporado para hacer el algoritmo más
+efectivo ante un video correspondiente a un partido de fútbol.
 
 Si bien el color promedio resulta insuficiente para caracterizar correctamente
 al objeto, puede utilizarse en complemento con otras características. Una opción
-es la utilización de la desviación estándard de color en el objeto de interés.
-Esta se calcula de la manera descripta en el Algoritmo \ref{alg:desvio}, 
+es la utilización del desvío estándar de color en el objeto de interés.
+Este se calcula de la manera descripta en el Algoritmo \ref{alg:desvio},
 donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-local}.
 
 \begin{algorithm}
-    \caption{Caracteristica Desviación Estándar}
+    \caption{Característica Desvío Estándar}
     \label{alg:desvio}
     \begin{algorithmic}
     \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro c, Contornos $\omega_1 \dots \omega_n$
@@ -190,7 +192,7 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
     \caption{DesvioLocal}
     \label{alg:desvio-local}
     \begin{algorithmic}
-    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $p$, Cuadro c, 
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $p$, Cuadro c,
     \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} $(r_{dev}, g_{dev}, b_{dev})$
     \State
 
@@ -224,14 +226,14 @@ donde la rutina \textit{DesvioLocal} se define en el Algoritmo \ref{alg:desvio-l
 Entonces la función $v$ queda defininida como:
 
 \begin{eqnarray*}
-    (r, g, b) &=&  c_{x} \\ 
+    (r, g, b) &=&  c_{x} \\
     (r_{dev}, g_{dev}, b_{dev}) &=& \text{DesvioLocal}(x, c) \\
     v(x) &=& (r, g, b, r_{dev}, g_{dev}, b_{dev})
     %v(p) = (r_{avg}, g_{avg}, b_{avg}, r_{dev}, g_{dev}, b_{dev})
 \end{eqnarray*}
 
-Y para cada contorno se define su vector caracteristico $v_i$ como el resultado de aplicar
-los algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
+Y para cada contorno se define su vector característico $v_i$ como el resultado de aplicar
+los Algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
 
 \begin{algorithm}
     \caption{PromedioRGB}
@@ -261,44 +263,48 @@ los algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
 \subsubsection{Aprendizaje de valores}
 
 Se realiza un aprendizaje simple para las características de cada contorno. En
-cada cuadro, siendo las características de un contorno dado un vector
-$\mathbf{v}$, se calcula el promedio de los valores de las características para
-todos los píxeles pertenecientes al contorno y se lo denomina
-$\hat{\mathbf{v}}$. A continuación se actualiza $\mathbf{v}$ y se lo reemplaza
-por un nuevo valor $\mathbf{v_n}$ calculado de acuerdo a:
+cada cuadro, siendo \mathbf{v} un vector con las características de un contorno
+dado, se calcula el promedio de los valores de las características para todos
+los píxeles pertenecientes al contorno y se lo denomina $\hat{\mathbf{v}}$. A
+continuación se actualiza $\mathbf{v}$ y se lo reemplaza por un nuevo valor
+$\mathbf{v_n}$ calculado de acuerdo a:
 
 \[
   \mathbf{v_n} = \left(1-\alpha\right)\mathbf{v} + \alpha \hat{\mathbf{v}}
 \]
 
 Se toma un valor de $\alpha$ del orden de $10^{-2}$, es decir, se toma el $1\%$
-de $\hat{\mathbf{v}}$. Esto evita la posibilidad de que se memorize cambios
-no deseados, como lo podria ser una oclusion parcial, antes de su correción.
+de $\hat{\mathbf{v}}$. Esto evita la posibilidad de que se memoricen cambios
+no deseados, como podría ser una oclusión parcial, antes de su correción.
 
 \subsection{Función de probabilidad}
 
 Si bien la función de probabilidad sugerida en la Seccion \ref{sec:ac} se puede
-aplicar en este caso, se modifico para tener en cuenta la morfologia de los objetos
-a seguir. 
+aplicar en este caso, se modificó para tener en cuenta la morfología de los objetos
+a seguir.
 
-Con la restricción de camara, podemos saber que siempre la imagen de un dado
-jugador va a estar contenida en un rectangulo. Tambien se puede calcular las
-dimensiones maximas posibles de ese rectangulo. Se puede entonces limitar el tamaño
-del contorno, reduciendo la posibilidad de que el contorno intente seguir objetos
-de caracteristicas parecidas al jugador. En el caso de querer evaluar si un punto
-pertenece al fondo o no, esta caracteristica no es deseable y por lo tanto este
-trabajo cuenta con dos funciones, la sugerida anteriormente $f$ para el fondo
-y una $f_j$ para los jugadores. Se definen de la siguiente manera:
+%% TODO champoman esto no está muy bien redacatado. Intenté arreglarlo un poco
+%% pero tampoco estoy muy convencido. Se aceptan aportes.
+Dada las restricciones iniciales del problema, se puede aseverar que la imagen
+de un dado jugador siempre va a estar contenida en un rectángulo. También se
+pueden calcular las dimensiones máximas posibles de ese rectángulo. Se puede
+entonces limitar el tamaño del contorno, reduciendo la posibilidad de que el
+contorno intente seguir objetos de características parecidas al jugador, pero
+cuyas dimensiones sean mayores al rectángulo más grande, señalando que el
+objeto no es un jugador. En el caso de querer evaluar si un punto pertenece al
+fondo o no, esta mejora no es deseable y por lo tanto este trabajo cuenta con
+dos funciones, la sugerida anteriormente $f$ para el fondo y una $f_j$ para los
+jugadores. Se definen de la siguiente manera:
 
 \begin{eqnarray*}
     f(p) &=& 1 - \frac{\|\| v(p) - v_i \|\|}{255 * 6} \\
     f_j(p) &=& 1 - \min(1, f(p) + \text{distance\_weight}(p_x, p_y, \omega_i))
 \end{eqnarray*}
 
-Donde $v_i$ es el valor caracteristico para el contorno $\omega_i$ contra el que se
-evalua el punto $p$. Y la rutina distance\_weight se define en el Algoritmo
-\ref{alg:distance-weight}, donde $maxX$ y $maxY$ son el semi-ancho y semi-altura maxima del
-rectangulo, respectivamente.
+Donde $v_i$ es el valor característico para el contorno $\omega_i$ contra el
+que se evalua el punto $p$. Y la rutina \textit{distance\_weight} se define en
+el Algoritmo \ref{alg:distance-weight}, donde $maxX$ y $maxY$ son el semi-ancho
+y la semi-altura máxima del rectángulo, respectivamente.
 
 \begin{algorithm}
     \caption{distance\_weight}
@@ -319,7 +325,7 @@ rectangulo, respectivamente.
     \State $centroid_x \gets \frac{centroid_x}{\#\omega}$
     \State $centroid_y \gets \frac{centroid_y}{\#\omega}$
 
-    
+
     \State $res \gets 0$
     \State $dist_x \gets \|p_x - centroid_x\|$
     \State $dist_y \gets \|p_y - centroid_y\|$
@@ -335,4 +341,4 @@ rectangulo, respectivamente.
     \State \Return $res$
     \end{algorithmic}
 \end{algorithm}
-    
+
