@@ -1,14 +1,14 @@
 \chapter{Resultados}
 \label{chap-results}
 
-Esta Sección presenta un análisis de los resultados obtenidos de la ejecución
-del algoritmo sobre distintos videos. A lo largo de esta Sección se refiere al
-\textit{algoritmo} como a la versión modificada de contornos activos que fue
-descripta en el Capítulo \ref{chap-solution}. Las palabras \textit{aplicación}
-y \textit{programa} serán utilizadas indistintamente para referirse al programa
-que implementa dicho algoritmo, junto con una interfaz de usuario para el
-operador. Se refiere a la\textit{implementación} como a la parte del programa
-que implementa el algoritmo.
+Esta Sección presenta un análisis de los resultados obtenidos a partir de la
+ejecución del algoritmo utilizando distintos videos. A lo largo de esta Sección
+se refiere al \textit{algoritmo} como a la versión modificada de contornos
+activos que fue descripta en el Capítulo \ref{chap-solution}. Las palabras
+\textit{aplicación} y \textit{programa} serán utilizadas indistintamente para
+referirse al programa que implementa dicho algoritmo, junto con una interfaz de
+usuario para el operador. Se refiere a la \textit{implementación} como la
+parte del programa que implementa el algoritmo.
 
 Se presentan los resultados obtenidos de la ejecución del programa, junto con
 métricas utilizadas para evaluar la performance de la implementación.
@@ -17,30 +17,30 @@ métricas utilizadas para evaluar la performance de la implementación.
 
 El programa incorpora una interfaz gráfica utilizada tanto para dar
 instrucciones como para recibir información acerca del partido y del
-funcionamiento del algoritmo. La misma cuenta con una Sección donde se muestra
-una lista de jugadores siendo seguidos, una donde se puede visualizar el video
-original con un recuadro en cada jugador seguido, un mapa de calor que muestra
-las posiciones más frecuentes, y una imágen que permite al operador evaluar
-cualitativamente el correcto funcionamiento del algoritmo.
+funcionamiento del algoritmo. La misma cuenta con una sección donde se muestra
+una lista de los jugadores que están siendo seguidos, una donde se puede
+visualizar el video original con un recuadro en cada jugador seguido, un mapa de
+calor que muestra las posiciones más frecuentes, y una imagen que permite al
+operador evaluar cualitativamente el correcto funcionamiento del algoritmo.
 
 Para comenzar la ejecución del algoritmo, el programa requiere que el operador
 identifique la posición de los jugadores en la imagen inicial de la secuencia.
 En este paso, también debe agregar información acerca del número de camiseta
-que viste, el equipo, y nombre del jugador.
+que viste, el equipo al cual pertenece, y el nombre de cada jugador.
 
 Un paso adicional que debe ejecutar el operador es determinar los puntos a
 utilizar para el cálculo de la homografía. Los datos necesarios para ello son
-cuatro parejas de puntos, como explicado en la Sección \ref{sec:homography}. De
+cuatro parejas de puntos, como se explica en la Sección \ref{sec:homography}. De
 estas parejas, el primer punto es una coordenada de la imagen en perspectiva y
 el otro punto es la coordenada en un plano bidimensional. Con cuatro de estas
 relaciones, se puede calcular la matriz que resuelve la homografía para
 cualquier otro punto.
 
-Una vez que el programa tiene estos datos, el algoritmo puede comenzar a
-su ejecución. Existen dos modos: se puede avanzar un cuadro sólo ante la
+Una vez que el programa tiene estos datos, el algoritmo puede comenzar su
+ejecución. Existen dos modos: en un modo se puede avanzar un cuadro sólo ante la
 indicación del operador (en una mecánica de tipo ``cuadro por cuadro'') y en
 otro modo se puede avanzar automáticamente cada vez que se computa un cuadro
-(``tiempo real'').
+(mecánica de tipo ``tiempo real'').
 
 Para cada cuadro, una ventana muestra las posiciones actualizadas de los
 jugadores. El usuario puede seleccionar un jugador en particular y ver en
@@ -68,23 +68,23 @@ videos.
     opuesto y cielo por encima de ellas. Luego de descartar esas regiones del
     video, la resolución pasa a ser de 1459 píxeles de ancho por 304 de alto.
     Se puede apreciar en la Figura \ref{fig:boca-figura} un cuadro del video, luego
-    de extracción de las gradas y corrección del efecto de curvatura de la
+    de la extracción de las gradas y corrección del efecto de curvatura de la
     lente.
 
     Los jugadores de Independiente usan remera y shorts de color blanco,
-    fácilmente identificables respecto al fondo de color verdoso. El referí, de
+    fácilmente identificables respecto al fondo de color verdoso. El árbitro, de
     amarillo, también contrasta respecto al fondo. Los jugadores de Boca, por
-    otro lado, son difíciles de identificar a la distancia y son confundidos
-    con el color del césped de la cancha, como se ilustra en las Figuras
+    otro lado, son difíciles de identificar a la distancia y son confundidos con
+    el color del césped de la cancha, como se ilustra en las Figuras
     \ref{fig:boca-dificil-1} y \ref{fig:boca-dificil-2}.
 
   \item \textbf{Independiente vs. San Lorenzo:} También filmado en resolución de
-    \textit{1080p}, las esquinas del campo de juego quedan fuera del campo
-    visual. El video recibido ya fue editado y el alto de un cuadro es menor al
-    alto de un video en resolución \textit{1080p}. Luego de descartar las
-    gradas, la resolución final del video es de 1920 píxeles de ancho y 540 de
-    alto. La Figura \ref{fig:independ-figura} muestra un cuadro del video
-    procesado.
+      \textit{1080p}, las esquinas del campo de juego quedan fuera del campo
+      visual. El video fue editado con anterioridad y el alto de un cuadro es
+      menor al alto de un video en resolución \textit{1080p}. Luego de descartar
+      las gradas, la resolución final del video es de 1920 píxeles de ancho y
+      540 de alto. La Figura \ref{fig:independ-figura} muestra un cuadro del
+      video procesado.
 
     Los jugadores de ambos equipos, al utilizar los valores RGB de cada píxel,
     contrastan contra el césped y el algoritmo de contornos activos funciona
@@ -95,13 +95,13 @@ videos.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{./images/boca-figura.png}
-  \caption{Un cuadro del video de un partido entre Boca e Independiente.}
+  \caption{Cuadro del video del partido entre Boca e Independiente.}
   \label{fig:boca-figura}
 \end{figure}
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{./images/independ-figura.png}
-  \caption{Muestra de un cuadro de un partido en que Independiente enfrenta al club San Lorenzo.}
+  \caption{Cuadro del partido en el que Independiente enfrenta a San Lorenzo.}
   \label{fig:independ-figura}
 \end{figure}
 \begin{figure}[H]
@@ -116,19 +116,22 @@ videos.
         \includegraphics[width=.4\linewidth]{./images/boca-dificil2.png}
         \label{fig:boca-difícil2}
     \end{minipage}
-    \caption{Se muestra un acercamiento a dos jugadores en el video de Boca vs.
+    \caption{Acercamiento a dos jugadores en el video de Boca vs.
              Independiente. De acuerdo a la iluminación, se puede notar que el
              contorno de un jugador puede resultar muy difícil de delimitar.}
 
 \end{figure}
 
-Además, se tomaron pequeños cortes de tres videos de fútbol televisado en los
-cuales la cámara se encuentra relativamente estática y se analizó la
+Además, se tomaron pequeños cortes de tres videos de fútbol televisado, en los
+cuales la cámara se encuentra prácticamente estática y se analizó la
 correctitud del seguimiento en estos casos, contando con mayor resolución pero
 sin poder efectuar exitosamente la eliminación de fondo o la aplicación de una
 homografía para determinar las posiciones correctamente, ya que cada cuadro
 donde la cámara cambia su orientación, la matriz de la homografía debería ser
 recalculada con nuevos datos.
+
+%% TODO: Eordano acá vamos a describir los videos también? Habría que meter
+%% alguna screenshot y chau mepa.
 
 \begin{itemize}
   \item \textbf{Manchester City vs Barcelona:}
@@ -141,25 +144,46 @@ recalculada con nuevos datos.
 
 \section{Evaluación del método}
 
-Se evaluó cualitativamente por un operador que los contornos de los jugadores
-según el algoritmo modificado de contornos activos no correspondían a los
-jugadores, como es el caso de trabajos citados en el estado del arte (ver
-\cite{papers-tanos}). Se atribuye esto a la baja calidad de los videos que se
-pudieron obtener, y la poca capacidad de procesamiento en comparación.
-% TODO: Completar esto justificando mejor -^
+La principal evaluación del correcto funcionamiento del algoritmo es llevada a
+cabo por el operador de forma cualitativa, como ocurre en otros trabajos
+citados en el estado del arte (ver \cite{papers-tanos}). El resultado que
+arroja está evaluación es positivo, consiguiéndose seguir correctamente a
+todos los jugadores en casi todo momento. Sin embargo, existen algunas
+situaciones en las que el algoritmo falla en el seguimiento y no logra
+recuperarse por sí mismo, requiriendo una correción manual por parte del
+operador para continuar su funcionamiento. Esto se atribuye a la baja calidad
+de los videos utilizados como material y a la poca capacidad de procesamiento
+en comparación (el poder de procesamiento de una sola computadora limita
+algunas operaciones o técnicas).
 
-Dado esto, se procedió a evaluar cuántas veces sucedía esta discrepancia por
-unidad de tiempo. Esta métrica, resumida como la cantidad de errores del
-algoritmo por cada cien cuadros, se intentó minimizar durante el estudio de las
-variantes de la aplicación.
+Las situaciones en que se producen estos errores están bien identificadas
+y ocurren porque el algoritmo, en una situación de proximidad entre dos
+jugadores, a veces confunde a la sombra del otro jugador con el jugador
+al cual se encuentra siguiendo, y comienza a seguir a la sombra, perdiendo
+al jugador.
 
-Otra métrica que se buscó minimizar es el tiempo de demora por cuadro
-procesado, hasta intentar alcanzar una velocidad de $24$ cuadros por segundo
-(equivalente a $42$ milisegundos por cuadro), la velocidad de los videos
-utilizados.
+%% TODO EORDANO yo te creo pero aca necesitamos mínimo un screenshot que
+%% muestre lo que decis. (CITA TUS FUENTES! ;))
 
-\subsection{Velocidad de Ejecución}
+Para evaluar estos inconvenientes se define una métrica que mide exactamente la
+cantidad de errores por unidad de tiempo. Esta métrica, resumida como la
+cantidad de errores del algoritmo por cada cien cuadros, se intenta minimizar
+durante el estudio de las variantes de la aplicación.
 
-\subsection{Correctitud}
+La ejecución del algoritmo utilizando el video entre Boca e Independiente
+resulta en 7 errores en 766 cuadros, dando aproxidamente 0.91 errores cada cien
+cuadros, lo que significa un poco menos de un error cada 4 segundos.
+
+En el video del partido entre Independiente y San Lorenzo el algoritmo incurre
+en 6 errores en 213 cuadros, dando 2.81 errores cada cien cuadros. Es decir,
+algo menos de 3 errores cada 4 segundos.
+
+Otro aspecto importante a la hora de evaluar la solución propuesta es su
+velocidad, medida en el tiempo de ejecución que requiere para llevar a cabo su
+trabajo. Para medir esto se defina la métrica del tiempo que le toma al
+algoritmo procesar un solo cuadro, o, lo que es lo mismo, la cantidad de
+cuadros procesados por segundo. El objetivo es minimizar esta métrica
+intentando acercarse lo más posible a los $24$ cuadros por segundo (equivalente
+a $42$ milisegundos por cuadro), la velocidad de los videos utilizados.
 
 \input{parts/05.1-iftrace}
