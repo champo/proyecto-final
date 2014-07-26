@@ -11,27 +11,26 @@ hicieron en la Sección \ref{sec:ac-extension}. Finalmente, en la Sección
 técnicas, que es analizada en el siguiente Capítulo.
 
 \section{Eliminación de fondo}
-%% TODO: Ojo, a partir de acá hablamos en pasado. Deberíamos ser consistentes,
-%% por como arrancamos en el resuemen, la intro y por lo que dice la mina
-%% deberiamos usar el presente o eso de "se plantea, se define, etc..."
 
 \label{sec:background-elimination}
-% TODO: REEMPLAZAR PLANTEA por mejor palabra
-Se planteó que el análisis por contornos activos se beneficia de un análisis
+Se evaluó que el análisis por contornos activos se beneficiaría de un análisis
 previo que detecte e informe a la actualización del contorno sobre sectores de
 los cuadros del video que sin duda no corresponden a las siluetas de los
 objetos de interés para el seguimiento.
 
-Con ese fin, se analizan distintos métodos para extraer información adicional
-de la imágen y detectar con el objetivo de ignorar sectores de la imágen que
-no correspondan a jugadores con total certeza.
+Con ese fin, se analizaron distintos métodos para extraer información adicional
+de la imágen y detectar con el objetivo de ignorar sectores de la imágen que no
+correspondan a jugadores con total certeza. A continuación se describen los
+métodos evaluados.
 
 \subsection{Tribuna y publicidades}
 \label{subsec:crop-tribunas}
 
 La técnica más simple de eliminación de sectores es una técnica de
-\textit{crop} que muestra como negro todo sector de la imágen ajeno a un
-cuadrilátero que bordea la cancha.
+\textit{crop} que elimina de la imágen todo píxel ajeno a un polígono
+(como puede ser un cuadrilátero) que bordea la cancha. En las Figuras
+\ref{fig:crop-antes} y \ref{fig:crop-despues} se muestra el resultado
+de aplicar esta técnica a uno de los videos utilizados en el trabajo.
 
 \begin{figure}[H]
   \centering
@@ -48,16 +47,19 @@ cuadrilátero que bordea la cancha.
     \end{minipage}
 \end{figure}
 
-\subsection{Energía}
+\subsection{Substracción de Fondo por Valor de Energía}
 
 Se implementó el método de eliminación de fondo descripto en
 \cite{papers-tanos}, para eliminación de sectores que corresponden al
-verde del pasto de la cancha o líneas pintadas sobre el mismo basado
-en una medición de la variación del color de cada píxel.
+verde del césped de la cancha o líneas pintadas sobre el mismo basado en una
+medición de la variación del color de cada píxel (energía).
 
-% TODO: Imágenes de cómo funciona
+Este no resultó ser un método apropiado debido a que el sistema de codificación
+del video generaba muchos falsos negativos, sobre todo \textit{glitches}
+alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
+mayor valor de energía del que realmente tendrían.
 
-\subsection{Eliminación de lineas}
+\subsection{Eliminación de Líneas}
 
 Basado en la detección de líneas de Hough, se desarrolló un método similar que
 detecta los tramos pintados de blanco en el césped de la cancha. El mismo
@@ -73,6 +75,7 @@ ser un jugador (por ejemplo, el círculo central y medios círculos en las
 
 \subsection{Eliminación del césped}
 
+% TODO: Champo review esto
 Para la eliminación del césped del campo de juego se requiere caracterizarlo
 de alguna forma. Para esto, se realiza un simple muestreo de los colores de
 la imagen recortada, es decir la imagen resultante luego aplicar la técnica
@@ -89,13 +92,13 @@ Como se explica en Sección \ref{sec:ac-problemas}, cuando los objetos de
 interés son complejos, la utilización del color promedio como única
 característica distintiva no alcanza. Es por esto que varias de las mejoras
 planteadas al algoritmo de Contornos Activos giran en torno a la selección de
-características para representar a los objetos de interés.
-
+características para representar a los objetos de interés. Esta Sección
+describe cambios que se han incorporado para hacer el algoritmo más efectivo
+ante un video correspondiente a un partido de fútbol.
 
 Si bien el color promedio resulta insuficiente para caracterizar correctamente
 al objeto, puede utilizarse en complemento con otras características. La más
 intuitiva es la utilización de la varianza de color en el objeto de interés.
-
 
 Además de estos indicadores estadísticos, se pueden utilizar varias valores
 para caracterizar el objeto, en lugar de utilizar un solo valor como puede ser
@@ -103,26 +106,36 @@ el color promedio o la varianza. Para esto, por ejemplo, puede realizarse un
 histograma de colores y seleccionar los picos más altos del histograma como
 colores representativos del objeto.
 
-% TODO dejo esto porque claramente le falta a los párrafos de arriba.
-%- Características
-%  * Colores del jugador
-%  * Aprendizaje
-%  * Múltiples características
-%  * Selección de máximos en histograma con bfs
-%- Descriptores
+\subsection{Características}
 
-\section{Algoritmo final}
-\label{sec:alg-final}
-% Que onda esta seccion? Me parece medio tirada de los pelos la idea
-% Alvaman: Si no se bien que onda. Si no se repite mucho no quedaría mal
-% pero hay que hacerlo cortito y al pie.
+Se estudiaron varias posibilidades para la selección de características que
+determinaran los contornos de los jugadores respecto al color de fondo.
+Finalmente, se optó por utilizar tres características, correspondientes a los
+valores de RGB de cada píxel. A continuación se detallan alternativas:
+\begin{itemize}
+  \item \textbf{Valores HSL}: Se tomaron, en vez de los valores de rojo, verde
+    y azul, los valores de \textit{hue}, \textit{saturation} y
+    \textit{lightning}.
 
-- Eliminación de lineas por detector de borde + umbral + morfología
-- Múltiples características
-- Descriptores
-- Imágenes de cómo resolvemos algunos casos extremos
+  \item \textbf{Desviación Estándar}: Se tomaron seis características para cada
+    píxel: color (RGB o HSL) y desviación estándar de ese píxel respecto a los
+    demás píxeles en una ventana de 5 píxeles alrededor del mismo.
 
-- Opcional para equipos difíciles de detectar: seguimiento por complemento
-  - eliminación de colores de cancha por histograma + ronda de contornos
+\end{itemize}
 
-- Que lastima que no tuvimos trackeo de pelota porque hubiese dado mejores datos
+\subsubsection{Selección de características}
+
+Las características de un jugador son seleccionadas en base a los valores
+encontrados inicialmente dentro de un cuadrado de un ancho y alto especificado
+por el operador, que depende del video siendo analizado. Entre los píxeles
+abarcados por el área de ese cuadrado, se realiza un histograma en tres
+dimensiones (cada dimensión corresponde a los valores de rojo, verde, y azul
+respectivamente). Se toma el valor máximo de ese histograma como el color
+principal, y las características para este jugador son tomadas de este valor.
+
+\subsubsection{Aprendizaje de valores}
+
+Se realiza un aprendizaje simple para cada característica
+
+\subsection{Descriptores}
+% TODO: Champo me cansé de escuchar que es esto y no tengo idea de a que se refiere
