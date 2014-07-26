@@ -83,7 +83,16 @@ hacen que descarte de manera erronea ciertas partes del fondo.
     \end{minipage}
 \end{figure}
 
+Otro problema encontrado con este algoritmo es que al basarse en cambios de color
+puede considerar que un jugador que se encuentra estatico durante varios cuadros
+es parte de fondo. Si bien los jugadores suelen estar en movimiendo durante el 
+partido, esto no es tan cierto en el caso del arquero.
+
+Por los motivos detallados, abandonamos el uso de este algoritmo en favor de las
+tecnicas descriptas en la proximas secciones, \ref{sec:lineas} y \ref{sec:cesped}.
+
 \subsection{Eliminación de Líneas}
+\label{sec:lineas}
 
 Se encontro que las lineas blancas que delimitan la cancha y sus distintas partes
 presentan un problema para el seguimiento de los equipos con camisetas blancas o de
