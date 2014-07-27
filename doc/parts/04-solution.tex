@@ -263,7 +263,7 @@ los Algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
 \subsubsection{Aprendizaje de valores}
 
 Se realiza un aprendizaje simple para las características de cada contorno. En
-cada cuadro, siendo \mathbf{v} un vector con las características de un contorno
+cada cuadro, siendo $\mathbf{v}$ un vector con las características de un contorno
 dado, se calcula el promedio de los valores de las características para todos
 los píxeles pertenecientes al contorno y se lo denomina $\hat{\mathbf{v}}$. A
 continuación se actualiza $\mathbf{v}$ y se lo reemplaza por un nuevo valor
@@ -286,8 +286,8 @@ a seguir.
 %% TODO champoman esto no está muy bien redacatado. Intenté arreglarlo un poco
 %% pero tampoco estoy muy convencido. Se aceptan aportes.
 Dada las restricciones iniciales del problema, se puede aseverar que la imagen
-de un dado jugador siempre va a estar contenida en un rectángulo. También se
-pueden calcular las dimensiones máximas posibles de ese rectángulo. Se puede
+de un dado jugador siempre va a estar contenida en un rectángulo, y calcular las
+dimensiones máximas posibles de ese rectángulo. Se puede
 entonces limitar el tamaño del contorno, reduciendo la posibilidad de que el
 contorno intente seguir objetos de características parecidas al jugador, pero
 cuyas dimensiones sean mayores al rectángulo más grande, señalando que el
@@ -344,5 +344,46 @@ y la semi-altura máxima del rectángulo, respectivamente.
 
 \subsubsection{Seguimiento por Complemento}
 
-%% TODO Champoman: Ni idea como llamarla a la subseccion.
-%% Dejo esto para que no te olvides ;)
+Como explicado en la Sección \ref{sec:ac-problemas}, no resulta directo construir
+una función $v$ para camisetas rayadas. Si bien el agregado del Desvío Estandard 
+contribuye a mejorar el seguimiento en estos casos, no soluciona totalmente el
+problema. Para poder seguir correctamente a equipos cuyas camisetas presentan este
+desafio, optamos por ignorar sus caracteristicas y seguir por lo que no son. Es
+decir, no son jugadores del otro equipo, no son cesped y no son lineas de la cancha.
+
+Como es necesario saber donde estan los jugadores del primer equipo, se debe utilizar
+Contornos Activos dos veces. Una primera vez haciendo un seguimiento por caracteristicas,
+luego de la cual se aplica el procedimiento \textit{complemento}, detallado en el Algoritmo
+\ref{alg:complemento}. La salida de este procedimiento marca todo punto que no fue
+identificado bajo ningun conjunto con el color \textit{cyan}, y aplica un operador
+morfologico de expansión sobre todos estos puntos.
+
+\begin{algorithm}
+    \caption{complemento}
+    \label{alg:complemento}
+    \begin{algorithmic}
+    \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro $c$, Contornos $\omega_1 \dots \omega_n$,
+    cesped y lineas $\omega_0$
+
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} Cuadro $c$
+    \State
+
+    \State $\Omega \gets \cap{\omega_0 \dots \omega_n}$
+    \For{$(x, y) \in c$}
+        \If{$(x, y) \not \in \Omega$}
+            \State $c_{x, y} \gets \text{\textit{CYAN}}$
+
+            \For{$(x', y') \text{4-conectado a} (x, y)$}
+                \State $c_{x', y'} \gets \text{\textit{CYAN}}$
+            \EndFor
+        \EndIf
+    \EndFor
+
+    \State \Return $c$
+    \end{algorithmic}
+\end{algorithm}
+
+Conociendo que puntos son candidatos a ser jugadores del segundo equipo, se hace una segunda 
+ejecución de Contornos Activos donde todos los contornos tienen la caracteristica \textit{RGB}
+\textit{cyan}.
+
