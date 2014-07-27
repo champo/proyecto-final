@@ -29,5 +29,20 @@ material y de mejor calidad. Lo ideal sería poder escoger la ubicación de la
 cámara de modo de utilizar eficientemente todo el cuadro de la imagen para la
 cancha, y contar con cámaras de mayor resolución.
 
+\subsection{Mejoras de performance}
+
+Uno de los objetivos de investigación de este trabajo es lograr un seguimiento en
+tiempo real, es decir procesar por lo menos 24 cuadros por segundo. La implementación
+de referencia no cumple con este objetivo, pero tiene mucho lugar a optimización. 
+Por ejemplo, El trabajo de preprocesamiento de un cuadro y de aplicación de Contornos
+Activos puede distribuirse en 2 computadoras distintas. Esto permite tener una menor
+latencia entre cuadro y cuadro, y podria duplicar la velocidad percibida. 
+
+Existe tambien lugar a optimización en Contornos Activos. El algoritmo original no
+esta diseñado para seguir 24 contornos en tiempo real. La implementación procesa
+cada contorno de manera secuencial, desperdiciando la capacidad de multiprocesamiento
+de las computadoras modernas. Se podria adaptar el algoritmo para aprovechar esta
+capacidad y mejorar el tiempo de ejecución notablemente.
+
 %- Mal material, imposible agarrar la pelota y difícil los jugadores
 %- Resultados aceptables
