@@ -15,8 +15,25 @@ propuesta resulta flexible y capaz de recuperarse de forma semi-supervisada,
 algo que otras técnicas complejas y robustas no contemplan, como por ejemplo la
 técnica de \textit{IFTrace}.
 
-%%TODO podemos decir que el material era malo? Y que era dificil
-%% conseguir material de las mismas caracteristicas??
+Uno de los grandes impedimentos y fuente de problemas es el material utilizado,
+su baja calidad, medida en la baja resolución de la imagen y la pobre elección
+para la ubicación de la cámara, y la dificultad de obtención del mismo. Esto
+último se debe a los contratos y derechos de transmisión que actualmente rigen
+el fútbol argentino. Aún así, se insiste con este tipo de material ya que otro
+tipo de material, como puede ser material televisivo, de fácil acceso por ser
+público, no permite un análisis tan directo ya que complica la tarea de la
+ubicación de los jugadores en un plano bidimensional. Sin mencionar que si la
+cámara no ofrece una visión total del campo de juego se requieren más cámaras
+para complementar la información.
+
+Un enfoque multi-cámara, el ejemplo más sencillo sería 2 cámaras que tomen,
+cada una, una mitad del campo en su totalidad, podría resolver el problema
+de la baja resolución de la imagen y ofrecer mejores resultados. Además, en el caso
+de contar con suficientes cámaras, podría proporcionar información útil a
+la hora de manejar oclusiones, ofreciendo más de un punto de vista. De todas
+formas, el enfoque escogido de utilizar una única cámara resulta más rentable
+en el sentido de que los recursos utilizados se aprovechan al máximo de forma
+eficiente, y estos recursos no requieren una gran inversión.
 
 \section{Trabajo Futuro}
 
@@ -33,16 +50,17 @@ cancha, y contar con cámaras de mayor resolución.
 
 Uno de los objetivos de investigación de este trabajo es lograr un seguimiento en
 tiempo real, es decir procesar por lo menos 24 cuadros por segundo. La implementación
-de referencia no cumple con este objetivo, pero tiene mucho lugar a optimización. 
-Por ejemplo, El trabajo de preprocesamiento de un cuadro y de aplicación de Contornos
-Activos puede distribuirse en 2 computadoras distintas. Esto permite tener una menor
-latencia entre cuadro y cuadro, y podria duplicar la velocidad percibida. 
+de referencia no cumple con este objetivo, pero tiene mucho lugar a optimización.
+Por ejemplo, el trabajo de preprocesamiento de un cuadro y de aplicación de \textit{Contornos
+Activos} puede distribuirse en 2 computadoras distintas. Esto permite tener una menor
+latencia entre cuadro y cuadro, y podría duplicar la velocidad percibida.
 
-Existe tambien lugar a optimización en Contornos Activos. El algoritmo original no
-esta diseñado para seguir 24 contornos en tiempo real. La implementación procesa
-cada contorno de manera secuencial, desperdiciando la capacidad de multiprocesamiento
-de las computadoras modernas. Se podria adaptar el algoritmo para aprovechar esta
-capacidad y mejorar el tiempo de ejecución notablemente.
+Existe también la posibilidad de optimizar el algoritmo de \textit{Contornos
+Activos}. El algoritmo original no está diseñado para seguir 24 contornos en
+tiempo real. La implementación procesa cada contorno de manera secuencial,
+desperdiciando la capacidad de multiprocesamiento de las computadoras modernas.
+Se podría adaptar el algoritmo para aprovechar esta capacidad y mejorar el
+tiempo de ejecución notablemente.
 
 %- Mal material, imposible agarrar la pelota y difícil los jugadores
 %- Resultados aceptables
