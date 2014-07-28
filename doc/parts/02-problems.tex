@@ -3,11 +3,11 @@
 
 Este trabajo busca ofrecer una solución para obtener de manera semi-supervisada
 información sobre del estado del juego de fútbol en tiempo real. Esto involucra
-conocer la posición de cada jugador para cada cuadro del video, la pelota,
-puntaje actual, entre otros. Para el trabajo actual, se acota el problema a la
-determinación de la posición de los jugadores únicamente.
+conocer la posición de cada jugador para cada cuadro del video, la posición de
+la pelota, cuál es el puntaje actual, entre otros. Para el trabajo actual, se
+acota el problema únicamente a la determinación de la posición de los
+jugadores.
 
-% TODO: Les copa este párrafo? Eliminarlo sino
 Soluciones más avanzadas podrían otorgar información de mayor nivel,
 conociendo datos como la posición de la pelota. Por ejemplo, se pueden
 determinar automáticamente posiciones de jugadores fuera de juego, lo cual
@@ -25,16 +25,19 @@ obtener la posición de los jugadores) es lo suficientemente eficiente para
 funcionar en tiempo real.
 
 Realizar el seguimiento en tiempo real agrega restricciones fuertes al
-problema. Toda técnica tiene un costo de procesamiento, por lo tanto se debe
-tener cautela al momento de seleccionar qué procesos de análisis de imagen
-pueden ser realizados en los aproximadamente 40 milisegundos que separan un
-cuadro de otro al mostrar un video de 24 cuadros por segundo.
+problema, debido a que el algoritmo debe ser lo suficientemente eficiente para
+procesar la imagen en una fracción de tiempo. Toda técnica tiene un costo de
+procesamiento, por lo tanto se debe tener cautela al momento de seleccionar qué
+procesos de análisis de imagen pueden ser realizados en los aproximadamente 40
+milisegundos que separan un cuadro de otro al mostrar un video de 24 cuadros
+por segundo.
 
 \section{Supervisión Humana}
 
-Respecto a la supervición necesaria, el objetivo es igualar y complementar la
+Respecto a la supervición necesaria, se busca extraer automáticamente
 información sobre un partido que un operador (o grupo de operadores) podría
-obtener de un video.
+obtener del video; así como complementar esto con más información proveniente
+de un analisis que sólo se podría lograr mediante un cómputo automático.
 
 En el presente trabajo, un supervisor selecciona inicialmente las posiciones
 de los jugadores en la cancha. El algoritmo de contornos activos es luego
@@ -61,9 +64,10 @@ de los jugadores.
 La imagen capturada por la cámara es una representación en 2 dimensiones de la
 realidad. El modelo de datos de este trabajo representa cada jugador y la
 pelota como un punto en un campo de dos dimensiones, es decir, se descarta el
-valor de la altura de cada objeto seguido, ya que no interesa esa información.
-Para esto, se aplica una homografía para convertir las coordenadas de un punto
-de la imagen a coordenadas en el plano donde se encuentra la cancha.
+valor de la altura de cada objeto seguido, ya que esa información no es de
+interés para este estudio. Para esto, se aplica una homografía para convertir
+las coordenadas de un punto de la imagen a coordenadas en el plano donde se
+encuentra la cancha.
 
 El cálculo de una homografía involucra reconocer por lo menos 4 puntos de la
 cancha en la imagen (ver \cite{homography-estimation}). Esto puede hacerse de
@@ -73,9 +77,11 @@ dimensiones. También puede lograrse de manera automática mediante un algoritmo
 de deteccion de líneas que permita comparar las líneas en la imagen con las que
 se encuentran en la cancha.
 
-Ignorar el valor de altura de los objetos seguidos es una buena aproximación
-para los jugadores, pero podría eventualmente causar errores en la medición de
-la posición y velocidad de la pelota (ver \cite{Liu20061146}).
+Ignorar el valor de altura de los objetos seguidos podría eventualmente causar
+errores en la medición de la posición y velocidad de la pelota (ver
+\cite{Liu20061146}). Sin embargo, dado que la posición de los jugadores en
+altura no varía notablemente durante el partido, es una buena aproximación en
+el caso de las posiciones de los jugadores.
 
 \subsection{Sistema de cámaras}
 \label{sub-sec:camaras}
