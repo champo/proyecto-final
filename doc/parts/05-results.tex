@@ -134,13 +134,43 @@ recalculada con nuevos datos.
 %% alguna screenshot y chau mepa.
 
 \begin{itemize}
-  \item \textbf{Manchester City vs Barcelona:}
+  \item \textbf{Manchester City vs Barcelona:} Del video televisado se extrajeron
+    tres escenas en particular. En las Figuras \ref{fig:manchester1} y
+    \ref{fig:manchester2} se muestran algunos cuadros de estos fragmentos. El
+    video cuenta con una resolución de \textit{720p} (1280 píxeles de ancho por
+    720 píxeles de alto). Los jugadores de Manchester City, con su equipo
+    deportivo de color blanco, son confundidos por sus características con el
+    color de las líneas de la cancha. En el primer recorte, los jugadores son
+    correctamente identificados durante los 120 cuadros, exceptuando aquellos
+    que atraviezan una línea de cancha. Se corrigen correctamente dos
+    oclusiones parciales entre jugadores. En el segundo fragmento, los
+    jugadores son correctamente localizados a pesar de la alta velocidad de
+    \textit{panning} de la cámara. En el tercer video todos los jugadores, al
+    igual que en el primero, son correctamente localizados durante todo el
+    video exceptuando aquellos que se intersectan con las líneas marcadas en el
+    césped.
 
   \item \textbf{Real Madrid vs Borussia Dortmound:}
 
   \item \textbf{Argentina vs Suiza:}
 
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./images/manchester1.png}
+        \label{fig:manchester1}
+    \end{minipage}%
+    \vspace{0.1cm}
+    \begin{minipage}[t]{.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./images/manchester2.png}
+        \label{fig:manchester2}
+    \end{minipage}
+    \caption{Fragmentos del video televizado de un partido entre los equipos Manchester City y Atlético Barcelona.}
+\end{figure}
 
 \section{Evaluación del método}
 
