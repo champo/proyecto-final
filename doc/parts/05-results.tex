@@ -130,29 +130,34 @@ recalculada con nuevos datos.
 
 %% TODO: Eordano acá vamos a describir los videos también? Habría que meter
 %% alguna screenshot y chau mepa.
+Los videos televisados utilizados pertenecen a tres partidos disputados durante
+el año 2014. De la liga \textbf{UEFA}, se tomaron recortes de los partidos
+\textbf{Manchester City vs Barcelona FC}, \textbf{Real Madrid vs Borussia
+Dortmound}, y de la \textbf{FIFA World Cup} se tomaron fragmentos del partido
+de cuartos de final de \textbf{Argentina vs Suiza}.
 
-\begin{itemize}
-  \item \textbf{Manchester City vs Barcelona:} Del video televisado se extrajeron
-    tres escenas en particular. En la Figura \ref{fig:manchester1}
-     se muestran algunos cuadros de estos fragmentos. El
-    video cuenta con una resolución de \textit{720p} (1280 píxeles de ancho por
-    720 píxeles de alto). Los jugadores de Manchester City, con su equipo
-    deportivo de color blanco, son confundidos por sus características con el
-    color de las líneas de la cancha. En el primer recorte, los jugadores son
-    correctamente identificados durante los 120 cuadros, exceptuando aquellos
-    que atraviezan una línea de cancha. Se corrigen correctamente dos
-    oclusiones parciales entre jugadores. En el segundo fragmento, los
-    jugadores son correctamente localizados a pesar de la alta velocidad de
-    \textit{panning} de la cámara. En el tercer video todos los jugadores, al
-    igual que en el primero, son correctamente localizados durante todo el
-    video exceptuando aquellos que se intersectan con las líneas marcadas en el
-    césped.
+Del primer video televisado se extrajeron tres escenas en particular. En la
+Figura \ref{fig:manchester1} se muestran algunos cuadros de estos fragmentos.
+El video cuenta con una resolución de \textit{720p} (1280 píxeles de ancho por
+720 píxeles de alto). Los jugadores de Manchester City, con su vestimenta
+deportiva de color blanco, son confundidos por sus características con el color
+de las líneas de la cancha. En el primer recorte, los jugadores son
+correctamente identificados durante los 120 cuadros, exceptuando aquellos que
+atraviezan una línea de cancha. Se corrigen correctamente dos oclusiones
+parciales entre jugadores. En el segundo fragmento, los jugadores son
+correctamente localizados a pesar de la alta velocidad de \textit{panning} de
+la cámara. En el tercer video todos los jugadores, al igual que en el primero,
+son correctamente localizados durante todo el video exceptuando aquellos que se
+intersectan con las líneas marcadas en el césped.
 
-  \item \textbf{Real Madrid vs Borussia Dortmound:}
+En los otros dos videos se observaron similares características al video de
+Manchester City, el seguimiento funciona correctamente bajo la asunción de que
+los jugadores no estén ocluyendo una línea en el césped. La Figura
+\ref{fig:realmadrid} muestra un cuadro donde se puede apreciar los colores de
+la camiseta de ambos equipos en el partido \textbf{Real Madrid vs Borussia
+Dortmound} y en la Figura \ref{fig:argentina1} se observa una captura del
+partido de \textbf{Argentina vs Suiza}.
 
-  \item \textbf{Argentina vs Suiza:}
-
-\end{itemize}
 
 \begin{figure}[H]
     \centering
@@ -165,8 +170,25 @@ recalculada con nuevos datos.
         \centering
         \includegraphics[width=\linewidth]{./images/manchester2.png}
     \end{minipage}
-    \caption{Fragmentos del video televizado de un partido entre los equipos Manchester City y Atlético Barcelona.
-        \label{fig:manchester1}}
+    \caption{Fragmentos del video televizado de un partido entre los equipos Manchester City y Barcelona FC.
+        \label{manchester1}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./images/realmadrid1.png}
+        \label{realmadrid}
+        \caption{Real Madrid vs Borussia Dortmound, UEFA Champions League}
+    \end{minipage}%
+    \vspace{0.1cm}
+    \begin{minipage}[t]{.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./images/argentina1.png}
+        \label{argentina1}
+        \caption{Argentina vs Suiza, FIFA World Cup 2014}
+    \end{minipage}
 \end{figure}
 
 \section{Evaluación del método}
