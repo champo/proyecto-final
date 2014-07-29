@@ -2,11 +2,11 @@
 \label{chap-ac}
 
 En este Capítulo se describe el método de seguimiento seleccionado para este
-trabajo. Primero, en la Sección \ref{sec:ac} se explica el algoritmo utilizado
-(\emph{Contornos Activos}), y en la Sección \ref{sec:impl} su implementación.
-Luego, en la Sección \ref{sec:eleccion} se justifica la elección del algoritmo.
-Finalmente, en la Sección \ref{sec:ac-problemas} se analizan las limitaciones
-del algoritmo para esta aplicación.
+trabajo. En primer lugar, la Sección \ref{sec:ac} explica el algoritmo
+utilizado (\emph{Contornos Activos}), y en la Sección \ref{sec:impl} su
+implementación. Luego, en la Sección \ref{sec:eleccion} se justifica la
+elección del algoritmo. Finalmente, en la Sección \ref{sec:ac-problemas} se
+analizan las limitaciones del algoritmo para esta aplicación.
 
 \section{Contornos Activos}
 \label{sec:ac}
@@ -189,13 +189,13 @@ Se escogió el algoritmo \emph{Contornos Activos} por varios motivos:
 \section{Limitaciones}
 \label{sec:ac-problemas}
 
-El correcto funcionamiento del algoritmo de contornos
-activos depende de una buena selección de la función
-característica, para poder distinguir claramente a un jugador respecto a otros
-objetos o respecto del fondo (ver \cite{fast-level-set}). En casos como el
-ilustrado por la Figura \ref{fig:camiseta}, elegir una función característica
-resulta sencillo, ya que con elegir el color de la camiseta se asegura una
-buena descripción del contorno a seguir. Sin embargo, la imagen de la Figura
+El correcto funcionamiento del algoritmo de contornos activos depende de una
+buena selección de la función característica, para poder distinguir claramente
+a un jugador respecto a otros objetos o respecto del fondo (ver
+\cite{fast-level-set}). En casos como el ilustrado por la Figura
+\ref{fig:camiseta}, elegir una función característica resulta sencillo, ya que
+con elegir el color de la camiseta se asegura una buena descripción del
+contorno a seguir. Sin embargo, la imagen de la Figura
 \ref{fig:camiseta-rayada} introduce uno de los problemas en la selección de
 esta función. Se puede ver que las diferencias entre ambos colores del objeto
 hacen difícil identificarlos a ambos con una misma característica.
@@ -222,19 +222,20 @@ Este es un desafío grande debido principalmente a dos problemas:
 \begin{itemize}
 
 \item Selección de colores: si la cancha tiene un color muy similar a la
-  camiseta de un equipo, ¿cómo será posible distinguirlos? Se exploran
-  distintas alternativas, como utilizar otra codificación de color.
+  camiseta de un equipo, ¿cómo será posible distinguirlos? En este trabajo se
+  exploran distintas alternativas, como utilizar distintas codificaciones de
+  color.
 
 \item Textura de los jugadores: esto representa un gran problema por varias
-  razones. La primera es que la técnica de contornos activos está atada a la
+  razones. La primera es que la técnica de contornos activos depende de la
   selección de una o varias características del objeto a seguir. Como la
   característica más distintiva es el color, la técnica se basa en ella. Pero
-  para camisetas con más de un color, se vuelve absurda la idea de encontrar un
-  color característico, dado que no existe. Esta dificultad se ilustra en la
-  imágenes de las figuras \ref{fig:barsa1} y \ref{fig:barsa2}. Por otro lado,
-  dada la escasa cantidad de píxeles que representan a un jugador, debido a
-  nuestro enfoque de única cámara, cualquier tipo de análisis se torna complejo
-  cuando sus características no están lo suficientemente definidas como para
+  para camisetas con más de un color, encontrar un único color característico
+  no es posible. Esta dificultad se ilustra en la imágenes de las figuras
+  \ref{fig:barsa1} y \ref{fig:barsa2}. Por otro lado, dada la escasa cantidad
+  de píxeles que representan a un jugador, debido al enfoque de única
+  cámara de este trabajo, cualquier tipo de análisis se torna complejo cuando
+  sus características no están lo suficientemente definidas como para
   diferenciarlas (ya sea de otros jugadores o del fondo).
 
 \end{itemize}
