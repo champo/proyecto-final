@@ -9,14 +9,14 @@ acota el problema únicamente a la determinación de la posición de los
 jugadores.
 
 Soluciones más avanzadas podrían otorgar información de mayor nivel,
-conociendo datos como la posición de la pelota. Por ejemplo, se pueden
-determinar automáticamente posiciones de jugadores fuera de juego, lo cual
-requiere, al menos, determinar tres cosas: la posición de cada jugador (y a qué
-equipo pertenece), la posición de la pelota, y detección de cuándo un jugador
-realiza un pase. Este último punto requiere un análisis de alto nivel que es
-descripto en \cite{papers-tanos}. Se discuten en el Capítulo
-\ref{chap-solution} las dificultades encontradas para replicar estos
-resultados.
+si se conocen datos como la posición de la pelota. Por ejemplo, se pueden
+determinar automáticamente casos en los que los jugadores cometen una falta por
+estar fuera de juego (denominado en inglés una falta por \textit{off-side}), lo
+cual requiere, al menos, la posición de cada jugador (y a qué equipo
+pertenece), la posición de la pelota, y detectar cuándo un jugador realiza un
+pase. Este último punto requiere un análisis de alto nivel que es descripto en
+\cite{papers-tanos}. Se discuten en el Capítulo \ref{chap-solution} las
+dificultades encontradas para replicar estos resultados.
 
 \section{Análisis en Tiempo Real}
 
@@ -81,14 +81,15 @@ se encuentran en la cancha.
 Ignorar el valor de altura de los objetos seguidos podría eventualmente causar
 errores en la medición de la posición y velocidad de la pelota (ver
 \cite{Liu20061146}). Sin embargo, dado que la posición de los jugadores en
-altura no varía notablemente durante el partido, es una buena aproximación en
-el caso de las posiciones de los jugadores.
+altura no varía notablemente durante el partido, es una buena aproximación a la
+hora de determinar las posiciones de los jugadores proyectadas sobre el plano
+del campo de juego.
 
 \subsection{Sistema de cámaras}
 \label{sub-sec:camaras}
 
-Un sistema de múltiples cámaras se ve beneficiado por una mejor resolución y
-por lo tanto una mejor precisión al determinar la posición de objetos, pero
+Un sistema de múltiples cámaras se ve beneficiado por una mejor resolución (se
+obtiene una mejor precisión al determinar la posición de objetos), pero
 requiere un sistema de sincronización que coordine la obtención de información.
 
 Por otro lado, un sistema constituído por una única cámara no tiene la
@@ -98,9 +99,9 @@ diferentes cámaras, pero sufre de una menor resolución y menor precisión.
 Esta reducción de resolución puede tornarse prohibitiva para algunas técnicas o
 algoritmos de seguimiento ya que algunos objetos (como por ejemplo la pelota)
 tendrán unos pocos píxeles en cada imagen, lo cual dificulta la tarea de
-segmentación y seguimiento al contar con una imagen de peor calidad.  Esto
-puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
-\ref{fig:barsa4}.
+segmentación y seguimiento al contar con una imagen de peor calidad. En
+particular la detección de texturas se torna más difícil. Esto puede observarse
+en las imágenes de las figuras \ref{fig:barsa3} y \ref{fig:barsa4}.
 
 \begin{figure}[H]
     \begin{minipage}[t]{.5\textwidth}
@@ -113,10 +114,9 @@ puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
     \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/resize_barcelona3.png}
-        \captionof{figure}{La imagen muestra varias de las dificultades del
-          problema: la baja resolución y el
-          diminuto tamaño de la pelota con respecto al jugador.
-        \label{fig:barsa4}}
+        \captionof{figure}{Se observan dos de las dificultades del
+        problema: la baja resolución y el diminuto tamaño de la pelota con
+        respecto al jugador. \label{fig:barsa4}}
     \end{minipage}
 \end{figure}
 
@@ -124,7 +124,7 @@ puede observarse en las imágenes de las figuras \ref{fig:barsa3} y
 
 Al tener una resolución de \textit{1080p} (aproximadamente dos millones de
 píxeles por cuadro), el procesamiento de cada píxel debe tomar a lo sumo 20
-nanosegundos.  Para lidiar con esta restricción se puede utilizar información
+nanosegundos. Para lidiar con esta restricción se puede utilizar información
 adicional de la que se disponga respecto al video con el objeto de evitar
 procesar píxeles de poca o nula utilidad para el seguimiento. Un ejemplo de
 esto es descartar píxeles que estén fuera de la cancha, ya que es probable que
@@ -132,44 +132,44 @@ la cámara encuadre más que el campo de juego, abarcando las gradas, el públic
 espectador, publicidades alrededor del campo de juego, entre otros.
 
 Muchos autores han desarrollado algoritmos automáticos de seguimiento de
-objetos en secuencias de imágenes\cite{IFTrace, alp, local-learning, MHT-2}.
-Todos ellos están basados en soluciones de ecuaciones diferenciales en
-derivadas parciales y resultan aceptablemente robustos, pero tienen severas
+objetos en secuencias de imágenes (ver \cite{IFTrace, alp, local-learning,
+MHT-2}). Todos ellos están basados en soluciones de ecuaciones diferenciales en
+derivadas parciales y proveen resultados precisos, pero tienen severas
 restricciones que impiden que se utilicen para aplicaciones en tiempo real.
 
-Se utiliza el algoritmo de contornos activos\cite{fast-level-set}, el cual no
-utiliza ecuaciones diferenciales (haciéndolo apto para aplicaciones en tiempo
-real) y además hace un análisis local de los objetos seguidos en la imagen, lo
-cual hace que el tiempo de análisis de un cuadro sea dependiente de la
-resolución de los jugadores e independiente de la resolución del video.
+Para este trabajo, se utiliza el algoritmo de contornos activos (ver
+\cite{fast-level-set}), el cual no utiliza ecuaciones diferenciales (haciéndolo
+apto para aplicaciones en tiempo real) y además hace un análisis local de los
+objetos seguidos en la imagen, lo cual hace que el tiempo de análisis de un
+cuadro sea dependiente de la resolución de los jugadores e independiente de la
+resolución del video.
 
 \subsection{Distorsión de la lente}
 
 Al utilizar una única cámara para captar la cancha entera se corre el riesgo de
-tener distorción en los puntos de la imagen más alejados al foco de la cámara.
-Este es el llamado ``efecto de ojo de buey'' e introduce mucho error, por
-ejemplo en la aplicación de la homografía, por lo tanto se debe aplicar una
-corrección. Una lente apropiada y bien calibrada puede reducir este error, pero
-nunca puede ser eliminado totalmente. Sólo puede evitarse utilizando una mejor
-técnica de filmación.
+que los puntos de la imagen más alejados al foco de la cámara sufren una
+distorción. Este es el llamado ``efecto de ojo de buey'' e introduce mucho
+error, por ejemplo en la aplicación de la homografía, por lo tanto se debe
+aplicar una corrección. Una lente apropiada y bien calibrada puede reducir este
+error, pero nunca puede ser eliminado totalmente.
+
+% TODO: Screenshots
 
 \subsection{Oclusiones entre jugadores}
 
 En un partido es muy común que ocurran oclusiones entre los jugadores. El
-sistema debe poder tolerar la oclusión parcial o total de los jugadores.  Esto
+sistema debe poder tolerar la oclusión parcial o total de los jugadores. Esto
 puede llevar a situaciones muy difíciles de automatizar. Una situación
-difícilmente automatizable sucede cuando dos jugadores del mismo equipo (con
-vestimenta muy similar) se encuentren alineados con respecto a la cámara.  Se
-pueden agregar reglas para intentar que el método no se confunda, cuando los
-jugadores se separen, quién es quién, pero no hay una solución evidente.
+particularmente difícil de resolver se dá cuando dos jugadores del mismo equipo
+(con vestimenta muy similar) se encuentren alineados con respecto a la cámara.
 
-Por ejemplo, se puede utilizar información de cuadros anteriores para estimar
+Una posible solución es utilizar información de cuadros anteriores para estimar
 la velocidad de cada uno y estimar sus nuevas posiciones, pero esto es poco
 efectivo si los jugadores cambian de velocidad mientras uno ocluye al otro, o
 si la velocidad era muy similar al momento de generarse la oclusión.
 
-Otra situación problemática similar es una jugada de córner, donde las
-oclusiones entre varios jugadores son muy numerosas, lo que agrega a la
-restricción de tiempo real mayor complejidad, ya que la resolución de
+Otra situación problemática similar es una jugada de tiro de esquina (córner),
+donde las oclusiones entre varios jugadores son muy numerosas, lo que agrega a
+la restricción de tiempo real mayor complejidad, ya que la resolución de
 oclusiones debe ser muy eficiente en tiempo.
 
