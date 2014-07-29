@@ -5,42 +5,41 @@ En esta Sección se describen las técnicas aplicadas para lograr el seguimiento
 de los jugadores. En primer lugar, se detallan algoritmos utilizados para
 ignorar los elementos del fondo de la imagen en la Sección
 \ref{sec:background-elimination}. Luego, se detalla cómo fue utilizado el
-algoritmo contornos activos (ver \cite{fast-level-set}) y las modificaciones
-que se le hicieron en la Sección \ref{sec:ac-extension}.
+algoritmo contornos activos y las modificaciones que se le hicieron en la
+Sección \ref{sec:ac-extension}.
 
 \section{Eliminación de fondo}
 
 \label{sec:background-elimination}
 Se evaluó que el análisis por contornos activos se beneficiaría de un análisis
-previo que detecte e informe a la actualización del contorno sobre sectores de
-los cuadros del video que sin duda no corresponden a las siluetas de los
-objetos de interés para el seguimiento.
+previo que detecte e informe a la actualización del contorno qué sectores de
+los cuadros del video no corresponden a las siluetas de los objetos de interés
+para el seguimiento.
 
 Con ese fin, se analizaron distintos métodos para extraer información adicional
-de la imagen y detectar e ignorar sectores de la imagen que, con total certeza,
-no correspondan a jugadores. A continuación se describen los métodos
-evaluados.
+de la imagen y detectar e ignorar sectores de la imagen que no correspondan a
+jugadores. A continuación se describen los métodos evaluados.
 
-\subsection{Tribuna y publicidades}
+\subsection{Tribuna y Publicidades}
 \label{subsec:crop-tribunas}
 
 La técnica más simple de eliminación de sectores es una técnica de
 \textit{recorte} que elimina de la imagen todo píxel ajeno a un polígono
-(como puede ser un cuadrilátero) que bordea la cancha. En las Figuras
-\ref{fig:crop-antes} y \ref{fig:crop-despues} se muestra el resultado
-de aplicar esta técnica a uno de los videos utilizados en el trabajo.
+(como ser un cuadrilátero) que bordea la cancha. En las Figuras
+\ref{fig:crop-antes} y \ref{fig:crop-despues} se muestra el resultado de
+aplicar esta técnica a uno de los videos utilizados.
 
 \begin{figure}[H]
   \centering
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/Crop_Antes.png}
-      \caption{Un cuadro del video del partido entre Boca e Independiente.
+      \caption{Un cuadro del video de un partido.
       \label{fig:crop-antes}}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
       \centering
       \includegraphics[width=\linewidth]{./images/Crop_Despues.png}
-      \caption{El mismo cuadro, luego de aplicarle la operación \textit{recorte}.
+      \caption{El mismo cuadro, luego de aplicar la operación \textit{recorte}.
       \label{fig:crop-despues}}
     \end{minipage}
 \end{figure}
@@ -100,15 +99,23 @@ presentan un problema para el seguimiento de los equipos con camisetas blancas o
 colores claros. Para evitar que el algoritmo de contornos activos considere que las
 líneas son parte de un jugador, como en la figura \ref{fig:confusion-linea}.
 
-% TODO: Tebex, esto no parece coincidir co nel codigo...
-% TODO: esta bien que digas que probamos, pero no decis cual es el posta
-% TODO: Decis "analisis morfologico" es muuuuy poco explicativo
 Basado en la detección de líneas de Hough, se desarrolló un método similar que
 detecta los tramos pintados de blanco en el césped de la cancha. El mismo
-funciona aplicando un detector de bordes (se probaron resultados utilizando
-tanto el método de Roberts como el de Canny), umbralizando el resultado, y
-haciendo un análisis morfológico de las componentes conexas obtenidas luego de
-la umbralización.
+funciona aplicando un detector de bordes (se utilizaron tanto el método de
+Roberts como el de Canny), umbralizando el resultado, y haciendo un análisis
+morfológico de las componentes conexas obtenidas luego de la umbralización.
+
+El análisis morfológico considera que una componente conexa entre píxeles
+detectados como bordes es un jugador si se cumplen las siguientes condiciones:
+\begin{itemize}
+  \item El ancho de la región es menor a un valor de umbral $M_{width}$.
+  \item El alto de la región es menor a un valor de umbral $M_{height}$.
+  \item El área cubierta es menor a un valor de umbral $M_{area}$.
+\end{itemize}
+
+Estos tres valores son parámetros del algoritmo y dependen de la resolución y
+\textit{zoom} del video (a mayor resolución, los jugadores abarcan mayor área y
+las regiones que ocupan son más altas y anchas).
 
 \begin{figure}[H]
   \centering
@@ -117,18 +124,20 @@ la umbralización.
       \caption{Resultado de aplicar el algoritmo sin eliminación de líneas
       \label{fig:confusion-linea}}
     \end{minipage}
+    % TODO: Otra screenshot con el algoritmo aplicado
 \end{figure}
 
 \subsection{Eliminación del césped}
 \label{sec:cesped}
 
-Para la eliminación del césped del campo de juego se requiere caracterizarlo de
-alguna forma. Para esto, se realiza un análisis de los colores de la imagen
-recortada, es decir la imagen resultante luego aplicar la técnica de
-\textit{recorte}, detallada en \ref{subsec:crop-tribunas}, una vez
-seleccionados los contornos iniciales de los jugadores. Sobre este cuadro, se
-calcula el valor promedio y desvío estándar de todo píxel que no forme parte de
-los jugadores o un elemento ya conocido del fondo (por ejemplo, las líneas).
+Para la eliminación del césped del campo de juego se requiere caracterizar los
+píxeles correspondientes al verde del campo. Para esto, se realiza un análisis
+de los colores de la imagen recortada, es decir la imagen resultante luego
+aplicar la técnica de \textit{recorte}, detallada en
+\ref{subsec:crop-tribunas}, una vez seleccionados los contornos iniciales de
+los jugadores. Sobre este cuadro, se calcula el valor promedio y desvío
+estándar de todo píxel que no forme parte de los jugadores o un elemento ya
+conocido del fondo (por ejemplo, las líneas).
 
 Con este valor, se considera parte del césped cualquier punto que no tenga las
 características de un jugador (según definidas en la Sección
@@ -138,9 +147,9 @@ promedio calculado.
 \section{Contornos activos} \label{sec:ac-extension}
 
 \textit{Contornos Activos} requiere para su implementación que se definan dos
-funciones fundamentales. Una es la función de probabilidad $p$ y la otra la
-función característica $v$ (ver Sección \ref{sec:ac}). En esta Sección se
-describe la elección de ambas funciones para este trabajo.
+funciones. Una es la función de probabilidad $p$ y la otra la función
+característica $v$ (ver Sección \ref{sec:ac}). En esta Sección se describe la
+elección de ambas funciones para este trabajo.
 
 \subsection{Características}
 \label{sec:caracteristicas}
@@ -283,18 +292,18 @@ Si bien la función de probabilidad sugerida en la Seccion \ref{sec:ac} se puede
 aplicar en este caso, se modificó para tener en cuenta la morfología de los objetos
 a seguir.
 
-%% TODO champoman esto no está muy bien redacatado. Intenté arreglarlo un poco
-%% pero tampoco estoy muy convencido. Se aceptan aportes.
-Dada las restricciones iniciales del problema, se puede aseverar que la imagen
-de un dado jugador siempre va a estar contenida en un rectángulo, y calcular las
-dimensiones máximas posibles de ese rectángulo. Se puede
-entonces limitar el tamaño del contorno, reduciendo la posibilidad de que el
-contorno intente seguir objetos de características parecidas al jugador, pero
-cuyas dimensiones sean mayores al rectángulo más grande, señalando que el
-objeto no es un jugador. En el caso de querer evaluar si un punto pertenece al
-fondo o no, esta mejora no es deseable y por lo tanto este trabajo cuenta con
-dos funciones, la sugerida anteriormente $f$ para el fondo y una $f_j$ para los
-jugadores. Se definen de la siguiente manera:
+Se plantea que los jugadores estarán contenidos dentro de un rectángulo de
+mayor altura que ancho.  Se estima el máximo valor posible del ancho y alto de
+un rectángulo que contenga a un jugador, y luego se limita el tamaño del
+contorno, reduciendo la posibilidad de que el contorno se expanda por áreas
+cuyos píxeles poseen características similares a las de píxeles que representan
+a un jugador, pero como este área no cumple con la restricción de tener un
+ancho o alto mayor al máximo permitido, se evita la expanción del contorno.
+Dado que el algoritmo de contornos activos es utilizado en las líneas del
+césped del campo de juego para evaluar si un punto pertenece al fondo o no, se
+sugieren dos funciones de probabilidad, una denominada $f$ utilizada para la
+detección del fondo y una función $f_j$ para el seguimiento de los jugadores,
+definidas como:
 
 \begin{eqnarray*}
     f(p) &=& 1 - \frac{\|\| v(p) - v_i \|\|}{255 * 6} \\
@@ -312,7 +321,7 @@ y la semi-altura máxima del rectángulo, respectivamente.
     \begin{algorithmic}
     \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Posición $(x, y)$, Contorno $\omega$
 
-    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} Un numero
+    \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} Un número
     \State
 
     \State $centroid_x \gets 0$
@@ -344,19 +353,26 @@ y la semi-altura máxima del rectángulo, respectivamente.
 
 \subsubsection{Seguimiento por Complemento}
 
-Como explicado en la Sección \ref{sec:ac-problemas}, no resulta directo construir
-una función $v$ para camisetas rayadas. Si bien el agregado del Desvío Estandard 
-contribuye a mejorar el seguimiento en estos casos, no soluciona totalmente el
-problema. Para poder seguir correctamente a equipos cuyas camisetas presentan este
-desafio, optamos por ignorar sus caracteristicas y seguir por lo que no son. Es
-decir, no son jugadores del otro equipo, no son cesped y no son lineas de la cancha.
+% TODO: Esto estaba escrito feo, lo reescribí pero alguien que lo revise por las dudas
+% Firma Esteban
+Como es explicado en la Sección \ref{sec:ac-problemas}, no resulta evidente
+cómo construir una función $v$ para camisetas que presenten más de un color. Si
+bien el agregado del Desvío Estandard contribuye a mejorar el seguimiento en % TODO: Cómo contribuye?
+estos casos, no soluciona totalmente el problema. Para poder seguir
+correctamente a equipos cuyas camisetas presentan este desafio, se ofrece la
+posibilidad de descartar el algoritmo de contornos activos para el seguimiento
+de este equipo y determinar que los espacios que por sus características no son
+definidos como césped, líneas de la cancha, o jugadores de otro equipo, son
+jugadores del equipo cuyas características son difíciles de determinar. Este
+método solo es efectivo si uno de los equipos puede ser correctamente
+identificado por contornos activos.
 
-Como es necesario saber donde estan los jugadores del primer equipo, se debe utilizar
-Contornos Activos dos veces. Una primera vez haciendo un seguimiento por caracteristicas,
-luego de la cual se aplica el procedimiento \textit{complemento}, detallado en el Algoritmo
-\ref{alg:complemento}. La salida de este procedimiento marca todo punto que no fue
-identificado bajo ningun conjunto con el color \textit{cyan}, y aplica un operador
-morfologico de expansión sobre todos estos puntos.
+Con este fin, se ejecuta el algoritmo de contornos activos sobre el primer
+cuadro, con los jugadores del equipo identificable seleccionados. Luego, se
+aplica el procedimiento \textit{complemento}, detallado en el Algoritmo
+\ref{alg:complemento}. La salida de este procedimiento marca todo punto que no
+fue identificado bajo ningún conjunto con el color \textit{cyan}, y aplica un
+operador morfologico de expansión sobre todos estos puntos.
 
 \begin{algorithm}
     \caption{complemento}
@@ -383,7 +399,7 @@ morfologico de expansión sobre todos estos puntos.
     \end{algorithmic}
 \end{algorithm}
 
-Conociendo que puntos son candidatos a ser jugadores del segundo equipo, se hace una segunda 
-ejecución de Contornos Activos donde todos los contornos tienen la caracteristica \textit{RGB}
-\textit{cyan}.
+Luego de esto, se utiliza la técnica de contornos activos siendo la función de
+probabilidad de los contornos del segundo equipo una función que devuelve $1$
+si el píxel es color \textit{cyan}, y $0$ en caso contrario.
 
