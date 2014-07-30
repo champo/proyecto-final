@@ -17,7 +17,6 @@ por una curva paramétrica dada por:
 \begin{equation}
     C_i(s) = (x_i(s), y_i(s))
 \end{equation}
-
 donde $0 \leq s \leq S_i$, y $C_i(0) = C_i(S_i)$, siendo $S_i$ el total de
 puntos que conforman la curva. Es decir, $C_i$ es una curva cerrada.
 
@@ -44,8 +43,8 @@ Se define la función de energía de los contornos:
     E = - \sum_{m=0}^{M}{\int_{\Omega_m}{\log{p(v(x) \vert \Omega_m)} dx} + \lambda \int_{C_m}{ds}}
 \end{equation}
 
-Los algoritmos basados en contornos activos, buscan minimizar esta ecuación. Si
-el valor de $E$ es mínimo para un cuadro, se debería haber encontrado la mejor
+Los algoritmos basados en contornos activos buscan minimizar esta ecuación. Si
+el valor de $E$ es mínimo para un cuadro, se considera que se encontró la mejor
 aproximación de la región de los objetos interés. De \ref{eq:ac-energy} se
 deriva la ecuación de evolución de cualquier curva $C_m$:
 
@@ -56,12 +55,8 @@ deriva la ecuación de evolución de cualquier curva $C_m$:
 \end{eqnarray}
 
 $F_d$ y $F_s$ son fuerzas derivadas de la ecuación de energía. $F_d$ representa
-la competencia entre regiones y $F_s$ un suavizado. $\kappa_m$ es la curvatura
-de la curva $C_m$.
-
-Existe otra formulación del problema de evolución de curvas, que consiste en
-representar la curva como el nivel cero de una superficie $\phi$ (ver
-\cite{Osher88}).
+la competencia entre regiones y $F_s$ una función que produce el efecto de
+suavizado. $\kappa_m$ es la curvatura de la curva $C_m$.
 
 \section{Implementación Numérica}
 \label{sec:impl}
@@ -112,7 +107,7 @@ Los conjuntos $L_{in}$ y $L_{out}$ se definen como
 donde $N_{4}(x) = \{ y \mbox{ es un píxel } \vert \mbox{   } |x-y| = 1 \}$, son
 los píxeles vecinos del píxel $x$.
 
-El algoritmo de segmentación es un algoritmo de dos ciclos, ya que luego de la
+El algoritmo de segmentación se compone de dos etapas, ya que luego de la
 especificación inicial de la curva en forma supervisada
 \footnote{Podría no ser supervisada. Existen variantes con determinaciones
 semi-supervisadas del objeto de interés, así como también detección automática
@@ -170,7 +165,7 @@ numero de iteraciones $N_a$
 
 Se escogió el algoritmo \emph{Contornos Activos} por varios motivos:
 \begin{itemize}
-    \item No depende de disponer de bloques de $n x n$ píxeles para su
+    \item No depende de disponer de bloques de $n \times n$ píxeles para su
         correcto funcionamiento. Una de las principales restricciones de este
         trabajo es utilizar una sola cámara para obtener el video, y, como se
         explica en la Sección \ref{sub-sec:camaras}, un jugador está formado

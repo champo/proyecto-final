@@ -12,9 +12,9 @@ Sección \ref{sec:ac-extension}.
 
 \label{sec:background-elimination}
 Se evaluó que el análisis por contornos activos se beneficiaría de un análisis
-previo que detecte e informe a la actualización del contorno qué sectores de
-los cuadros del video no corresponden a las siluetas de los objetos de interés
-para el seguimiento.
+previo que detecte y otorga información al proceso de actualización de
+contornos activos sobre qué sectores de los cuadros del video no corresponden a
+las siluetas de los objetos de interés para el seguimiento.
 
 Con ese fin, se analizaron distintos métodos para extraer información adicional
 de la imagen y detectar e ignorar sectores de la imagen que no correspondan a
@@ -49,19 +49,21 @@ aplicar esta técnica a uno de los videos utilizados.
 Se implementó el método de eliminación de fondo descripto en
 \cite{papers-tanos} para eliminación de sectores que corresponden al verde del
 césped de la cancha o las líneas blancas pintadas sobre el mismo, basado en una
-medición de la variación del color de cada píxel (a la cual se refiere como
-energía).
+medición de la variación del color de cada píxel, a la cual se refiere como
+energía.
 
 Este no resultó ser un método apropiado debido a que el sistema de codificación
-del video genera muchos falsos negativos, sobre todo \textit{glitches}
-alrededor de las líneas de la cancha, lo que les otorgaba a estos puntos un
-mayor valor de energía del que realmente tenían. En la Figura
+del video genera muchos falsos negativos, sobre todo \textit{glitches}. Un
+\textit{glitch} es un error (de encodificación o filmación) que genera cambios
+en los valores de colores (aumentando la energía de ese píxel). La gran
+cantidad de \textit{glitches} alrededor de las líneas de la cancha les otorga a
+estos puntos un mayor valor de energía del que realmente tienen. En la Figura
 \ref{fig:tanos-fondo-sin} se muestra un recorte del primer cuadro del video de
 un partido entre Boca e Independiente. En las figuras \ref{fig:tanos-fondo} y
 \ref{fig:tanos-fondo-broken} se muestra el resultado de aplicar este algoritmo
 en ese mismo recorte. Se puede ver que en el cuadro \#27 detecta muy bien el
-fondo, pero en el siguiente cuadro cambios en la imagen hacen que descarte de
-manera errónea ciertas partes del fondo.
+fondo, pero los cambios que se producen en el cuadro siguiente confunden al
+método, eliminando algunos píxels que estaban bien detectados.
 
 \begin{figure}[H]
   \centering
@@ -72,13 +74,13 @@ manera errónea ciertas partes del fondo.
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/tanos-fondo-f27.png}
-      \caption{Recorte del cuadro \#27 del video, con el fondo según el algoritmo en azul.
+      \caption{Recorte del cuadro \#27 del video. El color azul denota los píxeles detectados como fondo por el algoritmo.
       \label{fig:tanos-fondo}}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
       \centering
       \includegraphics[width=\linewidth]{./images/tanos-fondo-f28.png}
-      \caption{Recorte del cuadro \#28 del video, con el fondo según el algoritmo en azul.
+      \caption{Recorte del cuadro \#28 del video. El color azul denota los píxeles detectados como fondo por el algoritmo.
       \label{fig:tanos-fondo-broken}}
     \end{minipage}
 \end{figure}
@@ -94,16 +96,19 @@ técnicas descriptas en la próximas Secciones, \ref{sec:lineas} y \ref{sec:cesp
 \subsection{Eliminación de Líneas}
 \label{sec:lineas}
 
-Se encontró que las líneas blancas que delimitan la cancha y sus distintas partes
-presentan un problema para el seguimiento de los equipos con camisetas blancas o de
-colores claros. Para evitar que el algoritmo de contornos activos considere que las
-líneas son parte de un jugador, como en la figura \ref{fig:confusion-linea}.
+Las líneas blancas que delimitan la cancha y sus distintas partes presentan un
+problema para el seguimiento de los equipos con camisetas blancas o de colores
+claros. Para evitar que el algoritmo de contornos activos considere que las
+líneas son parte de un jugador, como en la figura \ref{fig:confusion-linea}, se
+considera otro método para detectarlas e ignorar estos puntos al momento de
+realizar el paso de actualización de contornos.
 
-Basado en la detección de líneas de Hough, se desarrolló un método similar que
-detecta los tramos pintados de blanco en el césped de la cancha. El mismo
-funciona aplicando un detector de bordes (se utilizaron tanto el método de
-Roberts como el de Canny), umbralizando el resultado, y haciendo un análisis
-morfológico de las componentes conexas obtenidas luego de la umbralización.
+Se desarrolló un método similar que detecta los tramos pintados de blanco en el
+césped de la cancha. El mismo funciona aplicando un detector de bordes (se
+utilizaron tanto el método de Roberts como el de Canny), umbralizando el
+resultado, y haciendo un análisis morfológico de las componentes conexas
+obtenidas luego de la umbralización.  Este método está basado en la idea detrás
+del algoritmo de detección de líneas de Hough.
 
 El análisis morfológico considera que una componente conexa entre píxeles
 detectados como bordes es un jugador si se cumplen las siguientes condiciones:
@@ -269,14 +274,17 @@ los Algoritmos \ref{alg:carac-rgb} y \ref{alg:desvio}.
     \end{algorithmic}
 \end{algorithm}
 
+
 \subsubsection{Aprendizaje de valores}
 
-Se realiza un aprendizaje simple para las características de cada contorno. En
-cada cuadro, siendo $\mathbf{v}$ un vector con las características de un contorno
-dado, se calcula el promedio de los valores de las características para todos
-los píxeles pertenecientes al contorno y se lo denomina $\hat{\mathbf{v}}$. A
-continuación se actualiza $\mathbf{v}$ y se lo reemplaza por un nuevo valor
-$\mathbf{v_n}$ calculado de acuerdo a:
+Debido a que a lo largo del campo de juego la iluminación no es uniforme, y que
+durante el partido la misma puede cambiar, se realiza un aprendizaje simple
+de las características de cada contorno. En cada cuadro, siendo $\mathbf{v}$ un
+vector con las características de un contorno dado, se calcula el promedio de
+los valores de las características para todos los píxeles pertenecientes al
+contorno y se lo denomina $\hat{\mathbf{v}}$. A continuación se actualiza
+$\mathbf{v}$ y se lo reemplaza por un nuevo valor $\mathbf{v_n}$ calculado de
+acuerdo a:
 
 \[
   \mathbf{v_n} = \left(1-\alpha\right)\mathbf{v} + \alpha \hat{\mathbf{v}}
@@ -293,7 +301,7 @@ aplicar en este caso, se modificó para tener en cuenta la morfología de los ob
 a seguir.
 
 Se plantea que los jugadores estarán contenidos dentro de un rectángulo de
-mayor altura que ancho.  Se estima el máximo valor posible del ancho y alto de
+mayor altura que ancho. Se estima el máximo valor posible del ancho y alto de
 un rectángulo que contenga a un jugador, y luego se limita el tamaño del
 contorno, reduciendo la posibilidad de que el contorno se expanda por áreas
 cuyos píxeles poseen características similares a las de píxeles que representan
@@ -306,7 +314,7 @@ detección del fondo y una función $f_j$ para el seguimiento de los jugadores,
 definidas como:
 
 \begin{eqnarray*}
-    f(p) &=& 1 - \frac{\|\| v(p) - v_i \|\|}{255 * 6} \\
+    f(p) &=& 1 - \frac{\| v(p) - v_i \|}{255 * 6} \\
     f_j(p) &=& 1 - \min(1, f(p) + \text{distance\_weight}(p_x, p_y, \omega_i))
 \end{eqnarray*}
 
@@ -372,7 +380,8 @@ cuadro, con los jugadores del equipo identificable seleccionados. Luego, se
 aplica el procedimiento \textit{complemento}, detallado en el Algoritmo
 \ref{alg:complemento}. La salida de este procedimiento marca todo punto que no
 fue identificado bajo ningún conjunto con el color \textit{cyan}, y aplica un
-operador morfologico de expansión sobre todos estos puntos.
+operador morfologico de expansión sobre todos estos puntos con el objeto
+de unificar conjuntos que están cercanos.
 
 \begin{algorithm}
     \caption{complemento}

@@ -25,15 +25,14 @@ real, tomando ventaja de que contornos activos (la técnica utilizada para
 obtener la posición de los jugadores) es lo suficientemente eficiente para
 funcionar en tiempo real.
 
-Realizar el seguimiento en tiempo real agrega restricciones fuertes al
-problema, debido a que el algoritmo debe ser lo suficientemente eficiente para
-procesar la imagen en una fracción de tiempo. Toda técnica tiene un costo de
-procesamiento, por lo tanto se debe tener cautela al momento de seleccionar qué
-procesos de análisis de imagen pueden ser realizados en los aproximadamente 40
-milisegundos que separan un cuadro de otro al mostrar un video de 24 cuadros
-por segundo.
+Realizar el seguimiento en tiempo real agrega restricciones al problema, debido
+a que el algoritmo debe ser lo suficientemente eficiente para procesar la
+imagen en una fracción de tiempo. Toda técnica tiene un costo de procesamiento,
+por lo tanto se debe tener cautela al momento de seleccionar qué procesos de
+análisis de imagen pueden ser realizados en los aproximadamente 40 milisegundos
+que separan un cuadro de otro al mostrar un video de 24 cuadros por segundo.
 
-\section{Supervisión Humana}
+\section{Supervisión del Usuario}
 
 Respecto a la supervición necesaria, se busca extraer automáticamente
 información sobre un partido que un operador (o grupo de operadores) podría
@@ -141,8 +140,8 @@ Para este trabajo, se utiliza el algoritmo de contornos activos (ver
 \cite{fast-level-set}), el cual no utiliza ecuaciones diferenciales (haciéndolo
 apto para aplicaciones en tiempo real) y además hace un análisis local de los
 objetos seguidos en la imagen, lo cual hace que el tiempo de análisis de un
-cuadro sea dependiente de la resolución de los jugadores e independiente de la
-resolución del video.
+cuadro sea dependiente de la cantidad de píxeles que abarque la silueta de un
+jugador e independiente de la resolución del video.
 
 \subsection{Distorsión de la lente}
 
@@ -159,16 +158,16 @@ error, pero nunca puede ser eliminado totalmente.
 
 En un partido es muy común que ocurran oclusiones entre los jugadores. El
 sistema debe poder tolerar la oclusión parcial o total de los jugadores. Esto
-puede llevar a situaciones muy difíciles de automatizar. Una situación
-particularmente difícil de resolver se dá cuando dos jugadores del mismo equipo
-(con vestimenta muy similar) se encuentren alineados con respecto a la cámara.
+puede llevar a situaciones muy difíciles de detectar automáticamente. Por
+ejemplo, una situación particularmente difícil de resolver se dá cuando dos
+jugadores del mismo equipo (con vestimenta muy similar) se encuentren alineados
+con respecto a la cámara. Una posible solución es utilizar información de
+cuadros anteriores para estimar la velocidad de cada uno y estimar sus nuevas
+posiciones, pero esto es poco efectivo si los jugadores cambian de velocidad
+mientras uno ocluye al otro, o si la velocidad era muy similar al momento de
+generarse la oclusión.
 
-Una posible solución es utilizar información de cuadros anteriores para estimar
-la velocidad de cada uno y estimar sus nuevas posiciones, pero esto es poco
-efectivo si los jugadores cambian de velocidad mientras uno ocluye al otro, o
-si la velocidad era muy similar al momento de generarse la oclusión.
-
-Otra situación problemática similar es una jugada de tiro de esquina (córner),
+Una situación problemática similar es una jugada de tiro de esquina (córner),
 donde las oclusiones entre varios jugadores son muy numerosas, lo que agrega a
 la restricción de tiempo real mayor complejidad, ya que la resolución de
 oclusiones debe ser muy eficiente en tiempo.

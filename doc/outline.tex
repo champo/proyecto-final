@@ -96,7 +96,7 @@
 % and correct referencing between parts
 
 % Metadata
-\title{Análisis Automático de Jugadas en Partidos de Fútbol}
+\title{Interpretación y Análisis Automático de Imágenes de Partidos de Fútbol}
 \date{1 de agosto de 2014}
 \author{Civile, Juan Pablo \and Crespo, Álvaro \and Ordano, Esteban }
 
@@ -118,18 +118,18 @@ colaborar con el cuerpo técnico en el entrenamiento de los jugadores,
 el análisis y el estudio de las tácticas de un contricante, entre otros.
 
 En el presente trabajo se propone un método de seguimiento de jugadores que
-puede utilizarse para cumplir algunos de los objetivos del problema,
-se analizan las dificultades de realizar el seguimiento
-de jugadores en tiempo real con reducida o nula colaboración humana a partir de
-una sola fuente de video que consiste en una cámara de alta resolución (HD)
-fija capaz de encuadrar todo el campo de juego.
+puede utilizarse para cumplir algunos de los objetivos del problema, se
+analizan las dificultades de realizar el seguimiento de jugadores en tiempo
+real con reducida o nula supervición humana a partir de una sola fuente de
+video que consiste en una cámara de alta resolución (HD) fija capaz de
+encuadrar todo el campo de juego.
 
 En base al análisis de dificultades, se selecciona una técnica de seguimiento
 y se detalla un algoritmo construido sobre ésta para la tarea específica de
 detección y seguimiento de jugadores en partidos de fútbol. Se presentan los
-resultados de aplicar este algoritmo, se comparan con otro método existente
-en la literatura y se explicita qué información se podría proveer
-para el análisis automático de jugadas.
+resultados de aplicar este algoritmo, se comparan con otro método existente en
+la literatura y se explicita qué información se podría proveer para el análisis
+de imágenes de partidos de fútbol.
 \end{doublespace}
 \end{customabstract}
 
@@ -141,13 +141,13 @@ para el análisis automático de jugadas.
 Dentro del campo del análisis y tratamiento de imágenes un problema que se
 estudia es el del reconocimiento y seguimiento de objetos en secuencias de
 imágenes. Identificar correctamente un objeto en un video es útil para un
-amplio rango de aplicaciones, desde aplicaciones médicas (dónde se ofrece
-soporte para diagnósticos y cirugías) hasta la industria cinematográfica
-(captura de movimiento, \textit{post-producción}), pasando por vigilancia
-automática con cámaras y juegos interactivos. También tiene una gran
-influencia en el reconocimiento de caras y el seguimiento de ojos, técnicas
-que actualmente son muy utilizadas y estudiadas, y que tienen una gran
-potencialidad para ser implementadas en nuevos campos.
+amplio rango de aplicaciones, como ser aplicaciones médicas (dónde se ofrece
+soporte para diagnósticos y cirugías), la industria cinematográfica (captura de
+movimiento, \textit{post-producción}), vigilancia automática con cámaras y
+juegos interactivos. También tiene una gran influencia en el reconocimiento de
+caras y el seguimiento de ojos, técnicas que actualmente son muy utilizadas y
+estudiadas, y que tienen una gran potencialidad para ser implementadas en
+nuevos campos.
 
 En el ámbito deportivo existen muchas aplicaciones para el seguimiento de
 objetos. Puede resultar útil para validar o reemplazar las decisiones de los
@@ -182,14 +182,14 @@ Se plantea el uso de una técnica de seguimiento existente, basada en
 \textit{contornos activos}, para el seguimiento en tiempo real de los
 jugadores con una única computadora. Esta técnica determina el contorno de
 un objeto dentro del video y a medida que el objeto se mueve el contorno se
-adapta tomando decisiones basadas en los valores \textit{RGB} de los píxeles
-de los objetos de interés y de sus alrededores.
-Se investigan alternativas para mejorar el seguimiento específicas a las
-características de un video de fútbol, como ser la morfología de los objetos
-a seguir (por ejemplo, se acota con un rectángulo más alto que ancho el
-tamaño máximo del contorno de un jugador), entre otros.
+adapta tomando decisiones basadas en variaciones de color de los píxeles de los
+objetos de interés y de sus alrededores. Se investigan alternativas para
+mejorar el seguimiento específicas a las características de un video de fútbol,
+como ser la morfología de los objetos a seguir, como por ejemplo, se acota con
+un rectángulo más alto que ancho el tamaño máximo del contorno de un jugador,
+entre otros.
 
-El trabajo se encuentra compuesto de la siguiente manera: En el Capítulo
+El trabajo se encuentra compuesto de la siguiente manera: en el Capítulo
 \ref{chap-state} se describe el estado del arte actual en el área de
 seguimiento de objetos, y en particular se examinan soluciones aplicadas al
 análisis automático de eventos deportivos. En el Capítulo
