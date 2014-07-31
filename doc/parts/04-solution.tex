@@ -126,7 +126,9 @@ las regiones que ocupan son más altas y anchas).
   \centering
     \begin{minipage}[t]{.45\textwidth}
       \includegraphics[width=\linewidth]{./images/confusion-linea.png}
-      \caption{Resultado de aplicar el algoritmo sin eliminación de líneas
+      \caption{Resultado de aplicar el algoritmo sin eliminación de líneas.
+      El color celeste delimita un contorno de un jugador, incluyendo erroneamente
+      parte de las lineas de la cancha.
       \label{fig:confusion-linea}}
     \end{minipage}
     % TODO: Otra screenshot con el algoritmo aplicado
@@ -140,8 +142,8 @@ píxeles correspondientes al verde del campo. Para esto, se realiza un análisis
 de los colores de la imagen recortada, es decir la imagen resultante luego
 aplicar la técnica de \textit{recorte}, detallada en
 \ref{subsec:crop-tribunas}, una vez seleccionados los contornos iniciales de
-los jugadores. Sobre este cuadro, se calcula el valor promedio y desvío
-estándar de todo píxel que no forme parte de los jugadores o un elemento ya
+los jugadores. El análisis consta de calcular sobre este cuadro, el valor promedio y desvío
+estándar del conjunto de píxeles que no forme parte de los jugadores o un elemento ya
 conocido del fondo (por ejemplo, las líneas).
 
 Con este valor, se considera parte del césped cualquier punto que no tenga las
