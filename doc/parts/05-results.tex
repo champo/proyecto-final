@@ -42,14 +42,16 @@ indicación del operador (en una mecánica de tipo ``cuadro por cuadro'') y en
 otro modo se puede avanzar automáticamente cada vez que se computa un cuadro
 (mecánica de tipo ``tiempo real'').
 
-Para cada cuadro, una ventana muestra las posiciones actualizadas de los
-jugadores. El usuario puede seleccionar un jugador en particular y ver en
-detalle información sobre su posición, velocidad promedio, actual, y máxima
-desde el comienzo del seguimiento, y un mapa de calor que muestra con colores
-próximos al rojo los lugares más visitados por el jugador. Además, en un
-archivo se guarda la posición de cada jugador para cada momento.
+Para cada cuadro, se informa:
+\begin{itemize}
+\item Posiciones actualizadas de los jugadores
+\item Velocidad actual, promedio y máxima de un jugador
+\item Mapa de calor del recorrido de cada jugador
+\item Mapa de calor del recorrido de todos los jugadores
+\end{itemize}
 
-De manera opcional, en cada cuadro se guarda en disco duro una copia del estado
+Finalmente, en un archivo se guarda la posición de cada jugador para cada momento.
+Y de manera opcional, en cada cuadro se guarda en disco duro una copia del estado
 actual del seguimiento para referencia futura.
 
 \section{Material utilizado}
