@@ -201,7 +201,10 @@ con elegir el color de la camiseta se asegura una buena descripción del
 contorno a seguir. Sin embargo, la imagen de la Figura
 \ref{fig:camiseta-rayada} introduce uno de los problemas en la selección de
 esta función. Se puede ver que las diferencias entre ambos colores del objeto
-hacen difícil identificarlos a ambos con una misma característica.
+hacen difícil identificarlos a ambos con una misma característica. Si se toma
+el promedio del valor \textit{RGB}, considerando que el negro tiene valor 
+$(0, 0, 0)$ y el rojo $(255, 0, 0)$, el promedio de ambos seria $(127, 0, 0)$.
+Este valor es muy distinto a ambos colores, y no describe bien a ninguno.
 
 \begin{figure}[H]
     \centering
