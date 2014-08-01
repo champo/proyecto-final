@@ -150,9 +150,25 @@ que los puntos de la imagen más alejados al foco de la cámara sufren una
 distorción. Este es el llamado ``efecto de ojo de buey'' e introduce mucho
 error, por ejemplo en la aplicación de la homografía, por lo tanto se debe
 aplicar una corrección. Una lente apropiada y bien calibrada puede reducir este
-error, pero nunca puede ser eliminado totalmente.
+error, pero nunca puede ser eliminado totalmente. La Figura
+\ref{fig:sin-correccion} muestra un cuadro con el efecto de distorción y la
+Figura \ref{fig:con-correccion} muestra el mismo cuadr, pero con la corrección
+por software aplicada.
 
-% TODO: Screenshots
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\linewidth]{./images/sin-correccion.png}
+    \captionof{figure}{Imagen afectada por distorsión de lente}
+    \label{fig:barsa1}
+\begin{figure}[H]
+\end{figure}
+    \centering
+    \includegraphics[width=.8\linewidth]{./images/con-correccion.png}
+    \captionof{figure}{Misma imagen, con una corrección por software aplicada}
+    \label{fig:barsa2}
+\end{figure}
+
+% TODO: No explicamos un carajo como arreglamos esto
 
 \subsection{Oclusiones entre jugadores}
 
