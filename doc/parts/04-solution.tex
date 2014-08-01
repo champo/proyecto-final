@@ -77,12 +77,12 @@ método, eliminando algunos píxels que estaban bien detectados.
       \caption{Recorte del cuadro \#27 del video. El color azul denota los píxeles detectados como fondo por el algoritmo.
       \label{fig:tanos-fondo}}
     \end{minipage}
-    \begin{minipage}[t]{.45\textwidth}
-      \centering
-      \includegraphics[width=\linewidth]{./images/tanos-fondo-f28.png}
-      \caption{Recorte del cuadro \#28 del video. El color azul denota los píxeles detectados como fondo por el algoritmo.
-      \label{fig:tanos-fondo-broken}}
-    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+  \centering
+    \includegraphics[width=.45\linewidth]{./images/tanos-fondo-f28.png}
+    \caption{Recorte del cuadro \#28 del video. En este caso, el efecto de \textit{glitch} causa un falso negativo y no detecta parte de la cancha como fondo.}
+    \label{fig:tanos-fondo-broken}
 \end{figure}
 
 Otro problema encontrado con este algoritmo es que, al basarse en cambios de color,
@@ -124,14 +124,11 @@ las regiones que ocupan son más altas y anchas).
 
 \begin{figure}[H]
   \centering
-    \begin{minipage}[t]{.45\textwidth}
-      \includegraphics[width=\linewidth]{./images/confusion-linea.png}
-      \caption{Resultado de aplicar el algoritmo sin eliminación de líneas.
-      El color celeste delimita un contorno de un jugador, incluyendo erróneamente
-      parte de las lineas de la cancha.
-      \label{fig:confusion-linea}}
-    \end{minipage}
-    % TODO: Otra screenshot con el algoritmo aplicado
+  \includegraphics[width=0.3\linewidth]{./images/confusion-linea.png}
+  \caption{ Resultado de aplicar el algoritmo sin eliminación de líneas.
+    El color celeste delimita el contorno de un jugador, incluyendo erróneamente
+    parte de las lineas de la cancha.}
+      \label{fig:confusion-linea}
 \end{figure}
 
 \subsection{Eliminación del césped}
