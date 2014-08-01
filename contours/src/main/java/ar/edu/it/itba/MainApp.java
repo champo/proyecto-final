@@ -136,8 +136,7 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton1.setText("Ver Estadisticas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -147,8 +146,7 @@ public class MainApp extends javax.swing.JFrame {
 
         jButton2.setText("Corregir posición");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(final java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -250,15 +248,20 @@ public class MainApp extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(imageContainerPanel);
 
+        jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        rendered.setPreferredSize(new java.awt.Dimension(1280, 560));
+
         org.jdesktop.layout.GroupLayout renderedLayout = new org.jdesktop.layout.GroupLayout(rendered);
         rendered.setLayout(renderedLayout);
         renderedLayout.setHorizontalGroup(
             renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 903, Short.MAX_VALUE)
+            .add(0, 1280, Short.MAX_VALUE)
         );
         renderedLayout.setVerticalGroup(
             renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 222, Short.MAX_VALUE)
+            .add(0, 560, Short.MAX_VALUE)
         );
 
         jScrollPane4.setViewportView(rendered);
@@ -270,8 +273,8 @@ public class MainApp extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 907, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jScrollPane4))
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
+                    .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 481, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -279,15 +282,12 @@ public class MainApp extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane4))
-                    .add(layout.createSequentialGroup()
-                        .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(layout.createSequentialGroup()
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 390, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -372,8 +372,8 @@ public class MainApp extends javax.swing.JFrame {
         		new BlackOutOutskirts(
                 new LensCorrection(
                         new BlackOutOutskirts(
-//                        new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
-                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
+                        // new FrameDecoder("/Users/eordano/Desktop/arg_suiza_12_30.mp4")
+                        new FrameDecoder("/Users/eordano/Downloads/Boca1.mp4")
                , firstPoints)
                 , 1.91)
         , points);
@@ -392,7 +392,7 @@ public class MainApp extends javax.swing.JFrame {
         originalPanel = new ImagePanel();
         rendered.add(originalPanel, CENTER_ALIGNMENT);
         originalPanel.setImage(soccerField);
-        originalPanel.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        originalPanel.setSize(frame.getWidth(), frame.getHeight());
         rendered.repaint();
 
         String outFilename = Long.toString(new Date().getTime()) + "-points.txt";
@@ -588,10 +588,10 @@ public class MainApp extends javax.swing.JFrame {
 
         soccerFieldPanel = new ImagePanel();
         soccerFieldContainer.add(soccerFieldPanel, CENTER_ALIGNMENT);
-        soccerField = ImageIO.read(new File("src/main/resources/independiente.png"));
+        soccerField = ImageIO.read(new File("independiente.png"));
         soccerFieldPanel.setImage(soccerField);
         soccerFieldPanel.setSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
-
+        originalPanel.setMinimumSize(new Dimension(soccerField.getWidth(), soccerField.getHeight()));
 
         soccerFieldPanel.addMouseMotionListener(new MouseMotionListener() {
                 @Override
@@ -895,11 +895,11 @@ public class MainApp extends javax.swing.JFrame {
 	                    soccerFieldPanel.repaint();
                     }
 
-                    setImagePanelImage(frame);
+                    setImagePanelImage(original);
                 } else {
-                    setImagePanelImage(frame);
+                    setImagePanelImage(original);
                 }
-                originalPanel.setImage(original);
+                originalPanel.setImage(frame);
                 rendered.repaint();
                 writeDownInfo(frame, original);
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
