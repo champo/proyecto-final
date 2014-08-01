@@ -207,7 +207,10 @@ hacen difícil identificarlos a ambos con una misma característica. Si se toma
 el promedio del valor \textit{RGB}, considerando que el color negro tiene valor
 $(0, 0, 0)$ y el rojo $(255, 0, 0)$, el promedio de ambos seria $(127, 0, 0)$
 (un marrón oscuro). Este valor muestra distinto a ambos colores, y no describe
-bien a ninguno.
+bien a ninguno. Es por eso, que en la Figura \ref{fig:camiseta-rayada} el 
+algoritmo de contornos activos podría determinar que uno de los dos colores de
+la camiseta es más similar al fondo que al promedio, y en consecuencia
+actualizar el contorno siguiendo únicamente uno de los dos colores.
 
 \begin{figure}[H]
     \centering
@@ -215,16 +218,17 @@ bien a ninguno.
         \centering
         \includegraphics[width=.4\linewidth]{./images/rect2995.png}
         \captionof{figure}{Camiseta de color lisa. El color de la camiseta es
-        claramente distinguible del fondo.}
-        \label{fig:camiseta}
+          claramente distinguible del fondo.
+          \label{fig:camiseta}
+        }
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/rect2996.png}
-        \captionof{figure}{Camiseta de 2 colores rayada. Las franjas de la
-        camiseta son distinguibles entre sí, lo que puede causar que el método
-        seleccione solo uno de los colores.}
-        \label{fig:camiseta-rayada}
+        \captionof{figure}{Camiseta de 2 colores a rayas. Uno de los dos
+          colores es más similar al color de fondo que al promedio.
+          \label{fig:camiseta-rayada}
+        }
     \end{minipage}
 \end{figure}
 
