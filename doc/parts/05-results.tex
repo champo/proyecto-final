@@ -15,7 +15,7 @@ datos que deben ser provistos por el operador, y el funcionamiento de la misma.
 La Sección \ref{sec:evaluacion} presenta los resultados obtenidos de la
 ejecución del programa y las métricas utilizadas para evaluar la performance de
 la implementación. Por último, en la sección \ref{sec:iftrace} se presenta la
-comparación con otro método de seguimiento. 
+comparación con otro método de seguimiento.
 
 \section{Aplicación}
 \label{sec:aplicacion}
@@ -32,6 +32,7 @@ puede ver una captura de pantalla de la aplicación en la Figura
 
 \begin{figure}[H]
   \includegraphics[width=\linewidth]{./images/Screen-Boca.png}
+  \captionsetup{justification=centering}
   \caption{Captura de pantalla de la aplicación, mostrando el seguimiento en un video de fútbol.}
   \label{fig:screen1}
 \end{figure}
@@ -126,6 +127,7 @@ videos.
 \end{figure}
 \begin{figure}[H]
     \centering
+    \captionsetup{justification=centering}
     \begin{minipage}[t]{.5\textwidth}
         \centering
         \includegraphics[width=.4\linewidth]{./images/boca-dificil1.png}
@@ -155,8 +157,6 @@ homografía para determinar las posiciones correctamente, ya que cada cuadro
 donde la cámara cambia su orientación, la matriz de la homografía debería ser
 recalculada con nuevos datos.
 
-%% TODO: Eordano acá vamos a describir los videos también? Habría que meter
-%% alguna screenshot y chau mepa.
 Los videos televisados utilizados pertenecen a tres partidos disputados durante
 el año 2014. De la liga \textbf{UEFA}, se tomaron recortes de los partidos
 \textbf{Manchester City vs Barcelona FC}, \textbf{Real Madrid vs Borussia
@@ -188,6 +188,7 @@ partido de \textbf{Argentina vs Suiza}.
 
 \begin{figure}[H]
     \centering
+    \captionsetup{justification=centering}
     \begin{minipage}[t]{.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{./images/manchester1.png}
@@ -203,6 +204,7 @@ partido de \textbf{Argentina vs Suiza}.
 
 \begin{figure}[H]
     \centering
+    \captionsetup{justification=centering}
     \begin{minipage}[t]{.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{./images/realmadrid1.png}
@@ -238,9 +240,6 @@ y ocurren porque el algoritmo, en una situación de proximidad entre dos
 jugadores, a veces confunde a la sombra del otro jugador con el jugador
 al cual se encuentra siguiendo, y comienza a seguir a la sombra, perdiendo
 al jugador.
-
-%% TODO EORDANO yo te creo pero aca necesitamos mínimo un screenshot que
-%% muestre lo que decis. (CITA TUS FUENTES! ;))
 
 Para evaluar estos inconvenientes se define una métrica que mide exactamente la
 cantidad de errores por unidad de tiempo. Esta métrica, resumida como la

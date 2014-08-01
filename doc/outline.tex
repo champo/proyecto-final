@@ -30,6 +30,7 @@
 \usepackage{letltxmacro}
 \usepackage[margin=1cm]{caption}
 \usepackage{setspace}
+\usepackage[titletoc]{appendix}
 
 %%%%% BEGIN ALGPSEUDOCODE STUFF %%%%%%
 \algdef{SxnE}[FOREACH]{ForEach}{EndFor}[1]{\algorithmicfor\ #1\ \algorithmicdo}
@@ -55,6 +56,8 @@
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
+\renewcommand\appendixtocname{Anexo}
+
 % \titleformat{\section}{\small\center\bfseries}{\thesection.}{0.5em}{\normalsize\uppercase}
 % \titleformat{\subsection}{\small\center\bfseries}{}{0.5em}{\small\uppercase}
 
@@ -78,7 +81,7 @@
 \postauthor{\end{tabular}\normalsize
     \\[1em] Instituto Tecnológico de Buenos Aires
     \\[1em] Proyecto Final Ingeniería en Informática
-    \\[1em] Director: Juliana Gambini
+    \\[1em] Director: Dra. Juliana Gambini
 \par\end{center}}
 \predate{\begin{center}\small}
 \postdate{\par\end{center}}
