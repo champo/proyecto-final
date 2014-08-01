@@ -286,8 +286,8 @@ public class MainApp extends javax.swing.JFrame {
                 .add(homeographyMappingPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .add(layout.createSequentialGroup()
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 390, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 458, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
@@ -366,10 +366,11 @@ public class MainApp extends javax.swing.JFrame {
         firstPoints.add(new Point(1750, 750));
         firstPoints.add(new Point(1750, 375));
         /*/
-        homeographyManager.setMapping(new Point(370, -2), new Point(16, 5));
-        homeographyManager.setMapping(new Point(-2, 285), new Point(16, 282));
-        homeographyManager.setMapping(new Point(1460, 305), new Point(441, 282));
-        homeographyManager.setMapping(new Point(1091, 13), new Point(441,5)); //*/
+
+        homeographyManager.setMapping(new Point(416, 92), new Point(16, 5));
+        homeographyManager.setMapping(new Point(208, 348), new Point(80, 220));
+        homeographyManager.setMapping(new Point(918+620+203, 84+264), new Point(381, 220));
+        homeographyManager.setMapping(new Point(918+620, 84), new Point(441,5)); //*/
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
                 //new BlackOutOutskirts(
                 new LensCorrection(
@@ -377,7 +378,7 @@ public class MainApp extends javax.swing.JFrame {
                         new FrameDecoder("/Users/eordano/Downloads/I2.mp4")
 //                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
                // , firstPoints)
-               , 1.70)
+               , 1.71)
         //, points)
                 ;
 
@@ -660,7 +661,7 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(935,114), "Delantero", "9", "Local");
         addPlayer(new Point(1144,139), "Delantero", "10", "Local");
         addPlayer(new Point(1193,273), "Delantero", "11", "Local");
-/*        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
+        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
         addPlayer(new Point(1187,289), "Defensor", "2", "Visitante");
         addPlayer(new Point(1173,211), "Defensor", "3", "Visitante");
         addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
@@ -673,7 +674,7 @@ public class MainApp extends javax.swing.JFrame {
         addPlayer(new Point(423,311), "Delantero", "11", "Visitante");
         addPlayer(new Point(921,226), "Arbitro", "Arbitro", "Arbitro");
         addPlayer(new Point(1388,489), "Juez de linea", "Arbitro", "Arbitro");
-*/
+
         /*for (PlayerContour c : contour) {
             ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));
         }*/

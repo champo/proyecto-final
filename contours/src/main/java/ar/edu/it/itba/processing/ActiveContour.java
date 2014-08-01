@@ -40,7 +40,7 @@ public class ActiveContour {
 
 	private static final int MASK_RADIUS = 3;
 	protected static final int MAX_ITERATIONS = 40 * 40;
-	private static final ColorPoint whiteColorPoint = ColorPoint.build(ColorPoint.Type.RGB, 130, 150, 90);
+	private static final ColorPoint whiteColorPoint = ColorPoint.build(ColorPoint.Type.RGB, 160, 160, 100);
 	private static final ColorPoint whiteDeviation = ColorPoint.build(ColorPoint.Type.RGB, 10, 12, 12);
 
 	private static double SIGMA = 0.7;

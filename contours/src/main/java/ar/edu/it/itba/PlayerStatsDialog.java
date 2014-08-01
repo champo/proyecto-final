@@ -5,6 +5,8 @@
 package ar.edu.it.itba;
 
 import ar.edu.it.itba.processing.PlayerContour;
+import ar.edu.it.itba.processing.color.ColorPoint;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
@@ -29,6 +31,12 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
         teamLabel.setText(contour.team);
         averageSpeedLabel.setText("" + contour.getAverageSpeed() + " cm/s");
         distanceLabel.setText(contour.distanceMoved() + " cm");
+        String color = "";
+        for (ColorPoint point : contour.omega) {
+            color += point;
+            characteristic.setForeground(new Color(point.red, point.green, point.blue));
+        }
+        characteristic.setText("" + color);
         ImagePanel heat = new ImagePanel();
         BufferedImage image = contour.getHeatMap().getFrame();
         heat.setImage(image);
@@ -59,6 +67,8 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         distanceLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        characteristic = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -95,12 +105,16 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
+            .add(0, 611, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 331, Short.MAX_VALUE)
+            .add(0, 309, Short.MAX_VALUE)
         );
+
+        jLabel7.setText("Característica:");
+
+        characteristic.setText("jLabel6");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,16 +131,18 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
                             .add(jLabel3)
                             .add(jLabel4)
                             .add(jLabel5)
-                            .add(jLabel6))
+                            .add(jLabel6)
+                            .add(jLabel7))
                         .add(27, 27, 27)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(characteristic)
                             .add(distanceLabel)
                             .add(averageSpeedLabel)
                             .add(maximumSpeedLabel)
                             .add(positionLabel)
                             .add(teamLabel)
                             .add(nameLabel))
-                        .add(0, 391, Short.MAX_VALUE)))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -159,6 +175,10 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
                     .add(jLabel6)
                     .add(distanceLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel7)
+                    .add(characteristic))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -172,6 +192,7 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel averageSpeedLabel;
+    private javax.swing.JLabel characteristic;
     private javax.swing.JLabel distanceLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -179,6 +200,7 @@ public class PlayerStatsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel maximumSpeedLabel;
     private javax.swing.JLabel nameLabel;
