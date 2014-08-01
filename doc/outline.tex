@@ -12,6 +12,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{comment}
+\usepackage{lastpage}
 \usepackage[table]{xcolor}
 \usepackage[small,bf]{caption}
 \usepackage{float}
@@ -86,11 +87,25 @@
 % \addtolength{\voffset}{-40pt}
 % \addtolength{\textheight}{80pt}
 \renewcommand{\headrulewidth}{0pt}
+
 \fancyhead{}
 \fancyfoot{}
 \lhead{\small } % No publicado
-\rhead{\small \thepage}
-\cfoot{\small Copyright \copyright 2013 ITBA}
+\rhead{\small }
+\fancyfoot[C]{\small Copyright \copyright 2013 ITBA}
+\fancyfoot[R]{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancypagestyle{plain}{
+  \fancyhf{}% Clear header and footer
+  \fancyhead{}
+  \fancyfoot{}
+  \lhead{\small } % No publicado
+  \rhead{\small }
+  \fancyfoot[C]{\small Copyright \copyright 2013 ITBA}
+  \fancyfoot[R]{\thepage}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
 
 % Next 4 lines allow for parts with independet sections counters
 % and correct referencing between parts
@@ -135,6 +150,7 @@ de imágenes de partidos de fútbol.
 
 \tableofcontents
 
+\pagestyle{fancy}
 \chapter*{Introducción}
 \addcontentsline{toc}{chapter}{Introducción}
 
