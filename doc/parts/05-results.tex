@@ -26,12 +26,30 @@ funcionamiento del algoritmo. La misma cuenta con una sección donde se muestra
 una lista de los jugadores que están siendo seguidos, una donde se puede
 visualizar el video original con un recuadro en cada jugador seguido, un mapa de
 calor que muestra las posiciones más frecuentes, y una imagen que permite al
-operador evaluar cualitativamente el correcto funcionamiento del algoritmo.
+operador evaluar cualitativamente el correcto funcionamiento del algoritmo. Se
+puede ver una captura de pantalla de la aplicación en la Figura
+\ref{fig:screen1}.
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{./images/Screen-Boca.png}
+  \caption{Captura de pantalla de la aplicación, mostrando el seguimiento en un video de fútbol.}
+  \label{fig:screen1}
+\end{figure}
 
 Para comenzar la ejecución del algoritmo, el programa requiere que el operador
 identifique la posición de los jugadores en la imagen inicial de la secuencia.
 En este paso, también debe agregar información acerca del número de camiseta
-que viste, el equipo al cual pertenece y el nombre de cada jugador.
+que viste, el equipo al cual pertenece y el nombre de cada jugador. Se puede
+obtener información de un jugador específico mediante la lista de jugadores
+seguidos en la esquina superior derecha. La Figura \ref{fig:screen-jugador}
+muestra el detalle con información de un jugador luego de unos segundos de
+seguimiento.
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{./images/Screen-Jugador-Stats.png}
+  \caption{Captura de pantalla de la aplicación, que muestra información del seguimiento de un jugador.}
+  \label{fig:screen1}
+\end{figure}
 
 Un paso adicional que debe ejecutar el operador es determinar los puntos a
 utilizar para el cálculo de la homografía. Los datos necesarios para ello son

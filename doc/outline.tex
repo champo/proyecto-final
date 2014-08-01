@@ -233,44 +233,6 @@ para seguimiento de jugadores de fútbol. Para finalizar, en el Capítulo
 
 \printbibliography
 
-%% TODO get rid of this before final deadline
-\begin{comment}
-
-- Algoritmo de deteccion de fondo: cosas que no son la cancha en el video arruinan las mediciones
-  => Poner en negro toda parte del video que no sea la cancha
-
-- Funcion de feature de contornos activos
-  + Tomar promedio de color del contorno inicial no soporta camisetas rayadas
-  + Tampoco aguanta camisetas con mucha iluminacion
-  => Busqueda de nuevos features
-    - sigma
-    - coeficiente de variacion: ???
-    - distintos color-spaces: algunos color spaces funcionan mejor para un tipo de camiseta que otro. seria necesario tener varios features distintos y saber seleccionar el mejor
-
-- Distorcion de la lente introduce error en la homografia
-  => Algoritmos de correcion de la lente
-     - El factor de correcion es distinto para cada video
-     - Es dificil de calcular programaticamente
-
-- Jugadores distantes se borronean mucho
-  => ???
-
-- La pelota es muy chica
-  => ???
-
-- Cuando un jugador marca a otro, suele recorrer mucha distancia oculto o semi oculto
-  => ???
-
-- Además de distorción de la lente, la RESOLUCION: al agarrar TODA la cancha en una toma los jugadores MUY chicos, y la pelota más
-    => ???
-
-- Las canchas tienen diferentes medidas (varían en un cierto rango). Esto afecta a la homografía
-    => Adaptar la homografía a las dimensiones de cada cancha.
-
-- Como relacionar posiciones relativas de los jugadores teniendo una vista 3D con perspectiva
-    => Homografía
-    (Muy básico?)
-
-\end{comment}
+\input{parts/07-annex}
 
 \end{document}
