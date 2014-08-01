@@ -2,13 +2,13 @@
 \label{chap-conclusion}
 
 Como se explica en la Capítulo \ref{chap-problems}, el problema en cuestión
-tiene una gran complejidad, y ha sido objeto de interés y de estudio con
+tiene una gran complejidad y ha sido objeto de interés y de estudio con
 anterioridad. Se han dedicado muchos recursos y esfuerzo en la búsqueda de una
 solución.
 
 Teniendo en cuenta las numerosas y complejas dificultades, sumadas a las
-restricciones del problema, se puede concluir que la solución propuesta en este
-trabajo realiza un buen trabajo en el seguimiento de los jugadores en los
+restricciones del problema, se puede concluir que la solución propuesta 
+realiza un buen trabajo en el seguimiento de los jugadores en los
 videos de fútbol. Resulta díficil obtener mejores resultados con los recursos
 disponibles y las restricciones planteadas. Puede observarse como la solución
 propuesta resulta flexible y capaz de recuperarse de forma semi-supervisada,
@@ -31,26 +31,9 @@ cada una, una mitad del campo en su totalidad, podría resolver el problema de
 la baja resolución de la imagen y ofrecer mejores resultados. Además, en el
 caso de contar con suficientes cámaras, podría proporcionar información útil a
 la hora de manejar oclusiones, ofreciendo más de un punto de vista. De todas
-formas, el enfoque escogido de utilizar una única cámara resulta más rentable
+formas, el enfoque escogido utilizando una única cámara resulta más rentable
 en el sentido de que los recursos utilizados se aprovechan al máximo de forma
 eficiente, y estos recursos no requieren una gran inversión.
-
-\subsection{Mejoras de performance}
-
-Uno de los objetivos de investigación de este trabajo es lograr un seguimiento en
-tiempo real, es decir procesar por lo menos 24 cuadros por segundo. La
-implementación de referencia no cumple con este objetivo, pero tiene mucho
-lugar a optimización.  Por ejemplo, el trabajo de preprocesamiento de un cuadro
-y de aplicación de \textit{Contornos Activos} puede distribuirse en 2
-computadoras distintas. Esto permite tener una menor latencia entre cuadro y
-cuadro, y podría duplicar la velocidad percibida.
-
-Existe también la posibilidad de optimizar el algoritmo de \textit{Contornos
-Activos}. El algoritmo original no está diseñado para seguir 24 contornos en
-tiempo real. La implementación procesa cada contorno de manera secuencial,
-desperdiciando la capacidad de multiprocesamiento de las computadoras modernas.
-Se podría adaptar el algoritmo para aprovechar esta capacidad y mejorar el
-tiempo de ejecución notablemente.
 
 \section{Trabajo Futuro}
 
@@ -62,3 +45,19 @@ Cabe destacar que trabajos futuros se verían muy beneficiados de contar con má
 material y de mejor calidad. Lo ideal sería poder escoger la ubicación de la
 cámara de modo de utilizar eficientemente todo el cuadro de la imagen para la
 cancha, y contar con cámaras de mayor resolución.
+
+Además, uno de los objetivos de investigación de este trabajo es lograr un seguimiento en
+tiempo real, es decir procesar por lo menos 24 cuadros por segundo. La
+implementación de referencia no cumple con este objetivo, pero tiene algunas 
+posibilidades de mejorarse. Por ejemplo, el trabajo de preprocesamiento de un cuadro
+y de aplicación de \textit{Contornos Activos} puede distribuirse en 2
+computadoras distintas. Esto permite tener una menor latencia entre cuadro y
+cuadro, y podría duplicar la velocidad percibida.
+
+Existe también la posibilidad de optimizar el algoritmo de \textit{Contornos
+Activos}. El algoritmo original no está diseñado para seguir 24 contornos en
+tiempo real. La implementación procesa cada contorno de manera secuencial,
+desperdiciando la capacidad de multiprocesamiento de las computadoras modernas.
+Se podría adaptar el algoritmo para aprovechar esta capacidad y mejorar el
+tiempo de ejecución notablemente.
+

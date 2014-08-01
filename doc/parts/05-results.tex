@@ -73,7 +73,7 @@ videos.
 
   \item \textbf{Boca vs. Independiente:} El video cuenta con una resolución de
     \textit{1080p} (1920 píxeles de ancho y 1080 de alto). La cancha se muestra
-    en su totalidad, y se puede observar la totalidad de las gradas del lado
+    en su totalidad, y se puede observar las gradas del lado
     opuesto y cielo por encima de ellas. Luego de descartar esas regiones del
     video, la resolución pasa a ser de 1459 píxeles de ancho por 304 de alto.
     Se puede apreciar en la Figura \ref{fig:boca-figura} un cuadro del video, luego
@@ -107,12 +107,6 @@ videos.
   \label{fig:boca-figura}
 \end{figure}
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{./images/independ-figura.png}
-  \caption{Cuadro del partido en el que Independiente enfrenta a San Lorenzo.}
-  \label{fig:independ-figura}
-\end{figure}
-\begin{figure}[H]
     \centering
     \begin{minipage}[t]{.5\textwidth}
         \centering
@@ -127,6 +121,12 @@ videos.
              contorno de un jugador puede resultar muy difícil de delimitar.
         \label{fig:boca-dificil-1}}
 
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{./images/independ-figura.png}
+  \caption{Cuadro del partido en el que Independiente enfrenta a San Lorenzo.}
+  \label{fig:independ-figura}
 \end{figure}
 
 Además, se tomaron pequeños cortes de tres videos de fútbol televisado, en los
@@ -239,7 +239,7 @@ algo menos de 3 errores cada 4 segundos.
 
 Otro aspecto importante a la hora de evaluar la solución propuesta es su
 velocidad, medida en el tiempo de ejecución que requiere para llevar a cabo su
-trabajo. Para medir esto se defina la métrica del tiempo que le toma al
+trabajo. Para medir esto se define la métrica del tiempo que le toma al
 algoritmo procesar un solo cuadro, o, lo que es lo mismo, la cantidad de
 cuadros procesados por segundo. El objetivo es minimizar esta métrica
 intentando acercarse lo más posible a los $24$ cuadros por segundo (equivalente
