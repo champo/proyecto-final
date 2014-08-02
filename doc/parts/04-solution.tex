@@ -297,21 +297,20 @@ no deseados, como podría ser una oclusión parcial, antes de su correción.
 \subsection{Función de Probabilidad}
 
 Si bien la función de probabilidad sugerida en la Sección \ref{sec:ac} se puede
-aplicar en este caso, se modificó para tener en cuenta la morfología de los objetos
-a seguir.
+aplicar en este caso, se modificó para tener en cuenta la morfología de los
+objetos a seguir.
 
 Se plantea que los jugadores estarán contenidos dentro de un rectángulo de
 mayor altura que ancho. Se estima el máximo valor posible del ancho y alto de
-un rectángulo que contenga a un jugador, y luego se limita el tamaño del
-contorno, reduciendo la posibilidad de que el contorno se expanda por áreas
-cuyos píxeles poseen características similares a las de píxeles que representan
-a un jugador, pero como este área no cumple con la restricción de tener un
-ancho o alto mayor al máximo permitido, se evita la expanción del contorno.
-Dado que el algoritmo de contornos activos es utilizado en las líneas del
-césped del campo de juego para evaluar si un punto pertenece al fondo o no, se
-sugieren dos funciones de probabilidad, una denominada $f$ utilizada para la
-detección del fondo y una función $f_j$ para el seguimiento de los jugadores,
-definidas como:
+un rectángulo que contenga a un jugador, y se limita el tamaño del contorno,
+impidiendo que se expanda y no pueda ser contenido de un rectángulo de este
+tamaño.
+
+Dado que el algoritmo de contornos activos es utilizado en las líneas
+del césped del campo de juego para evaluar si un punto pertenece al fondo o no,
+no se añade la restricción de tamaño a estas líneas. Se sugieren dos funciones
+de probabilidad, una denominada $f$ utilizada para la detección del fondo y una
+función $f_j$ para el seguimiento de los jugadores, definidas como:
 
 \begin{eqnarray*}
     f(p) &=& 1 - \frac{\| v(p) - v_i \|}{255 * 6} \\
@@ -380,7 +379,7 @@ cuadro, con los jugadores del equipo identificable seleccionados. Luego, se
 aplica el procedimiento \textit{complemento}, detallado en el Algoritmo
 \ref{alg:complemento}. La salida de este procedimiento marca todo punto que no
 fue identificado bajo ningún conjunto con el color \textit{cyan}, y aplica un
-operador morfologico de expansión sobre todos estos puntos con el objeto
+operador morfologico de expanción sobre todos estos puntos con el objeto
 de unificar conjuntos que están cercanos.
 
 \begin{algorithm}
