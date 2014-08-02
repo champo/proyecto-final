@@ -43,8 +43,8 @@ de un análisis que sólo se podría lograr mediante un cómputo automático.
 En el presente trabajo, un supervisor selecciona inicialmente las posiciones
 de los jugadores en la cancha. El algoritmo de contornos activos es luego
 ejecutado para obtener la posición de cada jugador para los cuadros siguientes.
-El supervisor debe corregir eventuales incorrectas actualizaciones de contornos
-activos. Es deseable que estas falsas detecciones sean mínimas o inexistentes.
+El supervisor debe corregir actualizaciones incorrectas de contornos activos.
+Es deseable que estas falsas detecciones sean mínimas o inexistentes.
 
 \section{Sistema de Cámaras}
 
@@ -142,7 +142,7 @@ Para este trabajo, se utiliza el algoritmo de contornos activos (ver
 apto para aplicaciones en tiempo real) y además hace un análisis local de los
 objetos seguidos en la imagen, lo cual hace que el tiempo de análisis de un
 cuadro sea dependiente de la cantidad de píxeles que abarque la silueta de un
-jugador e independiente de la resolución del video.
+jugador e independiente del tamaño de cada cuadro del video.
 
 \subsection{Distorsión de la Lente}
 
