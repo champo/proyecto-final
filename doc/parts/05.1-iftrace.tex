@@ -9,24 +9,18 @@ múltiples objetos a la vez.
 
 Un algoritmo de este tipo podría proporcionar una solución al problema. Para
 comprobarlo, se llevaron a cabo algunas pruebas utilizando un video sintético
-creado para este fin, y un video real de un partido de fútbol. En las Figuras
-\ref{fig:sample-happy-occluded} y \ref{fig:sample-boca} pueden observarse los
-primeros cuadros de cada video. Pueden apreciarse a simple vista las marcadas
-diferencias entre ambos videos, como por ejemplo la resolución de la imagen y
-el tamaño y la complejidad de los objetos de inteŕes.
+creado para este fin, y un video real de un partido de fútbol. En la Figura
+\ref{fig:screen1} de la sección anterior se observa un video real. La figura
+\ref{fig:sample-happy-occluded} muestra el primer cuadro del video sintético. Pueden
+apreciarse a simple vista las marcadas diferencias entre ambos videos, como por
+ejemplo la resolución de la imagen y el tamaño y la complejidad de los objetos
+de interés.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{./images/sample_happy_occluded.png}
     \caption{Muestra de un cuadro del video sintético de prueba.}
     \label{fig:sample-happy-occluded}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{./images/sample_boca.png}
-    \caption{Muestra de un cuadro del video real de un partido de fútbol.}
-    \label{fig:sample-boca}
 \end{figure}
 
 Como se puede ver en la Figura \ref{fig:happy-occluded-iftrace}, IFTrace logra
@@ -39,12 +33,33 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cccc}
-        \subfloat[Cuadro 1]{\includegraphics[width = 1.4in]{./images/cropped_happy_occluded_00001.png}} &
-        \subfloat[Cuadro 5]{\includegraphics[width = 1.4in]{./images/cropped_happy_occluded_00005.png}} &
-        \subfloat[Cuadro 8]{\includegraphics[width = 1.4in]{./images/cropped_happy_occluded_00008.png}} &
-        \subfloat[Cuadro 12]{\includegraphics[width = 1.4in]{./images/cropped_happy_occluded_00012.png}}
-    \end{tabular}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_happy_occluded_00001.png}
+      \centering
+      \footnotesize
+      \textbf{(a)} Cuadro 1
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_happy_occluded_00005.png}
+      \centering
+      \footnotesize
+      \textbf{(b)} Cuadro 5
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_happy_occluded_00008.png}
+      \centering
+      \footnotesize
+      \textbf{(c)} Cuadro 8
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_happy_occluded_00012.png}
+      \centering
+      \footnotesize
+      \textbf{(d)} Cuadro 12
+    \end{minipage}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{IFTrace funcionando en una secuencia de cuadros de video sintético.
     \label{fig:happy-occluded-iftrace}
@@ -53,12 +68,33 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cccc}
-        \subfloat[Cuadro 9]{\includegraphics[width = 1.4in]{./images/cropped_boca_00009.png}} &
-        \subfloat[Cuadro 12]{\includegraphics[width = 1.4in]{./images/cropped_boca_00012.png}} &
-        \subfloat[Cuadro 14]{\includegraphics[width = 1.4in]{./images/cropped_boca_00014.png}} &
-        \subfloat[Cuadro 17]{\includegraphics[width = 1.4in]{./images/cropped_boca_00017.png}}
-    \end{tabular}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_boca_00009.png}
+      \centering
+      \footnotesize
+      \textbf{(a)} Cuadro 9
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_boca_00012.png}
+      \centering
+      \footnotesize
+      \textbf{(b)} Cuadro 12
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_boca_00014.png}
+      \centering
+      \footnotesize
+      \textbf{(c)} Cuadro 14
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_boca_00017.png}
+      \centering
+      \footnotesize
+      \textbf{(d)} Cuadro 17
+    \end{minipage}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{Seguimiento de un jugador en un video real utilizando IFTrace.
     \label{fig:boca-iftrace}
@@ -67,12 +103,33 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cccc}
-        \subfloat[Cuadro 1]{\includegraphics[width = 1.4in]{./images/cropped_processing2.png}} &
-        \subfloat[Cuadro 5]{\includegraphics[width = 1.4in]{./images/cropped_processing5.png}} &
-        \subfloat[Cuadro 8]{\includegraphics[width = 1.4in]{./images/cropped_processing14.png}} &
-        \subfloat[Cuadro 12]{\includegraphics[width = 1.4in]{./images/cropped_processing25.png}}
-    \end{tabular}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_processing2.png}
+      \centering
+      \footnotesize
+      \textbf{(a)} Cuadro 1
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_processing5.png}
+      \centering
+      \footnotesize
+      \textbf{(b)} Cuadro 5
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_processing14.png}
+      \centering
+      \footnotesize
+      \textbf{(c)} Cuadro 8
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_processing25.png}
+      \centering
+      \footnotesize
+      \textbf{(d)} Cuadro 12
+    \end{minipage}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{El algoritmo de contornos activos modificado en funcionamiento en un video sintético.
     \label{fig:happy-occluded-activeContour}
@@ -81,12 +138,33 @@ semi-supervisada no está contemplada en el algoritmo de IFTrace.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cccc}
-        \subfloat[Cuadro 2]{\includegraphics[width = 1.4in]{./images/cropped_rendered002.png}} &
-        \subfloat[Cuadro 12]{\includegraphics[width = 1.4in]{./images/cropped_rendered007.png}} &
-        \subfloat[Cuadro 14]{\includegraphics[width = 1.4in]{./images/cropped_rendered012.png}} &
-        \subfloat[Cuadro 17]{\includegraphics[width = 1.4in]{./images/cropped_rendered017.png}}
-    \end{tabular}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_rendered002.png}
+      \centering
+      \footnotesize
+      \textbf{(a)} Cuadro 2
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_rendered007.png}
+      \centering
+      \footnotesize
+      \textbf{(b)} Cuadro 12
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_rendered012.png}
+      \centering
+      \footnotesize
+      \textbf{(c)} Cuadro 14
+    \end{minipage}
+    \hspace{-0.3cm}
+    \begin{minipage}[t]{.25\textwidth}
+      \includegraphics[width=1.4in]{./images/cropped_rendered017.png}
+      \centering
+      \footnotesize
+      \textbf{(d)} Cuadro 17
+    \end{minipage}
     %% NASTY hack to make refernce work with figures and subfigures, put \label inside \caption env, little bird told me
     \caption{Seguimiento de los jugadores en un video real mediante el algoritmo de contornos activos modificado.
     \label{fig:boca-activeContour}
