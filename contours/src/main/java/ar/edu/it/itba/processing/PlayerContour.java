@@ -66,12 +66,17 @@ public class PlayerContour extends Contour {
         return maxSpeed;
     }
 
+    private static int HALF_SIDE = 3;
+    
+    private static int HALF_WIDTH = 4;
+    private static int HALF_HEIGHT = 8;
+
     public static PlayerContour aroundPoint(String name, String position, String team, final int color, final Point point) {
-            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 6, 6, 12));
+            return new PlayerContour(name, position, team, color, new Rectangle(point.x - HALF_WIDTH, point.y - HALF_HEIGHT, HALF_WIDTH * 2, HALF_HEIGHT * 2));
     }
 
     public static PlayerContour squareAroundPoint(String name, String position, String team, final int color, final Point point) {
-            return new PlayerContour(name, position, team, color, new Rectangle(point.x - 3, point.y - 3, 6, 6));
+            return new PlayerContour(name, position, team, color, new Rectangle(point.x - HALF_SIDE, point.y - HALF_SIDE, HALF_SIDE * 2, HALF_SIDE * 2));
     }
 
     public void addHistoricalPoint(final Point p) {

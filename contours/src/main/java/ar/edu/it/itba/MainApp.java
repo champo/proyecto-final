@@ -252,13 +252,13 @@ public class MainApp extends javax.swing.JFrame {
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        rendered.setPreferredSize(new java.awt.Dimension(1280, 560));
+        rendered.setPreferredSize(new java.awt.Dimension(2000, 560));
 
         org.jdesktop.layout.GroupLayout renderedLayout = new org.jdesktop.layout.GroupLayout(rendered);
         rendered.setLayout(renderedLayout);
         renderedLayout.setHorizontalGroup(
             renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 1280, Short.MAX_VALUE)
+            .add(0, 2000, Short.MAX_VALUE)
         );
         renderedLayout.setVerticalGroup(
             renderedLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -360,27 +360,27 @@ public class MainApp extends javax.swing.JFrame {
         points.add(new Point(1505, 85));
         points.add(new Point(1440, 321));
         points.add(new Point(0, 268));
-        /* List<Point> firstPoints = new LinkedList<Point>();
-        firstPoints.add(new Point(200, 375));
-        firstPoints.add(new Point(200, 750));
-        firstPoints.add(new Point(1750, 750));
-        firstPoints.add(new Point(1750, 375));
-        /*/
+        List<Point> firstPoints = new LinkedList<Point>();
+        firstPoints.add(new Point(0, 293+95));
+        firstPoints.add(new Point(460, 85));
+        firstPoints.add(new Point(1490, 85));
+        firstPoints.add(new Point(1919, 263+95));
+        firstPoints.add(new Point(1919, 539));
+        firstPoints.add(new Point(0, 539));
 
-        homeographyManager.setMapping(new Point(416, 92), new Point(16, 5));
-        homeographyManager.setMapping(new Point(208, 348), new Point(80, 220));
-        homeographyManager.setMapping(new Point(918+620+203, 84+264), new Point(381, 220));
-        homeographyManager.setMapping(new Point(918+620, 84), new Point(441,5)); //*/
+        homeographyManager.setMapping(new Point(416, 7), new Point(16, 5));
+        homeographyManager.setMapping(new Point(208, 348-85), new Point(80, 220));
+        homeographyManager.setMapping(new Point(918+620+203, 84+264-85), new Point(381, 220));
+        homeographyManager.setMapping(new Point(918+620, 0), new Point(441,5)); //*/
         originalFrameDecoder = frameDecoder = // new BackgroundDetection(
-                //new BlackOutOutskirts(
+            //new BlackOutOutskirts(
                 new LensCorrection(
-                //        new BlackOutOutskirts(
+                    new BlackOutOutskirts(
                         new FrameDecoder("/Users/eordano/Downloads/I2.mp4")
-//                        new FrameDecoder("/Users/jpcivile/Documents/ITBA/final/Boca1.mp4")
-               // , firstPoints)
-               , 1.71)
-        //, points)
-                ;
+                    , firstPoints)
+                , 1.71)
+            //, points)
+        ;
 
         // First frame + Hough lines
         imagePanel = new ImagePanel();
@@ -650,30 +650,30 @@ public class MainApp extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
         imagePanel.setImage(getFrame());
-        addPlayer(new Point(229,215), "Arquero", "1", "Local");
-        addPlayer(new Point(450,203), "Defensor 1", "2", "Local");
-        addPlayer(new Point(396,297), "Defensor 2", "3", "Local");
-        addPlayer(new Point(688,204), "Defensor 3", "4", "Local");
-        addPlayer(new Point(650,378), "Defensor 4", "5", "Local");
-        addPlayer(new Point(832,263), "Mediocampista", "6", "Local");
-        addPlayer(new Point(953,325), "Mediocampista", "7", "Local");
-        addPlayer(new Point(950,204), "Mediocampista", "8", "Local");
-        addPlayer(new Point(935,114), "Delantero", "9", "Local");
-        addPlayer(new Point(1144,139), "Delantero", "10", "Local");
-        addPlayer(new Point(1193,273), "Delantero", "11", "Local");
-        addPlayer(new Point(1604,203), "Arquero", "1", "Visitante");
-        addPlayer(new Point(1187,289), "Defensor", "2", "Visitante");
-        addPlayer(new Point(1173,211), "Defensor", "3", "Visitante");
-        addPlayer(new Point(1165,165), "Defensor", "4", "Visitante");
-        addPlayer(new Point(1081,308), "Defensor", "5", "Visitante");
-        addPlayer(new Point(996,157), "Mediocampista", "6", "Visitante");
-        addPlayer(new Point(835,243), "Mediocampista", "7", "Visitante");
-        addPlayer(new Point(730,371), "Mediocampista", "8", "Visitante");
-        addPlayer(new Point(682,167), "Delantero", "9", "Visitante");
-        addPlayer(new Point(546,295), "Delantero", "10", "Visitante");
-        addPlayer(new Point(423,311), "Delantero", "11", "Visitante");
-        addPlayer(new Point(921,226), "Arbitro", "Arbitro", "Arbitro");
-        addPlayer(new Point(1388,489), "Juez de linea", "Arbitro", "Arbitro");
+        addPlayer(new Point(229,215-85), "Arquero", "1", "Local");
+        addPlayer(new Point(450,203-85), "Defensor 1", "2", "Local");
+        addPlayer(new Point(396,297-85), "Defensor 2", "3", "Local");
+        addPlayer(new Point(688,204-85), "Defensor 3", "4", "Local");
+        addPlayer(new Point(650,378-85), "Defensor 4", "5", "Local");
+        addPlayer(new Point(832,263-85), "Mediocampista", "6", "Local");
+        addPlayer(new Point(953,325-85), "Mediocampista", "7", "Local");
+        addPlayer(new Point(950,204-85), "Mediocampista", "8", "Local");
+        addPlayer(new Point(935,114-85), "Delantero", "9", "Local");
+        addPlayer(new Point(1144,139-85), "Delantero", "10", "Local");
+        addPlayer(new Point(1193,273-85), "Delantero", "11", "Local");
+        addPlayer(new Point(1604,203-85), "Arquero", "1", "Visitante");
+        addPlayer(new Point(1187,289-85), "Defensor", "2", "Visitante");
+        addPlayer(new Point(1173,211-85), "Defensor", "3", "Visitante");
+        addPlayer(new Point(1165,165-85), "Defensor", "4", "Visitante");
+        addPlayer(new Point(1081,308-85), "Defensor", "5", "Visitante");
+        addPlayer(new Point(996,157-85), "Mediocampista", "6", "Visitante");
+        addPlayer(new Point(835,243-85), "Mediocampista", "7", "Visitante");
+        addPlayer(new Point(730,371-85), "Mediocampista", "8", "Visitante");
+        addPlayer(new Point(677,159-85), "Delantero", "9", "Visitante");
+        addPlayer(new Point(546,295-85), "Delantero", "10", "Visitante");
+        addPlayer(new Point(423,311-85), "Delantero", "11", "Visitante");
+        addPlayer(new Point(921,226-85), "Arbitro", "Arbitro", "Arbitro");
+        addPlayer(new Point(1388,489-85), "Juez de linea", "Arbitro", "Arbitro");
 
         /*for (PlayerContour c : contour) {
             ((HoughLines) frameDecoder).clearAround(new Point(c.averageX(), c.averageY()));

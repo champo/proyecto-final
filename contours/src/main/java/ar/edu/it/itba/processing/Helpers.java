@@ -33,7 +33,11 @@ public final class Helpers {
 
 	public static ColorPoint[] getBackgroundCharacteristics(final BufferedImage frame,
 			final Contour contour, final Contour[] contours) {
-		return new ColorPoint[] { getAverageBackgroundColor(frame, contour, contours) };
+		return new ColorPoint[] {
+                    getAverageBackgroundColor(frame, contour, contours),
+                    new ColorPoint(160, 160, 100),
+                    new ColorPoint(120, 120, 50)
+                };
 	}
 
 	public static boolean isBorder(final BufferedImage frame, final Point p) {
@@ -251,20 +255,11 @@ public final class Helpers {
 
 		return ColorPoint.build(c.getType(), (int) red / points, (int) green / points, (int) blue / points);
 	}
-
-        private static ColorPoint[] backgroundColors = new ColorPoint[] {
-            new ColorPoint(160, 160, 100),
-            new ColorPoint(120, 120, 50)
-        };
-
 	public static double backgroundDiff(final ColorPoint color, final Point p, final BufferedImage frame, final ColorPoint stdDev, final ColorPoint ... referenceColors) {
 		if (color.red == 0 && color.green == 0 && color.blue == 0) {
 			return 0;
 		} else {
-			return Math.min(
-                            colorDiff(color, p, frame, stdDev, referenceColors),
-                            colorDiff(color, p, frame, stdDev, backgroundColors)
-                        );
+			return colorDiff(color, p, frame, stdDev, referenceColors);
 		}
 
 	}
