@@ -267,7 +267,7 @@ número de muestras positivas de entrenamiento y $D_{S^{+}}(t)$
 es el promedio de distancia del candidato $t$ a las muestras
 de entrenamiento positivas.
 
-\subsection{Graph based}
+\subsection{Basado en Grafos}
 % IFTrace
 
 El algoritmo conocido como \textit{IFTrace} (ver \cite{IFTrace}) tiene como objetivo
@@ -693,7 +693,7 @@ entonces se realiza un muestreo aleatorio para reducirlos a ese tamaño.
 
 \label{sec:homography}
 
-\subsection{Aplicación y utilización}
+\subsection{Aplicación y Utilización}
 
 La técnica de la homografía se utiliza para poder transformar la vista
 tridimensional de la secuencia de imágenes (la imagen del estadio de futbol), en
@@ -773,7 +773,7 @@ En total, son 8 los parámetros que definen la matriz $H$, y sus elementos son
     \end{bmatrix}
 \end{equation}
 
-\subsection{Estimación de una homografía}
+\subsection{Estimación de una Homografía}
 
 Se pueden estimar los 8 parámetros desconocidos de la matriz de transformación $H$, basándose en correspondencias de puntos conocidas.
 La transformación de una coordenada $x$ en coordenadas homogéneas ($z=1$), a una coordenada objetivo $x'= Hx$ da como resultado
@@ -864,7 +864,7 @@ diagonal con los autovalores de $$A^{T}A$$ en su diagonal. Nótese que los autov
 La Descomposición en Valores Singulares se calcula de tal forma que los autovalores en la diagonal de $\Sigma$ aparecen en orden decreciente. Por lo tanto
 se toma como solución la última columna de $V$, correspondiente al menor autovalor de $A^{T}A$.
 
-\subsection{Distorsión de la lente de la cámara}
+\subsection{Distorsión de la Lente de la Cámara}
 
 El material utilizado fue obtenido con una lente con una baja distancia focal,
 lo que genera una distorsión de tipo \textit{barril}, donde las líneas rectas
@@ -887,10 +887,10 @@ de la imagen), $K$ es un coeficiente de distorsión radial, y $r =
 imagen.
 
 
-\section{Análisis de partidos de Fútbol}
+\section{Análisis de Partidos de Fútbol}
 \label{sec:futbol}
 
-\subsection{Análisis utilizando 6 cámaras}
+\subsection{Análisis Utilizando 6 Cámaras}
 \label{sec:6-camaras}
 
 \citeauthor*{papers-tanos} estudian la viabilidad de juzgar si en un partido de fútbol
@@ -1130,7 +1130,7 @@ Para la detección de una jugada de posición adelantada, se requiere:
 
 \end{itemize}
 
-\subsection{Análisis utilizando 8 cámaras}
+\subsection{Análisis Utilizando 8 Cámaras}
 \label{sec:8-camaras}
 
 \citeauthor*{xu-8cams} proponen un sistema que consta de 8 módulos, conectados
@@ -1139,7 +1139,7 @@ a un módulo supervisor, encargado del mantenimiento de la posición de los
 jugadores. El sistema supervisor no tiene acceso a los datos crudos de la
 imagen obtenida, sino que reciben información procesada de cada nodo.
 
-\subsubsection{Pre-procesamiento del video}
+\subsubsection{Pre-procesamiento del Video}
 
 Cada nodo realiza un preprocesamiento de la imagen para estimar la posición
 de la cámara y detectar áreas de interés (candidatas a ser los jugadores en
@@ -1217,7 +1217,7 @@ un determinado umbral, se empieza a considerar que las mediciones de dos
 cámaras distintas para dos ``cajas delimitadoras'' pasan a ser el mismo
 jugador.
 
-\subsection{Análisis de deportes con múltiples cámaras}
+\subsection{Análisis de Deportes con Múltiples Cámaras}
 \label{sec:var-camaras}
 
 % SIFT Base
@@ -1296,7 +1296,7 @@ Finalmente, se intenta clasificar los episodios según su resultado: un pase, un
 Para esto se utiliza un árbol de clasificaciones, con reglas simples para los primeros 3 casos.
 En el caso de la pérdida de pelota, se utiliza un árbol de decisión más complejo.
 
-\subsection{Análisis de deportes con video televisado}
+\subsection{Análisis de Deportes con Video Televisado}
 \label{sec:tv-video}
 
 En \cite{Liu20061146} se plantea una técnica para obtener las posiciones de los
