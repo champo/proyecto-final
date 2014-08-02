@@ -100,6 +100,7 @@ public class MainApp extends javax.swing.JFrame {
     private Button typeButton;
     protected ColorPoint.Type type = ColorPoint.Type.RGB;
 
+    private List<Integer> times = new ArrayList<Integer>();
     protected HeatMap heatMap;
 
 	protected int selectedContour = -1;
@@ -902,7 +903,21 @@ public class MainApp extends javax.swing.JFrame {
                 originalPanel.setImage(frame);
                 rendered.repaint();
                 writeDownInfo(frame, original);
+                times.add((int)(System.currentTimeMillis() - time));
                 System.out.println("Frame processed in " + (System.currentTimeMillis() - time) + " ms");
+                int average = 0;
+                for (int i : times) {
+                    average += i;
+                }
+                double powerSum1 = 0;
+                double powerSum2 = 0;
+                double stdev = 0;
+                for (int i : times) {
+                    powerSum1 += i;
+                    powerSum2 += Math.pow(i, 2);
+                    stdev = Math.sqrt(times.size()*powerSum2 - Math.pow(powerSum1, 2))/times.size();
+                } 
+                System.out.println("Average is " + average/times.size() + " ms +-" + stdev);
                 busyLock.countDown();
             }
 
