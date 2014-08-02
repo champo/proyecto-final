@@ -160,7 +160,7 @@ para el análisis de imágenes de partidos de fútbol.
 Dentro del campo del análisis y tratamiento de imágenes un problema que se
 estudia es el del reconocimiento y seguimiento de objetos en secuencias de
 imágenes. Identificar correctamente un objeto en un video es útil para un
-amplio rango de aplicaciones, como ser aplicaciones médicas (dónde se ofrece
+amplio rango de aplicaciones, como ser aplicaciones médicas (donde se ofrece
 soporte para diagnósticos y cirugías), la industria cinematográfica (captura de
 movimiento, \textit{post-producción}), vigilancia automática con cámaras y
 juegos interactivos. También tiene una gran influencia en el reconocimiento de
@@ -198,15 +198,13 @@ determinado momento, distancia recorrida, zonas más frecuentadas por el
 jugador, entre otros.
 
 Se plantea el uso de una técnica de seguimiento existente, basada en
-\textit{contornos activos}, para el seguimiento en tiempo real de los
-jugadores con una única computadora. Esta técnica determina el contorno de
-un objeto dentro del video y a medida que el objeto se mueve el contorno se
-adapta tomando decisiones basadas en variaciones de color de los píxeles de los
-objetos de interés y de sus alrededores. Se investigan alternativas para
-mejorar el seguimiento específicas a las características de un video de fútbol,
-como ser la morfología de los objetos a seguir, como por ejemplo, se acota con
-un rectángulo más alto que ancho el tamaño máximo del contorno de un jugador,
-entre otros.
+una técnica denominada \textit{contornos activos} (ver \cite{fast-level-set}),
+para el seguimiento en tiempo real de los jugadores con una única computadora.
+Esta técnica determina el contorno de un objeto dentro del video y a medida que
+el objeto se mueve el contorno se adapta tomando decisiones basadas en
+variaciones de color de los píxeles de los objetos de interés y de sus
+alrededores. Este trabajo propone alternativas para mejorar el seguimiento
+especializándolo a las características de un video de fútbol.
 
 El trabajo se encuentra compuesto de la siguiente manera: en el Capítulo
 \ref{chap-state} se describe el estado del arte actual en el área de
