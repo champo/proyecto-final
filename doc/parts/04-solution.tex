@@ -87,7 +87,7 @@ método, eliminando algunos píxeles que estaban bien detectados.
 
 Otro problema encontrado con este algoritmo es que, al basarse en cambios de color,
 puede considerar que un jugador que se encuentra estático durante varios cuadros
-es parte de fondo. Si bien los jugadores suelen estar en movimiendo durante el
+es parte del fondo. Si bien los jugadores suelen estar en movimiendo durante el
 partido, esto no es tan cierto en el caso del arquero.
 
 Por los motivos detallados, se descartó el uso de este algoritmo en favor de las
@@ -103,12 +103,12 @@ líneas son parte de un jugador, como en la figura \ref{fig:confusion-linea}, se
 considera otro método para detectarlas e ignorar estos puntos al momento de
 realizar el paso de actualización de contornos.
 
-Se desarrolló un método similar que detecta los tramos pintados de blanco en el
-césped de la cancha. El mismo funciona aplicando un detector de bordes (se
-utilizaron tanto el método de Roberts como el de Canny), umbralizando el
-resultado, y haciendo un análisis morfológico de las componentes conexas
-obtenidas luego de la umbralización.  Este método está basado en la idea detrás
-del algoritmo de detección de líneas de Hough.
+Se desarrolló un método que detecta los tramos pintados de blanco en el césped
+de la cancha. El mismo funciona aplicando un detector de bordes (se utilizaron
+tanto el método de Roberts como el de Canny), umbralizando el resultado, y
+haciendo un análisis morfológico de las componentes conexas obtenidas luego de
+la umbralización. Este método está basado en la idea detrás del algoritmo de
+detección de líneas de Hough.
 
 El análisis morfológico considera que una componente conexa entre píxeles
 detectados como bordes es un jugador si se cumplen las siguientes condiciones:
@@ -127,7 +127,7 @@ las regiones que ocupan son más altas y anchas).
   \includegraphics[width=0.3\linewidth]{./images/confusion-linea.png}
   \caption{ Resultado de aplicar el algoritmo sin eliminación de líneas.
     El color celeste delimita el contorno de un jugador, incluyendo erróneamente
-    parte de las lineas de la cancha.}
+    parte de las líneas de la cancha.}
       \label{fig:confusion-linea}
 \end{figure}
 
@@ -388,7 +388,7 @@ de unificar conjuntos que están cercanos.
     \label{alg:complemento}
     \begin{algorithmic}
     \Require\hspace{\algorithmicindent}\hspace{\algorithmicindent}Cuadro $c$, Contornos $\omega_1 \dots \omega_n$,
-    cesped y lineas $\omega_0$
+    cesped y líneas $\omega_0$
 
     \Ensure\hspace{\algorithmicindent}\hspace{0.23cm} Cuadro $c$
     \State
